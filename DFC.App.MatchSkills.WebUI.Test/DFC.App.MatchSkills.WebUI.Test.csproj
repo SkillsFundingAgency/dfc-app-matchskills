@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Src\DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.WebUI.csproj" />
+    <ProjectReference Include="..\DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.WebUI.csproj" />
   </ItemGroup>
 
 </Project>
