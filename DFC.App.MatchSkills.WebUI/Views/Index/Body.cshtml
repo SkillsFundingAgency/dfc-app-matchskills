@@ -1,0 +1,42 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Transfer your skills
+            </h1>
+            <p class="govuk-body">
+                If you’re thinking of taking the next step in your career, it can be useful to know what skills you already have.
+            </p>
+            <p>
+                This section will help you to:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>understand the skills you already have</li>
+                <li>identify jobs that suit your skills</li>
+                <li>see which skills you can improve to get a specific job</li>
+            </ul>
+            <p>
+                You can enter your current or previous jobs and see which skills you can transfer to other jobs and industries.
+            </p>
+            <p>
+                <a class="govuk-button" href="/MatchSkills/EntryChoice">Continue</a>
+            </p>
+        </div>
+    </div>
+    <script>
+
+        const countries = [
+            'France',
+            'Germany',
+            'United Kingdom'
+        ]
+
+        accessibleAutocomplete({
+            element: document.querySelector('#my-autocomplete-container'),
+            id: 'my-autocomplete', // To match it to the existing <label>.
+            source: countries
+        })
+    </script>
+    <script type="text/javascript" src="/public/javascripts/accessible-autocomplete.min.js"></script>
+</main>
