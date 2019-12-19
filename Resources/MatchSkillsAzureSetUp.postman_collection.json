@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "c800acc3-8cfc-4f36-aef9-927ea7ddfa1d",
+		"name": "MatchSkillsAzureSetUp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "App",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \n\t\"Path\": \"matchskills\",\n    \"TopNavigationText\": \"Match Skills\",\n    \"TopNavigationOrder\": 400,\n    \"Layout\": \"FullWidth\",\n    \"OfflineHtml\": \"<H2>Match Skills Service Unavailable</H2>\",\n    \"ExternalURL\": \"https://localhost:44396/\"\n}"
+				},
+				"url": {
+					"raw": "{{PathRootUrl}}paths",
+					"host": [
+						"{{PathRootUrl}}paths"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "App get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{PathRootUrl}}paths/matchskills",
+					"host": [
+						"{{PathRootUrl}}paths"
+					],
+					"path": [
+						"matchskills"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionHead",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \r\n\t\"Path\": \"matchskills\",\r\n\t\"PageRegion\": \"Head\",\r\n    \"RegionEndpoint\": \"https://localhost:44396/head/{0}\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": null \r\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"matchskills",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Region get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"matchskills",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionBreadcrumb",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \r\n\t\"Path\": \"matchskills\", \r\n\t\"PageRegion\": \"Breadcrumb\",\r\n    \"RegionEndpoint\": \"https://localhost:44396/breadcrumb/{0}\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\"\r\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"matchskills",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionBody",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \n\t\"Path\": \"matchskills\",\n\t\"PageRegion\": \"Body\",\n    \"RegionEndpoint\": \"https://localhost:44396/body/{0}\",\n    \"HeathCheckRequired\": true,\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\"\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"matchskills",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

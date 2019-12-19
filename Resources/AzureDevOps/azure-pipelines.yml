@@ -1,4 +1,5 @@
 variables:
+    ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'     
     SolutionBaseName: 'DFC.App.MatchSkills'
     BuildPlatform: 'any cpu'
     BuildConfiguration: 'release'
@@ -9,9 +10,8 @@ resources:
   - repository: dfc-devops
     type: github
     name: SkillsFundingAgency/dfc-devops
-    ref: refs/tags/v1.8.6
+    ref: refs/tags/v1.9.0
     endpoint: 'GitHub (ESFA)'
-
 
 stages:
 - stage: Build
@@ -24,6 +24,12 @@ stages:
       - msbuild
       - visualstudio
     steps:
+    
+    # Build and test resources
+    - template: AzureDevOpsTemplates\Build\StepTemplates\dfc-arm-build.yml@dfc-devops
+      parameters:
+        ArmTemplateRoot: $(ArmTemplateRoot)
+    
     #  Build DFC.App.MatchSkills.WebUI
     - template: AzureDevOpsTemplates\Build\StepTemplates\dfc-dotnetcore-build-sonar.yml@dfc-devops
       parameters:
