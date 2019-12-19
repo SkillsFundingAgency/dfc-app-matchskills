@@ -1,0 +1,90 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment": {
+            "type": "string"
+        },
+        "sharedAppServicePlanName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "sharedAppServicePlanResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
+        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-pers-matchskills'))]",
+        "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
+        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('webAppInsightsName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('webAppInsightsName')]"
+                    },
+                    "attachedService": {
+                        "value": ""
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('WebAppName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('webAppName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[parameters('sharedAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[parameters('sharedAppServicePlanResourceGroup')]"
+                    },
+                    "appServiceType": {
+                        "value": "app"
+                    },
+                    "deployStagingSlot": {
+                        "value": true
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "MSDEPLOY_RENAME_LOCKED_FILES",
+                                "value": "1"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
+                            }
+                        ]
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('webAppInsightsName')]"
+            ]
+        }
+    ],
+        "outputs": {}
+    }
