@@ -26,30 +26,34 @@ namespace DFC.App.MatchSkills.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddMvc();
+            //services.AddControllers();
+            //services.AddMvc();
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            var options = new RewriteOptions()
+                .AddRewrite(@"^assets/(.*)", "_content/DFC.Personalisation.CommonUI/assets/$1", skipRemainingRules: true);
+            app.UseRewriter(options);
+            app.UseStaticFiles();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-          
-
-            var options = new RewriteOptions()
-                .AddRewrite(@"^assets/(.*)", "_content/DFC.Personalisation.CommonUI/assets/$1", skipRemainingRules: true);
-            app.UseRewriter(options);
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+               // endpoints.MapControllers();
             });
         }
     }
