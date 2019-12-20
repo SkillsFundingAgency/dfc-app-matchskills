@@ -5,7 +5,6 @@
         "TopNavigationOrder": 400,
         "Layout": "FullWidth",
         "OfflineHtml": "<H2>Match Skills Service Unavailable</H2>",
-        "ExternalUrl": "https://__AppServiceName__.__appServiceDomain__/",
         "Regions": [
             {
                 "PageRegion": "Head",
