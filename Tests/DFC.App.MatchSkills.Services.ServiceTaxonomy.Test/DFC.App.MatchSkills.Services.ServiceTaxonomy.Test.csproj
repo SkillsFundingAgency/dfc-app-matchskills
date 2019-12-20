@@ -7,14 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.9" />
+    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.5" />
+    <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integration\" />
     <Folder Include="Unit\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Src\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj" />
   </ItemGroup>
 
 </Project>
