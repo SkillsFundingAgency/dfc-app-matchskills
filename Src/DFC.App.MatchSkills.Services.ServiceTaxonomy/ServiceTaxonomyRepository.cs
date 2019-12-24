@@ -14,18 +14,25 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
-        static async Task<TList> GetJsonList<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
+        private static  HttpClient _httpClient=default;
+        public ServiceTaxonomyRepository(HttpClient httpClient)
         {
+            _httpClient = httpClient;
+        }
+        static async Task<TList> GetJsonList<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
+        { 
             if (string.IsNullOrWhiteSpace((apiPath)))
                 throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
 
             if (string.IsNullOrWhiteSpace((ocpApimSubscriptionKey)))
-                throw new ArgumentNullException(nameof(ocpApimSubscriptionKey), "Ocp-Apim-Subscription-Key must be specified.");
+                throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
+                    "Ocp-Apim-Subscription-Key must be specified.");
 
-            var restClient = new RestClient(new HttpClient());
+            var restClient = new RestClient(_httpClient);
             return await restClient.Get<TList>(apiPath,ocpApimSubscriptionKey);
-     
+            
         }
+       
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
         {
             var result = await GetJsonList<STSkills>(apiPath, ocpApimSubscriptionKey); 
