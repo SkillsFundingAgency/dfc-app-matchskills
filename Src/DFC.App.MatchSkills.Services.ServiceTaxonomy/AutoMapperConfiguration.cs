@@ -29,7 +29,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill, (SkillType)Enum.Parse(typeof(SkillType),dest.SkillType,true)))
-                //.ConstructUsing(dest => new Skill(dest.Uri, dest.Skill, (SkillType)Enum.Parse(typeof(SkillType),dest.SkillType,true),dest.AlternativeLabels))
                 ;
             CreateMap<STOccupation, Occupation>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
