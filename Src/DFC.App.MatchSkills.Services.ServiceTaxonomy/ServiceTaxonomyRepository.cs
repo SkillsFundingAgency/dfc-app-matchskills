@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Threading.Tasks;
-using AutoMapper;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -21,10 +19,10 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         }
         static async Task<TList> GetJsonList<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
         { 
-            if (string.IsNullOrWhiteSpace((apiPath)))
+            if (string.IsNullOrWhiteSpace(apiPath))
                 throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
 
-            if (string.IsNullOrWhiteSpace((ocpApimSubscriptionKey)))
+            if (string.IsNullOrWhiteSpace(ocpApimSubscriptionKey))
                 throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
                     "Ocp-Apim-Subscription-Key must be specified.");
 
@@ -51,16 +49,16 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         {
             if (string.IsNullOrWhiteSpace((skill)))
                 throw new ArgumentNullException(nameof(skill), "Please provide Skill to search");
-            System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex(skill);
+            var regEx = new System.Text.RegularExpressions.Regex(skill);
             var result = await GetAllSkills<Skill[]>(apiPath, ocpApimSubscriptionKey);
             return result.Where(s => regEx.IsMatch(s.Name)).ToArray();
         }
 
         public async Task<Occupation[]> SearchOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey, string occupation)
         {
-            if (string.IsNullOrWhiteSpace((occupation)))
+            if (string.IsNullOrWhiteSpace(occupation))
                 throw new ArgumentNullException(nameof(occupation), "Please provide Occupation to search");
-            System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex(occupation);
+            var regEx = new System.Text.RegularExpressions.Regex(occupation);
             var result = await GetAllOccupations<Occupation[]>(apiPath, ocpApimSubscriptionKey);
             return result.Where(o => regEx.IsMatch(o.Name)).ToArray();
         }
