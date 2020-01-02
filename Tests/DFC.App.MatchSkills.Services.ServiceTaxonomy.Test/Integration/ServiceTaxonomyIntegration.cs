@@ -5,7 +5,6 @@ using NUnit.Framework;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
