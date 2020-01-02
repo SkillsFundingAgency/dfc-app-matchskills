@@ -12,7 +12,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
-        private static  HttpClient _httpClient=default;
+        private static  HttpClient _httpClient;
         public ServiceTaxonomyRepository(HttpClient httpClient)
         {
             _httpClient = httpClient;

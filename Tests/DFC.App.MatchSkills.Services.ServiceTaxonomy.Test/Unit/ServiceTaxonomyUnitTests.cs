@@ -22,7 +22,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         public async Task When_MockServiceGetSkills_Then_ShouldReturnSkillsObject(string url,string apiKey)
         {
             // ARRANGE
-            var skillsJson ="{skills:[{\"skillType\": \"competency\",\"skill\": \"collect biological data\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"}]}";
+            const string skillsJson ="{skills:[{\"skillType\": \"competency\",\"skill\": \"collect biological data\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"}]}";
             var handlerMock = GetMockMessageHandler(skillsJson,HttpStatusCode.OK);
             var httpClient = new HttpClient(handlerMock.Object);
             var subjectUnderTest = new ServiceTaxonomyRepository(httpClient);
@@ -32,7 +32,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             
            
             // ASSERT
-            result.Should().NotBeNull(); // this is fluent assertions here...
+            result.Should().NotBeNull(); 
             result[0].Name.Should().Be("collect biological data");
 
             // also check the 'http' call was like we expected it
@@ -54,8 +54,8 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         public async Task When_MockServiceGetOccupations_Then_ShouldReturnOccupationsObject(string url,string apiKey)
         {
             // ARRANGE
-            var skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";
-            var handlerMock = GetMockMessageHandler(skillsJson,HttpStatusCode.OK);
+            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";
+            var handlerMock = GetMockMessageHandler(skillsJson);
             var httpClient = new HttpClient(handlerMock.Object);
             var subjectUnderTest = new ServiceTaxonomyRepository(httpClient);
             
@@ -63,7 +63,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             var result = await subjectUnderTest.GetAllOccupations<Occupation[]>(url,apiKey) ;
             
             // ASSERT
-            result.Should().NotBeNull(); // this is fluent assertions here...
+            result.Should().NotBeNull(); 
             result[0].Name.Should().Be("renewable energy consultant");
 
             // also check the 'http' call was like we expected it
@@ -92,10 +92,10 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 )
 
                 // prepare the expected response of the mocked http call
-                .ReturnsAsync(new HttpResponseMessage()
+                .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = statusToReturn,
-                    Content = new StringContent(contentToReturn),
+                    Content = new StringContent(contentToReturn)
                 })
                 .Verifiable();
             return handlerMock;

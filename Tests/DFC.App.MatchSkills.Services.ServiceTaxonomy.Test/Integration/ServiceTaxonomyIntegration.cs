@@ -13,8 +13,8 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
     class ServiceTaxonomyIntegration
     {
         private ServiceTaxonomyRepository _subjectUnderTest;    
-        private string _ApiUrl;
-        private string _ApiKey;
+        private string _apiUrl;
+        private string _apiKey;
         private static HttpClient _httpClient = new HttpClient();
         [SetUp]
         public void Init()
@@ -23,8 +23,8 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            _ApiUrl = config.GetSection("ServiceTaxonomySettings").GetSection("ApiUrl").Value;  
-            _ApiKey = config.GetSection("ServiceTaxonomySettings").GetSection("ApiKey").Value;  
+            _apiUrl = config.GetSection("ServiceTaxonomySettings").GetSection("ApiUrl").Value;  
+            _apiKey = config.GetSection("ServiceTaxonomySettings").GetSection("ApiKey").Value;  
            
             _subjectUnderTest = new ServiceTaxonomyRepository(_httpClient);
         }
@@ -34,7 +34,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
         public async Task When_GetAllSkills_Then_ShouldReturnSkillsList()
         {
             // ACT
-            var result = await _subjectUnderTest.GetAllSkills<Skill[]>(_ApiUrl + "/GetAllSkills/Execute/",_ApiKey) ;
+            var result = await _subjectUnderTest.GetAllSkills<Skill[]>(_apiUrl + "/GetAllSkills/Execute/",_apiKey) ;
 
             // ASSERT
             result.Should().NotBeNull();
@@ -44,7 +44,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
         public async Task When_GetAllOccupations_Then_ShouldReturnOccupationsList()
         {
             // ACT
-            var result = await _subjectUnderTest.GetAllOccupations<Occupation[]>(_ApiUrl + "/GetAllOccupations/Execute/",_ApiKey) ;
+            var result = await _subjectUnderTest.GetAllOccupations<Occupation[]>(_apiUrl + "/GetAllOccupations/Execute/",_apiKey) ;
 
             // ASSERT
             result.Should().NotBeNull();
@@ -55,7 +55,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
         {
             
             // ASSERT
-            var ex = Assert.ThrowsAsync<ArgumentNullException>( ()=>  _subjectUnderTest.GetAllSkills<Skill[]>(_ApiUrl + "/GetAllSkills/Execute/",""));
+            var ex = Assert.ThrowsAsync<ArgumentNullException>( ()=>  _subjectUnderTest.GetAllSkills<Skill[]>(_apiUrl + "/GetAllSkills/Execute/",""));
             Assert.That(ex.Message,Does.Contain("Ocp-Apim-Subscription-Key must be specified"));
         }
 
@@ -63,17 +63,17 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
         public async Task When_SearchSkills_Then_ShouldReturnFilteredSkillsList()
         {
             // ACT
-            var result = await _subjectUnderTest.SearchSkills<Skill[]>(_ApiUrl + "/GetAllSkills/Execute/",_ApiKey,"writing") ;
+            var result = await _subjectUnderTest.SearchSkills<Skill[]>(_apiUrl + "/GetAllSkills/Execute/",_apiKey,"writing") ;
 
             // ASSERT
             result.Should().NotBeNull();
         }
 
         [TestCase]
-        public async Task When_SearchOccupations_Then_ShouldReturnFilteredOccupationssList()
+        public async Task When_SearchOccupations_Then_ShouldReturnFilteredOccupationsList()
         {
             // ACT
-            var result = await _subjectUnderTest.SearchOccupations<Occupation[]>(_ApiUrl + "/GetAllOccupations/Execute/",_ApiKey,"writing") ;
+            var result = await _subjectUnderTest.SearchOccupations<Occupation[]>(_apiUrl + "/GetAllOccupations/Execute/",_apiKey,"writing") ;
 
             // ASSERT
             result.Should().NotBeNull();
