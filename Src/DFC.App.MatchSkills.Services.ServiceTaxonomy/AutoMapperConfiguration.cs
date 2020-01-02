@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using AutoMapper;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Domain.Models;

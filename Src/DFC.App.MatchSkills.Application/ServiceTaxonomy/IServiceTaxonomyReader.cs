@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.Application.ServiceTaxonomy
