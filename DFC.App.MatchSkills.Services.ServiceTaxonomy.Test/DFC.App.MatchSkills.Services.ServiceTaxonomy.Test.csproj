@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Src\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj" />
+    <ProjectReference Include="..\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj" />
   </ItemGroup>
 
   <ItemGroup>
