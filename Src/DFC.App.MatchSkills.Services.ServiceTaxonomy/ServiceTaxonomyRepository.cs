@@ -12,11 +12,17 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
-        private static  HttpClient _httpClient;
-        public ServiceTaxonomyRepository(HttpClient httpClient)
+        private static RestClient _restClient;
+
+        public ServiceTaxonomyRepository()
         {
-            _httpClient = httpClient;
+            _restClient = new RestClient();
         }
+        public ServiceTaxonomyRepository(RestClient restClient)
+        { 
+            _restClient = restClient??new RestClient();
+        }
+        
         static async Task<TList> GetJsonList<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
         { 
             if (string.IsNullOrWhiteSpace(apiPath))
@@ -26,8 +32,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
                     "Ocp-Apim-Subscription-Key must be specified.");
 
-            var restClient = new RestClient(_httpClient);
-            return await restClient.Get<TList>(apiPath,ocpApimSubscriptionKey);
+            return await _restClient.Get<TList>(apiPath,ocpApimSubscriptionKey);
             
         }
        
