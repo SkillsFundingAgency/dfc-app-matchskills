@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <ProjectGuid>572F6E98-2833-4C2B-B7EC-DD8A916336AC</ProjectGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj" />
+  </ItemGroup>
+
+</Project>

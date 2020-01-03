@@ -13,25 +13,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{8131A096-F5A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BF0DFE10-D2E3-4EE7-94E6-3CF9D6659794}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.WebUI", "Src\DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.WebUI.csproj", "{31145A33-689B-48B4-BC2F-2CCD1FC191D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.WebUI", "DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.WebUI.csproj", "{31145A33-689B-48B4-BC2F-2CCD1FC191D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.WebUI.Test", "Tests\DFC.App.MatchSkills.WebUI.Test\DFC.App.MatchSkills.WebUI.Test.csproj", "{8FEF91F3-D8BE-4606-A9DE-4AC03466C0F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.WebUI.Test", "DFC.App.MatchSkills.WebUI.Test\DFC.App.MatchSkills.WebUI.Test.csproj", "{8FEF91F3-D8BE-4606-A9DE-4AC03466C0F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Application", "Src\DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj", "{0255C068-3F41-47B4-8D23-20A3851D302D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Application", "DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj", "{0255C068-3F41-47B4-8D23-20A3851D302D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.Dysac", "Src\DFC.App.MatchSkills.Services.Dysac\DFC.App.MatchSkills.Services.Dysac.csproj", "{596AC70A-ACBE-4CBC-B7A0-30B9DC0EA91C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.Dysac", "DFC.App.MatchSkills.Services.Dysac\DFC.App.MatchSkills.Services.Dysac.csproj", "{596AC70A-ACBE-4CBC-B7A0-30B9DC0EA91C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.JobProfile", "Src\DFC.App.MatchSkills.Services.JobProfile\DFC.App.MatchSkills.Services.JobProfile.csproj", "{572F6E98-2833-4C2B-B7EC-DD8A916336AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.JobProfile", "DFC.App.MatchSkills.Services.JobProfile\DFC.App.MatchSkills.Services.JobProfile.csproj", "{572F6E98-2833-4C2B-B7EC-DD8A916336AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.Dysac.Test", "Tests\DFC.App.MatchSkills.Services.Dysac.Test\DFC.App.MatchSkills.Services.Dysac.Test.csproj", "{4B0A1D2A-96B0-4F15-8060-B7D45A165E47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.Dysac.Test", "DFC.App.MatchSkills.Services.Dysac.Test\DFC.App.MatchSkills.Services.Dysac.Test.csproj", "{4B0A1D2A-96B0-4F15-8060-B7D45A165E47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.JobProfile.Test", "Tests\DFC.App.MatchSkills.Services.JobProfile.Test\DFC.App.MatchSkills.Services.JobProfile.Test.csproj", "{71EC0B4D-F7D9-4B68-BD23-E841791B7CD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.JobProfile.Test", "DFC.App.MatchSkills.Services.JobProfile.Test\DFC.App.MatchSkills.Services.JobProfile.Test.csproj", "{71EC0B4D-F7D9-4B68-BD23-E841791B7CD8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Application.Test", "Tests\DFC.App.MatchSkills.Application.Test\DFC.App.MatchSkills.Application.Test.csproj", "{35524E5D-922C-446C-A91D-CD0D78A38BD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Application.Test", "DFC.App.MatchSkills.Application.Test\DFC.App.MatchSkills.Application.Test.csproj", "{35524E5D-922C-446C-A91D-CD0D78A38BD4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.ServiceTaxonomy", "Src\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj", "{7708B08F-BCAE-42B5-80F7-E04CF1902EA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.ServiceTaxonomy", "DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj", "{7708B08F-BCAE-42B5-80F7-E04CF1902EA3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.ServiceTaxonomy.Test", "Tests\DFC.App.MatchSkills.Services.ServiceTaxonomy.Test\DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.csproj", "{D1E366A5-C6C3-419E-A9E2-3575AAF21F03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Services.ServiceTaxonomy.Test", "DFC.App.MatchSkills.Services.ServiceTaxonomy.Test\DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.csproj", "{D1E366A5-C6C3-419E-A9E2-3575AAF21F03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
