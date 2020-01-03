@@ -92,7 +92,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             // ACTs
             var result = await subjectUnderTest.SearchSkills<Skill[]>(url,apiKey,"biological") ;
             
-           
             // ASSERT
             result.Should().NotBeNull();
             result.Count().Should().Be(2);
