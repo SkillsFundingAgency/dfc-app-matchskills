@@ -1,11 +1,10 @@
 ﻿@model DFC.App.MatchSkills.WebUI.ViewModels.HeadViewModel
 
-@if (!string.IsNullOrWhiteSpace(Model.Title))
-{
-    ViewData["Title"] = Model.Title;
 
-    <title>@ViewData["Title"]</title>
-}
+@{ ViewData["Title"] = "Match Skills";}
+
+<title>Match Skills</title>
+
 
 @if (!string.IsNullOrWhiteSpace(Model.CanonicalUrl))
 {
