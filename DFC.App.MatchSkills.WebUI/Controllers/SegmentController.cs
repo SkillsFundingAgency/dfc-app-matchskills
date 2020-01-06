@@ -16,6 +16,7 @@ namespace DFC.App.MatchSkills.WebUI.Controllers
             var model = new HeadViewModel()
             {
                 CssLink = "https://dev-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/dysac.min.css",
+                Title = "Test"
             };
             return View(ReturnPath(path, "Head"), model);
         }
