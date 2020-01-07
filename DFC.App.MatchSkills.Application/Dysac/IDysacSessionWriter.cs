@@ -8,6 +8,6 @@ namespace DFC.App.MatchSkills.Application.Dysac
 {
     public interface IDysacSessionWriter
     {
-        Task<NewSessionResponse> CreateNewSession(string assessmentType);
+        Task<NewSessionResponse> CreateNewSession(AssessmentTypes assessmentType);
     }
 }
