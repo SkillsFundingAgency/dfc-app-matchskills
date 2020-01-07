@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Services.Dysac.Test.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Integration
         //{
 
         //    var session = SessionHelper.CreateNewDysacSession();
-        //    var result = session.CreateNewSession("short").Result;
+        //    var result = session.CreateNewSession(AssessmentTypes.Short).Result;
         //    result.SessionId.Should().NotBeNullOrWhiteSpace();
         //    result.QuestionNumber.Should().Be(0);
 

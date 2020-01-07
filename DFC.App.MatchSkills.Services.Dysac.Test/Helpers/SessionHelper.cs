@@ -20,5 +20,14 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Helpers
                 ApiKey = ""
             }, handler == null ?  new RestClient() : new RestClient(handler));
         }
+        public static DysacService CreateNewDysacSession_Invalid_RestClient()
+        {
+            
+            return new DysacService(log:Substitute.For<ILogger>(), new DysacServiceSettings
+                {
+                    ApiUrl = "http://localhost:7074/api/", 
+                    ApiKey = ""
+                }, null);
+        }
     }
 }

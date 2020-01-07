@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac;
@@ -25,41 +26,21 @@ namespace DFC.App.MatchSkills.Services.Dysac
             _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
             _client = client;
         }
-        public async Task<NewSessionResponse> CreateNewSession(string assessmentType)
+        // Edit to assessment type
+        public async Task<NewSessionResponse> CreateNewSession(AssessmentTypes assessmentType)
         {
-            if (string.IsNullOrWhiteSpace(assessmentType))
-            {
-                var ex = new ArgumentException("Null or empty assessment type passed"); 
-                _log.LogError(ex.Message, ex);
-                throw ex;
-            }
 
-            if (assessmentType.ToEnum(AssessmentTypes.Undefined) == AssessmentTypes.Undefined)
-            {
-                var ex = new ArgumentException("Invalid value passed"); 
-                _log.LogError(ex.Message, ex);
-                throw ex;
-            }
-
-            var requestJson = JsonConvert.SerializeObject(new NewSessionRequest
-            {
-                AssessmentType = assessmentType
-            });
-
-            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-
-            SetDssCorrelationId();
             try
             {
-                var response =
-                    await _client.PostAsync(_getCreateDysacSessionUri.AbsoluteUri + $"?assessmentType={assessmentType}",
-                        content);
+                var stubbedContent = new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Application.Json);
+                SetDssCorrelationId();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return JsonConvert.DeserializeObject<NewSessionResponse>(
-                        response.Content.ReadAsStringAsync().Result);
-                }
+                return await _client.Post<NewSessionResponse>(_getCreateDysacSessionUri.AbsoluteUri + assessmentType.ToLower(), stubbedContent);
+            }
+            catch (HttpRequestException hre)
+            {
+                _log.LogError(hre.Message, hre);
+                throw;
             }
             catch (Exception ex)
             {
@@ -67,15 +48,13 @@ namespace DFC.App.MatchSkills.Services.Dysac
                 throw;
             }
 
-            return null;
-
         }
 
         internal void SetDssCorrelationId()
         {
-            _client.DefaultRequestHeaders.Remove("DssCorrelationId");
+            _client.DefaultRequestHeaders.Remove(Constants.DssCorrelationIdHeader);
             var correlationId = Guid.NewGuid();
-            _client.DefaultRequestHeaders.Add("DssCorrelationId", correlationId.ToString());
+            _client.DefaultRequestHeaders.Add(Constants.DssCorrelationIdHeader, correlationId.ToString());
         }
     }
 
@@ -88,7 +67,14 @@ namespace DFC.App.MatchSkills.Services.Dysac
             var uri = new Uri(extendee.ApiUrl);
             var key = extendee.ApiKey;
             var trimmed = uri.AbsoluteUri.TrimEnd('/');
-            return new Uri($"{trimmed}/assessment");
+            return new Uri($"{trimmed}{Constants.CreateNewAssessmentPath}{Constants.CreateNewAssessmentQueryString}");
         }
+    }
+
+    internal static class Constants
+    {
+        internal const string DssCorrelationIdHeader = "DssCorrelationId";
+        internal const string CreateNewAssessmentPath = "/assessment";
+        internal const string CreateNewAssessmentQueryString = "?assessmentType=";
     }
 }
