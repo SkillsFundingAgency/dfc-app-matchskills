@@ -1,9 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <ProjectGuid>7708B08F-BCAE-42B5-80F7-E04CF1902EA3</ProjectGuid>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.11" />
+    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj" />

@@ -5,4 +5,8 @@
     <ProjectGuid>0255C068-3F41-47B4-8D23-20A3851D302D</ProjectGuid>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
+  </ItemGroup>
+
 </Project>
