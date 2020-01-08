@@ -38,15 +38,15 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
        
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
         {
-            var result = await GetJsonList<STSkills>(apiPath, ocpApimSubscriptionKey); 
-            return Mapping.Mapper.Map<Skill[]>(result.Skills);
+            var result = await GetJsonList<STSkill[]>(apiPath, ocpApimSubscriptionKey); 
+            return Mapping.Mapper.Map<Skill[]>(result);
         }
 
         
         public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey) 
         {
-            var result = await GetJsonList<STOccupations>(apiPath, ocpApimSubscriptionKey);
-            return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
+            var result = await GetJsonList<Occupation[]>(apiPath, ocpApimSubscriptionKey);
+            return Mapping.Mapper.Map<Occupation[]>(result);
         }
 
 
