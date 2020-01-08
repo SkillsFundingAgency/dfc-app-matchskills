@@ -44,7 +44,7 @@ namespace DFC.App.MatchSkills.WebUI.Controllers
 
         [HttpGet]
         [Route("/body/{**path}")]
-        public async Task<IActionResult> Body(string path)
+        public IActionResult Body(string path)
         {
             return View(ReturnPath(path, "body"));
         }
