@@ -1,18 +1,18 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Dysac;
+﻿using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
+using System.Threading.Tasks;
+using Dfc.ProviderPortal.Packages;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
-    
+
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
         private readonly ILogger _log;
@@ -21,10 +21,17 @@ namespace DFC.App.MatchSkills.Services.Dysac
         private readonly RestClient _client;
         public DysacService(ILogger log, DysacServiceSettings dysacApiSettings, RestClient client)
         {
+            Throw.IfNull(log, nameof(log));
+            Throw.IfNullOrWhiteSpace(dysacApiSettings.ApiUrl, nameof(dysacApiSettings.ApiUrl));
+            Throw.IfNullOrWhiteSpace(dysacApiSettings.ApiKey, nameof(dysacApiSettings.ApiKey));
+            Throw.IfNull(client, nameof(client));
+
+
             _log = log;
             _dysacApiSettings = dysacApiSettings;
-            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
             _client = client;
+            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
+            
         }
         // Edit to assessment type
         public async Task<NewSessionResponse> CreateNewSession(AssessmentTypes assessmentType)
@@ -52,9 +59,9 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
         internal void SetDssCorrelationId()
         {
-            _client.DefaultRequestHeaders.Remove(Constants.DssCorrelationIdHeader);
+            _client.DefaultRequestHeaders.Remove(DysacEndpoints.DssCorrelationIdHeader);
             var correlationId = Guid.NewGuid();
-            _client.DefaultRequestHeaders.Add(Constants.DssCorrelationIdHeader, correlationId.ToString());
+            _client.DefaultRequestHeaders.Add(DysacEndpoints.DssCorrelationIdHeader, correlationId.ToString());
         }
     }
 
@@ -67,11 +74,11 @@ namespace DFC.App.MatchSkills.Services.Dysac
             var uri = new Uri(extendee.ApiUrl);
             var key = extendee.ApiKey;
             var trimmed = uri.AbsoluteUri.TrimEnd('/');
-            return new Uri($"{trimmed}{Constants.CreateNewAssessmentPath}{Constants.CreateNewAssessmentQueryString}");
+            return new Uri($"{trimmed}{DysacEndpoints.CreateNewAssessmentPath}{DysacEndpoints.CreateNewAssessmentQueryString}");
         }
     }
 
-    internal static class Constants
+    internal static class DysacEndpoints
     {
         internal const string DssCorrelationIdHeader = "DssCorrelationId";
         internal const string CreateNewAssessmentPath = "/assessment";

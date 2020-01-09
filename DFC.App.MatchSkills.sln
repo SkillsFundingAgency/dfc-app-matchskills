@@ -12,6 +12,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{8131A096-F5A9-46FE-9347-F0D266C6DA46}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BF0DFE10-D2E3-4EE7-94E6-3CF9D6659794}"
+	ProjectSection(SolutionItems) = preProject
+		DFC.App.MatchSkills.Services.Dysac.Test\Unit\DysacSessionUnitTests.cs = DFC.App.MatchSkills.Services.Dysac.Test\Unit\DysacSessionUnitTests.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.WebUI", "DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.WebUI.csproj", "{31145A33-689B-48B4-BC2F-2CCD1FC191D8}"
 EndProject

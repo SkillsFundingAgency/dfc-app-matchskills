@@ -12,6 +12,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
         public class CreateNewSessionTests
         {
+            
             [Test]
             public void When_RestClient_Is_Null_Throw_Exception()
             {
