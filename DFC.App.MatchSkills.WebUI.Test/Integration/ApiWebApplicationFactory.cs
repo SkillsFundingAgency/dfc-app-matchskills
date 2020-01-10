@@ -2,7 +2,7 @@
 
 namespace DFC.App.MatchSkills.WebUI.Test.Integration
 {
-    public class ApiWebApplicationFactory : WebApplicationFactory<DFC.App.MatchSkills.WebUI.Startup>
+    public class ApiWebApplicationFactory : WebApplicationFactory<Startup>
     {
     }
 }

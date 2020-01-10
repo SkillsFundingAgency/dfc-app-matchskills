@@ -1,7 +1,6 @@
 ﻿using DFC.App.MatchSkills.WebUI.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace DFC.App.MatchSkills.WebUI.Test.Unit.Controllers
@@ -10,10 +9,10 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.Controllers
     public class HealthControllerTests
     {
         [Test]
-        public void tdd()
+        public void Tdd()
         {
             // Arrange
-            var controller = new HealthController(new NullLogger<HealthController>());
+            var controller = new HealthController();
 
             // Act
             var result = controller.Ping();

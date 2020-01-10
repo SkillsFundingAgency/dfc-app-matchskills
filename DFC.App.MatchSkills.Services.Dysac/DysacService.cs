@@ -8,7 +8,6 @@ using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
@@ -16,15 +15,13 @@ namespace DFC.App.MatchSkills.Services.Dysac
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
         private readonly ILogger _log;
-        private readonly DysacServiceSettings _dysacApiSettings;
         private readonly Uri _getCreateDysacSessionUri;
         private readonly RestClient _client;
-        public DysacService(ILogger log, DysacServiceSettings dysacApiSettings, RestClient client)
+        public DysacService(ILogger log, RestClient client, DysacServiceSettings dysacApiSettings)
         {
             _log = log;
-            _dysacApiSettings = dysacApiSettings;
-            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
             _client = client;
+            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
         }
         // Edit to assessment type
         public async Task<NewSessionResponse> CreateNewSession(AssessmentTypes assessmentType)
