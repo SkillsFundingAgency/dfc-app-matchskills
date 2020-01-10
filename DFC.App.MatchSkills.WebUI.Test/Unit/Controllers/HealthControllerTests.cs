@@ -10,7 +10,7 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.Controllers
     public class HealthControllerTests
     {
         [Test]
-        public void tdd()
+        public void Tdd()
         {
             // Arrange
             var controller = new HealthController(new NullLogger<HealthController>());
