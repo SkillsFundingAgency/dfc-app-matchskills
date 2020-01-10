@@ -9,19 +9,19 @@
             {
                 "PageRegion": 1,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/head/{0}",
-                "HeathCheckRequired": false,
+                "HealthCheckRequired": false,
                 "OfflineHtml": null
             },
             {
                 "PageRegion": 2,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/breadcrumb/{0}",
-                "HeathCheckRequired": false,
+                "HealthCheckRequired": false,
                 "OfflineHtml": null
             },
             {
                 "PageRegion": 4,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/body/{0}",
-                "HeathCheckRequired": true,
+                "HealthCheckRequired": true,
                 "OfflineHtml": "<H3>Service Unavailable</H3>"
             }
         ]
