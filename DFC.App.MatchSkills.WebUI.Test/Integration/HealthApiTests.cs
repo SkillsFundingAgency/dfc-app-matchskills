@@ -27,7 +27,7 @@ namespace DFC.App.MatchSkills.WebUI.Test.Integration
         }
 
         [Test]
-        public async Task tdd()
+        public async Task Tdd()
         {
             var result = await _client.GetAsync("/health");
             result.StatusCode.Should().Be(HttpStatusCode.OK);
