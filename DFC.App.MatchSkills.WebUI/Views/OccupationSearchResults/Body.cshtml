@@ -1,0 +1,22 @@
+﻿@using DFC.App.MatchSkills.WebUI.ViewComponents
+@using Microsoft.EntityFrameworkCore.Internal
+@{
+    ViewData["Title"] = "Occupation Search Results";
+    var search = Context.Request.Query["search"].ToString();
+}
+
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+
+    <div class="govuk-grid-row margin-reset">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="results">
+                <govukHeadingH1 Text="Select your occupation" />
+            </div>
+
+            @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search })
+            <br />
+            <govukButton text="Add to skills list"></govukButton>
+        </div>
+    </div>
+</main>

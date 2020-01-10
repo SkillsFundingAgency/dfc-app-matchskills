@@ -1,8 +1,11 @@
+using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 
 namespace DFC.App.MatchSkills.WebUI
 {
@@ -19,6 +22,8 @@ namespace DFC.App.MatchSkills.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
+            services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
