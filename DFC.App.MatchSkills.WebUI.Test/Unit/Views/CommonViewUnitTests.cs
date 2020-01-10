@@ -54,7 +54,7 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.Views
             }
         }
 
-        [TestCaseSource("ActionElementTestCases")]
+        [TestCaseSource(nameof(ActionElementTestCases))]
         public void When_ViewExistsInSolution_Then_ActionElementsMustHaveIdAttribute(string viewFileName, IEnumerable<string> elementsWhichShouldHaveIds)
         {
             var doc = new HtmlDocument();
