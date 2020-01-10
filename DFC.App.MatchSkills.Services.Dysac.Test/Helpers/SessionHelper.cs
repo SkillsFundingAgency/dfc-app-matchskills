@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
