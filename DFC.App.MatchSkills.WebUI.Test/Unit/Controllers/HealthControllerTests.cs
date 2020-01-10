@@ -13,7 +13,7 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.Controllers
         public void Tdd()
         {
             // Arrange
-            var controller = new HealthController(new NullLogger<HealthController>());
+            var controller = new HealthController();
 
             // Act
             var result = controller.Ping();
