@@ -1,7 +1,6 @@
 ﻿using DFC.App.MatchSkills.WebUI.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace DFC.App.MatchSkills.WebUI.Test.Unit.Controllers
