@@ -1,6 +1,6 @@
 ﻿namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
 {
-    public class STSkill
+    public class StSkill
     {
         public string SkillType { get; set; }
         

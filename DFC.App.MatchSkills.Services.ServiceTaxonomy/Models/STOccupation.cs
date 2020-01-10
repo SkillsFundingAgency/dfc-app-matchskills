@@ -2,7 +2,7 @@
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
 {
-    public class STOccupation
+    public class StOccupation
     {
         public string Occupation { get; set; }
         public string[] AlternativeLabels { get; set; }

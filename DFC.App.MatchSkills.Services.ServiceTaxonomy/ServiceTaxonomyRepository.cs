@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
-
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
@@ -38,15 +36,15 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
        
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
         {
-            var result = await GetJsonList<STSkills>(apiPath, ocpApimSubscriptionKey); 
-            return Mapping.Mapper.Map<Skill[]>(result.Skills);
+            var result = await GetJsonList<StSkill[]>(apiPath, ocpApimSubscriptionKey); 
+            return Mapping.Mapper.Map<Skill[]>(result);
         }
 
         
         public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey) 
         {
-            var result = await GetJsonList<STOccupations>(apiPath, ocpApimSubscriptionKey);
-            return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
+            var result = await GetJsonList<StOccupation[]>(apiPath, ocpApimSubscriptionKey);
+            return Mapping.Mapper.Map<Occupation[]>(result);
         }
 
 
