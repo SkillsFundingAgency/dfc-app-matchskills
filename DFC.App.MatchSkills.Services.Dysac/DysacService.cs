@@ -8,7 +8,6 @@ using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
