@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.WebUI.ViewModels;
+﻿using DFC.App.MatchSkills.WebUI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.WebUI.Controllers
@@ -16,6 +12,7 @@ namespace DFC.App.MatchSkills.WebUI.Controllers
             var model = new HeadViewModel()
             {
                 CssLink = "https://dev-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/dysac.min.css",
+                Title = "Test"
             };
             return View(ReturnPath(path, "Head"), model);
         }
@@ -43,7 +40,7 @@ namespace DFC.App.MatchSkills.WebUI.Controllers
 
         [HttpGet]
         [Route("/body/{**path}")]
-        public async Task<IActionResult> Body(string path)
+        public IActionResult Body(string path)
         {
             return View(ReturnPath(path, "body"));
         }

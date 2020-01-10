@@ -5,22 +5,21 @@
         "TopNavigationOrder": 400,
         "Layout": "FullWidth",
         "OfflineHtml": "<H2>Match Skills Service Unavailable</H2>",
-        "ExternalUrl": "https://__AppServiceName__.__appServiceDomain__/",
         "Regions": [
             {
-                "PageRegion": "Head",
+                "PageRegion": 1,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/head/{0}",
                 "HeathCheckRequired": false,
                 "OfflineHtml": null
             },
             {
-                "PageRegion": "Breadcrumb",
+                "PageRegion": 2,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/breadcrumb/{0}",
                 "HeathCheckRequired": false,
                 "OfflineHtml": null
             },
             {
-                "PageRegion": "Body",
+                "PageRegion": 4,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/body/{0}",
                 "HeathCheckRequired": true,
                 "OfflineHtml": "<H3>Service Unavailable</H3>"
