@@ -5,15 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Services.JobProfile.Interfaces;
 using Dfc.ProviderPortal.Packages;
 
 namespace DFC.App.MatchSkills.Services.JobProfile.Services
 {
-    public class LmiService
+    public class LmiService : ILmiReader
     {
         private readonly ILogger _log;
         private readonly LmiApiSettings _lmiApiSettings;
-        private readonly Uri _getSocSearchUri;
+        private readonly Uri _getSocSearchUri, _getWfPredictUri;
         private readonly RestClient _client;
         public LmiService(ILogger log, LmiApiSettings lmiApiSettings, RestClient client)
         {
@@ -25,7 +26,8 @@ namespace DFC.App.MatchSkills.Services.JobProfile.Services
             _lmiApiSettings = lmiApiSettings;
             _client = client;
 
-            _getSocSearchUri = lmiApiSettings.GetCreateDysacSessionUri();
+            _getSocSearchUri = lmiApiSettings.GetSocSearchUri();
+            _getWfPredictUri = lmiApiSettings.GetWfPredictUri();
         }
 
         public async Task<IEnumerable<SocSearchResults>> SocSearch(SocSearchCriteria criteria)
@@ -60,14 +62,52 @@ namespace DFC.App.MatchSkills.Services.JobProfile.Services
                 throw;
             }
         }
+        public async Task<WorkingFuturesSearchResults> WFSearch(int socCode)
+        {
+            try
+            {
+                if (socCode == 0)
+                {
+                    throw new ArgumentException("SocCode cannot be zero.", nameof(socCode));
+                }
+
+                if (socCode < 0)
+                {
+                    throw new ArgumentException("SocCode cannot be less than zero.", nameof(socCode));
+                }
+                return await _client.Get<WorkingFuturesSearchResults>(
+                    _getWfPredictUri.AbsoluteUri + socCode);
+            }
+            catch (ArgumentException aex)
+            {
+                _log.LogError(aex.Message, aex);
+                throw;
+            }
+            catch(HttpRequestException hre)
+            {
+                _log.LogError(hre.Message, hre);
+                throw;
+            }
+            catch(Exception ex)
+            {
+                _log.LogError(ex.Message, ex);
+                throw;
+            }
+        }
     }
     internal static class LmiServiceSettingsExtensions
     {
-        internal static Uri GetCreateDysacSessionUri(this LmiApiSettings extendee)
+        internal static Uri GetSocSearchUri(this LmiApiSettings extendee)
         {
             var uri = new Uri(extendee.ApiUrl);
             var trimmed = uri.AbsoluteUri.TrimEnd('/');
             return new Uri($"{trimmed}{LmiEndpoints.SocSearchPath}{LmiEndpoints.SocSearchQueryString}");
+        }
+        internal static Uri GetWfPredictUri(this LmiApiSettings extendee)
+        {
+            var uri = new Uri(extendee.ApiUrl);
+            var trimmed = uri.AbsoluteUri.TrimEnd('/');
+            return new Uri($"{trimmed}{LmiEndpoints.WfPredictSearchPath}{LmiEndpoints.WfPredictQueryString}");
         }
     }
     internal static class LmiEndpoints
@@ -75,5 +115,6 @@ namespace DFC.App.MatchSkills.Services.JobProfile.Services
         internal const string SocSearchPath = "/soc/search";
         internal const string SocSearchQueryString = "?q=";
         internal const string WfPredictSearchPath = "/wf/predict";
+        internal const string WfPredictQueryString = "?soc=";
     }
 }

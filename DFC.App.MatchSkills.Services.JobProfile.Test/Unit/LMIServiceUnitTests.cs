@@ -45,6 +45,25 @@ namespace DFC.App.MatchSkills.Application.Test.Unit
             }
         }
 
+        public class WFSearchTest
+        {
+            [Test]
+            public void When_SocCode_Is_Zero_Throw_Argument_Exception()
+            {
+                var serviceUnderTest = LmiHelper.LmiService_RestClient();
+                serviceUnderTest.Awaiting(x => x.WFSearch(0)).ShouldThrow<ArgumentException>()
+                    .WithMessage("SocCode cannot be zero. (Parameter 'socCode')");
+            }
+
+            [Test]
+            public void When_SocCode_Is_A_Negative_Int_Throw_Argument_Exception()
+            {
+                var serviceUnderTest = LmiHelper.LmiService_RestClient();
+                serviceUnderTest.Awaiting(x => x.WFSearch(-1)).ShouldThrow<ArgumentException>()
+                    .WithMessage("SocCode cannot be less than zero. (Parameter 'socCode')");
+            }
+        }
+
 
         [Test]
         public void Call_SOC_Get_Value_Returned()
