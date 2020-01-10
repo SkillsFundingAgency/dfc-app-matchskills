@@ -4,6 +4,7 @@ using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Net.Http;
+using NSubstitute.Routing.Handlers;
 
 namespace DFC.App.MatchSkills.Services.JobProfile.Test.Helpers
 {
@@ -16,6 +17,17 @@ namespace DFC.App.MatchSkills.Services.JobProfile.Test.Helpers
                 return new SocSearchCriteria
                 {
                     SearchCriteria = "Developer"
+                };
+            }
+        }
+
+        public static class WfPredictSearchRequests
+        {
+            public static WorkingFuturesRequest ValidSearchCriteria()
+            {
+                return new WorkingFuturesRequest
+                {
+                    SocCode = 2136
                 };
             }
         }

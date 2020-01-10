@@ -9,6 +9,6 @@ namespace DFC.App.MatchSkills.Services.JobProfile.Interfaces
     public interface ILmiReader
     {
         Task<IEnumerable<SocSearchResults>> SocSearch(SocSearchCriteria criteria);
-        Task<WorkingFuturesSearchResults> WFSearch(int socCode);
+        Task<WorkingFuturesSearchResults> WFSearch(WorkingFuturesRequest request);
     }
 }

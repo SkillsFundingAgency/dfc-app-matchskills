@@ -62,21 +62,25 @@ namespace DFC.App.MatchSkills.Services.JobProfile.Services
                 throw;
             }
         }
-        public async Task<WorkingFuturesSearchResults> WFSearch(int socCode)
+        public async Task<WorkingFuturesSearchResults> WFSearch(WorkingFuturesRequest request)
         {
             try
             {
-                if (socCode == 0)
+                if (request == null)
                 {
-                    throw new ArgumentException("SocCode cannot be zero.", nameof(socCode));
+                    throw new ArgumentException("Request cannot be null.", nameof(request));
+                }
+                if (request.SocCode == 0)
+                {
+                    throw new ArgumentException("SocCode cannot be zero.", nameof(request.SocCode));
                 }
 
-                if (socCode < 0)
+                if (request.SocCode < 0)
                 {
-                    throw new ArgumentException("SocCode cannot be less than zero.", nameof(socCode));
+                    throw new ArgumentException("SocCode cannot be less than zero.", nameof(request.SocCode));
                 }
                 return await _client.Get<WorkingFuturesSearchResults>(
-                    _getWfPredictUri.AbsoluteUri + socCode);
+                    _getWfPredictUri.AbsoluteUri + request.SocCode);
             }
             catch (ArgumentException aex)
             {

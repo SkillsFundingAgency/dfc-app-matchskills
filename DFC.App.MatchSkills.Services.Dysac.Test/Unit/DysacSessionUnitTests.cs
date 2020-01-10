@@ -14,13 +14,6 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         {
             
             [Test]
-            public void When_RestClient_Is_Null_Throw_Exception()
-            {
-                var serviceUnderTest =
-                    SessionHelper.CreateNewDysacSession_Invalid_RestClient();
-                serviceUnderTest.Awaiting(x => x.CreateNewSession(AssessmentTypes.Short)).ShouldThrow<Exception>().WithMessage("Object reference not set to an instance of an object.");
-            }
-            [Test]
             public void If_Bad_Request_Return_Null()
             {
                 var serviceUnderTest =

@@ -18,6 +18,14 @@ namespace DFC.App.MatchSkills.Services.JobProfile.Test.Integration
                 var results = serviceUnderTest.SocSearch(LmiHelper.SocSearchRequests.ValidSearchCriteria()).Result;
                 results.Should().NotBeNull();
             }
+            [Test]
+            public void When_WfPredict_Endpoint_Hit_Return_Content()
+            {
+                
+                var serviceUnderTest = LmiHelper.LmiService_RestClient();
+                var results = serviceUnderTest.WFSearch(LmiHelper.WfPredictSearchRequests.ValidSearchCriteria()).Result;
+                results.Should().NotBeNull();
+            }
             
         }
     }

@@ -48,10 +48,18 @@ namespace DFC.App.MatchSkills.Application.Test.Unit
         public class WFSearchTest
         {
             [Test]
+            public void When_Request_Is_Null_Throw_ArgumentException()
+            {
+                var serviceUnderTest = LmiHelper.LmiService_RestClient();
+                serviceUnderTest.Awaiting(x => x.WFSearch(null)).ShouldThrow<ArgumentException>()
+                    .WithMessage("Request cannot be null. (Parameter 'request')");
+            }
+            
+            [Test]
             public void When_SocCode_Is_Zero_Throw_Argument_Exception()
             {
                 var serviceUnderTest = LmiHelper.LmiService_RestClient();
-                serviceUnderTest.Awaiting(x => x.WFSearch(0)).ShouldThrow<ArgumentException>()
+                serviceUnderTest.Awaiting(x => x.WFSearch(new WorkingFuturesRequest{ SocCode = 0})).ShouldThrow<ArgumentException>()
                     .WithMessage("SocCode cannot be zero. (Parameter 'socCode')");
             }
 
@@ -59,9 +67,17 @@ namespace DFC.App.MatchSkills.Application.Test.Unit
             public void When_SocCode_Is_A_Negative_Int_Throw_Argument_Exception()
             {
                 var serviceUnderTest = LmiHelper.LmiService_RestClient();
-                serviceUnderTest.Awaiting(x => x.WFSearch(-1)).ShouldThrow<ArgumentException>()
+                serviceUnderTest.Awaiting(x => x.WFSearch(new WorkingFuturesRequest{ SocCode = -1})).ShouldThrow<ArgumentException>()
                     .WithMessage("SocCode cannot be less than zero. (Parameter 'socCode')");
             }
+            [Test]
+            public void When_BadRequest_Return_HttpRequestException()
+            {
+                var serviceUnderTest = LmiHelper.LmiService_RestClient(HttpClientMockFactory.Post_BadRequest_Mock().Object);
+                serviceUnderTest.Awaiting(x => x.WFSearch(LmiHelper.WfPredictSearchRequests.ValidSearchCriteria())).ShouldThrow<HttpRequestException>()
+                    .WithMessage("Response status code does not indicate success: 400 (Bad Request).");
+            }
+        
         }
 
 
@@ -69,8 +85,6 @@ namespace DFC.App.MatchSkills.Application.Test.Unit
         public void Call_SOC_Get_Value_Returned()
         {
             var result = client.Get<IEnumerable<SocSearchResults>>($"{ApiUrl}{SocSearchPath}?q=Developer").Result;
-            
-
             var socId = result.Select(x => x.Soc).FirstOrDefault();
 
             var prediction = client.Get<WorkingFuturesSearchResults>($"{ApiUrl}{WfPredictSearchPath}?soc={socId}").Result;
