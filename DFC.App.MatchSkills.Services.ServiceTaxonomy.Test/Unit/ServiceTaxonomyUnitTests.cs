@@ -94,7 +94,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             
             // ASSERT
             result.Should().NotBeNull();
-            result.Count().Should().Be(2);
+            result.Length.Should().Be(2);
 
             // also check the 'http' call was like we expected it
             var expectedUri = new Uri(url);
