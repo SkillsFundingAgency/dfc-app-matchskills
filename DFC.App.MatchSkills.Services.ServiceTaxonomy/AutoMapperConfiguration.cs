@@ -24,13 +24,13 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
     {
         public MappingProfile()
         {
-            CreateMap<STSkill, Skill>()
+            CreateMap<StSkill, Skill>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill, (SkillType)Enum.Parse(typeof(SkillType),dest.SkillType,true)))
                 ;
-            CreateMap<STOccupation, Occupation>()
+            CreateMap<StOccupation, Occupation>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Occupation))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
