@@ -23,7 +23,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
         {
             _log = log;
             _dysacApiSettings = dysacApiSettings;
-            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
+            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(_dysacApiSettings);
             _client = client;
         }
         // Edit to assessment type
