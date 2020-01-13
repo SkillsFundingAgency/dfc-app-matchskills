@@ -1,12 +1,12 @@
-﻿using DFC.Personalisation.Common.Net.RestClient;
+﻿using DFC.App.MatchSkills.Services.JobProfile.Models;
+using DFC.App.MatchSkills.Services.JobProfile.Test.Helpers;
+using DFC.Personalisation.Common.Net.RestClient;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using DFC.App.MatchSkills.Services.JobProfile.Models;
-using DFC.App.MatchSkills.Services.JobProfile.Test.Helpers;
-using FluentAssertions;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit
 {

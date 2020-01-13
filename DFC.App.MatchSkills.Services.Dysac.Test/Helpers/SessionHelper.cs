@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using DFC.App.MatchSkills.Application.Dysac.Models;
+﻿using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using System.Net.Http;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Helpers
 {

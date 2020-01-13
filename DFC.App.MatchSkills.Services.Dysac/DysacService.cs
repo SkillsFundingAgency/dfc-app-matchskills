@@ -33,10 +33,8 @@ namespace DFC.App.MatchSkills.Services.Dysac
             _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
             
         }
-        // Edit to assessment type
         public async Task<NewSessionResponse> CreateNewSession(AssessmentTypes assessmentType)
         {
-
             try
             {
                 var stubbedContent = new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Application.Json);

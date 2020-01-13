@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Moq;
+using Moq.Protected;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Moq;
-using Moq.Protected;
 
 namespace DFC.App.MatchSkills.Services.JobProfile.Test.Helpers
 {

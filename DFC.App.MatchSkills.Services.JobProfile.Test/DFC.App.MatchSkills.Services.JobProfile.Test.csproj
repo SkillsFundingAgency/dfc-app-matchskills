@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DFC.App.MatchSkills.Services.Dysac.Test\DFC.App.MatchSkills.Services.Dysac.Test.csproj" />
     <ProjectReference Include="..\DFC.App.MatchSkills.Services.JobProfile\DFC.App.MatchSkills.Services.JobProfile.csproj" />
   </ItemGroup>
 

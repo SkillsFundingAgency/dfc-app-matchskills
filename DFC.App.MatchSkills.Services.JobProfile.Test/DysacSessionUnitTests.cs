@@ -1,8 +1,8 @@
 ﻿using DFC.App.MatchSkills.Application.Dysac.Models;
-using DFC.App.MatchSkills.Services.Dysac.Test.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Net.Http;
+using DFC.App.MatchSkills.Services.Dysac.Test.Helpers;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 {
@@ -26,7 +26,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             public void If_Valid_Request_Return_Response()
             {
                 var serviceUnderTest =
-                    SessionHelper.CreateNewDysacSession(HttpClientMockFactory.Post_Successful_Mock().Object);
+                     SessionHelper.CreateNewDysacSession(HttpClientMockFactory.Post_Successful_Mock().Object);
                 var results = serviceUnderTest.CreateNewSession(AssessmentTypes.Short).Result;
                 results.SessionId.Should().Be("0fcf719b-2aea-4af4-a2ba-6e73ccd5105b");
                 results.QuestionNumber.Should().Be(0);

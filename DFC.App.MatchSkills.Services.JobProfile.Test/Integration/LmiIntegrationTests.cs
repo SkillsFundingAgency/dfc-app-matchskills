@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DFC.App.MatchSkills.Services.JobProfile.Test.Helpers;
+﻿using DFC.App.MatchSkills.Services.JobProfile.Test.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
 
