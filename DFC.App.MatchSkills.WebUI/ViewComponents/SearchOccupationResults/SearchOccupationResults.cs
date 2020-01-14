@@ -4,31 +4,41 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.WebUI.ViewModels;
 using DFC.App.MatchSkills.WebUI.ViewComponents;
 using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
+using Dfc.ProviderPortal.Packages;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Options;
+using Moq;
 
 namespace DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults
 {
     public class SearchOccupationResults : ViewComponent
     {
-        private IServiceTaxonomySearcher _serviceTaxonomy;
-        public SearchOccupationResults(IServiceTaxonomySearcher serviceTaxonomy)
+        private readonly IServiceTaxonomySearcher _serviceTaxonomy;
+        private ServiceTaxonomySettings _settings;
+
+        public SearchOccupationResults(IServiceTaxonomySearcher serviceTaxonomy,IOptions<ServiceTaxonomySettings>  settings)
         {
+            Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
+            Throw.IfNull(settings, nameof(settings));
             _serviceTaxonomy = serviceTaxonomy ?? new ServiceTaxonomyRepository();
+            _settings = settings.Value;
         }
-        public async Task<IViewComponentResult> InvokeAsync(string occupation="furniture")
+
+
+        public async Task<IViewComponentResult> InvokeAsync(string occupation=default, bool altLabels=false)
         {
             SearchOccupationResultsViewModel vm = new SearchOccupationResultsViewModel();
-            var rc = new RestClient();
             
-            var occupations =await _serviceTaxonomy.SearchOccupations<Occupation[]>("https://dev.api.nationalcareersservice.org.uk/GetAllOccupations/Execute/","8ed8640b25004e26992beb9164d95139",occupation);
-            vm.Occupations = occupations;
+            var occupations =await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}","8ed8640b25004e26992beb9164d95139",occupation,altLabels);
             
-        /*    vm.Occupations = new Occupation[]
+           // vm.Occupations = occupations;
+            
+            vm.Occupations = new Occupation[]
             {
                 new Occupation("1","Furniture 1",DateTime.Now), 
                 new Occupation("2","Furniture 2",DateTime.Now), 
@@ -43,7 +53,7 @@ namespace DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults
                 new Occupation("11","Furniture 11",DateTime.Now) ,
                 new Occupation("12","Furniture 12",DateTime.Now) 
             };
-            */
+            
             vm.Title = occupation;
             return View("~/ViewComponents/SearchOccupationResults/Default.cshtml",vm);
         }

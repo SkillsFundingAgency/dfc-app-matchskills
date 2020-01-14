@@ -2,7 +2,8 @@
 @using Microsoft.EntityFrameworkCore.Internal
 @{
     ViewData["Title"] = "Occupation Search Results";
-    var search = Context.Request.Query["search"].ToString();
+    var search = Context.Request.Query["inputSearch"].ToString()??"";
+    var altLabels = Context.Request.Query["chkAltLabels"].ToString()??"false";
 }
 
 
@@ -14,7 +15,7 @@
                 <govukHeadingH1 Text="Select your occupation" />
             </div>
 
-            @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search })
+            @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search,altLabels =false})
             <br />
             <govukButton text="Add to skills list"></govukButton>
         </div>

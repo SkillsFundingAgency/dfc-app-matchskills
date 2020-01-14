@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -13,7 +15,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
         private static RestClient _restClient;
-
+        
         public ServiceTaxonomyRepository()
         {
             _restClient = new RestClient();
@@ -23,7 +25,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             _restClient = restClient??new RestClient();
         }
         
-        static async Task<TList> GetJsonList<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
+        static async Task<TList> GetJsonListGet<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
         { 
             if (string.IsNullOrWhiteSpace(apiPath))
                 throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
@@ -36,16 +38,28 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             
         }
        
+        static async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
+        { 
+            if (string.IsNullOrWhiteSpace(apiPath))
+                throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
+
+            if (string.IsNullOrWhiteSpace(ocpApimSubscriptionKey))
+                throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
+                    "Ocp-Apim-Subscription-Key must be specified.");
+           
+            return await _restClient.Post<TList>(apiPath, postData,ocpApimSubscriptionKey);
+            
+        }
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
         {
-            var result = await GetJsonList<STSkills>(apiPath, ocpApimSubscriptionKey); 
+            var result = await GetJsonListGet<STSkills>($"{apiPath}/GetAllSkills/Execute/", ocpApimSubscriptionKey); 
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 
         
         public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey) 
         {
-            var result = await GetJsonList<STOccupations>(apiPath, ocpApimSubscriptionKey);
+            var result = await GetJsonListGet<STOccupations>($"{apiPath}/GetAllOccupations/Execute/" , ocpApimSubscriptionKey);
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
         }
 
@@ -59,13 +73,15 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             return result.Where(s => regEx.IsMatch(s.Name)).ToArray();
         }
 
-        public async Task<Occupation[]> SearchOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey, string occupation)
+        public async Task<Occupation[]> SearchOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey, string occupation,bool matchAltLabels)
         {
             if (string.IsNullOrWhiteSpace(occupation))
                 throw new ArgumentNullException(nameof(occupation), "Please provide Occupation to search");
-            var regEx = new System.Text.RegularExpressions.Regex(occupation);
-            var result = await GetAllOccupations<Occupation[]>(apiPath, ocpApimSubscriptionKey);
-            return result.Where(o => regEx.IsMatch(o.Name)).ToArray();
+            
+            var postData = new StringContent("{ \"label\": \"" + occupation + "\" }", Encoding.UTF8, MediaTypeNames.Application.Json);
+            var result = await GetJsonListPost<STOccupations>($"{apiPath}/GetOccupationsByLabel/Execute/??matchAltLabels=?{matchAltLabels}", ocpApimSubscriptionKey,postData);
+            
+            return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
         }
     }
    

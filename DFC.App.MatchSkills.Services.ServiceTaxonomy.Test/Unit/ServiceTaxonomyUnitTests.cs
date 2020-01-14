@@ -36,15 +36,12 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             result.Should().NotBeNull(); 
             result[0].Name.Should().Be("collect biological data");
 
-            // also check the 'http' call was like we expected it
-            var expectedUri = new Uri(url);
 
             handlerMock.Protected().Verify(
                 "SendAsync",
-                Times.Exactly(1), // we expected a single external request
+                Times.Once(), // we expected a single external request
                 ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Get // we expected a GET request
-                        && req.RequestUri == expectedUri // to this uri
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
@@ -66,15 +63,12 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             result.Should().NotBeNull(); 
             result[0].Name.Should().Be("renewable energy consultant");
 
-            // also check the 'http' call was like we expected it
-            var expectedUri = new Uri(url);
 
             handlerMock.Protected().Verify(
                 "SendAsync",
-                Times.Exactly(1), // we expected a single external request
+                Times.Once(), // we expected a single external request
                 ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Get // we expected a GET request
-                        && req.RequestUri == expectedUri // to this uri
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
@@ -96,15 +90,12 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             result.Should().NotBeNull();
             result.Count().Should().Be(2);
 
-            // also check the 'http' call was like we expected it
-            var expectedUri = new Uri(url);
 
             handlerMock.Protected().Verify(
                 "SendAsync",
-                Times.Exactly(1), // we expected a single external request
+                Times.Once(), // we expected a single external request
                 ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Get // we expected a GET request
-                        && req.RequestUri == expectedUri // to this uri
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
@@ -120,21 +111,18 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
             
             // ACTs
-            var result = await subjectUnderTest.SearchOccupations<Occupation[]>(url,apiKey,"renewable");
+            var result = await subjectUnderTest.SearchOccupations<Occupation[]>(url,apiKey,"renewable",false);
             
             // ASSERT
             result.Should().NotBeNull(); 
             result[0].Name.Should().Be("renewable energy consultant");
 
-            // also check the 'http' call was like we expected it
-            var expectedUri = new Uri(url);
-
+            
             handlerMock.Protected().Verify(
                 "SendAsync",
-                Times.Exactly(1), // we expected a single external request
+                Times.Once(), // we expected a single external request
                 ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Get // we expected a GET request
-                        && req.RequestUri == expectedUri // to this uri
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
