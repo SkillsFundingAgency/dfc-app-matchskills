@@ -34,11 +34,11 @@ namespace DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults
         {
             SearchOccupationResultsViewModel vm = new SearchOccupationResultsViewModel();
             
-            var occupations =await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}","8ed8640b25004e26992beb9164d95139",occupation,altLabels);
+            var occupations =await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",_settings.ApiKey,occupation,altLabels);
             
-           // vm.Occupations = occupations;
+            vm.Occupations = occupations;
             
-            vm.Occupations = new Occupation[]
+            /*vm.Occupations = new Occupation[]
             {
                 new Occupation("1","Furniture 1",DateTime.Now), 
                 new Occupation("2","Furniture 2",DateTime.Now), 
@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults
                 new Occupation("11","Furniture 11",DateTime.Now) ,
                 new Occupation("12","Furniture 12",DateTime.Now) 
             };
-            
+            */
             vm.Title = occupation;
             return View("~/ViewComponents/SearchOccupationResults/Default.cshtml",vm);
         }
