@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.WebUI.ViewModels;
+﻿using DFC.App.MatchSkills.WebUI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.WebUI.Controllers
@@ -44,7 +40,7 @@ namespace DFC.App.MatchSkills.WebUI.Controllers
 
         [HttpGet]
         [Route("/body/{**path}")]
-        public async Task<IActionResult> Body(string path)
+        public IActionResult Body(string path)
         {
             return View(ReturnPath(path, "body"));
         }
