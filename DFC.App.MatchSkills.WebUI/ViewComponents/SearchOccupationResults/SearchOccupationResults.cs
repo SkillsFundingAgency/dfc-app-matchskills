@@ -13,7 +13,7 @@ namespace DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults
     public class SearchOccupationResults : ViewComponent
     {
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
-        private ServiceTaxonomySettings _settings;
+        private readonly ServiceTaxonomySettings _settings;
 
         public SearchOccupationResults(IServiceTaxonomySearcher serviceTaxonomy,IOptions<ServiceTaxonomySettings>  settings)
         {
@@ -26,7 +26,7 @@ namespace DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults
 
         public async Task<IViewComponentResult> InvokeAsync(string occupation=default, bool altLabels=false)
         {
-            SearchOccupationResultsViewModel vm = new SearchOccupationResultsViewModel();
+            var vm = new SearchOccupationResultsViewModel();
             
             var occupations =await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",_settings.ApiKey,occupation,altLabels);
             
