@@ -15,7 +15,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
     {
         private ServiceTaxonomyRepository _subjectUnderTest;
         private static RestClient _restClient = new RestClient();
-        private ServiceTaxonomySettings _settings;
+        private ServiceTaxonomySettings _settings =  new ServiceTaxonomySettings();
 
        
         [SetUp]
