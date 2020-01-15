@@ -1,14 +1,13 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using DFC.Personalisation.Common.Net.RestClient;
+﻿using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 {

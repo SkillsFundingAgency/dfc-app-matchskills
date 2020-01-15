@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy;
+﻿using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
-using DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults;
-using DFC.App.MatchSkills.WebUI.ViewModels;
 using DFC.Personalisation.Domain.Models;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
 {
