@@ -87,7 +87,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 throw new ArgumentNullException(nameof(occupation), "Please provide Occupation to search");
             
             var postData = new StringContent($"{{ \"label\": \"{occupation.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
-            var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}/GetOccupationsByLabel/Execute/??matchAltLabels=?{matchAltLabels}", ocpApimSubscriptionKey,postData);
+            var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}GetOccupationsByLabel/Execute/?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey,postData);
             
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
         }

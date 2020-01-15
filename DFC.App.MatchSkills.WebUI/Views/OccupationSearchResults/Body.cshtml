@@ -13,8 +13,7 @@
             <govukHeadingH1 Text="Select your occupation" />
         </div>
 
-        var altLabels = Context.Request.Query["chkAltLabels"].ToString()??"false";
-        @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search, altLabels = Convert.ToBoolean(altLabels)})
+        @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search, altLabels = @altLabels=="on"})
         <br />
         <govukButton text="Select"></govukButton>
     </div>
