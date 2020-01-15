@@ -1,22 +1,22 @@
 ﻿@{
     ViewData["Title"] = "Occupation Search Results";
-    var search = Context.Request.Query["inputSearch"].ToString()??"";
-    var altLabels = Context.Request.Query["chkAltLabels"].ToString()??"false";
+    String search = Context.Request.Query["EnterJobInputSearch"].ToString()??"";
+    String altLabels = Context.Request.Query["EnterJobChkAltLabels"].ToString()??"false";
 }
 
 
 <main class="govuk-main-wrapper " id="main-content" role="main">
 
-    <div class="govuk-grid-row margin-reset">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="results">
-                <govukHeadingH1 Text="Select your occupation" />
-            </div>
-
-            var altLabels = Context.Request.Query["chkAltLabels"].ToString()??"false";
-            @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search, altLabels = Convert.ToBoolean(altLabels)})
-            <br />
-            <govukButton text="Select"></govukButton>
+<div class="govuk-grid-row margin-reset">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="results">
+            <govukHeadingH1 Text="Select your occupation" />
         </div>
+
+        var altLabels = Context.Request.Query["chkAltLabels"].ToString()??"false";
+        @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search, altLabels = Convert.ToBoolean(altLabels)})
+        <br />
+        <govukButton text="Select"></govukButton>
     </div>
+</div>
 </main>
