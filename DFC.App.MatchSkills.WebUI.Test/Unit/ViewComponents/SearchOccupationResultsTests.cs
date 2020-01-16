@@ -5,12 +5,17 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Configuration;
+using DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults;
+using FluentAssertions;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
 {
     class SearchOccupationResultsTests
     {
-        private ServiceTaxonomySettings _settings;
+        private IOptions<ServiceTaxonomySettings> _settings;
+        
 
         [SetUp]
         public void Init()
@@ -18,19 +23,17 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
-            
-            _settings.ApiUrl = config.GetSection("ServiceTaxonomySettings").GetSection("ApiUrl").Value;
-            _settings.ApiKey = config.GetSection("ServiceTaxonomySettings").GetSection("ApiKey").Value;  
-        
+            _settings = Options.Create(config.GetSection("ServiceTaxonomySettings").Get<ServiceTaxonomySettings>());
+
         }
 
 
         [Test]
         public void SearchOccupationResultsTest() {
-
-            // Arrange
-            var stMock = new Mock<IServiceTaxonomySearcher>();
-            var occupations = new Occupation[]
+       
+        // Arrange
+        var stMock = new Mock<IServiceTaxonomySearcher>();
+        var occupations = new Occupation[]
             {
                 new Occupation("1", "Furniture 1", DateTime.Now),
                 new Occupation("2", "Furniture 2", DateTime.Now),
@@ -49,17 +52,17 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
                 .Setup( st =>st.SearchOccupations<Occupation[]>("", "", "",false))
                 .ReturnsAsync(occupations);
 
-          /*  var viewComponent = new SearchOccupationResults(stMock.Object,_settings);
+             
+            var viewComponent = new SearchOccupationResults(stMock.Object, _settings);
           
 
             //Act
-            var results = viewComponent.InvokeAsync("furniture");
+            var results = viewComponent.InvokeAsync("furniture",true);
             
 
             //Assert
             results.Should().NotBeNull();
-            */
-
+            
         } 
     }
 }

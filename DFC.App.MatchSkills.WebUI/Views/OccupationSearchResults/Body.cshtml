@@ -15,7 +15,7 @@
 
         @await Component.InvokeAsync(nameof(DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults), new { occupation = @search, altLabels = @altLabels=="on"})
         <br />
-        <govukButton text="Select"></govukButton>
+        <govukButton Id="JobSearchResultsBtnSelecOccupation" Text="Select"></govukButton>
     </div>
 </div>
 </main>

@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 {
+    [TestFixture]
     class ServiceTaxonomyUnitTests
     {
-        [TestCase("https://dev.api.nationalcareersservice.org.uk/GetAllSkills/Execute/","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
         public async Task When_MockServiceGetSkills_Then_ShouldReturnSkillsObject(string url,string apiKey)
         {
             // ARRANGE
@@ -41,7 +42,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
 
-        [TestCase("https://dev.api.nationalcareersservice.org.uk/GetAllOccupations/Execute/","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
         public async Task When_MockServiceGetOccupations_Then_ShouldReturnOccupationsObject(string url,string apiKey)
         {
             // ARRANGE
@@ -68,7 +69,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
         
-        [TestCase("https://dev.api.nationalcareersservice.org.uk/GetAllSkills/Execute/","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
         public async Task When_MockServiceSearchSkills_Then_ShouldReturnFilteredSkillsList(string url,string apiKey)
         {
             // ARRANGE
@@ -95,11 +96,14 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
 
-        [TestCase("https://dev.api.nationalcareersservice.org.uk/GetAllOccupations/Execute/","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
         public async Task When_MockServiceSearchOccupations_Then_ShouldReturnOccupationsList(string url,string apiKey)
         {
-            // ARRANGE
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"},{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable paper consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"},{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"water consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";
+
+        // ARRANGE
+        const string skillsJson = "{\"occupations\": [{\"Id\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"Name\": \"renewable energy consultant\",\"AlternativeNames\": [\"alt 1\"],\"LastModified\": \"03-12-2019 00:00:01\"}," +
+                                                     "{\"Id\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"Name\": \"renewable paper consultant\",\"AlternativeNames\": [\"alt 1\"],\"LastModified\": \"03-12-2019 00:00:01\"}," +
+                                                     "{\"Id\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"Name\": \"water consultant\",\"AlternativeNames\": [\"alt 1\"],\"LastModified\": \"03-12-2019 00:00:01\"}]}";
             var handlerMock = GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
@@ -116,7 +120,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 "SendAsync",
                 Times.Once(), // we expected a single external request
                 ItExpr.Is<HttpRequestMessage>(req =>
-                        req.Method == HttpMethod.Get // we expected a GET request
+                        req.Method == HttpMethod.Post // we expected a GET request
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
