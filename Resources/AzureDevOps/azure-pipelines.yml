@@ -38,3 +38,4 @@ stages:
         BuildConfiguration: 'release'
         TestSuffix: Test
         PublishWebApp: true
+        DotNetCoreVersion: '3.1.100'
