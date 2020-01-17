@@ -12,11 +12,11 @@ using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
 {
+    [TestFixture]
     class SearchOccupationResultsTests
     {
         private IOptions<ServiceTaxonomySettings> _settings;
         
-
         [SetUp]
         public void Init()
         {

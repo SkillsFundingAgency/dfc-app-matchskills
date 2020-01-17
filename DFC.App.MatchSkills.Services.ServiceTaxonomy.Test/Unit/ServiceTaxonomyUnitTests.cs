@@ -98,12 +98,9 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 
         [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
         public async Task When_MockServiceSearchOccupations_Then_ShouldReturnOccupationsList(string url,string apiKey)
-        {
-
-        // ARRANGE
-        const string skillsJson = "{\"occupations\": [{\"Id\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"Name\": \"renewable energy consultant\",\"AlternativeNames\": [\"alt 1\"],\"LastModified\": \"03-12-2019 00:00:01\"}," +
-                                                     "{\"Id\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"Name\": \"renewable paper consultant\",\"AlternativeNames\": [\"alt 1\"],\"LastModified\": \"03-12-2019 00:00:01\"}," +
-                                                     "{\"Id\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"Name\": \"water consultant\",\"AlternativeNames\": [\"alt 1\"],\"LastModified\": \"03-12-2019 00:00:01\"}]}";
+        { 
+            // ARRANGE
+            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
             var handlerMock = GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);

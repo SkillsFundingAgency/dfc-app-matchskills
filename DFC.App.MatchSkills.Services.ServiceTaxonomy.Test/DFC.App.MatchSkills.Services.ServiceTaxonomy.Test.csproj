@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <ProjectGuid>D1E366A5-C6C3-419E-A9E2-3575AAF21F03</ProjectGuid>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -41,13 +41,16 @@
     <None Update="appsettings.Debug.json">
       <IsTransformFile>true</IsTransformFile>
       <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.json">
       <TransformOnBuild>true</TransformOnBuild>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.Release.json">
       <IsTransformFile>true</IsTransformFile>
       <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
-    
+    [TestFixture]
     class ServiceTaxonomyIntegration
     {
         private ServiceTaxonomyRepository _subjectUnderTest;
