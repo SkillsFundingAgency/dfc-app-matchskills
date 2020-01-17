@@ -10,6 +10,12 @@
         },
         "SharedAppServicePlanResourceGroup": {
             "value": "dfc-dev-pers-shared-rg"
+        },
+        "serviceTaxonomyApiUrl": {
+            "value": "https://apimInstance/servicetaxonomy"
+        },
+        "serviceTaxonomyApiKey": {
+            "value": "not-a-real-apim-key"
         }
     }
 }
