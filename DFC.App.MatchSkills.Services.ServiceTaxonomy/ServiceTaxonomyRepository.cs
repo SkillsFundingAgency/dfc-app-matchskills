@@ -8,21 +8,36 @@ using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
+using Newtonsoft.Json.Serialization;
 
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
     public class StSkills
     {
-        public StSkill[] Skills;
+         
+        private StSkill[] _skills;
+
+        public StSkill[] Skills
+        {
+            get => _skills;
+            set => _skills = value;
+        }
     }
+
     public class StOccupations
     {
-        public StOccupation[] Occupations;
+        private StOccupation[] _occupations;
+
+        public StOccupation[] Occupations
+        {
+            get => _occupations;
+            set => _occupations = value;
+        }
     }
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
-        private static RestClient _restClient;
+        private  RestClient _restClient;
         
         public ServiceTaxonomyRepository()
         {
@@ -34,7 +49,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             _restClient = restClient??new RestClient();
         }
         
-        static async Task<TList> GetJsonListGet<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
+        private async Task<TList> GetJsonListGet<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
         { 
             if (string.IsNullOrWhiteSpace(apiPath))
                 throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
@@ -47,7 +62,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             
         }
        
-        static async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
+        private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
         { 
             if (string.IsNullOrWhiteSpace(apiPath))
                 throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
