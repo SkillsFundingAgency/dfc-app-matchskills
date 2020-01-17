@@ -10,6 +10,12 @@
         },
         "SharedAppServicePlanResourceGroup": {
             "value": "__persSharedResourceGroup__"
+        },
+        "serviceTaxonomyApiUrl": {
+            "value": "__serviceTaxonomyApiUrl__"
+        },
+        "serviceTaxonomyApiKey": {
+            "value": "__ApimServiceTaxonomyKey__"
         }
     }
 }
