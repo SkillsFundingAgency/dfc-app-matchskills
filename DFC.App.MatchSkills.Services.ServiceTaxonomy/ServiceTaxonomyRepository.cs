@@ -37,33 +37,12 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         
         private async Task<TList> GetJsonListGet<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
         { 
-            if (string.IsNullOrWhiteSpace(apiPath))
-                throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
-
-            if (string.IsNullOrWhiteSpace(ocpApimSubscriptionKey))
-                throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
-                    "Ocp-Apim-Subscription-Key must be specified.");
-
-            return await GetJsonListGetInternal<TList>(apiPath,ocpApimSubscriptionKey);
-            
-        }
-
-        private async Task<TList> GetJsonListGetInternal<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
-        {
             return await _restClient.GetAsync<TList>(apiPath,ocpApimSubscriptionKey);
         }
-       
-        private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
-        { 
-            if (string.IsNullOrWhiteSpace(apiPath))
-                throw new ArgumentNullException(nameof(apiPath), "ApiPath must be specified.");
 
-            if (string.IsNullOrWhiteSpace(ocpApimSubscriptionKey))
-                throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
-                    "Ocp-Apim-Subscription-Key must be specified.");
-           
+        private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
+        {
             return await _restClient.PostAsync<TList>(apiPath, postData,ocpApimSubscriptionKey);
-            
         }
         
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
