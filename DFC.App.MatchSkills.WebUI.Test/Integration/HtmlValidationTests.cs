@@ -53,6 +53,9 @@ namespace DFC.App.MatchSkills.WebUI.Test.Integration
         [TestCaseSource(nameof(HtmlValidationTestCases))]
         public async Task WhenSegmentRequested_ThenTheReturnedHTMLShouldPassW3Validation(HtmlValidationTestModel testModel)
         {
+
+            TestContext.Out.Write($"View:{testModel.View}, Segments: {testModel.Segment} : Html Validation Started \n");
+
             var resp = await _client.GetAsync($"/{testModel.Segment}/{testModel.View}");
             var responseString = await resp.Content.ReadAsStringAsync();
 
@@ -76,14 +79,16 @@ namespace DFC.App.MatchSkills.WebUI.Test.Integration
 
             if (errors.Any())
             {
-                var because = $"View:{testModel.View}, Segments: {testModel.Segment} has the following errors";
+                var because = $"View:{testModel.View}, Segments: {testModel.Segment} has the following errors\n";
                 because = errors.Aggregate(because, (current, error) => current + $"\n {error.Message}, on component {error.Extract}");
                 errors.Any().Should().BeFalse(because);
             }
             else
             {
-                TestContext.Out.Write($"View:{testModel.View}, Segments: {testModel.Segment} : Html Validation Passed");
+                TestContext.Out.Write($"View:{testModel.View}, Segments: {testModel.Segment} : Html Validation Passed\n");
             }
+
+            TestContext.Out.Write($"View:{testModel.View}, Segments: {testModel.Segment} : Html Validation Finished");
 
         }
     }
