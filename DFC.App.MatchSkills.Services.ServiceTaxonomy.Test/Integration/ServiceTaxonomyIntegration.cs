@@ -52,14 +52,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
             result.Should().NotBeNull();
         }
 
-        [Test]
-        public void When_GetAllSkillsAndMissingKey_Then_ShouldReturnException()
-        {
-            
-            // ASSERT
-            var ex = Assert.ThrowsAsync<ArgumentNullException>( ()=>  _subjectUnderTest.GetAllSkills<Skill[]>(_settings.ApiUrl,""));
-            Assert.That(ex.Message,Does.Contain("Ocp-Apim-Subscription-Key must be specified"));
-        }
 
         [Test]
         public async Task When_SearchSkills_Then_ShouldReturnFilteredSkillsList()
