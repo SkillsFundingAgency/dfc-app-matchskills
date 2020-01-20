@@ -14,24 +14,12 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
     public class StSkills
     {
-        private StSkill[] _skills;
-
-        public StSkill[] Skills
-        {
-            get => _skills;
-            set => _skills = value;
-        }
+        public StSkill[] Skills { get; set; }
     }
 
     public class StOccupations
     {
-        private StOccupation[] _occupations;
-
-        public StOccupation[] Occupations
-        {
-            get => _occupations;
-            set => _occupations = value;
-        }
+        public StOccupation[] Occupations { get; set; }
     }
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
