@@ -12,6 +12,12 @@
         "sharedAppServicePlanResourceGroup": {
             "type": "string",
             "defaultValue": ""
+        },
+        "serviceTaxonomyApiUrl": {
+            "type": "string"
+        },
+        "serviceTaxonomyApiKey": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -76,6 +82,22 @@
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                 "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "ServiceTaxonomySettings__ApiUrl",
+                                "value": "[parameters('serviceTaxonomyApiUrl')]"
+                            },
+                            {
+                                "name": "ServiceTaxonomySettings__ApiKey",
+                                "value": "[parameters('serviceTaxonomyApiKey')]"
+                            },
+                            {
+                                "name": "ServiceTaxonomySettings__SearchOccupationInAltLabels",
+                                "value": "true"
+                            },
+                            {
+                                "name": "ServiceTaxonomySettings__SearchSkillInAltLabels",
+                                "value": "true"
                             }
                         ]
                     }
