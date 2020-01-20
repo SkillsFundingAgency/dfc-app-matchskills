@@ -1,14 +1,13 @@
-﻿using System;
+﻿using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.Personalisation.Common.Net.RestClient;
+using DFC.Personalisation.Domain.Models;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
-using DFC.Personalisation.Common.Net.RestClient;
-using DFC.Personalisation.Domain.Models;
-using Newtonsoft.Json.Serialization;
 
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
@@ -36,7 +35,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
     }
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
-        private  RestClient _restClient;
+        private readonly RestClient _restClient;
         
         public ServiceTaxonomyRepository()
         {
@@ -57,8 +56,13 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
                     "Ocp-Apim-Subscription-Key must be specified.");
 
-            return await _restClient.GetAsync<TList>(apiPath,ocpApimSubscriptionKey);
+            return await GetJsonListGetInternal<TList>(apiPath,ocpApimSubscriptionKey);
             
+        }
+
+        private async Task<TList> GetJsonListGetInternal<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
+        {
+            return await _restClient.GetAsync<TList>(apiPath,ocpApimSubscriptionKey);
         }
        
         private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
@@ -88,18 +92,17 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
         public async Task<Skill[]> SearchSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey, string skill)
         {
-            if (string.IsNullOrWhiteSpace((skill)))
-                throw new ArgumentNullException(nameof(skill), "Please provide Skill to search");
+            skill ??= "";
             var regEx = new System.Text.RegularExpressions.Regex(skill);
             var result = await GetAllSkills<Skill[]>(apiPath, ocpApimSubscriptionKey);
             return result.Where(s => regEx.IsMatch(s.Name)).ToArray();
         }
 
+
         public async Task<Occupation[]> SearchOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey, string occupation,bool matchAltLabels)
         {
-            if (string.IsNullOrWhiteSpace(occupation))
-                throw new ArgumentNullException(nameof(occupation), "Please provide Occupation to search");
-            
+
+            occupation ??= ""; 
             var postData = new StringContent($"{{ \"label\": \"{occupation.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
             var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}/GetOccupationsByLabel/Execute/?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey,postData);
             
