@@ -1,4 +1,5 @@
-﻿using DFC.Personalisation.Common.Net.RestClient;
+﻿using System;
+using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Moq;
@@ -6,15 +7,18 @@ using Moq.Protected;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 {
     [TestFixture]
     class ServiceTaxonomyUnitTests
     {
-        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
         public async Task When_MockServiceGetSkills_Then_ShouldReturnSkillsObject(string url,string apiKey)
         {
             // ARRANGE
@@ -42,7 +46,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
 
-        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
         public async Task When_MockServiceGetOccupations_Then_ShouldReturnOccupationsObject(string url,string apiKey)
         {
             // ARRANGE
@@ -69,7 +73,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
         
-        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
         public async Task When_MockServiceSearchSkills_Then_ShouldReturnFilteredSkillsList(string url,string apiKey)
         {
             // ARRANGE
@@ -96,7 +100,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
 
-        [TestCase("https://dev.api.nationalcareersservice.org.uk","8ed8640b25004e26992beb9164d95139")]
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
         public async Task When_MockServiceSearchOccupations_Then_ShouldReturnOccupationsList(string url,string apiKey)
         { 
             // ARRANGE
@@ -123,6 +127,83 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
 
+        [Test]
+        public void WhenStSkillsPropertyUpdated_Then_ShouldStoreCorrectly()
+        {
+            var sut = new StSkills()
+            {
+                Skills = new []
+                {
+                    new StSkill
+                    {
+                        Skill = "skill1", AlternativeLabels = new[] {"skill1alt", "skill1alt2"}, SkillType = "type",
+                        Uri = "uri"
+                    },
+                    new StSkill
+                    {
+                        Skill = "skill1", AlternativeLabels = new[] {"skill2alt", "skill2alt2"}, SkillType = "type",
+                        Uri = "uri"
+                    }
+                }
+            };
+
+            sut.Skills.Length.Should().Be(2);
+
+        }
+
+        [Test]
+        public void WhenStOccupationsPropertyUpdated_Then_ShouldStoreCorrectly()
+        {
+            var sut = new StOccupations()
+            {
+                Occupations = new StOccupation[]
+                {
+                    new StOccupation
+                    {
+                        Occupation = "Occ1", AlternativeLabels = new[] {"Alt1,Alt2"}, Uri = "Uri", LastModified = DateTime.Now
+                    },
+                    new StOccupation
+                    {
+                            Occupation = "Occ2",AlternativeLabels =new []{ "Alt1,Alt2"},Uri = "Uri",LastModified = DateTime.Now
+                    }
+                }
+            };
+            sut.Occupations.Length.Should().Be(2);
+        }
+
+        [TestCase("https://dev.api.nationalcareersservice.org.uk")]
+        public async Task When_MockServiceGet_Then_ShouldReturnObject(string url)
+        {
+            //ARRANGE
+            var handlerMock = GetMockMessageHandler();
+            var _subjectUnderTest = new RestClient(handlerMock.Object);
+            
+            // ACT
+            var result = await _subjectUnderTest.GetAsync<MockResult>(url);
+
+            // ASSERT
+            result.Should().NotBeNull(); // this is fluent assertions here...
+            result.Id.Should().Be(1);
+
+        }
+
+        [TestCase("https://dev.api.nationalcareersservice.org.uk")]
+        public async Task When_MockServicePost_Then_ShouldReturnObject(string url)
+        {
+            //ARRANGE
+            var handlerMock = GetMockMessageHandler();
+            var _subjectUnderTest = new RestClient(handlerMock.Object);
+            var postData = new StringContent($"{{ \"label\": \"furniture\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
+            
+            // ACT
+            var result = await _subjectUnderTest.PostAsync<MockResult>(url,postData);
+
+            // ASSERT
+            result.Should().NotBeNull(); // this is fluent assertions here...
+            result.Id.Should().Be(1);
+
+        }
+
 
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
         {
@@ -144,6 +225,11 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 })
                 .Verifiable();
             return handlerMock;
+        }
+        class MockResult
+        {
+            public int Id { get; set; }
+            public string Value { get; set; }
         }
 
     }
