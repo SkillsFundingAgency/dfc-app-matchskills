@@ -1,5 +1,4 @@
-﻿using DFC.App.MatchSkills.WebUI.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.WebUI.Controllers
 {
@@ -9,12 +8,7 @@ namespace DFC.App.MatchSkills.WebUI.Controllers
         [Route("/head/{**path}")]
         public IActionResult Head(string path)
         {
-            var model = new HeadViewModel()
-            {
-                CssLink = "https://dev-cdn.nationalcareersservice.org.uk/gds_service_toolkit/css/dysac.min.css",
-                Title = "Test"
-            };
-            return View(ReturnPath(path, "Head"), model);
+            return View(ReturnPath(path, "Head"));
         }
 
         [HttpGet]
