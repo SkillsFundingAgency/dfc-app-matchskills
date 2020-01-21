@@ -171,7 +171,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             sut.Occupations.Length.Should().Be(2);
         }
 
-       
         [TestCase("https://dev.api.nationalcareersservice.org.uk")]
         public async Task When_MockServiceGet_Then_ShouldReturnObject(string url)
         {
@@ -203,6 +202,29 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             result.Should().NotBeNull(); // this is fluent assertions here...
             result.Id.Should().Be(1);
 
+        }
+
+        [Test]
+        public async Task When_MockNewServiceTaxonomyObject_Then_ShouldCrerateObject(string url)
+        {
+            //ARRANGE
+            var sut = new ServiceTaxonomyRepository();
+            
+            // ASSERT
+            sut.Should().NotBeNull(); // this is fluent assertions here...
+            
+        }
+
+        [Test]
+        public async Task When_MockNewServiceTaxonomyObjectWithRestClient_Then_ShouldCrerateObject(string url)
+        {
+            //ARRANGE
+            var restClient = new RestClient();
+            var sut = new ServiceTaxonomyRepository(restClient);
+            
+            // ASSERT
+            sut.Should().NotBeNull(); // this is fluent assertions here...
+            
         }
 
 
