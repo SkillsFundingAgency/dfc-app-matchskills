@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.WebUI.csproj" />
+    <ProjectReference Include="..\DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.csproj" />
   </ItemGroup>
 
 </Project>

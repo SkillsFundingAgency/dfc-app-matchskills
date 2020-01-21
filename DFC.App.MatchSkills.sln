@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{8131A096-F5A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BF0DFE10-D2E3-4EE7-94E6-3CF9D6659794}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.WebUI", "DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.WebUI.csproj", "{31145A33-689B-48B4-BC2F-2CCD1FC191D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills", "DFC.App.MatchSkills.WebUI\DFC.App.MatchSkills.csproj", "{31145A33-689B-48B4-BC2F-2CCD1FC191D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.WebUI.Test", "DFC.App.MatchSkills.WebUI.Test\DFC.App.MatchSkills.WebUI.Test.csproj", "{8FEF91F3-D8BE-4606-A9DE-4AC03466C0F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Test", "DFC.App.MatchSkills.WebUI.Test\DFC.App.MatchSkills.Test.csproj", "{8FEF91F3-D8BE-4606-A9DE-4AC03466C0F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFC.App.MatchSkills.Application", "DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj", "{0255C068-3F41-47B4-8D23-20A3851D302D}"
 EndProject
