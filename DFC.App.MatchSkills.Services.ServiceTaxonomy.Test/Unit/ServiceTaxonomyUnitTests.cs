@@ -156,7 +156,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         {
             var sut = new StOccupations()
             {
-                Occupations = new StOccupation[]
+                Occupations = new []
                 {
                     new StOccupation
                     {
@@ -176,12 +176,13 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         {
             var sut = new StSkills()
             {
-                Skills = new StSkill[]
+                Skills = new []
                 {
                     new StSkill
                     {
                         Skill = "Skill1", SkillType = "type"
-                    }                }
+                    }
+                }
             };
             sut.Skills.Length.Should().Be(1);
         }

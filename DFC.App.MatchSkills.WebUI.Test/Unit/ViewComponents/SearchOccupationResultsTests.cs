@@ -78,6 +78,7 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
                     Occupation = "Furniture1",
                     AlternativeLabels = new[] {"alt1", "alt2"},
                     Uri = "Uri",
+                    LastModified = DateTime.Now,
                     Matches = new StOccupationSearchResult.Matches()
                     {
                         Occupation = new[] {"Furniture2", "Furniture3"},
