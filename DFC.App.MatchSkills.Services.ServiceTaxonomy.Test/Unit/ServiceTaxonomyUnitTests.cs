@@ -205,7 +205,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         }
 
         [Test]
-        public async Task When_MockNewServiceTaxonomyObject_Then_ShouldCrerateObject(string url)
+        public async Task When_MockNewServiceTaxonomyObject_Then_ShouldCrerateObject()
         {
             //ARRANGE
             var sut = new ServiceTaxonomyRepository();
@@ -216,7 +216,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         }
 
         [Test]
-        public async Task When_MockNewServiceTaxonomyObjectWithRestClient_Then_ShouldCrerateObject(string url)
+        public async Task When_MockNewServiceTaxonomyObjectWithRestClient_Then_ShouldCrerateObject()
         {
             //ARRANGE
             var restClient = new RestClient();
