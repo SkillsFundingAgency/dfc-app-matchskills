@@ -2,7 +2,7 @@
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
 {
-    class StOccupationSearchResult
+    public class StOccupationSearchResult
     {
 
         public class OccupationSearchResult

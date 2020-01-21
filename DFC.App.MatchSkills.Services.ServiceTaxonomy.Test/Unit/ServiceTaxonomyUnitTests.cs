@@ -171,6 +171,21 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             sut.Occupations.Length.Should().Be(2);
         }
 
+        [Test]
+        public void WhenStSkillsPropertyUpdated_Then_ShouldStoreCorrectly()
+        {
+            var sut = new StSkills()
+            {
+                Skills = new StSkill[]
+                {
+                    new StSkill
+                    {
+                        Skill = "Skill1", SkillType = "type"
+                    }                }
+            };
+            sut.Skills.Length.Should().Be(1);
+        }
+
         [TestCase("https://dev.api.nationalcareersservice.org.uk")]
         public async Task When_MockServiceGet_Then_ShouldReturnObject(string url)
         {

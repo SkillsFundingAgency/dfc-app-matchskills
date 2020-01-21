@@ -9,6 +9,7 @@ using System.Configuration;
 using DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
 {
@@ -63,6 +64,32 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
             //Assert
             results.Should().NotBeNull();
             
-        } 
+        }
+
+
+        [Test]
+        public void WhenStOccupationSearchResultPropertiesUpdated_Then_ShouldStoreCorrectly()
+        {
+            var sut = new StOccupationSearchResult.OccupationSearchResult();
+            sut.Occupations = new[]
+            {
+                new StOccupationSearchResult.StsOccupation
+                {
+                    Occupation = "Furniture1",
+                    AlternativeLabels = new[] {"alt1", "alt2"},
+                    Uri = "Uri",
+                    Matches = new StOccupationSearchResult.Matches()
+                    {
+                        Occupation = new[] {"Furniture2", "Furniture3"},
+                        AlternativeLabels = new[] {"Alt1", "Alt2"}
+                    }
+                }
+            };
+        
+            sut.Occupations.Length.Should().Be(1);
+
+        }
+
+
     }
 }
