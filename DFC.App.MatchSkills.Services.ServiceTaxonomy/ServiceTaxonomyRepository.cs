@@ -16,7 +16,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
     {
         public StSkill[] Skills { get; set; }
     }
-
     public class StOccupations
     {
         public StOccupation[] Occupations { get; set; }
