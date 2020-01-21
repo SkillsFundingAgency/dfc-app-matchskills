@@ -1,15 +1,13 @@
 ﻿using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults;
 using DFC.Personalisation.Domain.Models;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Configuration;
-using DFC.App.MatchSkills.WebUI.ViewComponents.SearchOccupationResults;
-using FluentAssertions;
-using Microsoft.Extensions.Options;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.WebUI.Test.Unit.ViewComponents
 {
