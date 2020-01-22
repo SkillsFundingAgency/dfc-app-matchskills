@@ -11,7 +11,19 @@ namespace DFC.App.MatchSkills.Test.Unit.Views
     {
         private static IEnumerable<string> ActionElements
         {
-            get { return new[] { "govukButton" }; }
+            get { return new[]
+            {
+                "govukButton",
+                "govukStartButton",
+                "govukSecondaryButton",
+                "govukWarningButton",
+                "govukButtonLink",
+                "govukStartButtonLink",
+                "govukBackLink",
+                "govukAutoComplete",
+                "govukRadioButton",
+                "govukCheckbox"
+            }; }
         }
 
         private static string ApplicationViewsPath
