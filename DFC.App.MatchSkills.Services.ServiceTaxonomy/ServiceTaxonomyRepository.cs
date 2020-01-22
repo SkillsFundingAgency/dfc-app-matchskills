@@ -30,7 +30,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 throw new ArgumentNullException(nameof(ocpApimSubscriptionKey),
                     "Ocp-Apim-Subscription-Key must be specified.");
 
-            return await _restClient.Get<TList>(apiPath,ocpApimSubscriptionKey);
+            return await _restClient.GetAsync<TList>(apiPath,ocpApimSubscriptionKey);
             
         }
        

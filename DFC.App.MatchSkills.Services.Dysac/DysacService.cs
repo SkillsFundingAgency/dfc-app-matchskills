@@ -32,7 +32,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
                 var stubbedContent = new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Application.Json);
                 SetDssCorrelationId();
 
-                return await _client.Post<NewSessionResponse>(_getCreateDysacSessionUri.AbsoluteUri + assessmentType.ToLower(), stubbedContent);
+                return await _client.PostAsync<NewSessionResponse>(_getCreateDysacSessionUri.AbsoluteUri + assessmentType.ToLower(), stubbedContent);
             }
             catch (HttpRequestException hre)
             {
