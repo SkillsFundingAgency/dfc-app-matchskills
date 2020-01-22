@@ -45,7 +45,7 @@
     </None>
     <None Update="appsettings.json">
       <TransformOnBuild>true</TransformOnBuild>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.Release.json">
       <IsTransformFile>true</IsTransformFile>
