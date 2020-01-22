@@ -11,41 +11,31 @@
                 "PageRegion": 1,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/head/{0}",
                 "HealthCheckRequired": false,
-                "OfflineHtml": null,
-                "IsHealthy": true,
-                "IsOnline": true
+                "OfflineHtml": null
             },
             {
                 "PageRegion": 2,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/breadcrumb/{0}",
                 "HealthCheckRequired": false,
-                "OfflineHtml": null,
-                "IsHealthy": true,
-                "IsOnline": true
+                "OfflineHtml": null
             },
             {
                 "PageRegion": 3,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/bodytop/{0}",
                 "HealthCheckRequired": true,
-                "OfflineHtml": "<H3>Service Unavailable</H3>",
-                "IsHealthy": true,
-                "IsOnline": true
+                "OfflineHtml": "<H3>Service Unavailable</H3>"
             },
             {
                 "PageRegion": 4,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/body/{0}",
                 "HealthCheckRequired": true,
-                "OfflineHtml": "<H3>Service Unavailable</H3>",
-                "IsHealthy": true,
-                "IsOnline": true
+                "OfflineHtml": "<H3>Service Unavailable</H3>"
             },
             {
                 "PageRegion": 5,
                 "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/sidebarright/{0}",
                 "HealthCheckRequired": true,
-                "OfflineHtml": "<H3>Service Unavailable</H3>",
-                "IsHealthy": true,
-                "IsOnline": true
+                "OfflineHtml": "<H3>Service Unavailable</H3>"
             }
         ]
     }
