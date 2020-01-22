@@ -1,12 +1,10 @@
-﻿using DFC.Personalisation.Domain.Models;
+﻿using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.Personalisation.Common.Net.RestClient;
+using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
-using System;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
-using DFC.Personalisation.Common.Net.RestClient;
-using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
