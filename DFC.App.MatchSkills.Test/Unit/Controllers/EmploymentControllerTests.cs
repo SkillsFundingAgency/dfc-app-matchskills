@@ -1,10 +1,11 @@
-﻿using DFC.App.MatchSkills.WebUI.Controllers;
-using DFC.App.MatchSkills.WebUI.ViewModels;
+﻿using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.ViewModels;
+using DFC.App.MatchSkills.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
-namespace DFC.App.MatchSkills.WebUI.Test.Unit.Controllers
+namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
     public class EmploymentControllerTests
     {

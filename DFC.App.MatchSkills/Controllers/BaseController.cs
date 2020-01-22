@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DFC.App.MatchSkills.WebUI.Controllers
+namespace DFC.App.MatchSkills.Controllers
 {
     public abstract class BaseController : Controller
     {

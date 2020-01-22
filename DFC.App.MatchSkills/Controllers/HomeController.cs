@@ -1,7 +1,7 @@
 ﻿using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DFC.App.MatchSkills.WebUI.Controllers
+namespace DFC.App.MatchSkills.Controllers
 {
     public class HomeController : BaseController
     {
