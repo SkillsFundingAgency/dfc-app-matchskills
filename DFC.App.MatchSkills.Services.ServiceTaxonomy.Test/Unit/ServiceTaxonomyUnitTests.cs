@@ -204,28 +204,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 
         }
 
-        [Test]
-        public async Task When_MockNewServiceTaxonomyObject_Then_ShouldCrerateObject()
-        {
-            //ARRANGE
-            var sut = new ServiceTaxonomyRepository();
-            
-            // ASSERT
-            sut.Should().NotBeNull(); // this is fluent assertions here...
-            
-        }
-
-        [Test]
-        public async Task When_MockNewServiceTaxonomyObjectWithRestClient_Then_ShouldCrerateObject()
-        {
-            //ARRANGE
-            var restClient = new RestClient();
-            var sut = new ServiceTaxonomyRepository(restClient);
-            
-            // ASSERT
-            sut.Should().NotBeNull(); // this is fluent assertions here...
-            
-        }
+       
 
 
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
