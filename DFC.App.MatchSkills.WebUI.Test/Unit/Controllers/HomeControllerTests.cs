@@ -18,9 +18,12 @@ namespace DFC.App.MatchSkills.WebUI.Test.Unit.Controllers
             var result = controller.Head();
             var vm = new HeadViewModel
             {
-                PageTitle = "Page Title"
+                PageTitle = "Page Title",
+                DefaultCssLink = "Link"
+                
             };
             var pageTitle = vm.PageTitle;
+            var css = vm.DefaultCssLink;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
 
