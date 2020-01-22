@@ -62,7 +62,6 @@ namespace DFC.App.MatchSkills.Services.Dysac
         internal static Uri GetCreateDysacSessionUri(this DysacServiceSettings extendee)
         {
             var uri = new Uri(extendee.ApiUrl);
-            var key = extendee.ApiKey;
             var trimmed = uri.AbsoluteUri.TrimEnd('/');
             return new Uri($"{trimmed}{Constants.CreateNewAssessmentPath}{Constants.CreateNewAssessmentQueryString}");
         }
