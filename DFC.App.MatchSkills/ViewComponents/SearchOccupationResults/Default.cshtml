@@ -1,0 +1,17 @@
+﻿@model DFC.App.MatchSkills.ViewModels.SearchOccupationResultsViewModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, DFC.Personalisation.CommonUI
+
+
+@foreach (var occupation in Model.Occupations)
+{
+    <govukRadioButton Id=@occupation.Id value="yes">
+        <govukRadioLabel AdditionalClass="radio-container-item" Text=@occupation.Name For=@occupation.Name></govukRadioLabel>
+    </govukRadioButton>
+
+}
+@if (Model.Occupations.Length == 0)
+{
+<govukLabel id="LblNoResults" Text="No matching occupations found"></govukLabel>
+}

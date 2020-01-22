@@ -1,0 +1,60 @@
+﻿using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.ViewModels;
+using DFC.App.MatchSkills.Controllers;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
+
+namespace DFC.App.MatchSkills.Test.Unit.Controllers
+{
+    public class EmploymentControllerTests
+    {
+        [Test]
+        public void WhenHeadCalled_ReturnHtml()
+        {
+            var controller = new EmploymentChoiceController();
+            var result = controller.Head();
+            var vm = new HeadViewModel
+            {
+                PageTitle = "Page Title"
+            };
+            var pageTitle = vm.PageTitle;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+        }
+        [Test]
+        public void WhenBodyCalled_ReturnHtml()
+        {
+            var controller = new EmploymentChoiceController();
+            var result = controller.Body();
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+        }
+        [Test]
+        public void WhenBreadCrumbCalled_ReturnHtml()
+        {
+            var controller = new EmploymentChoiceController();
+            var result = controller.Breadcrumb();
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+        }
+        [Test]
+        public void WhenBodyTopCalled_ReturnHtml()
+        {
+            var controller = new EmploymentChoiceController();
+            var result = controller.BodyTop();
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+        }
+        [Test]
+        public void WhenSidebarRightCalled_ReturnHtml()
+        {
+            var controller = new EmploymentChoiceController();
+            var result = controller.SidebarRight();
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+        }
+    }
+}

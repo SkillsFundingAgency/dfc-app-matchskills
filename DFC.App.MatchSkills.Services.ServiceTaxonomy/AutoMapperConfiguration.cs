@@ -35,6 +35,12 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Occupation))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
                 .ConstructUsing(dest => new Occupation(dest.Uri, dest.Occupation,dest.LastModified));
+            
+            CreateMap<StOccupationSearchResult.StsOccupation, Occupation>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Occupation))
+                .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
+                .ConstructUsing(dest => new Occupation(dest.Uri, dest.Occupation,dest.LastModified));
         }
     }
 }
