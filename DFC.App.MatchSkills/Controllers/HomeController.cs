@@ -1,4 +1,4 @@
-﻿using DFC.App.MatchSkills.WebUI.ViewModels;
+﻿using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.WebUI.Controllers
