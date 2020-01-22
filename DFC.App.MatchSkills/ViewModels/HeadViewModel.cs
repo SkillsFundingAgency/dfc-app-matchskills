@@ -2,14 +2,6 @@
 {
     public class HeadViewModel
     {
-        public string Title { get; set; }
-
-        public string CanonicalUrl { get; set; }
-
-        public string Description { get; set; }
-
-        public string Keywords { get; set; }
-
-        public string CssLink { get; set; }
-    }
+        private const string DefaultPageTitle = "Discover your skills and careers";
+        public string PageTitle { get; set; } = DefaultPageTitle; }
 }
