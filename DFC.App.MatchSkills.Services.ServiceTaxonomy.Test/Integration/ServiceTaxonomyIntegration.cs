@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
     [TestFixture]
+    [Ignore("Need to figure out how we are going to handle the settings")]
     class ServiceTaxonomyIntegration
     {
         private ServiceTaxonomyRepository _subjectUnderTest;
