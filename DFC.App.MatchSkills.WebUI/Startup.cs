@@ -29,6 +29,7 @@ namespace DFC.App.MatchSkills.WebUI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseRouting();
 
