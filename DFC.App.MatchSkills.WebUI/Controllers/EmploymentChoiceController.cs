@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.WebUI.Controllers
 {
-    
+
     public class EmploymentChoiceController : BaseController
     {
         private const string PathName = "EmploymentChoice";
