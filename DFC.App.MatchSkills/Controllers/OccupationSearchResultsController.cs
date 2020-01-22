@@ -8,17 +8,17 @@ namespace DFC.App.MatchSkills.Controllers
         private const string PathName = "OccupationSearchResults";
 
         [HttpGet]
-        [Route("/head/"+ PathName)]
+        [Route("/head/OccupationSearchResults")]
         public override IActionResult Head()
         {
-            return View(ReturnPath("Head", PathName));
+            return View(ReturnPath("Head", "OccupationSearchResults"));
         }
 
         [HttpGet]
         [Route("/breadcrumb/"+ PathName)]
         public override IActionResult Breadcrumb()
         {
-            return View(ReturnPath("Breadcrumb", PathName));
+            return View(ReturnPath("Breadcrumb", "OccupationSearchResults"));
         }
 
         [HttpGet]
@@ -32,7 +32,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/"+ PathName)]
         public override IActionResult Body()
         {
-            return View(ReturnPath("body", PathName));
+            return View(ReturnPath("body", "OccupationSearchResults"));
         }
 
         [HttpGet]
