@@ -1,6 +1,5 @@
 ﻿using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.ViewModels;
-using DFC.App.MatchSkills.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
