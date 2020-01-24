@@ -56,7 +56,7 @@ Services (Infrastructure) (all external concerns)
 - ServiceTaxonomy
 
 Web UI
-- DFC.App.MatchSkills.WebUI - composite UI - the startup project
+- DFC.App.MatchSkills - composite UI - the startup project
 
 
 ## How to run

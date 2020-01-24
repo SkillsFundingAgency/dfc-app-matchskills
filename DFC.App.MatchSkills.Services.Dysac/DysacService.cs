@@ -14,10 +14,10 @@ namespace DFC.App.MatchSkills.Services.Dysac
     
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
-        private readonly ILogger _log;
+        private readonly ILogger<DysacService> _log;
         private readonly Uri _getCreateDysacSessionUri;
         private readonly RestClient _client;
-        public DysacService(ILogger log, RestClient client, DysacServiceSettings dysacApiSettings)
+        public DysacService(ILogger<DysacService> log, RestClient client, DysacServiceSettings dysacApiSettings)
         {
             _log = log;
             _client = client;
@@ -70,7 +70,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
     internal static class Constants
     {
         internal const string DssCorrelationIdHeader = "DssCorrelationId";
-        internal const string CreateNewAssessmentPath = "/assessment";
+        internal const string CreateNewAssessmentPath = "/assessments/api/assessment/";
         internal const string CreateNewAssessmentQueryString = "?assessmentType=";
     }
 }
