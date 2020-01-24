@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -6,6 +7,10 @@ namespace DFC.App.MatchSkills.Controllers
     public class EmploymentChoiceController : BaseController
     {
         private const string PathName = "EmploymentChoice";
+
+        public EmploymentChoiceController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        {
+        }
 
         [HttpGet]
         [Route("/head/EmploymentChoice")]
@@ -32,6 +37,12 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/EmploymentChoice")]
         public override IActionResult Body()
         {
+            var sessionId = TryGetSessionId(Request).Result;
+            if (!string.IsNullOrWhiteSpace(sessionId))
+            {
+                AppendCookie(sessionId);
+            }
+            
             return View(ReturnPath("body", PathName));
         }
 

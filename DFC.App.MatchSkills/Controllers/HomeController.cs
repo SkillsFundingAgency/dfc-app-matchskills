@@ -1,4 +1,5 @@
 ﻿using DFC.App.MatchSkills.ViewModels;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Controllers
@@ -6,6 +7,10 @@ namespace DFC.App.MatchSkills.Controllers
     public class HomeController : BaseController
     {
         private const string PageTitle = "Discover your skills and careers";
+
+        public HomeController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        {
+        }
 
         [HttpGet]
         [Route("/head/")]
@@ -45,6 +50,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
             return View(ReturnPath("sidebarright"));
         }
+
 
 
     }
