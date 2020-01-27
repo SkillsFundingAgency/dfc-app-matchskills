@@ -12,7 +12,7 @@
             "value": "dfc-dev-pers-shared-asp"
         },
         "sharedResourceGroup": {
-            "value": "dfc-dev-pers-shared-rg"
+            "value": "dfc-test-template-rg"
         },
         "sharedCosmosDbAccountName": {
             "value": "dfc-dev-pers-shared-cdb"
