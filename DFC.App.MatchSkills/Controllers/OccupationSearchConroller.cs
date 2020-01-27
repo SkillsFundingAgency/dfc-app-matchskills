@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -39,10 +40,11 @@ namespace DFC.App.MatchSkills.Controllers
             return occupations.Select(x =>x.Name).ToList();
         }
 
-        [HttpGet,HttpPost]
+        [HttpPost,ValidateAntiForgeryToken]
         [Route("/OccupationSearch/GetOccupationSkills")]
-        public async Task<IEnumerable> GetOccupationSkills(string occupation)
+        public async Task<IEnumerable> GetOccupationSkills(IFormCollection collection)
         {
+            var occupation = collection["input-autocomplete"];
            
             return null;
         }
