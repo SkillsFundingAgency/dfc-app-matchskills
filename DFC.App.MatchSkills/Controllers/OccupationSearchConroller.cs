@@ -33,14 +33,21 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/OccupationSearch")]
         public async Task<IEnumerable> Search(string occupation)
         {
-            var _serviceTaxonomy = new ServiceTaxonomyRepository();
-
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
 
-            return occupations.Select(x => x.Name).ToList();
+            return occupations.Select(x =>new{ x.Id,x.Name}).ToList();
         }
 
+        [HttpGet,HttpPost]
+        [Route("/OccupationSearch/GetOccupationSkills")]
+        public async Task<IEnumerable> GetOccupationSkills(string occupation)
+        {
+            //TODO
+            return null;
+        }
+
+        
         #region OccupationSearchCUI
 
         [HttpGet]

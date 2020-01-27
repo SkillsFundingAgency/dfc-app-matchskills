@@ -12,7 +12,7 @@ namespace DFC.App.MatchSkills.WebUI
 {
     public class Startup
     {
-        private string _corsPolicy = "CorsPolicy";
+        private readonly string _corsPolicy = "CorsPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
