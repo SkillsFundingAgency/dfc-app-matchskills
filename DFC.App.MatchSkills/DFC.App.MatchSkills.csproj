@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj" />
+    <ProjectReference Include="..\DFC.App.MatchSkills.Services.Dysac\DFC.App.MatchSkills.Services.Dysac.csproj" />
     <ProjectReference Include="..\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj" />
   </ItemGroup>
 

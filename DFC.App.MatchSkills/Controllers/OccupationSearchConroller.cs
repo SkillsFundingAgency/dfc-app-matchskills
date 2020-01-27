@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Controllers
 {
 
     public class OccupationSearchController : BaseController
     {
+
         private const string PathName = "OccupationSearch";
+
+        public OccupationSearchController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        {
+        }
 
         [HttpGet]
         [Route("/head/OccupationSearch")]

@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "DFC.App.MatchSkills.WebUI": {
+    "DFC.App.MatchSkills": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
