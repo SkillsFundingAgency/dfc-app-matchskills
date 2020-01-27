@@ -11,7 +11,7 @@ namespace DFC.App.MatchSkills.Test.Helpers
             get
             {
                 var testAssemblyPath = TestContext.CurrentContext.TestDirectory;
-                var combinedFullPathToViews = Path.Combine(testAssemblyPath, @"..\..\..\..\DFC.App.MatchSkills.WebUI\Views");
+                var combinedFullPathToViews = Path.Combine(testAssemblyPath, @"..\..\..\..\DFC.App.MatchSkills\Views");
                 var applicationViewsPath = Path.GetFullPath(combinedFullPathToViews);
                 return applicationViewsPath;
             }

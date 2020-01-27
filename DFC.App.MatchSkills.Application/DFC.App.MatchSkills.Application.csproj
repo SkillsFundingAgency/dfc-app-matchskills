@@ -9,4 +9,8 @@
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Session\" />
+  </ItemGroup>
+
 </Project>

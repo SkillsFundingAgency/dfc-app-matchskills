@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -6,6 +7,10 @@ namespace DFC.App.MatchSkills.Controllers
     public class OccupationSearchResultsController : BaseController
     {
         private const string PathName = "OccupationSearchResults";
+
+        public OccupationSearchResultsController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        {
+        }
 
         [HttpGet]
         [Route("/head/OccupationSearchResults")]
