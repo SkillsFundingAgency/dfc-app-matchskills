@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
@@ -21,8 +22,9 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
 
-        public OccupationSearchController(IServiceTaxonomySearcher serviceTaxonomy,
-            IOptions<ServiceTaxonomySettings> settings)
+       
+        public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,IServiceTaxonomySearcher serviceTaxonomy,
+            IOptions<ServiceTaxonomySettings> settings) 
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
