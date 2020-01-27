@@ -36,7 +36,7 @@ namespace DFC.App.MatchSkills.Controllers
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
 
-            return occupations.Select(x =>new{ x.Id,x.Name}).ToList();
+            return occupations.Select(x =>x.Name).ToList();
         }
 
         [HttpGet,HttpPost]
