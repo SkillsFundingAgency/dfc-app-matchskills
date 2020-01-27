@@ -1,7 +1,4 @@
-using DFC.App.MatchSkills.Application.Dysac;
-using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
-using DFC.App.MatchSkills.Services.Dysac;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using Microsoft.AspNetCore.Builder;
