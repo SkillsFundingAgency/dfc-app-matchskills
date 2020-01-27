@@ -13,7 +13,6 @@ namespace DFC.App.MatchSkills.Controllers
         private const string CookieName = ".matchSkills-session";
         private readonly IDataProtectionProvider _dataProtectionProvider;
         private readonly IDataProtector _dataProtector;
-        public IFormCollection FormData { get; private set; }
         public NameValueCollection QueryDictionary { get; private set; }
 
         protected BaseController(IDataProtectionProvider dataProtectionProvider)
@@ -57,30 +56,8 @@ namespace DFC.App.MatchSkills.Controllers
                 sessionId = code;
             }
 
-            if (request.HasFormContentType)
-            {
-                try
-                {
-                    FormData = await request.ReadFormAsync();
-                    string formSessionId = GetFormValue("sessionId");
-
-                    if (string.IsNullOrEmpty(formSessionId) == false)
-                    {
-                        sessionId = formSessionId;
-                    }
-                }
-                catch { };
-            }
 
             return String.IsNullOrWhiteSpace(sessionId) ? null : sessionId;
-        }
-        protected string GetFormValue(string key)
-        {
-            if (FormData == null) return null;
-            StringValues value;
-            FormData.TryGetValue(key, out value);
-            if (value.Count == 0) return null;
-            return value[0];
         }
         protected string ReturnPath(string segmentName, string path = "")
         {
