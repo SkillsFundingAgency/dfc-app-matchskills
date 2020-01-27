@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace DFC.App.MatchSkills.WebUI
+namespace DFC.App.MatchSkills
 {
     public class Program
     {

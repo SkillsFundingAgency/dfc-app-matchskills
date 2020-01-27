@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.WebUI;
+using DFC.App.MatchSkills;
 
 namespace DFC.App.MatchSkills.Test.Integration
 {

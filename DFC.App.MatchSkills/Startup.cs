@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 
-namespace DFC.App.MatchSkills.WebUI
+namespace DFC.App.MatchSkills
 {
     public class Startup
     {
