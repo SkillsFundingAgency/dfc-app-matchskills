@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.JobProfile.Extensions;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -21,28 +22,36 @@ namespace DFC.App.MatchSkills.Controllers
 
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
-        public OccupationSearchController(IServiceTaxonomySearcher serviceTaxonomy,IOptions<ServiceTaxonomySettings>  settings)
+
+        public OccupationSearchController(IServiceTaxonomySearcher serviceTaxonomy,
+            IOptions<ServiceTaxonomySettings> settings)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
             _serviceTaxonomy = serviceTaxonomy ?? new ServiceTaxonomyRepository();
             _settings = settings.Value;
         }
-        
 
+        [HttpGet,HttpPost]
         [Route("/OccupationSearch")]
-        public async Task<IActionResult> Search(string occupation)  
+        public async Task<IEnumerable> Search(string occupation)
         {
             var _serviceTaxonomy = new ServiceTaxonomyRepository();
 
-            var vm = new SearchOccupationResultsViewModel();
-
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
-                _settings.ApiKey, occupation, Boolean.Parse(_settings.SearchOccupationInAltLabels));
-            
-            return   Json (occupations.Select(x=>x.Name).ToArray());
+                _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
 
-        }  
+            return occupations.Select(x => x.Name).ToList();
+        }
+
+        #region OccupationSearchCUI
+
+        [HttpGet]
+        [Route("/Index/OccupationSearch")]
+        public IActionResult Index()
+        {
+            return View(ReturnPath("Index", "OccupationSearch"));
+        }
 
         [HttpGet]
         [Route("/head/OccupationSearch")]
@@ -69,14 +78,18 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/OccupationSearch")]
         public override IActionResult Body()
         {
-            return View(ReturnPath("body", "OccupationSearch"));
+            var vm =new OccupationSearchViewModel();
+            vm.SearchService = _settings.SearchService;
+            return View(ReturnPath("body", "OccupationSearch"),vm);
         }
 
         [HttpGet]
-        [Route("/sidebarright/"+ PathName)]
+        [Route("/sidebarright/" + PathName)]
         public override IActionResult SidebarRight()
         {
             return View(ReturnPath("sidebarright"));
         }
+        #endregion
     }
+
 }
