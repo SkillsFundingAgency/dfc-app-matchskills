@@ -7,6 +7,7 @@ using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection;
@@ -43,12 +44,11 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost,ValidateAntiForgeryToken]
         [Route("/OccupationSearch/GetOccupationSkills")]
-        public async Task<IEnumerable> GetOccupationSkills(IFormCollection collection)
+        public  string GetOccupationSkills(IFormCollection collection)
         {
             var occupation = collection["input-autocomplete"];
 
-            return occupation;          
-;
+            return occupation;
         }
 
         
