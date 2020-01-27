@@ -6,8 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\Worked\WorkedViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ViewModels\Worked\WorkedViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />
-    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.9" />
+    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.10" />
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
     <PackageReference Include="Dfc.ProviderPortal.Packages" Version="0.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
@@ -28,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj" />
+    <ProjectReference Include="..\DFC.App.MatchSkills.Services.Dysac\DFC.App.MatchSkills.Services.Dysac.csproj" />
     <ProjectReference Include="..\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj" />
   </ItemGroup>
 
