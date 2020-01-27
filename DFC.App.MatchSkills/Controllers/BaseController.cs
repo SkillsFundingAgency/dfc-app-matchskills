@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
+using System;
+using System.Collections.Specialized;
+using System.Threading.Tasks;
+
 
 namespace DFC.App.MatchSkills.Controllers
 {
     public abstract class BaseController : Controller
     {
         private const string CookieName = ".matchSkills-session";
-        private readonly IDataProtectionProvider _dataProtectionProvider;
         private readonly IDataProtector _dataProtector;
         public NameValueCollection QueryDictionary { get; private set; }
 
         protected BaseController(IDataProtectionProvider dataProtectionProvider)
         {
-            _dataProtectionProvider = dataProtectionProvider;
-            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
+            _dataProtector = dataProtectionProvider.CreateProtector(nameof(BaseController));
         }
 
         public abstract IActionResult Head();
@@ -39,7 +37,7 @@ namespace DFC.App.MatchSkills.Controllers
             });
         }
 
-        protected async Task<string> TryGetSessionId(HttpRequest request)
+        protected string TryGetSessionId(HttpRequest request)
         {
             string sessionId = string.Empty;
 
@@ -51,13 +49,13 @@ namespace DFC.App.MatchSkills.Controllers
             QueryDictionary = System.Web.HttpUtility.ParseQueryString(request.QueryString.ToString());
             var code = QueryDictionary.Get("sessionId");
 
-            if (string.IsNullOrEmpty(code) == false)
+            if (!string.IsNullOrEmpty(code))
             {
                 sessionId = code;
             }
 
 
-            return String.IsNullOrWhiteSpace(sessionId) ? null : sessionId;
+            return string.IsNullOrWhiteSpace(sessionId) ? null : sessionId;
         }
         protected string ReturnPath(string segmentName, string path = "")
         {

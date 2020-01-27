@@ -42,7 +42,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/"+ PathName)]
         public override IActionResult Body()
         {
-            var sessionId = TryGetSessionId(Request).Result;
+            var sessionId = TryGetSessionId(Request);
             if (!string.IsNullOrWhiteSpace(sessionId))
             {
                 AppendCookie(sessionId);
