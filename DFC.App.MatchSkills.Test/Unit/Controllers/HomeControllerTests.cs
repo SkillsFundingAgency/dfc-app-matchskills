@@ -28,7 +28,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public void WhenHeadCalled_ReturnHtml()
         {
             var controller = new HomeController(_dataProtectionProvider);
-            var result = controller.Head();
+            var result = controller.Head() as ViewResult;
             var vm = new HeadViewModel
             {
                 PageTitle = "Page Title",
@@ -39,40 +39,46 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var css = vm.DefaultCssLink;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be("/Views/home/Head.cshtml");
+
 
         }
         [Test]
         public void WhenBodyCalled_ReturnHtml()
         {
             var controller = new HomeController(_dataProtectionProvider);
-            var result = controller.Body();
+            var result = controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be("/Views/home/Body.cshtml");
 
         }
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
             var controller = new HomeController(_dataProtectionProvider);
-            var result = controller.Breadcrumb();
+            var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be("/Views/home/BreadCrumb.cshtml");
         }
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
             var controller = new HomeController(_dataProtectionProvider);
-            var result = controller.BodyTop();
+            var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be("/Views/home/BodyTop.cshtml");
         }
         [Test]
         public void WhenSidebarRightCalled_ReturnHtml()
         {
             var controller = new HomeController(_dataProtectionProvider);
-            var result = controller.SidebarRight();
+            var result = controller.SidebarRight() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be("/Views/home/SidebarRight.cshtml");
         }
     }
 }

@@ -27,28 +27,28 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/breadcrumb/")]
         public override IActionResult Breadcrumb()
         {
-            return View(ReturnPath("Breadcrumb"));
+            return View(ReturnPath("BreadCrumb"));
         }
 
         [HttpGet]
         [Route("/bodytop/")]
         public override IActionResult BodyTop()
         {
-            return View(ReturnPath("bodytop"));
+            return View(ReturnPath("BodyTop"));
         }
 
         [HttpGet]
         [Route("/body/")]
         public override IActionResult Body()
         {
-            return View(ReturnPath("body"));
+            return View(ReturnPath("Body"));
         }
 
         [HttpGet]
         [Route("/sidebarright/")]
         public override IActionResult SidebarRight()
         {
-            return View(ReturnPath("sidebarright"));
+            return View(ReturnPath("SidebarRight"));
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using DFC.App.MatchSkills.ViewModels;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Controllers
@@ -6,6 +7,11 @@ namespace DFC.App.MatchSkills.Controllers
     public class WorkedController : BaseController
     {
         private const string PathName = "Worked";
+
+        public WorkedController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        {
+        }
+
 
         [HttpGet]
         [Route("/head/"+ PathName)]
@@ -36,6 +42,11 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/"+ PathName)]
         public override IActionResult Body()
         {
+            var sessionId = TryGetSessionId(Request).Result;
+            if (!string.IsNullOrWhiteSpace(sessionId))
+            {
+                AppendCookie(sessionId);
+            }
             return View(ReturnPath("body", PathName));
         }
 
@@ -54,5 +65,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
             return View(ReturnPath("sidebarright"));
         }
+
+
     }
 }
