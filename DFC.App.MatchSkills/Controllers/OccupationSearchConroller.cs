@@ -46,8 +46,9 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IEnumerable> GetOccupationSkills(IFormCollection collection)
         {
             var occupation = collection["input-autocomplete"];
-           
-            return null;
+
+            return occupation;          
+;
         }
 
         
