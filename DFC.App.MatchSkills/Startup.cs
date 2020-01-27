@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -30,6 +31,7 @@ namespace DFC.App.MatchSkills.WebUI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [ExcludeFromCodeCoverage]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
