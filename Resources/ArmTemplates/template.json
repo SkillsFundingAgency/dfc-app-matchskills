@@ -38,7 +38,7 @@
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat(parameters('sharedCosmosDbAccountName'),' Collection', variables('cosmosDbCollectionName'))]",
+            "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollectionName'))]",
             "resourceGroup": "[parameters('sharedResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
