@@ -11,8 +11,14 @@
         "SharedAppServicePlanName": {
             "value": "dfc-dev-pers-shared-asp"
         },
-        "SharedAppServicePlanResourceGroup": {
-            "value": "dfc-dev-pers-shared-rg"
+        "sharedResourceGroup": {
+            "value": "dfc-test-template-rg"
+        },
+        "sharedCosmosDbAccountName": {
+            "value": "dfc-dev-pers-shared-cdb"
+        },
+        "sharedCosmosDbDatabaseName": {
+            "value": "a-shared-database"
         },
         "serviceTaxonomyApiUrl": {
             "value": "https://apimInstance/servicetaxonomy"
