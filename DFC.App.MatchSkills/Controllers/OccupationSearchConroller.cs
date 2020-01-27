@@ -47,7 +47,11 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/Index/OccupationSearch")]
         public IActionResult Index()
         {
-            return View(ReturnPath("Index", "OccupationSearch"));
+            var vm = new OccupationSearchViewModel()
+            {
+                SearchService = _settings.SearchService
+            };
+            return View(ReturnPath("Index", "OccupationSearch"),vm);
         }
 
         [HttpGet]
@@ -75,8 +79,10 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/OccupationSearch")]
         public override IActionResult Body()
         {
-            var vm =new OccupationSearchViewModel();
-            vm.SearchService = _settings.SearchService;
+            var vm = new OccupationSearchViewModel()
+            {
+                SearchService = _settings.SearchService
+            };
             return View(ReturnPath("body", "OccupationSearch"),vm);
         }
 
