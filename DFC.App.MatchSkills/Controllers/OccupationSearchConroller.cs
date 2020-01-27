@@ -43,7 +43,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/OccupationSearch/GetOccupationSkills")]
         public async Task<IEnumerable> GetOccupationSkills(string occupation)
         {
-            //TODO
+           
             return null;
         }
 
