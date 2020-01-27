@@ -1,0 +1,20 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.Choice
+
+@{
+    var choiceModel = new ChoiceComponentModel
+    {
+        ButtonText = "Continue",
+        LinkText = "TestLink",
+        PageId = "Worked",
+        Text = "Choose one of the options below.",
+        Title = "Have you worked before",
+        RadioButtons = new List<RadioButtonModel>
+{
+            {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice"}},
+            {new RadioButtonModel {Text = "No", Order = 2, Name = "Choice"}}
+
+        }
+    };
+
+}
+<partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
