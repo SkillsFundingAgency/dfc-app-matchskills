@@ -4,18 +4,18 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
 {
-
+ 
     public class OccupationSearchController : BaseController
     {
         private const string PathName = "OccupationSearch";
@@ -34,24 +34,23 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpGet,HttpPost]
         [Route("/OccupationSearch")]
-        public async Task<IEnumerable> Search(string occupation)
+        public async Task<IEnumerable<Occupation>> OccupationSearch(string occupation)
         {
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
 
+            return occupations.ToList();
+        }
+
+        [HttpGet,HttpPost]
+        [Route("/OccupationSearchAuto")]
+        public async Task<IEnumerable> OccupationSearchAuto(string occupation)
+        {
+            var occupations = await OccupationSearch(occupation);
             return occupations.Select(x =>x.Name).ToList();
         }
 
-        [HttpPost,ValidateAntiForgeryToken]
-        [Route("/OccupationSearch/GetOccupationSkills")]
-        public  string GetOccupationSkills(IFormCollection collection)
-        {
-            var occupation = collection["input-autocomplete"];
-
-            return occupation;
-        }
-
-        
+ 
         #region OccupationSearchCUI
 
         [HttpGet]
@@ -104,6 +103,9 @@ namespace DFC.App.MatchSkills.Controllers
             return View(ReturnPath("sidebarright"));
         }
         #endregion
+
+
+
     }
 
 }
