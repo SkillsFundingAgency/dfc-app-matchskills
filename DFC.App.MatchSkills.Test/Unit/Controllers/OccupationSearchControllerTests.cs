@@ -35,6 +35,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IDataProtector _dataProtector;
         private IOptions<ServiceTaxonomySettings> _settings;
         private ServiceTaxonomyRepository serviceTaxonomyRepository;
+        private const string Path = "OccupationSearch";
         
         [SetUp]
         public void Init()
@@ -77,6 +78,49 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             occupations.Result.Should().HaveCountGreaterOrEqualTo(1);
         }
 
+        [Test]
+        public void When_HeadCalled_ReturnHtml()
+        {
+            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings);
+            var result = sut.Head() as ViewResult;
+            
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be($"/Views/{Path}/Head.cshtml");
+
+        }
+
+        [Test]
+        public void WhenBody_Called_ReturnHtml()
+        {
+            var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
+            var result = sut.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be($"/Views/{Path}/body.cshtml");
+        }
+
+        [Test]
+        public void WhenIndex_Called_ReturnHtml()
+        {
+            var controller = new WorkedController(_dataProtectionProvider)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
+            var result = controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().Be($"/Views/{Path}/Index.cshtml");
+        }
 
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
         {
@@ -98,11 +142,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 })
                 .Verifiable();
             return handlerMock;
-        }
-        class MockResult
-        {
-            public int Id { get; set; }
-            public string Value { get; set; }
         }
     }
 }
