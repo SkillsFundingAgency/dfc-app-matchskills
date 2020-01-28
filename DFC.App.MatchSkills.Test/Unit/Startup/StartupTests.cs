@@ -1,17 +1,8 @@
-﻿using System;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Http.Features;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Ini;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Moq;
-using NSubstitute;
-using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
+using System;
 
 namespace DFC.App.MatchSkills.Test.Unit.Startup
 {
