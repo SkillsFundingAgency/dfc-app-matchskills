@@ -32,6 +32,7 @@ namespace DFC.App.MatchSkills
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         [ExcludeFromCodeCoverage]
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -48,6 +49,11 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllers();
             });
 
+            ConfigureApp(app);
+        }
+
+        public void ConfigureApp(IApplicationBuilder app)
+        {
             
             app.Use(async (context, next) =>
             {
@@ -91,7 +97,6 @@ namespace DFC.App.MatchSkills
 
                 await next();
             });
-
         }
     }
 }
