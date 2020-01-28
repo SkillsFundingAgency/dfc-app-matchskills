@@ -1,25 +1,86 @@
-﻿<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+﻿@model DFC.App.MatchSkills.ViewModels.OccupationSearchViewModel
+
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+
     <div class="govuk-grid-row">
+
         <div class="govuk-grid-column-two-thirds">
-            <govukHeadingH1 Text="Enter a job title" />
-            
-            <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
-            
-            <p>You can add skills from more than one job to your skills list.</p>
-            
-            <form action="/matchskills/occupationsearchresults" method="get" id="occupation-search">
 
-                <govukHeadingH4 Text="Enter a job title" />
+            <form asp-action="GetOccupationSkills" asp-controller="OccupationSearch" method="post" asp-antiforgery="true">
+                <govukHeadingH1 Text="Enter your current or previous job title" />
 
-                <govukTextInput Id="EnterJobInputSearch"></govukTextInput>
-                <br/>
-                <br/>
-                <govukCheckbox Id="EnterJobChkAltLabels" Label="Match Alt Labels"></govukCheckbox>
+                <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
+
+                <p>You can add skills from more than one job to your skills list.</p>
+
+                <govukAutoComplete Id="occupations-autocomplete-container" Element="occupations-autocomplete-container" LabelText="Enter your job title"></govukAutoComplete>
                 <br />
-                <govukButton Id="EnterJobBtnSearch" Text="Search"></govukButton>
-                
-                
+                <br />
+                <button class="govuk-button  govuk-button--secondary">Search</button>
             </form>
         </div>
     </div>
 </div>
+<script>
+
+    function AutoComplete() {
+        if (document.readyState === 'complete') {
+
+            accessibleAutocomplete({
+                element: document.querySelector('#occupations-autocomplete-container'),
+                id: 'occupations-autocomplete-container', // To match it to the existing <label>.
+                source: suggest,
+                autoselect: false,
+                async : true,
+                confirmOnBlur: true,
+                cssNamespace: 'autocomplete',
+                defaultValue: '',
+                displayMenu: 'inline',
+                minLength: 2,
+                name: 'input-autocomplete',
+                onConfirm: () => { },
+                require: false,
+                showAllValues: false,
+                showNoOptionsFound: true
+            });
+        }
+    }
+
+    document.onreadystatechange = () => {
+        if (document.readyState === 'complete') {
+            AutoComplete();
+        }
+    };
+
+    function suggest(query, populateResults) {
+
+        $.ajax({
+            type: 'GET',
+            url: '@Model.SearchService/OccupationSearchAuto',
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: { occupation: query },
+            success: function (data) {
+                populateResults(data);
+            },
+            error: function(jqXHR, exception) {
+                if (jqXHR.status === 0) {
+                    alert('Not connect.\n Verify Network.');
+                } else if (jqXHR.status == 404) {
+                    alert('Requested page not found. [404]');
+                } else if (jqXHR.status == 500) {
+                    
+                } else if (exception === 'parsererror') {
+                    alert('Requested JSON parse failed.');
+                } else if (exception === 'timeout') {
+                    alert('Time out error.');
+                } else if (exception === 'abort') {
+                    alert('Ajax request aborted.');
+                } else {
+                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                }
+            }
+        });
+    }
+
+</script>
