@@ -93,14 +93,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBody_Called_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings)
-            {
-                ControllerContext = new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext()
-                }
-            };
+            var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings);
             var result = sut.Body() as ViewResult;
+
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().Be($"/Views/{Path}/body.cshtml");
@@ -109,14 +104,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenIndex_Called_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider)
-            {
-                ControllerContext = new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext()
-                }
-            };
-            var result = controller.Body() as ViewResult;
+            var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings);
+            var result = sut.Index() as ViewResult;
+
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().Be($"/Views/{Path}/Index.cshtml");
