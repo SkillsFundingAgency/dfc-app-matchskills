@@ -31,8 +31,6 @@ namespace DFC.App.MatchSkills
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        [ExcludeFromCodeCoverage]
-        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -42,19 +40,10 @@ namespace DFC.App.MatchSkills
 
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-            app.UseRouting();
             
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            ConfigureApp(app);
-        }
-
-        public void ConfigureApp(IApplicationBuilder app)
-        {
             
+
+
             app.Use(async (context, next) =>
             {
                 context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
@@ -97,6 +86,13 @@ namespace DFC.App.MatchSkills
 
                 await next();
             });
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
         }
     }
 }
