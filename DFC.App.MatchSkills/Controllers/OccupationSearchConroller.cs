@@ -5,7 +5,6 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections;
@@ -15,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
- 
+
     public class OccupationSearchController : BaseController
     {
         private const string PathName = "OccupationSearch";
