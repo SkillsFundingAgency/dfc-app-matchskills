@@ -3,7 +3,8 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, DFC.Personalisation.CommonUI
 
-    <div class="govuk-form-group">
+<div class="govuk-form-group">
+    <form method="post" id="@($"{@Model.PageId}_Form_RadioForm")">
         <fieldset class="govuk-fieldset govuk-!-margin-bottom-6">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 
@@ -13,16 +14,14 @@
                 @Model.Text
             </span>
 
-            <form method="post" id="@($"{@Model.PageId}_Form_RadioForm")">
-                @foreach (var radioButton in Model.RadioButtons)
-                {
-                    <govukRadioButton id="@($"{Model.PageId}govukRadioButtonRadio{radioButton.Text}")" name="@radioButton.Name" value="@radioButton.Text">
-                        <govukRadioLabel text="@radioButton.Text"></govukRadioLabel>
-                    </govukRadioButton>
-                }
 
-
-                <govukStartButton text="@Model.ButtonText" disabled="false"></govukStartButton>
-            </form>
+            @foreach (var radioButton in Model.RadioButtons)
+            {
+                <govukRadioButton id="@($"{Model.PageId}govukRadioButtonRadio{radioButton.Text}")" name="@radioButton.Name" value="@radioButton.Text">
+                    <govukRadioLabel text="@radioButton.Text"></govukRadioLabel>
+                </govukRadioButton>
+            }
         </fieldset>
-    </div>
+        <govukButton text="@Model.ButtonText" disabled="false"></govukButton>
+    </form>
+</div>
