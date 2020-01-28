@@ -14,6 +14,7 @@ namespace DFC.App.MatchSkills
 {
     public class Startup
     {
+        private readonly string _corsPolicy = "CorsPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +29,15 @@ namespace DFC.App.MatchSkills
             services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
             services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
             services.Configure<ServiceTaxonomySettings>(Configuration.GetSection(nameof(ServiceTaxonomySettings)));
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_corsPolicy,
+                    builder => builder
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .SetIsOriginAllowed((host) => true)
+                        .AllowAnyHeader());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,6 +98,7 @@ namespace DFC.App.MatchSkills
             });
 
             app.UseRouting();
+            app.UseCors(_corsPolicy);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

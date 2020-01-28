@@ -8,13 +8,18 @@
         "environment": {
             "type": "string"
         },
-        "sharedAppServicePlanName": {
+        "sharedResourceGroup": {
             "type": "string",
             "defaultValue": ""
         },
-        "sharedAppServicePlanResourceGroup": {
-            "type": "string",
-            "defaultValue": ""
+        "SharedAppServicePlanName": {
+            "type": "string"
+        },
+        "sharedCosmosDbAccountName": {
+            "type": "string"
+        },
+        "sharedCosmosDbDatabaseName": {
+            "type": "string"
         },
         "serviceTaxonomyApiUrl": {
             "type": "string"
@@ -27,9 +32,34 @@
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-pers-matchskills'))]",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]"
+        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
+        "cosmosDbCollectionName": "UserSessions"
     },
     "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollectionName'))]",
+            "resourceGroup": "[parameters('sharedResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'CosmosDb/cosmos-collection.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "accountName": {
+                        "value": "[parameters('sharedCosmosDbAccountName')]"
+                    },
+                    "databaseName": {
+                        "value": "[parameters('sharedCosmosDbDatabaseName')]"
+                    },
+                    "collectionName": {
+                        "value": "[variables('cosmosDbCollectionName')]"
+                    }
+                }
+            }
+        },
         {
             "apiVersion": "2017-05-10",
             "name": "[variables('webAppInsightsName')]",
@@ -65,10 +95,10 @@
                         "value": "[variables('webAppName')]"
                     },
                     "appServicePlanName": {
-                        "value": "[parameters('sharedAppServicePlanName')]"
+                        "value": "[parameters('SharedAppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedAppServicePlanResourceGroup')]"
+                        "value": "[parameters('sharedResourceGroup')]"
                     },
                     "appServiceType": {
                         "value": "app"
