@@ -37,6 +37,17 @@ namespace DFC.App.MatchSkills.Test.Unit.Views
             }
         }
 
+        private static string ViewComponentsPath
+        {
+            get
+            {
+                var testAssemblyPath = TestContext.CurrentContext.TestDirectory;
+                var combinedFullPathToViews = Path.Combine(testAssemblyPath, @"..\..\..\..\DFC.App.MatchSkills\ViewComponents");
+                var applicationViewsPath = Path.GetFullPath(combinedFullPathToViews);
+                return applicationViewsPath;
+            }
+        }
+
         private static IEnumerable<string> ViewFilenames
         {
             get
@@ -45,6 +56,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Views
                 foreach (var filename in Directory.EnumerateFiles(ApplicationViewsPath, "*.cshtml", SearchOption.AllDirectories))
                 {
                     viewFileNames.Add(filename);
+                }
+
+                foreach (var viewComponent in Directory.EnumerateFiles(ViewComponentsPath, "*.cshtml", SearchOption.AllDirectories))
+                {
+                    viewFileNames.Add(viewComponent);
                 }
 
                 return viewFileNames;
