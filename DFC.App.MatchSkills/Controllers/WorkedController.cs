@@ -52,7 +52,7 @@ namespace DFC.App.MatchSkills.Controllers
 
 
         [HttpPost]
-        [Route("/body/" + PathName)]
+        [Route("MatchSkills/body/" + PathName)]
         public IActionResult Body(string choice)
         {
             return View(ReturnPath("body", PathName));

@@ -110,10 +110,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 PageId = "test",
                 RadioButtons = new List<RadioButtonModel>
                 {
-                    {new RadioButtonModel {Text = "test", Order = 1, Name = "test"}}
+                    {new RadioButtonModel {Text = "test", Order = 1, Name = "test", Value = "test", HintText = "Hint"}}
                 },
                 Text = "test",
-                Title = "test"
+                Title = "test",
+                FormAction = "Action"
             };
         }
         [Test]
