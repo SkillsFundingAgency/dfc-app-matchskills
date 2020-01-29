@@ -1,4 +1,6 @@
-﻿@using DFC.App.MatchSkills.ViewComponents.Choice
+﻿@model DFC.App.MatchSkills.ViewModels.Worked.WorkedCompositeViewModel
+
+@using DFC.App.MatchSkills.ViewComponents.Choice
 
 @{
     var choiceModel = new ChoiceComponentModel
@@ -7,11 +9,12 @@
         LinkText = "TestLink",
         PageId = "Worked",
         Text = "Choose one of the options below.",
+        FormAction = "worked",
         Title = "Have you worked before",
         RadioButtons = new List<RadioButtonModel>
-{
-            {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice"}},
-            {new RadioButtonModel {Text = "No", Order = 2, Name = "Choice"}}
+        {
+            {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice", Value = "Yes"}},
+            {new RadioButtonModel {Text = "No", Order = 2, Name = "Choice", Value = "No"}}
 
         }
     };

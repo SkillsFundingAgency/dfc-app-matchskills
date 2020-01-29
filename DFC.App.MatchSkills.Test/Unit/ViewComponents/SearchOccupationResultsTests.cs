@@ -1,6 +1,6 @@
 ﻿using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
-using DFC.App.MatchSkills.ViewComponents.SearchOccupationResults;
+//using DFC.App.MatchSkills.ViewComponents.SearchOccupationResults;
 using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +14,7 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewComponents
     [TestFixture]
     class SearchOccupationResultsTests
     {
+        /*
         private IOptions<ServiceTaxonomySettings> _settings;
         
         [SetUp]
@@ -89,6 +90,6 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewComponents
 
         }
 
-
+    */
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DFC.App.MatchSkills.Controllers
 {
 
-    public class OccupationSearchResultsController : BaseController
+    public class OccupationSearchResultsController : SessionController
     {
         private const string PathName = "OccupationSearchResults";
 
@@ -14,37 +14,37 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpGet]
         [Route("/head/OccupationSearchResults")]
-        public override IActionResult Head()
+        public IActionResult Head()
         {
-            return View(ReturnPath("Head", "OccupationSearchResults"));
+            return View();
         }
 
         [HttpGet]
         [Route("/breadcrumb/"+ PathName)]
-        public override IActionResult Breadcrumb()
+        public IActionResult Breadcrumb()
         {
-            return View(ReturnPath("Breadcrumb", "OccupationSearchResults"));
+            return View();
         }
 
         [HttpGet]
         [Route("/bodytop/"+ PathName)]
-        public override IActionResult BodyTop()
+        public IActionResult BodyTop()
         {
-            return View(ReturnPath("bodytop"));
+            return View();
         }
 
         [HttpGet]
         [Route("/body/"+ PathName)]
-        public override IActionResult Body()
+        public IActionResult Body()
         {
-            return View(ReturnPath("body", "OccupationSearchResults"));
+            return View();
         }
 
         [HttpGet]
         [Route("/sidebarright/"+ PathName)]
-        public override IActionResult SidebarRight()
+        public IActionResult SidebarRight()
         {
-            return View(ReturnPath("sidebarright"));
+            return View();
         }
     }
 }

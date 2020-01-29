@@ -6,16 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewComponents\SearchOccupationResults\SearchOccupationResults.cs" />
     <Compile Remove="ViewModels\Worked\WorkedViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="ViewModels\Worked\WorkedViewModel.cs" />
+    <Content Remove="ViewComponents\SearchOccupationResults\Default.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />
-    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.10" />
+    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.15" />
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
     <PackageReference Include="Dfc.ProviderPortal.Packages" Version="0.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
@@ -45,6 +46,11 @@
       <TransformOnBuild>true</TransformOnBuild>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewComponents\SearchOccupationResults\" />
+    <Folder Include="Views\OccupationSearchResults\" />
   </ItemGroup>
 
 </Project>

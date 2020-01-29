@@ -1,4 +1,4 @@
-﻿namespace DFC.App.MatchSkills.ViewModels
+﻿namespace DFC.App.MatchSkills.ViewModels.OccupationSearch
 {
     public class OccupationSearchViewModel
     {

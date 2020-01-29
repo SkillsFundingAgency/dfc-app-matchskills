@@ -24,8 +24,12 @@ namespace DFC.App.MatchSkills.ViewComponents.SearchOccupationResults
         }
 
 
-        public async Task<IViewComponentResult> InvokeAsync(string occupation=default, bool altLabels=false)
+        //public async Task<IViewComponentResult> InvokeAsync(string occupation = default, bool altLabels = false)
+        public IViewComponentResult InvokeAsync(string occupation = default, bool altLabels = false)
         {
+            //              // commented out whilst I refactor the page models
+
+            /*
             var vm = new SearchOccupationResultsViewModel();
             
             var occupations =await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",_settings.ApiKey,occupation,altLabels);
@@ -34,7 +38,10 @@ namespace DFC.App.MatchSkills.ViewComponents.SearchOccupationResults
             
             
             vm.Title = occupation;
+            
             return View("~/ViewComponents/SearchOccupationResults/Default.cshtml",vm);
+            */
+            return View();
         }
     }
 }
