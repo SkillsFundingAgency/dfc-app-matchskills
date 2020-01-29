@@ -33,7 +33,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
            
             // ASSERT
             result.Should().NotBeNull(); 
-            result[0].Name.Should().Be("collect biological data");
+            result[0].Name.Should().Be("Collect biological data");
 
 
             handlerMock.Protected().Verify(
@@ -60,7 +60,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             
             // ASSERT
             result.Should().NotBeNull(); 
-            result[0].Name.Should().Be("renewable energy consultant");
+            result[0].Name.Should().Be("Renewable energy consultant");
 
 
             handlerMock.Protected().Verify(
@@ -110,11 +110,11 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
             
             // ACTs
-            var result = await subjectUnderTest.SearchOccupations<Occupation[]>(url,apiKey,"renewable",false);
+            var result = await subjectUnderTest.SearchOccupations<Occupation[]>(url,apiKey,"Renewable",false);
             
             // ASSERT
             result.Should().NotBeNull(); 
-            result[0].Name.Should().Be("renewable energy consultant");
+            result[0].Name.Should().Be("Renewable energy consultant");
 
             
             handlerMock.Protected().Verify(
