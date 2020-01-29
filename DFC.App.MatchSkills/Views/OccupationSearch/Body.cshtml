@@ -6,7 +6,7 @@
 
         <div class="govuk-grid-column-two-thirds">
 
-            <form asp-action="GetOccupationSkills" asp-controller="OccupationSearch" method="post" asp-antiforgery="true">
+            <form  asp-action="GetOccupationSkills" asp-controller="OccupationSearch" method="get">
                 <govukHeadingH1 Text="Enter your current or previous job title" />
 
                 <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
@@ -17,7 +17,7 @@
                 <govukAutoComplete Id="occupations-autocomplete-container"
                                    Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
                                    autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
-                                   minLength="2" name="input-autocomplete">
+                                   minLength="2" name="EnterJobInputAutocomplete">
                     <govukAutocompleteLabel 
                         additional-class="govuk-heading-m" Text="Enter your job title" For="occupations-autocomplete"></govukAutocompleteLabel>
                    
@@ -25,7 +25,7 @@
                 </govukAutoComplete>
                 <br />
                 <br />
-                <button class="govuk-button  govuk-button--secondary">Search</button>
+                <button id="EnterJobButtonSearch" class="govuk-button  govuk-button--secondary">Search</button>
             </form>
         </div>
     </div>
