@@ -134,7 +134,7 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchService",
-                                "value": "[concat('https://', variables('webAppName'), '.', parameters('appServiceDomain'), '/OccupationSearch/')]"
+                                "value": "[concat('https://', variables('webAppName'), '.', parameters('appServiceDomain'))]"
                             }
                         ]
                     }
