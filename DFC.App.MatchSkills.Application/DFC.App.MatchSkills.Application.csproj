@@ -7,10 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Session\" />
+    <PackageReference Include="Hashids.net" Version="1.2.2" />
   </ItemGroup>
 
 </Project>
