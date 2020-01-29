@@ -83,7 +83,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
             
             // ACTs
-            var result = await subjectUnderTest.SearchSkills<Skill[]>(url,apiKey,"Biological") ;
+            var result = await subjectUnderTest.SearchSkills<Skill[]>(url,apiKey,"biological") ;
             
             // ASSERT
             result.Should().NotBeNull();
