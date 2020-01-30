@@ -9,6 +9,7 @@ using DFC.App.MatchSkills.Application.Session.Models;
 using Dfc.ProviderPortal.Packages;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Application.Cosmos.Services
 {
@@ -16,19 +17,19 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
     {
         private readonly CosmosSettings _settings;
         private readonly CosmosClient _client;
-        public CosmosService(CosmosSettings settings)
+        public CosmosService(IOptions<CosmosSettings> settings)
         {
             Throw.IfNull(settings, nameof(settings));
-            Throw.IfNullOrWhiteSpace(settings.ApiUrl, nameof(settings.ApiUrl));
-            Throw.IfNullOrWhiteSpace(settings.ApiKey, nameof(settings.ApiKey));
-            _settings = settings;
+            Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
+            Throw.IfNullOrWhiteSpace(settings.Value.ApiKey, nameof(settings.Value.ApiKey));
+            _settings = settings.Value;
 
 
-            _client = new CosmosClient(accountEndpoint:settings.ApiUrl, authKeyOrResourceToken:settings.ApiKey);
+            _client = new CosmosClient(accountEndpoint:settings.Value.ApiUrl, authKeyOrResourceToken:settings.Value.ApiKey);
         }
-        public async Task CreateDocumentAsync(string databaseId, string containerId, object item)
+        public async Task CreateDocumentAsync(object item)
         {
-            var container = _client.GetContainer(databaseId, containerId);
+            var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
             await container.CreateItemAsync(item);
         }
     }

@@ -9,6 +9,6 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Interfaces
 {
     public interface ICosmosService
     {
-        Task CreateDocumentAsync(string databaseId, string containerId, object item);
+        Task CreateDocumentAsync(object item);
     }
 }

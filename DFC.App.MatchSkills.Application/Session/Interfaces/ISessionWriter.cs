@@ -8,6 +8,6 @@ namespace DFC.App.MatchSkills.Application.Session.Interfaces
 {
     public interface ISessionWriter
     {
-        Task CreateUserSession(UserSession userSession);
+        string CreateUserSession(string previousPage, string currentPage);
     }
 }

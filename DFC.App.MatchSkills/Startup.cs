@@ -1,4 +1,10 @@
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Application.Session.Services;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -30,6 +36,12 @@ namespace DFC.App.MatchSkills
             services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
             services.Configure<ServiceTaxonomySettings>(Configuration.GetSection(nameof(ServiceTaxonomySettings)));
             services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
+            services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
+            services.Configure<SessionSettings>(Configuration.GetSection(nameof(SessionSettings)));
+            services.AddScoped<ICosmosService, CosmosService>();
+            services.AddScoped<ISessionReader, SessionService>();
+            services.AddScoped<ISessionWriter, SessionService>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(_corsPolicy,
