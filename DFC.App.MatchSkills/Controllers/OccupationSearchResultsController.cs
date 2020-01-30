@@ -8,7 +8,7 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private const string PathName = "OccupationSearchResults";
 
-        public OccupationSearchResultsController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        public OccupationSearchResultsController(IDataProtectionProvider dataProtectionProvider) : base()
         {
         }
 

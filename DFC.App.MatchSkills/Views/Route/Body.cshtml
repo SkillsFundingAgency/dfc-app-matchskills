@@ -1,4 +1,5 @@
 ﻿@using DFC.App.MatchSkills.ViewComponents.Choice
+@model DFC.App.MatchSkills.ViewModels.RouteCompositeViewModel
 
 @{
     var choiceModel = new ChoiceComponentModel
@@ -8,6 +9,7 @@
         PageId = "Route",
         Text = "Choose one of the options below.",
         Title = "What would you like your career matches to be based on?",
+        FormAction = $"body/{Model.Id}",
         RadioButtons = new List<RadioButtonModel>
 {
     {
