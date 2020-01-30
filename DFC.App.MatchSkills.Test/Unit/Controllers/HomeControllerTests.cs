@@ -32,11 +32,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var vm = new HeadViewModel
             {
                 PageTitle = "Page Title",
-                DefaultCssLink = "Link"
                 
             };
             var pageTitle = vm.PageTitle;
-            var css = vm.DefaultCssLink;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().Be("/Views/home/Head.cshtml");
