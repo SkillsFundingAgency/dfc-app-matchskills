@@ -1,6 +1,6 @@
 ﻿@model DFC.App.MatchSkills.ViewModels.OccupationSearchViewModel
 
-<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
 
     <div class="govuk-grid-row">
 
@@ -14,12 +14,11 @@
                 <p>You can add skills from more than one job to your skills list.</p>
 
                
-                <govukAutoComplete Id="occupations-autocomplete-container"
+                <govukAutoComplete Id="occupations-autocomplete"
                                    Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
                                    autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
                                    minLength="2" name="EnterJobInputAutocomplete">
-                    <govukAutocompleteLabel 
-                        additional-class="govuk-heading-m" Text="Enter your job title" For="occupations-autocomplete"></govukAutocompleteLabel>
+                    <govukAutocompleteLabel Text="Enter your job title" For="occupations-autocomplete"></govukAutocompleteLabel>
                    
                     
                 </govukAutoComplete>
