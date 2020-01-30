@@ -1,4 +1,6 @@
-﻿<div class="govuk-main-wrapper ">
+﻿@model DFC.App.MatchSkills.ViewModels.HomeCompositeViewModel
+
+<div class="govuk-main-wrapper ">
 
     <div class="govuk-width-container">
         <div class="govuk-grid-row">
@@ -13,7 +15,7 @@
                     <govUkListItem text="exploring career options for your future"></govUkListItem>
                     <govUkListItem text="looking to return to work after a break"></govUkListItem>
                 </govukBulletedList>
-                <govukStartButtonLink id="startButtonLinkStartButton" linkText="Start now" LinkHref="/MatchSkills/Worked"></govukStartButtonLink>
+                <govukButtonLink id="@Model.GetElementId("GovukButtonLink","Start")" linkText="Start now" LinkHref="@Model.CompositeSettings.Path/worked"></govukButtonLink>
             </div>
         </div>
     </div>
