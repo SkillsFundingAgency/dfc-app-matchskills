@@ -47,6 +47,12 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/[controller]")]
         public virtual IActionResult Body()
         {
+            var sessionId = TryGetSessionId(Request);
+            if (!string.IsNullOrWhiteSpace(sessionId))
+            {
+                AppendCookie(sessionId);
+            }
+
             return View(ViewModel);
         }
 
