@@ -1,4 +1,4 @@
-﻿using Dfc.ProviderPortal.Packages;
+using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Models;
 using DFC.Personalisation.Common.Extensions;
 
@@ -26,6 +26,7 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId Worked { get; } = new PageId("worked");
             public static PageId OccupationSearch { get; } = new PageId("occupationSearch");
             public static PageId SkillsBasket { get; } = new PageId("skillsList");
+            public static  PageId Route { get; } = new PageId("route");
         }
 
         public PageId Id { get; }

@@ -23,7 +23,8 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly ServiceTaxonomySettings _settings;
 
        
-        public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,IServiceTaxonomySearcher serviceTaxonomy, IOptions<ServiceTaxonomySettings> settings) : base(dataProtectionProvider)
+        public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,IServiceTaxonomySearcher serviceTaxonomy, IOptions<ServiceTaxonomySettings> settings) 
+            : base()
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
