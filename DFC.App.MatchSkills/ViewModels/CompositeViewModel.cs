@@ -1,4 +1,6 @@
-﻿using DFC.App.MatchSkills.Models;
+﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Models;
+using DFC.Personalisation.Common.Extensions;
 
 namespace DFC.App.MatchSkills.ViewModels
 {
@@ -23,22 +25,29 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId Home { get; } = new PageId("home");
             public static PageId Worked { get; } = new PageId("worked");
             public static PageId OccupationSearch { get; } = new PageId("occupationSearch");
+            public static PageId SkillsBasket { get; } = new PageId("skillsList");
         }
 
         public PageId Id { get; }
 
         public string PageTitle { get; }
+        public string PageHeading { get; }
 
         public CompositeSettings CompositeSettings { get; set; }
 
-        protected CompositeViewModel(PageId pageId, string pageName)
+        protected CompositeViewModel(PageId pageId, string pageHeading)
         {
             Id = pageId;
-            PageTitle = string.IsNullOrWhiteSpace(pageName) ? AppTitle : $"{pageName} | {AppTitle}";
+            PageHeading = pageHeading;
+            PageTitle = string.IsNullOrWhiteSpace(pageHeading) ? AppTitle : $"{pageHeading} | {AppTitle}";
         }
 
         public string GetElementId(string elementName, string instanceName)
         {
+            Throw.IfNullOrWhiteSpace(elementName, nameof(elementName));
+            Throw.IfNullOrWhiteSpace(instanceName, nameof(instanceName));
+            elementName = elementName.FirstCharToUpper();
+            instanceName = instanceName.FirstCharToUpper();
             return $"{Id}{elementName}{instanceName}";
         }
     }
