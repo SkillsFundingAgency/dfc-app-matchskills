@@ -1,5 +1,4 @@
-﻿using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Controllers
