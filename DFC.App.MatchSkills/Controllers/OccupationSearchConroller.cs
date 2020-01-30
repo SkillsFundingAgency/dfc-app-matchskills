@@ -11,7 +11,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -57,8 +56,8 @@ namespace DFC.App.MatchSkills.Controllers
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, enterJobInputAutocomplete, bool.Parse(_settings.SearchOccupationInAltLabels));
             var occupationId = occupations.Single(x => x.Name == enterJobInputAutocomplete).Id;
-           
-           return View("/views/SelectSkills/index.cshtml");;
+            
+           return View("/views/SelectSkills/index.cshtml",occupationId);
         }
  
         #region OccupationSearchCUI
