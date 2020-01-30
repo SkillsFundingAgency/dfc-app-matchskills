@@ -50,17 +50,15 @@ namespace DFC.App.MatchSkills.Controllers
             return occupations.Select(x =>x.Name).ToList();
         }
 
-        
+        [Route("matchskills/GetOccupationSkills")]
         [HttpPost,HttpGet]
-        [Route("/GetOccupationSkills")]
-        public  async Task<IEnumerable<Skill>> GetOccupationSkills(string  enterJobInputAutocomplete)
+        public  async Task<IActionResult> GetOccupationSkills(string  enterJobInputAutocomplete)
         {
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, enterJobInputAutocomplete, bool.Parse(_settings.SearchOccupationInAltLabels));
             var occupationId = occupations.Single(x => x.Name == enterJobInputAutocomplete).Id;
-            var skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_settings.ApiUrl}",
-                _settings.ApiKey, enterJobInputAutocomplete);
-            return skills.ToList();
+           
+           return View("/views/SelectSkills/index.cshtml");;
         }
  
         #region OccupationSearchCUI
