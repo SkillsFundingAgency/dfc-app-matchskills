@@ -50,6 +50,15 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 
+        public async Task<Skill[]> GetAllSkillsForOccupation<TSkills>(string apiPath, string ocpApimSubscriptionKey, string occupation)
+        {
+            occupation ??= ""; 
+            var postData = new StringContent($"{{ \"uri\": \"{occupation.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
+            var result = await GetJsonListPost<StSkills>($"{apiPath}/GetAllSkillsForOccupation/Execute/", ocpApimSubscriptionKey,postData); 
+            return Mapping.Mapper.Map<Skill[]>(result.Skills);
+        }
+
+
         public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey) 
         {
             var result = await GetJsonListGet<StOccupations>($"{apiPath}/GetAllOccupations/Execute/" , ocpApimSubscriptionKey);
