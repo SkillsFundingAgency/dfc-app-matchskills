@@ -7,5 +7,6 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy
     {
         Task<Skill[]> SearchSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey,string skill);
         Task<Occupation[]> SearchOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey,string occupation,bool matchAltLabels);
+        Task<Skill[]> GetAllSkillsForOccupation<TSkills>(string apiPath, string ocpApimSubscriptionKey, string occupation);
     }
 }
