@@ -1,0 +1,30 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.Choice
+
+@{
+    var choiceModel = new ChoiceComponentModel
+    {
+        ButtonText = "Continue",
+        LinkText = "TestLink",
+        PageId = "Route",
+        Text = "Choose one of the options below.",
+        Title = "What would you like your career matches to be based on?",
+        RadioButtons = new List<RadioButtonModel>
+{
+    {
+        new RadioButtonModel
+        {
+            Text = "Your current or previous jobs", Order = 1,
+            Name = "Choice", Value = "Jobs", HintText = "See careers that might suit your skills. This will take between 3 and 5 minutes."
+        }
+    },
+            {new RadioButtonModel
+            {
+                Text = "Your interests, motivations and current or previous jobs", Order = 2, Name = "Choice",
+                Value = "SkillsAndJobs", HintText = "See careers that might suit your personal traits and skills. This will take between 5 and 10 minutes."
+            }}
+
+        }
+    };
+
+}
+<partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />

@@ -13,7 +13,16 @@
 
                 <p>You can add skills from more than one job to your skills list.</p>
 
-                <govukAutoComplete Id="occupations-autocomplete-container" Element="occupations-autocomplete-container" LabelText="Enter your job title"></govukAutoComplete>
+               
+                <govukAutoComplete Id="occupations-autocomplete-container"
+                                   Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
+                                   autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
+                                   minLength="2" name="input-autocomplete">
+                    <govukAutocompleteLabel 
+                        additional-class="govuk-heading-m" Text="Enter your job title" For="occupations-autocomplete"></govukAutocompleteLabel>
+                   
+                    
+                </govukAutoComplete>
                 <br />
                 <br />
                 <button class="govuk-button  govuk-button--secondary">Search</button>
@@ -22,38 +31,25 @@
     </div>
 </div>
 <script>
-
-    function AutoComplete() {
-        if (document.readyState === 'complete') {
-
-            accessibleAutocomplete({
-                element: document.querySelector('#occupations-autocomplete-container'),
-                id: 'occupations-autocomplete-container', // To match it to the existing <label>.
-                source: suggest,
-                autoselect: false,
-                async : true,
-                confirmOnBlur: true,
-                cssNamespace: 'autocomplete',
-                defaultValue: '',
-                displayMenu: 'inline',
-                minLength: 2,
-                name: 'input-autocomplete',
-                onConfirm: () => { },
-                require: false,
-                showAllValues: false,
-                showNoOptionsFound: true
-            });
-        }
-    }
-
+  
+    var timer;
+    
     document.onreadystatechange = () => {
         if (document.readyState === 'complete') {
             AutoComplete();
         }
     };
 
-    function suggest(query, populateResults) {
+    function Suggest(query, populateResults) {
+        if (timer){
+            clearTimeout(timer);
+        }
+        timer = setTimeout(
+            runsearch(query, populateResults), 1000);
+    }
 
+  
+    function runsearch(query, populateResults) {
         $.ajax({
             type: 'GET',
             url: '@Model.SearchService/OccupationSearchAuto',
@@ -65,11 +61,11 @@
             },
             error: function(jqXHR, exception) {
                 if (jqXHR.status === 0) {
-                    alert('Not connect.\n Verify Network.');
+                    console.log('**MatchSkills:Not connect.\n Verify Network.');
                 } else if (jqXHR.status == 404) {
                     alert('Requested page not found. [404]');
                 } else if (jqXHR.status == 500) {
-                    
+                    console.log('**MatchSkills:500 Error.');
                 } else if (exception === 'parsererror') {
                     alert('Requested JSON parse failed.');
                 } else if (exception === 'timeout') {
@@ -82,5 +78,4 @@
             }
         });
     }
-
 </script>

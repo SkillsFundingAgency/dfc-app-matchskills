@@ -1,4 +1,5 @@
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +29,7 @@ namespace DFC.App.MatchSkills
             services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
             services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
             services.Configure<ServiceTaxonomySettings>(Configuration.GetSection(nameof(ServiceTaxonomySettings)));
+            services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
             services.AddCors(options =>
             {
                 options.AddPolicy(_corsPolicy,

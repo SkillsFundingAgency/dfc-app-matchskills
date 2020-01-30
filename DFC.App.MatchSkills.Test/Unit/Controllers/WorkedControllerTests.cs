@@ -34,10 +34,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = controller.Head() as ViewResult;
             var vm = result.ViewData.Model as HeadViewModel;
 
-            vm.PageTitle.Should().BeEquivalentTo(Path);
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be("/Views/home/Head.cshtml");
+            result.ViewName.Should().Be("/Views/shared/Head.cshtml");
 
         }
 
@@ -77,7 +76,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be("/Views/home/Breadcrumb.cshtml");
+            result.ViewName.Should().Be("/Views/shared/Breadcrumb.cshtml");
         }
 
         [Test]
@@ -87,7 +86,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be("/Views/Shared/BodyTopWithOutBanner.cshtml");
+            result.ViewName.Should().Be("/Views/Shared/BodyTop.cshtml");
         }
 
         [Test]
@@ -97,7 +96,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = controller.SidebarRight() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be("/Views/home/sidebarright.cshtml");
+            result.ViewName.Should().Be("/Views/shared/sidebarright.cshtml");
         }
 
         [Test]
@@ -110,10 +109,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 PageId = "test",
                 RadioButtons = new List<RadioButtonModel>
                 {
-                    {new RadioButtonModel {Text = "test", Order = 1, Name = "test"}}
+                    {new RadioButtonModel {Text = "test", Order = 1, Name = "test", Value = "test", HintText = "Hint"}}
                 },
                 Text = "test",
-                Title = "test"
+                Title = "test",
+                FormAction = "Action"
             };
         }
         [Test]
