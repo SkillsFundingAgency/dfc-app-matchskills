@@ -17,11 +17,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/head/"+ PathName)]
         public override IActionResult Head()
         {
-            var vm = new HeadViewModel
-            {
-                PageTitle = PathName
-            };
-            return View(ReturnPath("Head"), vm);
+            return View(ReturnPath("Head"));
         }
 
         [HttpGet]
@@ -35,7 +31,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/bodytop/"+ PathName)]
         public override IActionResult BodyTop()
         {
-            return View(ReturnPath("BodyTopWithOutBanner", "Shared"));
+            return View(ReturnPath("BodyTop", "Shared"));
         }
 
         [HttpGet]
