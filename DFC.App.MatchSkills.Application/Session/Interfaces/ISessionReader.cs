@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DFC.App.MatchSkills.Application.Session
+namespace DFC.App.MatchSkills.Application.Session.Interfaces
 {
     public interface ISessionReader
     {

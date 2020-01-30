@@ -15,11 +15,6 @@ namespace DFC.App.MatchSkills.Application.Session.Helpers
             string year = (date.Year - 2018).ToString();
             long digits = Convert.ToInt64($"{year}{date.ToString("MMddHHmmssfff")}{rand}");
             var code = hashids.EncodeLong(digits);
-            var decode = Decode(salt, code);
-            if (digits.ToString() != decode)
-            {
-                throw new Exception("Invalid decode");
-            }
             return code;
         }
         public static string GenerateSessionId(string salt) => GenerateSessionId(salt, DateTime.UtcNow);
