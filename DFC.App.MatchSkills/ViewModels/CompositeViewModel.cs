@@ -26,7 +26,8 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId Worked { get; } = new PageId("worked");
             public static PageId OccupationSearch { get; } = new PageId("occupationSearch");
             public static PageId SkillsBasket { get; } = new PageId("skillsList");
-            public static  PageId Route { get; } = new PageId("route");
+            public static PageId Route { get; } = new PageId("route");
+            public static PageId Matches { get; } = new PageId("matches");
         }
 
         public PageId Id { get; }
@@ -43,6 +44,8 @@ namespace DFC.App.MatchSkills.ViewModels
             PageTitle = string.IsNullOrWhiteSpace(pageHeading) ? AppTitle : $"{pageHeading} | {AppTitle}";
         }
 
+        #region Helpers
+
         public string GetElementId(string elementName, string instanceName)
         {
             Throw.IfNullOrWhiteSpace(elementName, nameof(elementName));
@@ -51,5 +54,19 @@ namespace DFC.App.MatchSkills.ViewModels
             instanceName = instanceName.FirstCharToUpper();
             return $"{Id}{elementName}{instanceName}";
         }
+
+        public string NounForNumber(int number, string singularNoun, string pluralNoun)
+        {
+            if (1 == number)
+            {
+                return singularNoun;
+            }
+            else
+            {
+                return pluralNoun;
+            }
+        }
+
+        #endregion Helpers
     }
 }

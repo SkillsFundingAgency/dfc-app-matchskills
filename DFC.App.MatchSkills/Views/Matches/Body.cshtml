@@ -1,0 +1,40 @@
+﻿@model DFC.App.MatchSkills.ViewModels.MatchesCompositeViewModel
+
+<div class="govuk-width-container">
+    <govukHeadingH1 text="@Model.PageHeading"></govukHeadingH1>
+</div>
+
+<div class="govuk-grid-row margin-reset">
+    <div class="app-grey govuk-body">
+        <div class="govuk-main-wrapper govuk-width-container">
+            <p><partial name="_MatchesCount"/></p>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <div class="app-sidebar app-advisor-panel">
+                        <!-- partial: _CategoryFilter -->
+                        <!-- partial: _MatchStrengthFilter -->
+                    </div>
+                </div>
+                <div class="govuk-grid-column-two-thirds app-intro">
+                    <div class="app-results ">
+                        <div class="app-results__item">
+                            <hr>
+                            <div class="sort-container govuk-!-margin-bottom-6">
+                                <!-- partial: _SortOptions -->
+                            </div>
+                            <ul class="app-long-results list govuk-list govuk-grid-row" id="app-results-list--long">
+                                <li class="">
+                                    @foreach (var careerMatch in Model.CareerMatches)
+                                    {
+                                        <partial name="_CareerResult" model="careerMatch"/>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- partial: _SortOptions -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
