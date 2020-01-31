@@ -41,6 +41,17 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
             result.Should().NotBeNull();
         }
 
+        [TestCase("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197")]
+        public async Task When_GetAllSkillsForOccupation_Then_ShouldReturnSkillsList(string occupation)
+        {
+            // ACT
+            var result = await _subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(_settings.ApiUrl,_settings.ApiKey,occupation) ;
+
+            // ASSERT
+            result.Should().NotBeNull();
+        }
+        
+
         [Test]
         public async Task When_GetAllOccupations_Then_ShouldReturnOccupationsList()
         {
