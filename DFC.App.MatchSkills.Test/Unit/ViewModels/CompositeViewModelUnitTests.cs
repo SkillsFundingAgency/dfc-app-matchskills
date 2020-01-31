@@ -81,5 +81,29 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewModels
             // Assert.
             itemUnderTest.Id.Should().Be(CompositeViewModel.PageId.Home);
         }
+
+        [Test]
+        public void When_ChildConstructed_Then_PageHeadingShouldBeSet()
+        {
+            // Arrange.
+
+            // Act.
+            var itemUnderTest = new HomeCompositeViewModel();
+
+            // Assert.
+            itemUnderTest.PageHeading.Should().Be("Home");
+        }
+
+        [Test]
+        public void When_ChildConstructed_Then_PageTitleShouldBeSet()
+        {
+            // Arrange.
+
+            // Act.
+            var itemUnderTest = new HomeCompositeViewModel();
+
+            // Assert.
+            itemUnderTest.PageTitle.Should().Be("Home | Discover your skills and careers");
+        }
     }
 }
