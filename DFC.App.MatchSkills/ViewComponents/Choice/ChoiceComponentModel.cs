@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DFC.App.MatchSkills.ViewModels;
 
 namespace DFC.App.MatchSkills.ViewComponents.Choice
 {
@@ -11,5 +12,6 @@ namespace DFC.App.MatchSkills.ViewComponents.Choice
         public List<RadioButtonModel> RadioButtons { get; set; }
         public string PageId { get; set; }
         public string FormAction { get; set; }
+        public CompositeViewModel ParentModel { get; set; }
     }
 }

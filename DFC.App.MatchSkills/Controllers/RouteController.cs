@@ -6,27 +6,26 @@ using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Controllers
 {
-    public class WorkedController : CompositeSessionController<WorkedCompositeViewModel>
+    public class RouteController : CompositeSessionController<RouteCompositeViewModel>
     {
         private readonly CompositeSettings _compositeSettings;
-
-        public WorkedController(IDataProtectionProvider dataProtectionProvider,
-            IOptions<CompositeSettings> compositeSettings)
+        public RouteController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings) 
             : base(dataProtectionProvider, compositeSettings)
         {
             _compositeSettings = compositeSettings.Value;
         }
 
-        [HttpPost]
+        
         [Route("MatchSkills/body/[controller]")]
-        public IActionResult Body(WorkedBefore choice)
+        [HttpPost]
+        public IActionResult Body(Route choice)
         {
             switch (choice)
             {
-                case WorkedBefore.Yes:
-                    return RedirectPermanent($"{_compositeSettings.Path}/{CompositeViewModel.PageId.Route}");
-                case WorkedBefore.No:
-                default:
+                case Route.Jobs:
+                    return RedirectPermanent($"{_compositeSettings.Path}/{CompositeViewModel.PageId.OccupationSearch}");
+                case Route.JobsAndSkills:
+                    default:
                     return base.Body();
             }
         }
