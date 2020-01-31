@@ -81,10 +81,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(WorkedBefore.No) as ViewResult;
+            var result = controller.Body(WorkedBefore.No) as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"/{CompositeViewModel.PageId.Worked}");
         }
 
         [Test]
