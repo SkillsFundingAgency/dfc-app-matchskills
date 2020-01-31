@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
+using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Application.Session.Services;
+using FluentAssertions;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Options;
+using Moq;
+using NSubstitute;
+using NUnit.Framework;
+
+namespace DFC.App.MatchSkills.Application.Test.Unit.Services
+{
+    public class SessionServiceTests
+    {
+        public class CreateSessionTests
+        {
+            private IOptions<SessionSettings> _sessionSettings;
+            private IOptions<CosmosSettings> _cosmosSettings;
+            private Mock<CosmosClient> _client;
+            private string _currentPage, _previousPage;
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosSettings = Options.Create(new CosmosSettings()
+                {
+                    ApiUrl = "https://test-account-not-real.documents.azure.com:443/",
+                    ApiKey = "VGhpcyBpcyBteSB0ZXN0",
+                    DatabaseName = "DatabaseName",
+                    UserSessionsCollection = "UserSessions"
+                });
+                _client = new Mock<CosmosClient>();
+
+                _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            }
+            [Test]
+            public async Task WhenSuccessfulCall_ReturnSessionId()
+            {
+                var cosmosSub = Substitute.For<ICosmosService>();
+                cosmosSub.CreateItemAsync(default).ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.OK));
+                var serviceUnderTest = new SessionService(
+                    cosmosSub, _sessionSettings);
+                var sessionId= await serviceUnderTest.CreateUserSession(null, null);
+                sessionId.Should().NotBeNullOrWhiteSpace();
+
+            }
+            [Test]
+            public async Task WhenUnsuccessfulCall_ReturnNull()
+            {
+                var cosmosSub = Substitute.For<ICosmosService>();
+                cosmosSub.CreateItemAsync(default)
+                    .ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                var serviceUnderTest = new SessionService(
+                    cosmosSub, _sessionSettings);
+                var sessionId = await serviceUnderTest.CreateUserSession(null, null);
+                sessionId.Should().BeNull();
+
+            }
+        }
+    }
+}

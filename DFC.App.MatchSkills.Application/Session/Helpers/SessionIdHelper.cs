@@ -23,11 +23,7 @@ namespace DFC.App.MatchSkills.Application.Session.Helpers
         {
             var hashids = new Hashids(salt, 4, Alphabet);
             var decode = hashids.DecodeLong(code);
-            if (decode.Length > 0)
-            {
-                return decode[0].ToString();
-            }
-            return null;
+            return decode.Length > 0 ? decode[0].ToString() : null;
         }
 
         private static int _counter = 10;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,20 +19,31 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
     {
         private readonly CosmosSettings _settings;
         private readonly CosmosClient _client;
-        public CosmosService(IOptions<CosmosSettings> settings)
+        public CosmosService(IOptions<CosmosSettings> settings, CosmosClient client)
         {
             Throw.IfNull(settings, nameof(settings));
             Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
             Throw.IfNullOrWhiteSpace(settings.Value.ApiKey, nameof(settings.Value.ApiKey));
             _settings = settings.Value;
 
-
-            _client = new CosmosClient(accountEndpoint:settings.Value.ApiUrl, authKeyOrResourceToken:settings.Value.ApiKey);
+     
+            //client = new CosmosClient(accountEndpoint:settings.Value.ApiUrl, authKeyOrResourceToken:settings.Value.ApiKey);
+            _client = client;
         }
-        public async Task CreateDocumentAsync(object item)
+        public async Task<HttpResponseMessage> CreateItemAsync(object item)
         {
             var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
-            await container.CreateItemAsync(item);
+            var result =  await container.CreateItemAsync(item);
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                 
+                };
+
+            }
+
+            return null;
         }
     }
 }
