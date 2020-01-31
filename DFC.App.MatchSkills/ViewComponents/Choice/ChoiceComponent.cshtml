@@ -17,15 +17,15 @@
 
             @foreach (var radioButton in Model.RadioButtons)
             {
-                <govukRadioButton id="@($"{Model.PageId}govukRadioButtonRadio{radioButton.Text}")" name="@radioButton.Name" value="@radioButton.Value">
-                    <govukRadioLabel text="@radioButton.Text" for="@($"{Model.PageId}govukRadioButtonRadio{radioButton.Text}")"></govukRadioLabel>
+                <govukRadioButton id="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)" name="@radioButton.Name" value="@radioButton.Value">
+                    <govukRadioLabel text="@radioButton.Text" for="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)"></govukRadioLabel>
                     @if (!string.IsNullOrEmpty(radioButton.HintText))
                     {
-                        <govukRadioHint hint-text="@radioButton.HintText" id="@($"{Model.PageId}govukRadioHint{radioButton.Text}")"></govukRadioHint>
+                        <govukRadioHint hint-text="@radioButton.HintText" id="@Model.ParentModel.GetElementId("govUkRadioHint",@radioButton.Value)"></govukRadioHint>
                     }
                 </govukRadioButton>
             }
         </fieldset>
-        <govukButton text="@Model.ButtonText" id="@($"{Model.PageId}govukButton{Model.ButtonText}")" disabled="false"></govukButton>
+        <govukButton text="@Model.ButtonText" id="@Model.ParentModel.GetElementId("govUkButton",Model.ButtonText)" disabled="false"></govukButton>
     </form>
 </div>
