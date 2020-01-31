@@ -1,0 +1,30 @@
+﻿<div class="filters-container">
+    <div class="filter-label">
+        <h2 class="govuk-heading-s govuk-!-margin-0">Filter by match strength</h2>
+    </div>
+    <div class="filter-box">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-visually-hidden">Choose desired match strength</legend>
+            <div class="govuk-radios">
+                <div class="govuk-radios__item">
+                    <input checked="checked" class="govuk-radios__input" data-val="true" data-val-required="Match strength is required." id="match_all" name="match_all" type="radio" value="All_strengths">
+                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="match_all">All</label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="80-100" name="CourseHours" type="radio" value="Fulltime">
+                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="80-100">80 - 100%</label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="50-79" name="CourseHours" type="radio" value="PartTime">
+                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="50-79">50 - 79%</label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="less_than_50" name="CourseHours" type="radio" value="Flexible">
+                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="less_than_50">less than 50%</label>
+                </div>
+
+            </div>
+        </fieldset>
+    </div>
+    <button class="govuk-button">Apply filters</button>
+</div>

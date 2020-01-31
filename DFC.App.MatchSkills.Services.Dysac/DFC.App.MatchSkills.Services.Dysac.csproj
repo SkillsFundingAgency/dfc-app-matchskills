@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <ProjectGuid>596AC70A-ACBE-4CBC-B7A0-30B9DC0EA91C</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.12" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.1" />
     <PackageReference Include="NSubstitute" Version="4.2.1" />
   </ItemGroup>
 

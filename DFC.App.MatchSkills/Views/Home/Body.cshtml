@@ -1,0 +1,22 @@
+﻿@model DFC.App.MatchSkills.ViewModels.HomeCompositeViewModel
+
+<div class="govuk-main-wrapper ">
+
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <p>
+                    Answer questions about yourself to see the types of work that
+                    might suit you.
+                </p>
+                <govukBulletedList text="This can be useful if you're:">
+                    <govUkListItem text="thinking about transferring your skills to a new career"></govUkListItem>
+                    <govUkListItem text="exploring career options for your future"></govUkListItem>
+                    <govUkListItem text="looking to return to work after a break"></govUkListItem>
+                </govukBulletedList>
+                <govukButtonLink id="@Model.GetElementId("GovukButtonLink","Start")" linkText="Start now" LinkHref="@Model.CompositeSettings.Path/worked"></govukButtonLink>
+            </div>
+        </div>
+    </div>
+
+</div>

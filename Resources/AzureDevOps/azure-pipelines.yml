@@ -33,7 +33,9 @@ stages:
     #  Build DFC.App.MatchSkills.WebUI
     - template: AzureDevOpsTemplates\Build\StepTemplates\dfc-dotnetcore-build-sonar.yml@dfc-devops
       parameters:
-        SolutionBaseName: $(SolutionBaseName).WebUI
+        SolutionBaseName: $(SolutionBaseName)
         BuildPlatform: 'any cpu'
         BuildConfiguration: 'release'
         TestSuffix: Test
+        PublishWebApp: true
+        DotNetCoreVersion: '3.1.100'

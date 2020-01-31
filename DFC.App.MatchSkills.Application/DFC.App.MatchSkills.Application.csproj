@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <ProjectGuid>0255C068-3F41-47B4-8D23-20A3851D302D</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Session\" />
   </ItemGroup>
 
 </Project>

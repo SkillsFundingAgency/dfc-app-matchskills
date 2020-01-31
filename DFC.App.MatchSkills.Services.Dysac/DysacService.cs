@@ -14,10 +14,10 @@ namespace DFC.App.MatchSkills.Services.Dysac
     
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
-        private readonly ILogger _log;
+        private readonly ILogger<DysacService> _log;
         private readonly Uri _getCreateDysacSessionUri;
         private readonly RestClient _client;
-        public DysacService(ILogger log, RestClient client, DysacServiceSettings dysacApiSettings)
+        public DysacService(ILogger<DysacService> log, RestClient client, DysacServiceSettings dysacApiSettings)
         {
             _log = log;
             _client = client;
@@ -32,7 +32,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
                 var stubbedContent = new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Application.Json);
                 SetDssCorrelationId();
 
-                return await _client.Post<NewSessionResponse>(_getCreateDysacSessionUri.AbsoluteUri + assessmentType.ToLower(), stubbedContent);
+                return await _client.PostAsync<NewSessionResponse>(_getCreateDysacSessionUri.AbsoluteUri + assessmentType.ToLower(), stubbedContent);
             }
             catch (HttpRequestException hre)
             {
@@ -62,7 +62,6 @@ namespace DFC.App.MatchSkills.Services.Dysac
         internal static Uri GetCreateDysacSessionUri(this DysacServiceSettings extendee)
         {
             var uri = new Uri(extendee.ApiUrl);
-            var key = extendee.ApiKey;
             var trimmed = uri.AbsoluteUri.TrimEnd('/');
             return new Uri($"{trimmed}{Constants.CreateNewAssessmentPath}{Constants.CreateNewAssessmentQueryString}");
         }
@@ -71,7 +70,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
     internal static class Constants
     {
         internal const string DssCorrelationIdHeader = "DssCorrelationId";
-        internal const string CreateNewAssessmentPath = "/assessment";
+        internal const string CreateNewAssessmentPath = "/assessments/api/assessment/";
         internal const string CreateNewAssessmentQueryString = "?assessmentType=";
     }
 }

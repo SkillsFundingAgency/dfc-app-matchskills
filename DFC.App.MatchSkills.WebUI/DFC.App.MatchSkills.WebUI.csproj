@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -6,8 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.12" />
-    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.4" />
+    <Content Remove="Views\ViewComponents\Choice\ChoiceComponent.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\ViewComponents\Choice\ChoiceComponent.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />
+    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />

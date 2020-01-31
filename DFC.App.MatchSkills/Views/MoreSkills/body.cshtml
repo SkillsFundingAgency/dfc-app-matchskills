@@ -1,0 +1,26 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.Choice
+@model DFC.App.MatchSkills.ViewModels.MoreSkillsCompositeViewModel
+
+@{
+    var choiceModel = new ChoiceComponentModel
+    {
+        ButtonText = "Continue",
+        LinkText = "TestLink",
+        Text = "Choose an option below.",
+        FormAction = $"body/{Model.Id}",
+        ParentModel = Model,
+        RadioButtons = new List<RadioButtonModel>
+        {
+            {new RadioButtonModel {Text = "Entering a job title", Order = 1, Name = "Choice", Value = "Job",
+                HintText = "This will find the most common skills for a job"}},
+            {new RadioButtonModel {Text = "Search for a skill", Order = 2, Name = "Choice", Value = "skill"}}
+
+        }
+    };
+
+}
+<div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+        <partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
+    </div>
+</div>

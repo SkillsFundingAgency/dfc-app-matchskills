@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c800acc3-8cfc-4f36-aef9-927ea7ddfa1d",
+		"_postman_id": "e0e268e7-38b0-4327-be88-3732264532ac",
 		"name": "MatchSkillsAzureSetUp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -22,7 +22,7 @@
 					"raw": "{     \n\t\"Path\": \"matchskills\",\n    \"TopNavigationText\": \"Match Skills\",\n    \"TopNavigationOrder\": 400,\n    \"Layout\": \"FullWidth\",\n    \"IsOnline\": true,\n    \"OfflineHtml\": \"<H2>Match Skills Service Unavailable</H2>\"\n}"
 				},
 				"url": {
-					"raw": "{{PathRootUrl}}paths",
+					"raw": "{{PathRootUrl}}paths?=",
 					"host": [
 						"{{PathRootUrl}}paths"
 					],
@@ -81,7 +81,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{     \r\n\t\"Path\": \"matchskills\",\r\n\t\"PageRegion\": \"Head\",\r\n    \"RegionEndpoint\": \"https://localhost:44396/head/{0}\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": null \r\n}"
+					"raw": "{     \r\n\t\"Path\": \"matchskills\",\r\n\t\"PageRegion\": \"Head\",\r\n    \"RegionEndpoint\": \"https://localhost:44392/head/{0}\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": null,\r\n    \"IsHealthy\": true,\r\n    \"IsOnline\": true\r\n}"
 				},
 				"url": {
 					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
@@ -142,7 +142,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{     \r\n\t\"Path\": \"matchskills\", \r\n\t\"PageRegion\": \"Breadcrumb\",\r\n    \"RegionEndpoint\": \"https://localhost:44396/breadcrumb/{0}\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\"\r\n}"
+					"raw": "{     \r\n\t\"Path\": \"matchskills\", \r\n\t\"PageRegion\": \"Breadcrumb\",\r\n    \"RegionEndpoint\": \"https://localhost:44392/breadcrumb/{0}\",\r\n    \"HeathCheckRequired\": false,\r\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\",\r\n    \"IsHealthy\": true,\r\n    \"IsOnline\": true\r\n}"
 				},
 				"url": {
 					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
@@ -171,7 +171,65 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{     \n\t\"Path\": \"matchskills\",\n\t\"PageRegion\": \"Body\",\n    \"RegionEndpoint\": \"https://localhost:44396/body/{0}\",\n    \"HeathCheckRequired\": true,\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\"\n}"
+					"raw": "{     \n\t\"Path\": \"matchskills\",\n\t\"PageRegion\": \"Body\",\n    \"RegionEndpoint\": \"https://localhost:44392/body/{0}\",\n    \"HealthCheckRequired\": true,\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\",\n    \"IsHealthy\": true,\n    \"IsOnline\": true\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"matchskills",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionBodyTop",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \n\t\"Path\": \"matchskills\",\n\t\"PageRegion\": \"BodyTop\",\n    \"RegionEndpoint\": \"https://localhost:44392/bodytop/{0}\",\n    \"HealthCheckRequired\": true,\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\",\n    \"IsHealthy\": true,\n    \"IsOnline\": true\n}"
+				},
+				"url": {
+					"raw": "{{RegionRootUrl}}paths/matchskills/regions",
+					"host": [
+						"{{RegionRootUrl}}paths"
+					],
+					"path": [
+						"matchskills",
+						"regions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegionSidebarRight",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{     \n\t\"Path\": \"matchskills\",\n\t\"PageRegion\": \"SideBarRight\",\n    \"RegionEndpoint\": \"https://localhost:44392/sidebarright/{0}\",\n    \"HealthCheckRequired\": true,\n    \"OfflineHtml\": \"<H3>Service Unavailable</H3>\",\n    \"IsHealthy\": true,\n    \"IsOnline\": true\n}"
 				},
 				"url": {
 					"raw": "{{RegionRootUrl}}paths/matchskills/regions",

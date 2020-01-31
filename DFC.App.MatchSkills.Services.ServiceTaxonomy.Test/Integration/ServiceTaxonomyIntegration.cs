@@ -1,36 +1,33 @@
-﻿using DFC.Personalisation.Domain.Models;
+﻿using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.Personalisation.Common.Net.RestClient;
+using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
-using System;
 using System.Threading.Tasks;
-using DFC.Personalisation.Common.Net.RestClient;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
-    
+    [TestFixture]
+    [Ignore("Need to figure out how we are going to handle the settings")]
     class ServiceTaxonomyIntegration
     {
-        private ServiceTaxonomyRepository _subjectUnderTest;    
-        private string _apiUrl;
-        private string _apiKey;
+        private ServiceTaxonomyRepository _subjectUnderTest;
         private static RestClient _restClient = new RestClient();
-        private string _skillsApi;
-        private string _occupationsApi;
-        
+        private ServiceTaxonomySettings _settings =  new ServiceTaxonomySettings();
+
+       
         [SetUp]
         public void Init()
         {
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
-
-            _apiUrl = config.GetSection("ServiceTaxonomySettings").GetSection("ApiUrl").Value;  
-            _apiKey = config.GetSection("ServiceTaxonomySettings").GetSection("ApiKey").Value;  
+            
+            _settings.ApiUrl = config.GetSection("ServiceTaxonomySettings").GetSection("ApiUrl").Value;
+            _settings.ApiKey = config.GetSection("ServiceTaxonomySettings").GetSection("ApiKey").Value;  
            
             _subjectUnderTest = new ServiceTaxonomyRepository();
-            _skillsApi = _apiUrl + "/GetAllSkills/Execute/";
-            _occupationsApi = _apiUrl + "/GetAllOccupations/Execute/";
         }
 
        
@@ -38,36 +35,39 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
         public async Task When_GetAllSkills_Then_ShouldReturnSkillsList()
         {
             // ACT
-            var result = await _subjectUnderTest.GetAllSkills<Skill[]>(_skillsApi,_apiKey) ;
+            var result = await _subjectUnderTest.GetAllSkills<Skill[]>(_settings.ApiUrl,_settings.ApiKey) ;
 
             // ASSERT
             result.Should().NotBeNull();
         }
+
+        [TestCase("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197")]
+        public async Task When_GetAllSkillsForOccupation_Then_ShouldReturnSkillsList(string occupation)
+        {
+            // ACT
+            var result = await _subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(_settings.ApiUrl,_settings.ApiKey,occupation) ;
+
+            // ASSERT
+            result.Should().NotBeNull();
+        }
+        
 
         [Test]
         public async Task When_GetAllOccupations_Then_ShouldReturnOccupationsList()
         {
             // ACT
-            var result = await _subjectUnderTest.GetAllOccupations<Occupation[]>(_occupationsApi,_apiKey) ;
+            var result = await _subjectUnderTest.GetAllOccupations<Occupation[]>(_settings.ApiUrl,_settings.ApiKey) ;
 
             // ASSERT
             result.Should().NotBeNull();
         }
 
-        [Test]
-        public void When_GetAllSkillsAndMissingKey_Then_ShouldReturnException()
-        {
-            
-            // ASSERT
-            var ex = Assert.ThrowsAsync<ArgumentNullException>( ()=>  _subjectUnderTest.GetAllSkills<Skill[]>(_skillsApi,""));
-            Assert.That(ex.Message,Does.Contain("Ocp-Apim-Subscription-Key must be specified"));
-        }
 
         [Test]
         public async Task When_SearchSkills_Then_ShouldReturnFilteredSkillsList()
         {
             // ACT
-            Skill[] result = await _subjectUnderTest.SearchSkills<Skill[]>(_occupationsApi,_apiKey,"writing") ;
+            Skill[] result = await _subjectUnderTest.SearchSkills<Skill[]>(_settings.ApiUrl,_settings.ApiKey,"writing") ;
 
             // ASSERT
             result.Should().NotBeNull();
@@ -77,7 +77,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
         public async Task When_SearchOccupations_Then_ShouldReturnFilteredOccupationsList()
         {
             // ACT
-            Occupation[] result = await _subjectUnderTest.SearchOccupations<Occupation[]>(_occupationsApi,_apiKey,"writing") ;
+            Occupation[] result = await _subjectUnderTest.SearchOccupations<Occupation[]>(_settings.ApiUrl,_settings.ApiKey,"writing",false) ;
 
             // ASSERT
             result.Should().NotBeNull();

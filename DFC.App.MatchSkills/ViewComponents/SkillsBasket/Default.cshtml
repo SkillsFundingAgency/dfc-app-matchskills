@@ -1,0 +1,15 @@
+﻿@model IEnumerable<DFC.Personalisation.Domain.Models.Skill>
+
+@if (null == Model)
+{
+    <p>no skills in basket</p>
+}
+else
+{
+    <ul class="govuk-list govuk-list--bullet">
+        @foreach (var item in Model)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
+}

@@ -1,0 +1,25 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.Choice
+@model DFC.App.MatchSkills.ViewModels.WorkedCompositeViewModel
+
+@{
+    var choiceModel = new ChoiceComponentModel
+    {
+        ButtonText = "Continue",
+        LinkText = "TestLink",
+        Text = "Choose one of the options below",
+        FormAction = $"body/{Model.Id}",
+        ParentModel = Model,
+        RadioButtons = new List<RadioButtonModel>
+{
+            {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice", Value = "Yes"}},
+            {new RadioButtonModel {Text = "No", Order = 2, Name = "Choice", Value = "No"}}
+
+        }
+    };
+
+}
+<div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+        <partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
+    </div>
+</div>

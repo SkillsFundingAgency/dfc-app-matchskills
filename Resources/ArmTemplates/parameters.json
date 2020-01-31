@@ -2,14 +2,29 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "appServiceDomain": {
+            "value": "__FunctionAppDomain__"
+        },
         "Environment": {
             "value": "__ReleaseEnvironmentName__"
         },
         "SharedAppServicePlanName": {
             "value": "__SharedAppServicePlanName__"
         },
-        "SharedAppServicePlanResourceGroup": {
+        "sharedResourceGroup": {
             "value": "__persSharedResourceGroup__"
+        },
+        "sharedCosmosDbAccountName": {
+            "value": "__SharedCosmosDbAccount__"
+        },
+        "sharedCosmosDbDatabaseName": {
+            "value": "__SharedCosmosDbDatabase__"
+        },
+        "serviceTaxonomyApiUrl": {
+            "value": "__serviceTaxonomyApiUrl__"
+        },
+        "serviceTaxonomyApiKey": {
+            "value": "__ApimServiceTaxonomyKey__"
         }
     }
 }
