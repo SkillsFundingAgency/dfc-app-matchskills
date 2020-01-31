@@ -105,5 +105,47 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewModels
             // Assert.
             itemUnderTest.PageTitle.Should().Be("Home | Discover your skills and careers");
         }
+
+        [Test]
+        public void When_0_Then_NounShouldBePlural()
+        {
+            // Arrange.
+            var number = 0;
+            var itemUnderTest = new HomeCompositeViewModel();
+
+            // Act.
+            string noun = itemUnderTest.NounForNumber(number, "match", "matches");
+
+            // Assert.
+            noun.Should().Be("matches");
+        }
+
+        [Test]
+        public void When_1_Then_NounShouldBeSingular()
+        {
+            // Arrange.
+            var number = 1;
+            var itemUnderTest = new HomeCompositeViewModel();
+
+            // Act.
+            string noun = itemUnderTest.NounForNumber(number, "match", "matches");
+
+            // Assert.
+            noun.Should().Be("match");
+        }
+
+        [Test]
+        public void When_GreaterThan1_Then_NounShouldBePlural()
+        {
+            // Arrange.
+            var number = 2;
+            var itemUnderTest = new HomeCompositeViewModel();
+
+            // Act.
+            string noun = itemUnderTest.NounForNumber(number, "match", "matches");
+
+            // Assert.
+            noun.Should().Be("matches");
+        }
     }
 }
