@@ -3,7 +3,7 @@
     public class WorkedCompositeViewModel : CompositeViewModel
     {
         public WorkedCompositeViewModel()
-            : base(PageId.Worked, "Worked")
+            : base(PageId.Worked, "Have you worked before?")
         {
         }
     }

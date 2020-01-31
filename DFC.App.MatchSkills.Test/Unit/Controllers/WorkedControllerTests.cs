@@ -125,6 +125,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 ButtonText = "test",
                 LinkText = "test",
                 PageId = "test",
+                ParentModel = new WorkedCompositeViewModel(),
                 RadioButtons = new List<RadioButtonModel>
                 {
                     {new RadioButtonModel {Text = "test", Order = 1, Name = "test", Value = "test", HintText = "Hint"}}
