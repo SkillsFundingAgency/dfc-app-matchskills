@@ -81,10 +81,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(WorkedBefore.No) as ViewResult;
+            var result = controller.Body(WorkedBefore.No) as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"/{CompositeViewModel.PageId.Worked}");
         }
 
         [Test]
@@ -124,14 +124,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 ButtonText = "test",
                 LinkText = "test",
-                PageId = "test",
                 ParentModel = new WorkedCompositeViewModel(),
                 RadioButtons = new List<RadioButtonModel>
                 {
                     {new RadioButtonModel {Text = "test", Order = 1, Name = "test", Value = "test", HintText = "Hint"}}
                 },
                 Text = "test",
-                Title = "test",
                 FormAction = "Action"
             };
         }

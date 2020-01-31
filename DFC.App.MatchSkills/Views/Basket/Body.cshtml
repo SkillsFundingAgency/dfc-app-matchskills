@@ -1,4 +1,5 @@
 ﻿@using DFC.App.MatchSkills.ViewComponents.SkillsBasket
+@using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.SkillsBasketCompositeViewModel
 
 <div class="govuk-grid-row">
@@ -11,7 +12,7 @@
 
         @await Component.InvokeAsync(nameof(SkillsBasket), Model.Skills)
 
-        <p><a class="govuk-link" href="@Model.CompositeSettings.Path/#TBC">Add more skills to this list</a></p>
+        <p><a class="govuk-link" href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.MoreSkills">Add more skills to this list</a></p>
 
         <br>
         <p>

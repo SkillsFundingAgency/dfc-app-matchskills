@@ -11,4 +11,10 @@
         Jobs,
         JobsAndSkills,
     }
+
+    public enum MoreSkills
+    {
+        Job,
+        Skill
+    }
 }
