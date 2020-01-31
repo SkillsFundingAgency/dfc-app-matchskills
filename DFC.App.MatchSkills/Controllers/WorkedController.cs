@@ -24,7 +24,7 @@ namespace DFC.App.MatchSkills.Controllers
                     return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
                 case WorkedBefore.No:
                 default:
-                    return base.Body();
+                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Worked}");
             }
         }
     }
