@@ -6,12 +6,14 @@
         ButtonText = "Continue",
         LinkText = "TestLink",
         PageId = "Worked",
-        Text = "Choose one of the options below.",
-        Title = "Have you worked before",
+        Text = "Choose one of the options below",
+        FormAction = "body/Worked",
+        Title = "Have you worked before?",
+        ParentModel = Model,
         RadioButtons = new List<RadioButtonModel>
 {
-            {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice"}},
-            {new RadioButtonModel {Text = "No", Order = 2, Name = "Choice"}}
+            {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice", Value = "Yes"}},
+            {new RadioButtonModel {Text = "No", Order = 2, Name = "Choice", Value = "No"}}
 
         }
     };

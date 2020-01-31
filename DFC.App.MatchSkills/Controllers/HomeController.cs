@@ -1,57 +1,52 @@
-﻿using DFC.App.MatchSkills.ViewModels;
+﻿using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : CompositeSessionController<HomeCompositeViewModel>
     {
-        private const string PageTitle = "Discover your skills and careers";
-
-        public HomeController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        public HomeController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings)
+            : base(dataProtectionProvider,compositeSettings)
         {
         }
 
-        [HttpGet]
-        [Route("/head/")]
+        #region Default Routes
+
+        // The home page uses MVC default routes, so we need non "/[controller]" attribute routed versions of the endpoints just for here
+
+        [Route("/head")]
         public override IActionResult Head()
         {
-            var vm = new HeadViewModel
-            {
-                PageTitle = PageTitle
-            };
-            return View(ReturnPath("Head"), vm);
+            return base.Head();
         }
 
-        [HttpGet]
-        [Route("/breadcrumb/")]
-        public override IActionResult Breadcrumb()
-        {
-            return View(ReturnPath("BreadCrumb"));
-        }
-
-        [HttpGet]
-        [Route("/bodytop/")]
+        [Route("/bodytop")]
         public override IActionResult BodyTop()
         {
-            return View(ReturnPath("BodyTop"));
+            return base.BodyTop();
         }
 
-        [HttpGet]
-        [Route("/body/")]
+        [Route("/breadcrumb")]
+        public override IActionResult Breadcrumb()
+        {
+            return base.Breadcrumb();
+        }
+
+        [Route("/body")]
         public override IActionResult Body()
         {
-            return View(ReturnPath("Body"));
+            return base.Body();
         }
 
-        [HttpGet]
-        [Route("/sidebarright/")]
+        [Route("/sidebarright")]
         public override IActionResult SidebarRight()
         {
-            return View(ReturnPath("SidebarRight"));
+            return base.SidebarRight();
         }
 
-
-
+        #endregion Default Routes
     }
 }

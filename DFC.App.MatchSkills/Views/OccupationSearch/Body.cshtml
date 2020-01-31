@@ -1,12 +1,12 @@
 ﻿@model DFC.App.MatchSkills.ViewModels.OccupationSearchViewModel
 
-<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
 
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
 
-            <form  asp-action="GetOccupationSkills" asp-controller="OccupationSearch" method="get">
+            <form action="GetOccupationSkills"  method="post">
                 <govukHeadingH1 Text="Enter your current or previous job title" />
 
                 <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
@@ -14,12 +14,11 @@
                 <p>You can add skills from more than one job to your skills list.</p>
 
                
-                <govukAutoComplete Id="occupations-autocomplete-container"
+                <govukAutoComplete Id="occupations-autocomplete"
                                    Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
                                    autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
                                    minLength="2" name="EnterJobInputAutocomplete">
-                    <govukAutocompleteLabel 
-                        additional-class="govuk-heading-m" Text="Enter your job title" For="occupations-autocomplete"></govukAutocompleteLabel>
+                    <govukAutocompleteLabel Text="Enter your job title" For="occupations-autocomplete"></govukAutocompleteLabel>
                    
                     
                 </govukAutoComplete>

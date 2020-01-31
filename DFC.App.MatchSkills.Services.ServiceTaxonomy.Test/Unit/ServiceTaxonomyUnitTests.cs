@@ -127,84 +127,38 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
         }
 
-        [Test]
-        public void WhenStSkillsPropertyUpdated_Then_ShouldStoreCorrectly()
+     
+      
+      
+
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
+        public async Task When_GetAllSkillsForOccupation_Then_ShouldReturnSkillsList(string url,string apiKey)
         {
-            var sut = new StSkills()
-            {
-                Skills = new []
-                {
-                    new StSkill
-                    {
-                        Skill = "skill1", AlternativeLabels = new[] {"skill1alt", "skill1alt2"}, SkillType = "type",
-                        Uri = "uri"
-                    },
-                    new StSkill
-                    {
-                        Skill = "skill1", AlternativeLabels = new[] {"skill2alt", "skill2alt2"}, SkillType = "type",
-                        Uri = "uri"
-                    }
-                }
-            };
-
-            sut.Skills.Length.Should().Be(2);
-
-        }
-
-        [Test]
-        public void WhenStOccupationsPropertyUpdated_Then_ShouldStoreCorrectly()
-        {
-            var sut = new StOccupations()
-            {
-                Occupations = new []
-                {
-                    new StOccupation
-                    {
-                        Occupation = "Occ1", AlternativeLabels = new[] {"Alt1,Alt2"}, Uri = "Uri", LastModified = DateTime.Now
-                    },
-                    new StOccupation
-                    {
-                            Occupation = "Occ2",AlternativeLabels =new []{ "Alt1,Alt2"},Uri = "Uri",LastModified = DateTime.Now
-                    }
-                }
-            };
-            sut.Occupations.Length.Should().Be(2);
-        }
-
-        [TestCase("https://dev.api.nationalcareersservice.org.uk")]
-        public async Task When_MockServiceGet_Then_ShouldReturnObject(string url)
-        {
-            //ARRANGE
-            var handlerMock = GetMockMessageHandler();
-            var _subjectUnderTest = new RestClient(handlerMock.Object);
+            // ARRANGE
+            const string skillsJson ="{skills:[{\"skillType\": \"competency\",\"skill\": \"collect biological data\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"},{\"skillType\": \"competency\",\"skill\": \"collect biological info\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"},{\"skillType\": \"competency\",\"skill\": \"collect samples\",\"alternativeLabels\": [\"biological data collection\", \"analysing biological records\"],\"uri\": \"aaa\"}]}";
+            var handlerMock = GetMockMessageHandler(skillsJson,HttpStatusCode.OK);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
             
-            // ACT
-            var result = await _subjectUnderTest.GetAsync<MockResult>(url);
-
-            // ASSERT
-            result.Should().NotBeNull(); // this is fluent assertions here...
-            result.Id.Should().Be(1);
-
-        }
-
-        [TestCase("https://dev.api.nationalcareersservice.org.uk")]
-        public async Task When_MockServicePost_Then_ShouldReturnObject(string url)
-        {
-            //ARRANGE
-            var handlerMock = GetMockMessageHandler();
-            var _subjectUnderTest = new RestClient(handlerMock.Object);
-            var postData = new StringContent($"{{ \"label\": \"furniture\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
+            // ACTs
+            var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
             
-            // ACT
-            var result = await _subjectUnderTest.PostAsync<MockResult>(url,postData);
-
             // ASSERT
-            result.Should().NotBeNull(); // this is fluent assertions here...
-            result.Id.Should().Be(1);
+            result.Should().NotBeNull();
+            result.Length.Should().Be(3);
 
+
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post 
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        
         }
 
-       
 
 
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)

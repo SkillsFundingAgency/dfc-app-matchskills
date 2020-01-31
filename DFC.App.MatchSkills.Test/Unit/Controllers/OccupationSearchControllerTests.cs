@@ -1,30 +1,19 @@
-﻿using System;
-using DFC.App.MatchSkills.Controllers;
-using DFC.App.MatchSkills.ViewComponents.Choice;
-using DFC.App.MatchSkills.ViewModels;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
-using System.Threading;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Internal;
-using Moq;
-using System.Threading.Tasks;
+﻿using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
-using DFC.Personalisation.Domain.Models;
-using Microsoft.Extensions.Configuration;
+using FluentAssertions;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
+using NUnit.Framework;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -76,6 +65,18 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             occupations.Result.Should().NotBeNull();
 
             occupations.Result.Should().HaveCountGreaterOrEqualTo(1);
+        }
+
+        [Test]
+        public void  When_GetOccupationSkills_Then_ShouldReturnOccupations()
+        {
+            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings);
+            
+            var occupations =   sut.GetOccupationSkills("Renewable energy consultant");
+            
+            occupations.Result.Should().NotBeNull();
+
+            
         }
 
         [Test]

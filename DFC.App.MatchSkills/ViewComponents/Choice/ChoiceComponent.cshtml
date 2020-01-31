@@ -3,26 +3,29 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, DFC.Personalisation.CommonUI
 
-    <div class="govuk-form-group">
+<div class="govuk-form-group">
+    <form method="post" id="@($"{@Model.PageId}FormRadioForm")" action="@Model.FormAction">
         <fieldset class="govuk-fieldset govuk-!-margin-bottom-6">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 
-                <govukHeadingH1 text="Have you worked before?" additional-class="govuk-fieldset__heading"></govukHeadingH1>
+                <govukHeadingH1 text="@Model.Title" additional-class="govuk-fieldset__heading"></govukHeadingH1>
             </legend>
             <span id="sign-in-hint" class="govuk-hint">
                 @Model.Text
             </span>
 
-            <form method="post" id="@($"{@Model.PageId}_Form_RadioForm")">
-                @foreach (var radioButton in Model.RadioButtons)
-                {
-                    <govukRadioButton id="@($"{Model.PageId}govukRadioButtonRadio{radioButton.Text}")" name="@radioButton.Name" value="@radioButton.Text">
-                        <govukRadioLabel text="@radioButton.Text"></govukRadioLabel>
-                    </govukRadioButton>
-                }
 
-
-                <govukStartButton text="@Model.ButtonText" disabled="false"></govukStartButton>
-            </form>
+            @foreach (var radioButton in Model.RadioButtons)
+            {
+                <govukRadioButton id="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)" name="@radioButton.Name" value="@radioButton.Value">
+                    <govukRadioLabel text="@radioButton.Text" for="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)"></govukRadioLabel>
+                    @if (!string.IsNullOrEmpty(radioButton.HintText))
+                    {
+                        <govukRadioHint hint-text="@radioButton.HintText" id="@Model.ParentModel.GetElementId("govUkRadioHint",@radioButton.Value)"></govukRadioHint>
+                    }
+                </govukRadioButton>
+            }
         </fieldset>
-    </div>
+        <govukButton text="@Model.ButtonText" id="@Model.ParentModel.GetElementId("govUkButton",Model.ButtonText)" disabled="false"></govukButton>
+    </form>
+</div>
