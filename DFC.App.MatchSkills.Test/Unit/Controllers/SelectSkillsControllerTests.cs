@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Controllers;
+﻿using System.IO;
+using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -14,17 +15,20 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
 
-    public class OccupationSearchControllerTests
+    public class SelectSkillsControllerTests
     {
         private IDataProtectionProvider _dataProtectionProvider;
         private IDataProtector _dataProtector;
         private IOptions<ServiceTaxonomySettings> _settings;
         private ServiceTaxonomyRepository serviceTaxonomyRepository;
-        private const string Path = "OccupationSearch";
+        private IOptions<CompositeSettings> _compositeSettings;
         
         [SetUp]
         public void Init()
@@ -32,6 +36,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
             _settings = Options.Create(new ServiceTaxonomySettings());
+            _compositeSettings = Options.Create(new CompositeSettings());
             _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
             _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _settings.Value.SearchOccupationInAltLabels ="true";
@@ -44,64 +49,50 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
         }
         
+       
         [Test]
-        public void  When_OccupationSearch_Then_ShouldReturnOccupations()
+        public void  When_GetOccupationSkills_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings);
+            var sut = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings);
             
-            var occupations =   sut.OccupationSearch("renewable");
-            
-            occupations.Result.Should().NotBeNull();
-            occupations.Result.Count().Should().BeGreaterThan(0);
-        }
-
-        [Test]
-        public void  When_OccupationSearchAuto_Then_ShouldReturnOccupations()
-        {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings);
-            
-            var occupations =   sut.OccupationSearchAuto("renewable");
+            var occupations =   sut.Body("Renewable energy consultant");
             
             occupations.Result.Should().NotBeNull();
 
-            occupations.Result.Should().HaveCountGreaterOrEqualTo(1);
-        }
-
-
-        [Test]
-        public void When_HeadCalled_ReturnHtml()
-        {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings);
-            var result = sut.Head() as ViewResult;
             
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be($"/Views/{Path}/Head.cshtml");
-
         }
+
+        #region CUIScaffoldingTests
 
         [Test]
-        public void WhenBody_Called_ReturnHtml()
+        public void WhenHeadCalled_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings);
-            var result = sut.Body() as ViewResult;
-
+            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings);
+            var result = controller.Head() as ViewResult;
+           
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be($"/Views/{Path}/body.cshtml");
+            result.ViewName.Should().BeNull();
         }
 
+        
         [Test]
-        public void WhenIndex_Called_ReturnHtml()
+        public void WhenBodyCalled_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings);
-            var result = sut.Index() as ViewResult;
-
+            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            var result = controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be($"/Views/{Path}/Index.cshtml");
+            result.ViewName.Should().BeNull();
         }
 
+
+       
+        #endregion
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
         {
             var handlerMock =  new Mock<HttpMessageHandler>(MockBehavior.Loose);

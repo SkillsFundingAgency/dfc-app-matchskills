@@ -41,7 +41,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
         private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
         {
-            return await _restClient.PostAsync<TList>(apiPath, postData,ocpApimSubscriptionKey);
+            return await _restClient.PostAsync<TList>(apiPath, postData,ocpApimSubscriptionKey);;
         }
         
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
@@ -54,7 +54,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         {
             occupation ??= ""; 
             var postData = new StringContent($"{{ \"uri\": \"{occupation.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
-            var result = await GetJsonListPost<StSkills>($"{apiPath}/GetAllSkillsForOccupation/Execute/", ocpApimSubscriptionKey,postData); 
+            var result = await GetJsonListPost<StOccupationSkills>($"{apiPath}/GetAllSkillsForOccupation/Execute/", ocpApimSubscriptionKey,postData);
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 

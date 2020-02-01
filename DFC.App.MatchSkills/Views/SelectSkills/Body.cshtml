@@ -1,0 +1,95 @@
+﻿@model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
+@{
+    ViewData["Title"] = @Model.PageHeading;
+}
+
+    <div class="govuk-main-wrapper" >
+
+        <div class="govuk-width-container margin-reset">
+
+            <div class="govuk-phase-banner">
+                <p class="govuk-phase-banner__content">
+                    <strong class="govuk-tag govuk-phase-banner__content__tag">
+                        beta
+                    </strong>
+                    <span class="govuk-phase-banner__text">
+                        This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+                    </span>
+                </p>
+            </div>
+
+        </div>
+        <div class="govuk-width-container">
+            <a class="govuk-back-link" href="autocomplete.html">Back</a>
+            <div class="govuk-grid-row margin-reset">
+                <div class="govuk-grid-column-two-thirds">
+
+                    <br>
+                    <div class="results">
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    <h1 class="govuk-fieldset__heading--l govuk-!-margin-top-4">
+                                        @Model.PageHeading
+                                    </h1>
+                                </legend>
+                                <p>
+                                    These are the most common skills for an <strong>Administration Assistant</strong>.
+                                </p>
+                                <p>
+                                    From the list below, select the skills that you would like to match to careers.
+                                </p>
+                                <p>
+                                    If you have a skill that you do not want to use for career matching, do not
+                                    add it to your skill list.
+                                </p>
+                                <div class="govuk-inset-text">
+                                    <p>
+                                        If you want to add a skill that does not appear on the list below, try
+                                        <a href="reveal">searching</a> for it.
+                                    </p>
+                                </div>
+                                <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container ">
+                                    <div class="govuk-checkboxes__item checkbox-container-item">
+                                        <input class="govuk-checkboxes__input" id="organisation" name="organisation" type="checkbox" value="hmrc">
+                                        <label class="govuk-label govuk-checkboxes__label" for="organisation">
+                                            Word processing
+                                        </label>
+                                    </div>
+                                    <div class="govuk-checkboxes__item checkbox-container-item">
+                                        <input class="govuk-checkboxes__input" id="organisation-2" name="organisation" type="checkbox" value="employment-tribunal">
+                                        <label class="govuk-label govuk-checkboxes__label" for="organisation-2">
+                                            Spreadsheets
+                                        </label>
+                                    </div>
+                                    <div class="govuk-checkboxes__item checkbox-container-item">
+                                        <input class="govuk-checkboxes__input" id="organisation-3" name="organisation" type="checkbox" value="MOD">
+                                        <label class="govuk-label govuk-checkboxes__label" for="organisation-3">
+                                            Filing
+                                        </label>
+                                    </div>
+                                    <div class="govuk-checkboxes__item checkbox-container-item">
+                                        <input class="govuk-checkboxes__input" id="organisation-4" name="organisation" type="checkbox" value="DfT">
+                                        <label class="govuk-label govuk-checkboxes__label" for="organisation-4">
+                                            Minute taking
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <!--      <label for="my-autocomplete">Select my country</label>-->
+                    <!--      <div id="my-autocomplete-container"></div>-->
+
+                    <a class="govuk-button trigger-button" href="your-skills.html">Add to skills list</a>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+    </div>
+

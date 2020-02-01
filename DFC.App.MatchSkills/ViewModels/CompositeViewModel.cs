@@ -27,6 +27,8 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId OccupationSearch { get; } = new PageId("occupationSearch");
             public static PageId SkillsBasket { get; } = new PageId("skillsList");
             public static  PageId Route { get; } = new PageId("route");
+            public static  PageId SelectSkills { get; } = new PageId("selectskills");
+            
         }
 
         public PageId Id { get; }
