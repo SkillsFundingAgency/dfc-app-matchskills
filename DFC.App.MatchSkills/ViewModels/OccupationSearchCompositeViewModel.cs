@@ -1,8 +1,8 @@
 ﻿namespace DFC.App.MatchSkills.ViewModels
 {
-    public class OccupationSearchViewModel : CompositeViewModel
+    public class OccupationSearchCompositeViewModel : CompositeViewModel
     {
-        public OccupationSearchViewModel()
+        public OccupationSearchCompositeViewModel()
             : base(PageId.OccupationSearch, "Enter your current or previous job title")
         {
         }
