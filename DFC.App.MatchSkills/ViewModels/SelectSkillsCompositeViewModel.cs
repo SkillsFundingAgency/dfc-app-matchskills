@@ -1,8 +1,5 @@
-﻿using System;
+﻿using DFC.Personalisation.Domain.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.ViewModels
 {

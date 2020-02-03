@@ -41,7 +41,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
         private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
         {
-            return await _restClient.PostAsync<TList>(apiPath, postData,ocpApimSubscriptionKey);;
+            return await _restClient.PostAsync<TList>(apiPath, postData,ocpApimSubscriptionKey);
         }
         
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)

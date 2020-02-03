@@ -50,25 +50,7 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewModels
             }
         }
 
-        [TestFixture]
-        public class GetElementId
-        {
-            [Test]
-            public void When_ValidValuesProvided_Then_IdShouldBeGenerated()
-            {
-                // Arrange.
-                var vm = new HomeCompositeViewModel();
-                var elementName = "Button";
-                var instanceName = "Start";
 
-                // Act.
-                var id = vm.GetElementId(elementName, instanceName);
-
-                // Assert.
-                id.Should().Be("homeButtonStart");
-            }
-
-        }
 
         [Test]
         public void When_ChildConstructed_Then_IdShouldBeSet()

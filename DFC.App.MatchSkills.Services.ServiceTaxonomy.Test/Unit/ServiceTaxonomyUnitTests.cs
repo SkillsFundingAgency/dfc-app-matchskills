@@ -185,6 +185,25 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 .Verifiable();
             return handlerMock;
         }
+
+        [Test]
+        public void When_STOccupationSkills_CreatedAllPropertoieSet()
+        {
+            var sut = new StOccupationSkills()
+            {
+                AlternativeLabels = new [] {"label1","label2"},
+                LastModified =Convert.ToDateTime("1-Oct-2010"),
+                Occupation = "Dentist",
+                Uri = "someuri"
+            };
+
+            sut.Occupation.Should().Be("Dentist");
+            sut.Uri.Should().Be("someuri");
+            sut.LastModified.Should().Be(Convert.ToDateTime("1-Oct-2010"));
+            sut.AlternativeLabels.Should().BeEquivalentTo(new[] {"label1", "label2"});
+
+        }
+
         class MockResult
         {
             public int Id { get; set; }
