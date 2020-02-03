@@ -41,10 +41,9 @@ namespace DFC.App.MatchSkills.Controllers
         }
         [HttpPost]
         [Route("MatchSkills/AddSkills/[controller]")]
-        public   async Task<IActionResult> AddSkills(SelectSkillsCompositeViewModel vm)
+        public  void AddSkills(SelectSkillsCompositeViewModel vm)
         {
-                        
-            return base.Body();
+            RedirectToAction("/Matchskills/Body/Basket");
         }
 
         public async Task<string> GetOccupationIdFromName(string occupation)
