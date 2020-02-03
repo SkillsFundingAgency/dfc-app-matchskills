@@ -39,6 +39,13 @@ namespace DFC.App.MatchSkills.Controllers
             
             return base.Body();
         }
+        [HttpPost]
+        [Route("MatchSkills/AddSkills/[controller]")]
+        public   async Task<IActionResult> AddSkills(SelectSkillsCompositeViewModel vm)
+        {
+                        
+            return base.Body();
+        }
 
         public async Task<string> GetOccupationIdFromName(string occupation)
         {
