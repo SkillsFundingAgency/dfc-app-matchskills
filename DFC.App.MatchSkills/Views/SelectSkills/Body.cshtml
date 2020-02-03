@@ -34,53 +34,31 @@
                                     </h1>
                                 </legend>
                                 <p>
-                                    These are the most common skills for an <strong>Administration Assistant</strong>.
+                                    These are some of the skills you may have used in the role of <strong>@Model.Occupation</strong>.
                                 </p>
                                 <p>
                                     From the list below, select the skills that you would like to match to careers.
                                 </p>
                                 <p>
-                                    If you have a skill that you do not want to use for career matching, do not
-                                    add it to your skill list.
+                                    If you have a skill that you do not want to use for career matching, do not add it to your skills list.
                                 </p>
-                                <div class="govuk-inset-text">
-                                    <p>
-                                        If you want to add a skill that does not appear on the list below, try
-                                        <a href="reveal">searching</a> for it.
-                                    </p>
-                                </div>
-                                <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container ">
-                                    <div class="govuk-checkboxes__item checkbox-container-item">
-                                        <input class="govuk-checkboxes__input" id="organisation" name="organisation" type="checkbox" value="hmrc">
-                                        <label class="govuk-label govuk-checkboxes__label" for="organisation">
-                                            Word processing
-                                        </label>
-                                    </div>
-                                    <div class="govuk-checkboxes__item checkbox-container-item">
-                                        <input class="govuk-checkboxes__input" id="organisation-2" name="organisation" type="checkbox" value="employment-tribunal">
-                                        <label class="govuk-label govuk-checkboxes__label" for="organisation-2">
-                                            Spreadsheets
-                                        </label>
-                                    </div>
-                                    <div class="govuk-checkboxes__item checkbox-container-item">
-                                        <input class="govuk-checkboxes__input" id="organisation-3" name="organisation" type="checkbox" value="MOD">
-                                        <label class="govuk-label govuk-checkboxes__label" for="organisation-3">
-                                            Filing
-                                        </label>
-                                    </div>
-                                    <div class="govuk-checkboxes__item checkbox-container-item">
-                                        <input class="govuk-checkboxes__input" id="organisation-4" name="organisation" type="checkbox" value="DfT">
-                                        <label class="govuk-label govuk-checkboxes__label" for="organisation-4">
-                                            Minute taking
-                                        </label>
-                                    </div>
+                                
+                                <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container">
+                                    @if (Model.Skills.Count == 0)
+                                    {
+                                        <govukLabel id="LblNoResults" Text="No required skills found"></govukLabel>
+                                    }
+                                    @foreach (var skill in Model.Skills)
+                                    {
+                                        <govukCheckbox id="@Model.Id" label="@skill.Name" value="@skill.Id" AdditionalClass="checkbox-container-item"></govukCheckbox>
+
+                                    }
+                                    
                                 </div>
                             </fieldset>
                         </div>
                     </div>
-                    <!--      <label for="my-autocomplete">Select my country</label>-->
-                    <!--      <div id="my-autocomplete-container"></div>-->
-
+                    
                     <a class="govuk-button trigger-button" href="your-skills.html">Add to skills list</a>
 
                 </div>
