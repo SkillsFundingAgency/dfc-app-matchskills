@@ -31,15 +31,20 @@ namespace DFC.App.MatchSkills.Controllers
         public   async Task<IActionResult> Body(string  enterJobInputAutocomplete)
         {
             ViewModel.Occupation = enterJobInputAutocomplete;
-            var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
-                _settings.ApiKey, enterJobInputAutocomplete, bool.Parse(_settings.SearchOccupationInAltLabels));
-            
-            var occupationId = occupations.Single(x => x.Name == enterJobInputAutocomplete).Id;
+
+            var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
             
             ViewModel.Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, occupationId);
             
             return base.Body();
+        }
+
+        public async Task<string> GetOccupationIdFromName(string occupation)
+        {
+            var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
+                _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
+            return occupations.Single(x => x.Name == occupation).Id;
         }
     }
 }
