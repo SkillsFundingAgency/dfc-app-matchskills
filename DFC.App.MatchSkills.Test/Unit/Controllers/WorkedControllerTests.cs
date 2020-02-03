@@ -11,6 +11,11 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Application.Session.Services;
+using NSubstitute;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -21,6 +26,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IDataProtectionProvider _dataProtectionProvider;
         private IOptions<CompositeSettings> _compositeSettings;
         private IDataProtector _dataProtector;
+        private ISessionService _sessionService;
 
         [SetUp]
         public void Init()
@@ -28,12 +34,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _compositeSettings = Options.Create(new CompositeSettings());
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
+            _sessionService = Substitute.For<ISessionService>();
 
         }
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings, _sessionService);
             var result = controller.Head() as ViewResult;
             var vm = result.ViewData.Model as HeadViewModel;
 
@@ -46,7 +53,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -60,7 +67,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenPostBodyCalledWithYes_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -75,7 +82,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenPostBodyCalledWithNo_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -90,7 +97,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -100,7 +107,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -110,7 +117,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenSidebarRightCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             var result = controller.SidebarRight() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -137,7 +144,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public void WhenSessionIdIsSet_CookieIsSaved()
         {
             var sessionValue = "Abc123";
-            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -154,7 +161,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenSessionIdIsNotNamedCorrectlySet_NoCookieIsSaved()
         {
-            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -172,7 +179,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenCookieIsSet_CookieIsUpdated()
         {
-            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings);
+            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

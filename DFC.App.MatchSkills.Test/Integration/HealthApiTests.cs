@@ -3,19 +3,22 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 
 namespace DFC.App.MatchSkills.Test.Integration
 {
     [TestFixture]
     public class HealthApiTests
     {
-        private ApiWebApplicationFactory _factory;
+        private TestServer _factory;
         private HttpClient _client;
 
         [OneTimeSetUp]
         public void GivenARequestToTheController()
         {
-            _factory = new ApiWebApplicationFactory();
+            _factory = new TestServer(
+                new WebHostBuilder().UseStartup<Startup>());
             _client = _factory.CreateClient();
         }
 
