@@ -50,18 +50,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
         
        
-        [Test]
-        public void  When_GetOccupationSkills_Then_ShouldReturnOccupations()
-        {
-            var sut = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings);
-            
-            var occupations =   sut.Body("Renewable energy consultant");
-            
-            occupations.Result.Should().NotBeNull();
-
-            
-        }
-
+        
         #region CUIScaffoldingTests
 
         [Test]
