@@ -30,7 +30,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             // ACTs
             var result = await subjectUnderTest.GetAllSkills<Skill[]>(url,apiKey) ;
             
-           
             // ASSERT
             result.Should().NotBeNull(); 
             result[0].Name.Should().Be("Collect biological data");
