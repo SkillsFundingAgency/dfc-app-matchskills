@@ -34,7 +34,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             CreateMap<StOccupation, Occupation>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Occupation.FirstCharToUpper()))
-                .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
+                .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))
                 .ConstructUsing(dest => new Occupation(dest.Uri, dest.Occupation,dest.LastModified));
             
             CreateMap<StOccupationSearchResult.StsOccupation, Occupation>()
@@ -48,6 +48,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.FirstCharToUpper()))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))
                 .ForMember(dest => dest.SkillType, opt => opt.MapFrom(src => src.Type))
+                
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill,  (SkillType)Enum.Parse(typeof(SkillType),dest.Type,true)));
         }
     }
