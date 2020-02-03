@@ -83,6 +83,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         
         }
 
+        [Test]
+        public void  When_GetOccupationSkills_Then_ShouldReturnOccupations()
+        {
+            var sut = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings);
+            sut.Should().NotBe(null);
+        }
         
         #region CUIScaffoldingTests
 
