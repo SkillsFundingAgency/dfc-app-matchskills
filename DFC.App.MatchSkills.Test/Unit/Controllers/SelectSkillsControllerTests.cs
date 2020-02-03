@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Controllers;
+﻿using System.Linq;
+using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -16,6 +17,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.ViewModels;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -58,9 +60,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var handlerMock = GetMockMessageHandler(skillsJson,HttpStatusCode.OK);
             var restClient = new RestClient(handlerMock.Object);
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+            var vm = new SelectSkillsCompositeViewModel();
             
             // ACTs
             var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
+            vm.Skills = result;
+            var skills = vm.Skills.ToList();
             
             // ASSERT
             result.Should().NotBeNull();
