@@ -26,22 +26,20 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
             Throw.IfNullOrWhiteSpace(settings.Value.ApiKey, nameof(settings.Value.ApiKey));
             _settings = settings.Value;
 
-     
-            //client = new CosmosClient(accountEndpoint:settings.Value.ApiUrl, authKeyOrResourceToken:settings.Value.ApiKey);
+            
             _client = client;
         }
         public async Task<HttpResponseMessage> CreateItemAsync(object item)
         {
-            var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
-            var result =  await container.CreateItemAsync(item);
-            if (result.StatusCode == HttpStatusCode.OK)
-            {
-                return new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                 
-                };
+            Throw.IfNull(item, nameof(item));
 
-            }
+            var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
+            Throw.IfNull(container, nameof(container));
+
+            var result =  container.CreateItemAsync(item).Result;
+
+            if (result.StatusCode == HttpStatusCode.Created) 
+                return new HttpResponseMessage(HttpStatusCode.Created);
 
             return null;
         }

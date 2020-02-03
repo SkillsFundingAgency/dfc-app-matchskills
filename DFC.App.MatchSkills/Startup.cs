@@ -11,6 +11,7 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,6 +39,9 @@ namespace DFC.App.MatchSkills
             services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
             services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
             services.Configure<SessionSettings>(Configuration.GetSection(nameof(SessionSettings)));
+            services.AddSingleton((x) => new CosmosClient(
+                accountEndpoint: Configuration.GetSection(nameof(CosmosSettings.ApiUrl)).Key, 
+                authKeyOrResourceToken: Configuration.GetSection(nameof(CosmosSettings.ApiKey)).Key));
             services.AddScoped<ICosmosService, CosmosService>();
             services.AddScoped<ISessionReader, SessionService>();
             services.AddScoped<ISessionWriter, SessionService>();

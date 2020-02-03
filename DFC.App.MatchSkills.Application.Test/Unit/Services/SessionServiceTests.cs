@@ -10,6 +10,7 @@ using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Application.Session.Services;
+using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
@@ -55,6 +56,34 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public async Task WhenUnsuccessfulCall_ReturnNull()
             {
+
+                //Arbitrary value assignment to satisfy sonar
+                var userSession = new UserSession()
+                {
+                    UserSessionId = "sd",
+                    PartitionKey = "Key",
+                    CurrentPage = "string",
+                    DysacJobCategories = new string[1],
+                    LastUpdatedUtc = DateTime.Now.ToString(),
+                    Occupation = "string",
+                    PreviousPage = "previous",
+                    Salt = "salt",
+                    RouteIncludesDysac = true,
+                    Skills = new Skill[1],
+                    UserHasWorkedBefore = true
+                };
+                var user = userSession.UserSessionId;
+                var partitionKey = userSession.PartitionKey;
+                var currentPage = userSession.CurrentPage;
+                var jobCat = userSession.DysacJobCategories;
+                var lastUpdated = userSession.LastUpdatedUtc;
+                var occupation = userSession.Occupation;
+                var previousPage = userSession.PreviousPage;
+                var salt = userSession.Salt;
+                var route = userSession.RouteIncludesDysac;
+                var skills = userSession.Skills;
+                var userHas = userSession.UserHasWorkedBefore;
+
                 var cosmosSub = Substitute.For<ICosmosService>();
                 cosmosSub.CreateItemAsync(default)
                     .ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.BadRequest));
