@@ -8,7 +8,7 @@
     <div class="app-grey govuk-body">
         <div class="govuk-main-wrapper govuk-width-container">
             <p><partial name="_MatchesCount"/></p>
-            <div class="govuk-grid-row">
+            <div class="">
                 <div class="govuk-grid-column-one-third">
                     <div class="app-sidebar app-advisor-panel">
                         <!-- partial: _CategoryFilter -->
@@ -22,7 +22,7 @@
                             <div class="sort-container govuk-!-margin-bottom-6">
                                 <!-- partial: _SortOptions -->
                             </div>
-                            <ul class="app-long-results list govuk-list govuk-grid-row" id="app-results-list--long">
+                            <ul class="app-long-results list govuk-list" id="app-results-list--long">
                                 <li class="">
                                     @foreach (var careerMatch in Model.CareerMatches)
                                     {

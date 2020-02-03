@@ -24,11 +24,15 @@
                 </govukAutoComplete>
                 <br />
                 <br />
-                <button id="EnterJobButtonSearch" class="govuk-button  govuk-button--secondary">Search</button>
+                <govukSecondaryButton id="@Model.GetElementId("govukSecondaryButton","Search")" text="Search"></govukSecondaryButton>
             </form>
         </div>
     </div>
 </div>
+
+
+
+
 <script>
   
     var timer;
