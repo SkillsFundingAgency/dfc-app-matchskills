@@ -139,6 +139,26 @@
                             {
                                 "name": "CompositeSettings__Path",
                                 "value": "/matchskills"
+                            },
+                            {
+                                "name": "CosmosSettings__ApiUrl",
+                                "value": "[concat('https://', parameters('sharedCosmosDbAccountName'), '.documents.azure.com:443/')]"
+                            },
+                            {
+                                "name": "CosmosSettings__ApiKey",
+                                "value": "[listKeys(resourceId(parameters('sharedResourceGroup'), 'Microsoft.DocumentDB/databaseAccounts', parameters('sharedCosmosDbAccountName')), '2015-04-08').primaryMasterKey]"
+                            },
+                            {
+                                "name": "CosmosSettings__DatabaseName",
+                                "value": "personalisation"
+                            },
+                            {
+                                "name": "CosmosSettings__UserSessionsCollection",
+                                "value": "UserSessions"
+                            },
+                            {
+                                "name": "CosmosSettings__SessionSettings",
+                                "value": "ncs"
                             }
                         ]
                     }
