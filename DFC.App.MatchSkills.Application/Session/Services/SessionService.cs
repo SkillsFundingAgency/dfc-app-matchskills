@@ -1,15 +1,13 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
-using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.Session.Helpers;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
 using System;
 using System.Globalization;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Models;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {
@@ -44,5 +42,19 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             var result = await _cosmosService.CreateItemAsync(userSession);
             return result.IsSuccessStatusCode ? userSession.PrimaryKey : null;
         }
+
+        public Task<HttpResponseMessage> UpdateUserSessionAsync(UserSession updatedSession)
+        {
+            Throw.IfNull(updatedSession, nameof(updatedSession));
+            return _cosmosService.UpdateUserSessionAsync(updatedSession);
+        }
+
+        public async Task<UserSession> GetUserSession(string sessionId)
+        {
+            Throw.IfNullOrWhiteSpace(sessionId, nameof(sessionId));
+            return await _cosmosService.GetUserSessionAsync(sessionId);
+        }
+
+
     }
 }

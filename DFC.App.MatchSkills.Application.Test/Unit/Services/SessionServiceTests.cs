@@ -89,5 +89,36 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
             }
         }
+
+        public class GetUserSessionTests
+        {
+            private IOptions<SessionSettings> _sessionSettings;
+            private IOptions<CosmosSettings> _cosmosSettings;
+            private CosmosClient _client;
+            private ICosmosService _cosmosService;
+
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosSettings = Options.Create(new CosmosSettings()
+                {
+                    ApiUrl = "https://test-account-not-real.documents.azure.com:443/",
+                    ApiKey = "VGhpcyBpcyBteSB0ZXN0",
+                    DatabaseName = "DatabaseName",
+                    UserSessionsCollection = "UserSessions"
+                });
+                _client = Substitute.For<CosmosClient>();
+                _cosmosService = Substitute.For<ICosmosService>();
+                
+                _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            }
+
+            [Test]
+            public void IfSessionIdIsNull_ThrowArgumentException()
+            {
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                serviceUnderTest.Invoking(x => x.GetUserSession(null)).Should().Throw<ArgumentException>();
+            }
+        }
     }
 }
