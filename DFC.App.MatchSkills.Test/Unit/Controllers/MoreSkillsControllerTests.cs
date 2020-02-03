@@ -1,4 +1,7 @@
-﻿using DFC.App.MatchSkills.Controllers;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using FluentAssertions;
@@ -10,7 +13,7 @@ using NUnit.Framework;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
-    public class RouteControllerTests
+    class MoreSkillsControllerTests
     {
         private IDataProtectionProvider _dataProtectionProvider;
         private IOptions<CompositeSettings> _compositeSettings;
@@ -27,13 +30,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenPostBodyCalledWithJobs_ReturnHtml()
         {
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings);
+            var controller = new MoreSkillsController(_dataProtectionProvider, _compositeSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(Route.Jobs) as RedirectResult;
+            var result = controller.Body(MoreSkills.Job) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.OccupationSearch}");
@@ -42,16 +45,16 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings);
+            var controller = new MoreSkillsController(_dataProtectionProvider, _compositeSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(Route.JobsAndSkills) as RedirectResult;
+            var result = controller.Body(MoreSkills.Skill) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.Route}");
+            result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreSkills}");
         }
     }
 }
