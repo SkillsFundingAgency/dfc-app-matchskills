@@ -194,13 +194,29 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 AlternativeLabels = new [] {"label1","label2"},
                 LastModified =Convert.ToDateTime("1-Oct-2010"),
                 Occupation = "Dentist",
-                Uri = "someuri"
+                Uri = "someuri",
+                Skills = new StOccupationSkills.StOsSkill[]
+                {
+                    new StOccupationSkills.StOsSkill()
+                    {
+                        AlternativeLabels = new [] {"label1","label2"},
+                        LastModified =Convert.ToDateTime("1-Oct-2010"),
+                        RelationshipType = "RelationshipType",
+                        Skill="Skill Name",
+                        SkillReusability = "SkillReusability",
+                        Type="skilltype",
+                        Uri="skilluri"
+                    }
+                }
             };
 
             sut.Occupation.Should().Be("Dentist");
             sut.Uri.Should().Be("someuri");
             sut.LastModified.Should().Be(Convert.ToDateTime("1-Oct-2010"));
             sut.AlternativeLabels.Should().BeEquivalentTo(new[] {"label1", "label2"});
+            sut.Skills[0].Uri.Should().Be("skilluri");
+            sut.Skills[0].SkillReusability.Should().Be("SkillReusability");
+            sut.Skills[0].RelationshipType.Should().Be("RelationshipType");
 
         }
 
