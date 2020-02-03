@@ -1,23 +1,21 @@
-﻿using System.IO;
-using DFC.App.MatchSkills.Controllers;
+﻿using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
+using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -49,7 +47,37 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
         }
         
-       
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
+        public async Task When_GetAllSkillsForOccupation_Then_ShouldReturnSkillsList(string url,string apiKey)
+        {
+            // ARRANGE
+            const string skillsJson ="{skills:[" +
+                                     "{\"type\": \"competency\",\"relationshipType\": \"essential\",\"skill\": \"collect biological data\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"}," +
+                                     "{\"type\": \"competency\",\"relationshipType\": \"essential\",\"skill\": \"collect biological info\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"}," +
+                                     "{\"type\": \"competency\",\"relationshipType\": \"optional\",\"skill\": \"collect samples\",\"alternativeLabels\": [\"biological data collection\", \"analysing biological records\"],\"uri\": \"aaa\"}]}";
+            var handlerMock = GetMockMessageHandler(skillsJson,HttpStatusCode.OK);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+            
+            // ACTs
+            var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
+            
+            // ASSERT
+            result.Should().NotBeNull();
+            result.Length.Should().Be(3);
+
+
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post 
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        
+        }
+
         
         #region CUIScaffoldingTests
 
