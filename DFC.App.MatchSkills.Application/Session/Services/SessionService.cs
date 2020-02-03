@@ -13,10 +13,10 @@ using DFC.App.MatchSkills.Application.Cosmos.Models;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {
-    public class SessionService : ISessionReader, ISessionWriter
+    public class SessionService : ISessionService
     {
         private readonly ICosmosService _cosmosService;
-        private readonly SessionSettings _sessionSettings;
+        private readonly IOptions<SessionSettings> _sessionSettings;
 
         public SessionService(ICosmosService cosmosService, IOptions<SessionSettings> sessionSettings)
         {
@@ -24,18 +24,18 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             Throw.IfNull(sessionSettings, nameof(sessionSettings));
             Throw.IfNullOrWhiteSpace(sessionSettings.Value.Salt, nameof(sessionSettings.Value.Salt));
             _cosmosService = cosmosService;
-            _sessionSettings = sessionSettings.Value;
+            _sessionSettings = sessionSettings;
         }
 
         public async Task<string> CreateUserSession(string previousPage, string currentPage)
         {
-            var sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Salt, DateTime.UtcNow);
+            var sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
             var partitionKey = PartitionKeyHelper.UserSession(sessionId);
             var userSession = new UserSession()
             {
                 UserSessionId = sessionId,
                 PartitionKey = partitionKey,
-                Salt = _sessionSettings.Salt,
+                Salt = _sessionSettings.Value.Salt,
                 CurrentPage = currentPage,
                 PreviousPage = previousPage,
                 LastUpdatedUtc = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)

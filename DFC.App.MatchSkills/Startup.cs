@@ -40,11 +40,10 @@ namespace DFC.App.MatchSkills
             services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
             services.Configure<SessionSettings>(Configuration.GetSection(nameof(SessionSettings)));
             services.AddSingleton((x) => new CosmosClient(
-                accountEndpoint: Configuration.GetSection(nameof(CosmosSettings.ApiUrl)).Key, 
-                authKeyOrResourceToken: Configuration.GetSection(nameof(CosmosSettings.ApiKey)).Key));
+                accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
+                authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
             services.AddScoped<ICosmosService, CosmosService>();
-            services.AddScoped<ISessionReader, SessionService>();
-            services.AddScoped<ISessionWriter, SessionService>();
+            services.AddScoped<ISessionService, SessionService>();
 
             services.AddCors(options =>
             {
