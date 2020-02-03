@@ -11,17 +11,20 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 
 namespace DFC.App.MatchSkills.Test.Integration
 {
     public class HtmlValidationTests
     {
-        private readonly WebApplicationFactory<Startup> _factory;
+        private TestServer _factory;
         private readonly HttpClient _client;
 
         public HtmlValidationTests()
         {
-            _factory = new WebApplicationFactory<Startup>();
+            _factory = new TestServer(
+                new WebHostBuilder().UseStartup<Startup>());
             _client = _factory.CreateClient();
         }
 

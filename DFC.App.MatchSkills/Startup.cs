@@ -1,10 +1,17 @@
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Application.Session.Services;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,11 +32,20 @@ namespace DFC.App.MatchSkills
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddControllersWithViews();
             services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
             services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
             services.Configure<ServiceTaxonomySettings>(Configuration.GetSection(nameof(ServiceTaxonomySettings)));
             services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
+            services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
+            services.Configure<SessionSettings>(Configuration.GetSection(nameof(SessionSettings)));
+            services.AddSingleton((x) => new CosmosClient(
+                accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
+                authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
+            services.AddScoped<ICosmosService, CosmosService>();
+            services.AddScoped<ISessionService, SessionService>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(_corsPolicy,
