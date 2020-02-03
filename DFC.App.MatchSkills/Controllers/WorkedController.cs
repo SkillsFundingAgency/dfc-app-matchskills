@@ -1,66 +1,31 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.ViewModels;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Controllers
 {
-    public class WorkedController : BaseController
+    public class WorkedController : CompositeSessionController<WorkedCompositeViewModel>
     {
-        private const string PathName = "Worked";
-
-        public WorkedController(IDataProtectionProvider dataProtectionProvider) : base(dataProtectionProvider)
+        public WorkedController(IDataProtectionProvider dataProtectionProvider,
+            IOptions<CompositeSettings> compositeSettings)
+            : base(dataProtectionProvider, compositeSettings)
         {
         }
-
-
-        [HttpGet]
-        [Route("/head/"+ PathName)]
-        public override IActionResult Head()
-        {
-            return View(ReturnPath("Head"));
-        }
-
-        [HttpGet]
-        [Route("/breadcrumb/"+ PathName)]
-        public override IActionResult Breadcrumb()
-        {
-            return View(ReturnPath("Breadcrumb"));
-        }
-
-        [HttpGet]
-        [Route("/bodytop/"+ PathName)]
-        public override IActionResult BodyTop()
-        {
-            return View(ReturnPath("BodyTop", "Shared"));
-        }
-
-        [HttpGet]
-        [Route("/body/"+ PathName)]
-        public override IActionResult Body()
-        {
-            var sessionId = TryGetSessionId(Request);
-            if (!string.IsNullOrWhiteSpace(sessionId))
-            {
-                AppendCookie(sessionId);
-            }
-            return View(ReturnPath("body", PathName));
-        }
-
 
         [HttpPost]
-        [Route("MatchSkills/body/" + PathName)]
-        public IActionResult Body(string choice)
+        [Route("MatchSkills/body/[controller]")]
+        public IActionResult Body(WorkedBefore choice)
         {
-            return View(ReturnPath("body", PathName));
+            switch (choice)
+            {
+                case WorkedBefore.Yes:
+                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
+                case WorkedBefore.No:
+                default:
+                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Worked}");
+            }
         }
-
-
-        [HttpGet]
-        [Route("/sidebarright/" + PathName)]
-        public override IActionResult SidebarRight()
-        {
-            return View(ReturnPath("sidebarright"));
-        }
-
-
     }
 }

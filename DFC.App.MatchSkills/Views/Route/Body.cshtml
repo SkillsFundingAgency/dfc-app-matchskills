@@ -1,13 +1,14 @@
 ﻿@using DFC.App.MatchSkills.ViewComponents.Choice
+@model DFC.App.MatchSkills.ViewModels.RouteCompositeViewModel
 
 @{
     var choiceModel = new ChoiceComponentModel
     {
         ButtonText = "Continue",
         LinkText = "TestLink",
-        PageId = "Route",
         Text = "Choose one of the options below.",
-        Title = "What would you like your career matches to be based on?",
+        FormAction = $"body/{Model.Id}",
+        ParentModel = Model,
         RadioButtons = new List<RadioButtonModel>
 {
     {
@@ -27,4 +28,8 @@
     };
 
 }
-<partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
+<div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+        <partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
+    </div>
+</div>
