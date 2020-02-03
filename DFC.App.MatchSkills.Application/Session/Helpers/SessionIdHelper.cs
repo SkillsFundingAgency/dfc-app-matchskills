@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HashidsNet;
+﻿using HashidsNet;
+using System;
 
 namespace DFC.App.MatchSkills.Application.Session.Helpers
 {

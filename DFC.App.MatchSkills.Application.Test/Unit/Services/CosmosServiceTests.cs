@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Models;
+﻿using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Options;
-using Moq;
 using NSubstitute;
-using NSubstitute.Core;
-using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
+using System;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
@@ -27,9 +16,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
         public class CreateDocumentAsyncTests
         {
             private IOptions<CosmosSettings> _cosmosSettings;
-            //private CosmosClient _client;
             private CosmosService _service;
-            private string _currentPage, _previousPage;
 
             [OneTimeSetUp]
             public void Init()
@@ -41,8 +28,6 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     DatabaseName = "DatabaseName",
                     UserSessionsCollection = "UserSessions"
                 });
-                //_client = new CosmosClient(accountEndpoint: _cosmosSettings.Value.ApiUrl,
-                //    authKeyOrResourceToken: _cosmosSettings.Value.ApiKey);
             }
 
             [Test]

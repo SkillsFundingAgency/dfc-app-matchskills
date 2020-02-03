@@ -1,5 +1,4 @@
 ﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Application.Session.Services;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DFC.App.MatchSkills.Application.Cosmos.Models
+﻿namespace DFC.App.MatchSkills.Application.Cosmos.Models
 {
     public class CosmosSettings
     {

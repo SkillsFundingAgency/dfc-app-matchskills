@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
-using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Application.Session.Services;
 using DFC.Personalisation.Domain.Models;
@@ -17,6 +9,10 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
@@ -27,7 +23,6 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             private IOptions<SessionSettings> _sessionSettings;
             private IOptions<CosmosSettings> _cosmosSettings;
             private Mock<CosmosClient> _client;
-            private string _currentPage, _previousPage;
             [OneTimeSetUp]
             public void Init()
             {

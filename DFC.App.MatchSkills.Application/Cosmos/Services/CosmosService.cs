@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
-using DFC.App.MatchSkills.Application.Session.Models;
-using Dfc.ProviderPortal.Packages;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Options;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Application.Cosmos.Services
 {
