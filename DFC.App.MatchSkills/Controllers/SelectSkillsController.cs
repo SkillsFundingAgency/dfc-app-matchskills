@@ -36,10 +36,8 @@ namespace DFC.App.MatchSkills.Controllers
             
             var occupationId = occupations.Single(x => x.Name == enterJobInputAutocomplete).Id;
             
-            var skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_settings.ApiUrl}",
+            ViewModel.Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, occupationId);
-            
-            ViewModel.Skills = skills.ToList();
             
             return base.Body();
         }
