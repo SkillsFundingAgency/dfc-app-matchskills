@@ -157,7 +157,7 @@
                                 "value": "UserSessions"
                             },
                             {
-                                "name": "CosmosSettings__SessionSettings",
+                                "name": "SessionSettings__Salt",
                                 "value": "ncs"
                             }
                         ]
