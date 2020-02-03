@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
     [TestFixture]
+    [Ignore("Settings Issue")]
     class ServiceTaxonomyIntegration
     {
         // [Ignore("Need to figure out how we are going to handle the settings")]
