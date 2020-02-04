@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers
+﻿namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers
 {
     public static class MappingHelper
     {
