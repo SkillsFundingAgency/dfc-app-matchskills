@@ -5,6 +5,7 @@ using DFC.App.MatchSkills.Application.Session.Models;
 using FluentAssertions;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
@@ -12,7 +13,6 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
