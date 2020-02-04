@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -91,7 +92,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be($"/Views/{Path}/Head.cshtml");
+            result.ViewName.Should().BeNull();
 
         }
 
@@ -99,11 +100,15 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public void WhenBody_Called_ReturnHtml()
         {
             var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings, _compositeSettings);
+            sut.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
             var result = sut.Body() as ViewResult;
 
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().Be($"/Views/{Path}/body.cshtml");
+            result.ViewName.Should().BeNull();
         }
 
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
