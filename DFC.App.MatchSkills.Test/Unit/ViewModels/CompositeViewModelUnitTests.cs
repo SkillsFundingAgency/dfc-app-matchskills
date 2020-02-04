@@ -36,7 +36,18 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewModels
                 // Assert.
                 s.Should().Be("home");
             }
+            [Test]
+            public void When_PageRegionSet_Then_ToStringReturnsPageRegion()
+            {
+                // Arrange.
+                var result = CompositeViewModel.PageRegion.Body;
 
+                // Act.
+                var s = result.ToString();
+
+                // Assert.
+                s.Should().Be("body");
+            }
             public void When_PageIdSet_Then_ValueReturnsPageId()
             {
                 // Arrange.
