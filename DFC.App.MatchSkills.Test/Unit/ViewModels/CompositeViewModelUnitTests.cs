@@ -36,7 +36,18 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewModels
                 // Assert.
                 s.Should().Be("home");
             }
+            [Test]
+            public void When_PageRegionSet_Then_ToStringReturnsPageRegion()
+            {
+                // Arrange.
+                var result = CompositeViewModel.PageRegion.Body;
 
+                // Act.
+                var s = result.ToString();
+
+                // Assert.
+                s.Should().Be("body");
+            }
             public void When_PageIdSet_Then_ValueReturnsPageId()
             {
                 // Arrange.
@@ -50,25 +61,7 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewModels
             }
         }
 
-        [TestFixture]
-        public class GetElementId
-        {
-            [Test]
-            public void When_ValidValuesProvided_Then_IdShouldBeGenerated()
-            {
-                // Arrange.
-                var vm = new HomeCompositeViewModel();
-                var elementName = "Button";
-                var instanceName = "Start";
 
-                // Act.
-                var id = vm.GetElementId(elementName, instanceName);
-
-                // Assert.
-                id.Should().Be("homeButtonStart");
-            }
-
-        }
 
         [Test]
         public void When_ChildConstructed_Then_IdShouldBeSet()
