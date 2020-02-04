@@ -51,7 +51,7 @@
                                         }
                                         @foreach (var skill in Model.Skills)
                                         {
-                                            <govukCheckbox id="@Model.Id" label="@skill.Name" value="@skill.Id" AdditionalClass="checkbox-container-item"></govukCheckbox>
+                                            <govukCheckbox id="@Model.GetElementId("GovukCheckbox","@skill.Id")" label="@skill.Name" value="@skill.Id" AdditionalClass="checkbox-container-item"></govukCheckbox>
 
                                         }
 

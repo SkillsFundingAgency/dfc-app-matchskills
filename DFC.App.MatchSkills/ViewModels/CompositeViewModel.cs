@@ -33,8 +33,24 @@ namespace DFC.App.MatchSkills.ViewModels
             
         }
 
+        public class PageRegion
+        {
+            private PageRegion(string value)
+            {
+                Value = value;
+            }
+            public override string ToString()
+            {
+                return Value;
+            }
+            public string Value { get; }
+            public static PageRegion Body { get; } = new PageRegion("body");
+
+        }
+
         public PageId Id { get; }
 
+        
         public string PageTitle { get; }
         public string PageHeading { get; }
 

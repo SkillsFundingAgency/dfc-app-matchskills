@@ -51,5 +51,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill,  (SkillType)Enum.Parse(typeof(SkillType),dest.Type,true)));
         }
+
     }
+
 }

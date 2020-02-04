@@ -1,4 +1,5 @@
-﻿@model DFC.App.MatchSkills.ViewModels.OccupationSearchViewModel
+﻿@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.OccupationSearchViewModel
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
 
@@ -6,7 +7,7 @@
 
         <div class="govuk-grid-column-two-thirds">
 
-            <form action="/matchskills/body/selectskills"  method="post">
+            <form action="@CompositeViewModel.PageRegion.Body/@CompositeViewModel.PageId.SelectSkills"  method="post">
                 <govukHeadingH1 Text="Enter your current or previous job title" />
 
                 <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
