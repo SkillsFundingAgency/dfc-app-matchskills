@@ -70,6 +70,8 @@ namespace DFC.App.MatchSkills.Controllers
             
            return View("/views/SelectSkills/index.cshtml",occupationId);
         }
+     
+
     }
 
 }

@@ -30,7 +30,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             // ACTs
             var result = await subjectUnderTest.GetAllSkills<Skill[]>(url,apiKey) ;
             
-           
             // ASSERT
             result.Should().NotBeNull(); 
             result[0].Name.Should().Be("Collect biological data");
@@ -135,7 +134,10 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         public async Task When_GetAllSkillsForOccupation_Then_ShouldReturnSkillsList(string url,string apiKey)
         {
             // ARRANGE
-            const string skillsJson ="{skills:[{\"skillType\": \"competency\",\"skill\": \"collect biological data\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"},{\"skillType\": \"competency\",\"skill\": \"collect biological info\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"},{\"skillType\": \"competency\",\"skill\": \"collect samples\",\"alternativeLabels\": [\"biological data collection\", \"analysing biological records\"],\"uri\": \"aaa\"}]}";
+            const string skillsJson ="{skills:[" +
+                                     "{\"type\": \"competency\",\"relationshipType\": \"essential\",\"skill\": \"collect biological data\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"}," +
+                                     "{\"type\": \"competency\",\"relationshipType\": \"essential\",\"skill\": \"collect biological info\",\"alternativeLabels\": [\"biological data analysing\", \"analysing biological records\"],\"uri\": \"aaa\"}," +
+                                     "{\"type\": \"competency\",\"relationshipType\": \"optional\",\"skill\": \"collect samples\",\"alternativeLabels\": [\"biological data collection\", \"analysing biological records\"],\"uri\": \"aaa\"}]}";
             var handlerMock = GetMockMessageHandler(skillsJson,HttpStatusCode.OK);
             var restClient = new RestClient(handlerMock.Object);
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
@@ -182,6 +184,43 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 .Verifiable();
             return handlerMock;
         }
+
+        [Test]
+        public void When_STOccupationSkills_CreatedAllPropertoieSet()
+        {
+            var sut = new StOccupationSkills()
+            {
+                AlternativeLabels = new [] {"label1","label2"},
+                LastModified =Convert.ToDateTime("1-Oct-2010"),
+                Occupation = "Dentist",
+                Uri = "someuri",
+                Skills = new StOccupationSkills.StOsSkill[]
+                {
+                    new StOccupationSkills.StOsSkill()
+                    {
+                        AlternativeLabels = new [] {"label1","label2"},
+                        LastModified =Convert.ToDateTime("1-Oct-2010"),
+                        RelationshipType = "RelationshipType",
+                        Skill="Skill Name",
+                        SkillReusability = "SkillReusability",
+                        Type="skilltype",
+                        Uri="skilluri"
+                    }
+                }
+            };
+
+            sut.Occupation.Should().Be("Dentist");
+            sut.Uri.Should().Be("someuri");
+            sut.LastModified.Should().Be(Convert.ToDateTime("1-Oct-2010"));
+            sut.AlternativeLabels.Should().BeEquivalentTo(new[] {"label1", "label2"});
+            sut.Skills[0].Uri.Should().Be("skilluri");
+            sut.Skills[0].SkillReusability.Should().Be("SkillReusability");
+            sut.Skills[0].RelationshipType.Should().Be("RelationshipType");
+
+        }
+
+        
+
         class MockResult
         {
             public int Id { get; set; }

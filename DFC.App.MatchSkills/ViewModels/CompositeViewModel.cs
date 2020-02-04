@@ -31,10 +31,28 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId Matches { get; } = new PageId("matches");
             public static PageId MoreSkills { get; } = new PageId("moreSkills");
             public static PageId MatchDetails { get; } = new PageId("matchDetails");
+            public static  PageId SelectSkills { get; } = new PageId("selectSkills");
+            
+        }
+
+        public class PageRegion
+        {
+            private PageRegion(string value)
+            {
+                Value = value;
+            }
+            public override string ToString()
+            {
+                return Value;
+            }
+            public string Value { get; }
+            public static PageRegion Body { get; } = new PageRegion("body");
+
         }
 
         public PageId Id { get; }
 
+        
         public string PageTitle { get; }
         public string PageHeading { get; }
 
