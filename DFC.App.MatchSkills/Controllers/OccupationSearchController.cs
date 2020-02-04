@@ -22,8 +22,6 @@ namespace DFC.App.MatchSkills.Controllers
 
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
-        private readonly CompositeSettings _compositeSettings;
-
        
         public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,
             IServiceTaxonomySearcher serviceTaxonomy, 
@@ -35,7 +33,6 @@ namespace DFC.App.MatchSkills.Controllers
             Throw.IfNull(settings, nameof(settings));
             _serviceTaxonomy = serviceTaxonomy ?? new ServiceTaxonomyRepository();
             _settings = settings.Value;
-            _compositeSettings = compositeSettings.Value;
         }
 
 
