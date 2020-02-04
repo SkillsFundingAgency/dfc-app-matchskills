@@ -70,61 +70,7 @@ namespace DFC.App.MatchSkills.Controllers
             
            return View("/views/SelectSkills/index.cshtml",occupationId);
         }
- 
-        #region OccupationSearchCUI
-
-        [HttpGet]
-        [Route("/Index/OccupationSearch")]
-        public IActionResult Index()
-        {
-            var vm = new OccupationSearchViewModel()
-            {
-                SearchService = _settings.SearchService
-            };
-            return View(ReturnPath("Index", "OccupationSearch"),vm);
-        }
-
-        [HttpGet]
-        [Route("/head/OccupationSearch")]
-        public override IActionResult Head()
-        {
-            return View(ReturnPath("Head", "OccupationSearch"));
-        }
-
-        [HttpGet]
-        [Route("/breadcrumb/OccupationSearch")]
-        public override IActionResult Breadcrumb()
-        {
-            return View(ReturnPath("Breadcrumb", "OccupationSearch"));
-        }
-
-        [HttpGet]
-        [Route("/bodytop/OccupationSearch")]
-        public override IActionResult BodyTop()
-        {
-            return View(ReturnPath("bodytop"));
-        }
-
-        [HttpGet]
-        [Route("/body/OccupationSearch")]
-        public override IActionResult Body()
-        {
-            var vm = new OccupationSearchViewModel()
-            {
-                SearchService = _settings.SearchService
-            };
-            return View(ReturnPath("body", "OccupationSearch"),vm);
-        }
-
-        [HttpGet]
-        [Route("/sidebarright/" + PathName)]
-        public override IActionResult SidebarRight()
-        {
-            return View(ReturnPath("sidebarright"));
-        }
-        #endregion
-
-
+     
 
     }
 
