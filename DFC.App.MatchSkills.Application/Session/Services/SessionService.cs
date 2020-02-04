@@ -4,6 +4,7 @@ using DFC.App.MatchSkills.Application.Session.Helpers;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Net.Http;
@@ -46,13 +47,16 @@ namespace DFC.App.MatchSkills.Application.Session.Services
         public Task<HttpResponseMessage> UpdateUserSessionAsync(UserSession updatedSession)
         {
             Throw.IfNull(updatedSession, nameof(updatedSession));
-            return _cosmosService.UpdateUserSessionAsync(updatedSession);
+            return _cosmosService.UpsertItemAsync(updatedSession);
         }
 
         public async Task<UserSession> GetUserSession(string sessionId)
         {
             Throw.IfNullOrWhiteSpace(sessionId, nameof(sessionId));
-            return await _cosmosService.GetUserSessionAsync(sessionId);
+            var result = await _cosmosService.ReadItemAsync(sessionId);
+            return result.IsSuccessStatusCode ? 
+                JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
+                : null;
         }
 
 

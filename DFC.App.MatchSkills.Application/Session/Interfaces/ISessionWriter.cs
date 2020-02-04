@@ -1,6 +1,6 @@
-﻿using System.Net.Http;
+﻿using DFC.App.MatchSkills.Application.Session.Models;
+using System.Net.Http;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Application.Session.Interfaces
 {
