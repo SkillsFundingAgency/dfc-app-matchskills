@@ -1,8 +1,8 @@
-﻿using System.Net.Http;
-using DFC.App.MatchSkills.Application.Dysac.Models;
+﻿using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using System.Net.Http;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Helpers
 {
@@ -18,6 +18,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Helpers
                     ApiUrl = "http://localhost:7074/api/", 
                     ApiKey = ""
                 });
+            
         }
         public static DysacService CreateNewDysacSession_Invalid_RestClient()
         {

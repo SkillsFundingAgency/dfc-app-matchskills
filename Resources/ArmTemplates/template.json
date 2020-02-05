@@ -133,6 +133,10 @@
                                 "value": "true"
                             },
                             {
+                                "name": "ServiceTaxonomySettings__EscoUrl",
+                                "value": "http://data.europa.eu/esco"
+                            },
+                            {
                                 "name": "ServiceTaxonomySettings__SearchService",
                                 "value": "[concat('https://', variables('webAppName'), '.', parameters('appServiceDomain'))]"
                             },
