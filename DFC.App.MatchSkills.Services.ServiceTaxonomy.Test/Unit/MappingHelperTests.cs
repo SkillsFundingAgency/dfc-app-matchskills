@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Policy;
-using System.Text;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers;
-using FluentAssertions;
+﻿using DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers;
 using NUnit.Framework;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit

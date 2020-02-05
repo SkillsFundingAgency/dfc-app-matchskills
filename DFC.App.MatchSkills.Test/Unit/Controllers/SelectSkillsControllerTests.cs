@@ -39,6 +39,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _compositeSettings = Options.Create(new CompositeSettings());
             _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
             _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
+            _settings.Value.EscoUrl = "http://data.europa.eu/esco";
+
             _settings.Value.SearchOccupationInAltLabels ="true";
                   
             const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
@@ -94,7 +96,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
             var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
 
-            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
+            result.Result.Should().Be("114e1eff-215e-47df-8e10-45a5b72f8197");
             
         }
         

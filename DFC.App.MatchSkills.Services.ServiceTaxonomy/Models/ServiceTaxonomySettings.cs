@@ -9,5 +9,7 @@
         public string SearchSkillInAltLabels { get; set; }
       
         public string SearchService { get; set; }
+        public string EscoUrl { get; set; }
+        
     }
 }
