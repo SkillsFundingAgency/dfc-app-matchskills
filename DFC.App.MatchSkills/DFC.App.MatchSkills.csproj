@@ -6,16 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ViewModels\Worked\WorkedViewModel.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="ViewModels\Worked\WorkedViewModel.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />    
-    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.17" />
+    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />
+    <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.9" />
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.6" />
     <PackageReference Include="Dfc.ProviderPortal.Packages" Version="0.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
@@ -30,13 +22,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj" />
-    <ProjectReference Include="..\DFC.App.MatchSkills.Services.Dysac\DFC.App.MatchSkills.Services.Dysac.csproj" />
     <ProjectReference Include="..\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj" />
   </ItemGroup>
 
@@ -48,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Shared\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>
