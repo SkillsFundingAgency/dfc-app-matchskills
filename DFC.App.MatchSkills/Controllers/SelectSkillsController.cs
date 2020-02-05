@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -52,7 +53,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
         [HttpPost]
         [Route("MatchSkills/AddSkills/[controller]")]
-        public  void AddSkills(SelectSkillsCompositeViewModel vm)
+        public  void AddSkills(FormCollection collection)
         {
             RedirectToAction("/Matchskills/Body/Basket");
         }
