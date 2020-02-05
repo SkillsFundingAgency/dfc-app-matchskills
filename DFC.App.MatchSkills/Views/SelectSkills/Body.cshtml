@@ -1,7 +1,5 @@
 ﻿@model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
-@{
-    ViewData["Title"] = @Model.PageHeading;
-}
+
 
         <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
 
@@ -9,6 +7,7 @@
 
                 <div class="govuk-grid-column-two-thirds">
                     <form action="/matchskills/addskills/selectskills" method="post">
+
                         <div class="results">
                             <div class="govuk-form-group">
                                 <fieldset class="govuk-fieldset">
