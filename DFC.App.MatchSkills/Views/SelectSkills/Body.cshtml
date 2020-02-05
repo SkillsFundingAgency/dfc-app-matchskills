@@ -3,24 +3,17 @@
     ViewData["Title"] = @Model.PageHeading;
 }
 
-<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+        <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
 
+            <div class="govuk-grid-row">
 
-        <form action="/matchskills/addskills/selectskills" method="post">
-
-            <div class="govuk-width-container">
-                <a class="govuk-back-link" href="autocomplete.html">Back</a>
-                <div class="govuk-grid-row margin-reset">
-                    <div class="govuk-grid-column-two-thirds">
-
-                        <br>
+                <div class="govuk-grid-column-two-thirds">
+                    <form action="/matchskills/addskills/selectskills" method="post">
                         <div class="results">
                             <div class="govuk-form-group">
                                 <fieldset class="govuk-fieldset">
                                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                        <h1 class="govuk-fieldset__heading--l govuk-!-margin-top-4">
-                                            @Model.PageHeading
-                                        </h1>
+                                        <govukHeadingH1 Text="@Model.PageHeading" />
                                     </legend>
                                     <p>
                                         These are some of the skills you may have used in the role of <strong>@Model.Occupation</strong>.
@@ -35,28 +28,20 @@
                                     <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container">
                                         @if (Model.Skills.Count == 0)
                                         {
-                                            <govukLabel id="LblNoResults" Text="No required skills found"></govukLabel>
+                                            <govukLabel id="@Model.GetElementId("GovukCheckbox","NoRequiredSkillsFound")" Text="No required skills found"></govukLabel>
                                         }
                                         @foreach (var skill in Model.Skills)
                                         {
-                                            <govukCheckbox id="@Model.GetElementId("GovukCheckbox","@skill.Id")" label="@skill.Name" value="@skill.Id" AdditionalClass="checkbox-container-item"></govukCheckbox>
+                                            <govukCheckbox id="@Model.GetElementId("GovukCheckbox-",@skill.Id)" label="@skill.Name" value="@skill.Id" AdditionalClass="checkbox-container-item"></govukCheckbox>
 
                                         }
-
                                     </div>
                                 </fieldset>
                             </div>
                         </div>
-                        <button id="SelectSkillsButtonAddToSkillsList" class="govuk-button  govuk-button--secondary">Add to skills list</button>
-
-
-                    </div>
-
+                        <govukButton id="@Model.GetElementId("govukButton","Addtoskillslist")" text="Add to skills list"/>
+                    </form>
                 </div>
-            </div>
-
-        </form>
-
-
+                </div>
     </div>
 
