@@ -76,6 +76,11 @@ Set {{PathRootUrl}} variable value to where your Paths app is running eg http://
 Set {{RegionRootUrl}} variable value to where your Paths app is running eg http://localhost:7072/api/
 Run the postman project scripts in Paths and Regions apps to populate Cosmos
 
+Create a new Cosmos container called eg. "Match Skills"
+Create a collection within the container, called "UserSessionsCollection" with a partition id of "/UserSessionId"
+Create a copy of appsettings-template.json called appsettings.json
+Add your Cosmos emulator credentials and above container and collection details to your appsettings.json
+
 Start Paths, Regions and Shell solutions
 Start match skills app 
 

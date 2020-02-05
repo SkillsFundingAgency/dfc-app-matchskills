@@ -12,7 +12,8 @@ namespace DFC.App.MatchSkills.ViewModels
         {
             private PageId(string value)
             {
-                Value = value;
+                Throw.IfNullOrWhiteSpace(value, nameof(value));
+                Value = value.Trim();
             }
 
             public override string ToString()
@@ -70,8 +71,8 @@ namespace DFC.App.MatchSkills.ViewModels
         {
             Throw.IfNullOrWhiteSpace(elementName, nameof(elementName));
             Throw.IfNullOrWhiteSpace(instanceName, nameof(instanceName));
-            elementName = elementName.FirstCharToUpper();
-            instanceName = instanceName.FirstCharToUpper();
+            elementName = elementName.FirstCharToUpper().Trim();
+            instanceName = instanceName.FirstCharToUpper().Trim();
             return $"{Id}{elementName}{instanceName}";
         }
 
