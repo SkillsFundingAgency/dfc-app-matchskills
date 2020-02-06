@@ -9,7 +9,6 @@ using System;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {

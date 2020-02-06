@@ -13,7 +13,7 @@ namespace DFC.App.MatchSkills.Controllers
     public abstract class CompositeSessionController<TViewModel> : SessionController where TViewModel : CompositeViewModel, new()
     {
         protected TViewModel ViewModel { get; }
-        private ISessionService _sessionService;
+        private readonly ISessionService _sessionService;
         protected CompositeSessionController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings, ISessionService sessionService)
             : base(dataProtectionProvider)
         {
