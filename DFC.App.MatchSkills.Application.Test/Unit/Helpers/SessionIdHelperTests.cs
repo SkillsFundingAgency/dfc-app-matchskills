@@ -59,6 +59,18 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Helpers
                 decode.Should().Be(digits.ToString());
                 
             }
+
+            [Test]
+            public void CounterShouldResetAfter99()
+            {
+                var result = 0;
+                do
+                {
+                    result = SessionIdHelper.Counter();
+                } while (result < 99);
+                result = SessionIdHelper.Counter();
+                result.Should().Be(1);
+            }
         }
 
         public class PartitionKeyGeneratorTests

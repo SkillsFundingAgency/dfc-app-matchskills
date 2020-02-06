@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Models;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.DataProtection;
@@ -9,8 +10,9 @@ namespace DFC.App.MatchSkills.Controllers
 {
     public class BasketController : CompositeSessionController<SkillsBasketCompositeViewModel>
     {
-        public BasketController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings)
-            : base(dataProtectionProvider, compositeSettings)
+        public BasketController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings,
+            ISessionService sessionService)
+            : base(dataProtectionProvider, compositeSettings, sessionService)
         {
         }
 

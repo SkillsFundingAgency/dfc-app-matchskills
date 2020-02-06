@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -26,8 +27,10 @@ namespace DFC.App.MatchSkills.Controllers
         public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,
             IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings,
-            IOptions<CompositeSettings> compositeSettings) 
-            : base(dataProtectionProvider, compositeSettings)
+            IOptions<CompositeSettings> compositeSettings,
+            ISessionService sessionService) 
+            : base(dataProtectionProvider, compositeSettings,
+                sessionService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));

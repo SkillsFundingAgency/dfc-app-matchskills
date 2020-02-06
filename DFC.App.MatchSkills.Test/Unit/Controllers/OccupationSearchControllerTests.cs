@@ -14,8 +14,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using Microsoft.AspNetCore.Http;
+using NSubstitute;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -28,6 +30,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<CompositeSettings> _compositeSettings;
         private ServiceTaxonomyRepository serviceTaxonomyRepository;
         private const string Path = "OccupationSearch";
+        private ISessionService _sessionService;
         
         [SetUp]
         public void Init()
@@ -38,7 +41,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
             _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _settings.Value.SearchOccupationInAltLabels ="true";
-
+            _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
 
             const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
@@ -52,7 +55,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void  When_OccupationSearch_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings);
+            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
             var occupations =   sut.OccupationSearch("renewable");
             
@@ -63,7 +66,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void  When_OccupationSearchAuto_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings);
+            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
             var occupations =   sut.OccupationSearchAuto("renewable");
             
@@ -75,7 +78,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void  When_GetOccupationSkills_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings);
+            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
             var occupations =   sut.GetOccupationSkills("Renewable energy consultant");
             
@@ -87,7 +90,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void When_HeadCalled_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings);
+            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            sut.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = sut.Head() as ViewResult;
             
             result.Should().NotBeNull();
@@ -99,7 +103,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBody_Called_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector, serviceTaxonomyRepository, _settings, _compositeSettings);
+            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             sut.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

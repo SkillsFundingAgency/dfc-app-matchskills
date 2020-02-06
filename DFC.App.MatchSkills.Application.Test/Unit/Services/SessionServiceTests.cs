@@ -87,7 +87,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     .ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.BadRequest));
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings);
-                var sessionId = await serviceUnderTest.CreateUserSession(null, null);
+                var sessionId = await serviceUnderTest.CreateUserSession(null, null, "session5-gn84ygzmm4893m");
                 sessionId.Should().BeNull();
 
             }
@@ -201,6 +201,79 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var result = await serviceUnderTest.UpdateUserSessionAsync(new UserSession());
 
                 result.StatusCode.Should().Be(HttpStatusCode.OK);
+            }
+        }
+
+        public class GeneratePrimaryKeyTests
+        {
+            private IOptions<SessionSettings> _sessionSettings;
+            private ICosmosService _cosmosService;
+
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosService = Substitute.For<ICosmosService>();
+                _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            }
+
+            [Test]
+            public void KeyShouldBeGeneratedInCorrectFormat()
+            {
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var primaryKey = serviceUnderTest.GeneratePrimaryKey();
+                primaryKey.Should().NotBeNullOrWhiteSpace();
+                primaryKey.Should().StartWith("session");
+                primaryKey.Should().Contain("-");
+            }
+        }
+        public class ExtractInfoFromPrimaryKeyTests
+        {
+            private IOptions<SessionSettings> _sessionSettings;
+            private ICosmosService _cosmosService;
+
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosService = Substitute.For<ICosmosService>();
+                _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            }
+
+            [Test]
+            public void WhenSessionIdIsNullOrEmpty_ReturnNull()
+            {
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var sessionId = serviceUnderTest.ExtractInfoFromPrimaryKey(null, SessionService.ExtractMode.SessionId);
+                sessionId.Should().BeNullOrWhiteSpace();
+
+            }
+            [Test]
+            public void WhenSessionIdFormatIncorrect_ReturnNull()
+            {
+                
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var sessionId = serviceUnderTest.ExtractInfoFromPrimaryKey("incorrectFormat", SessionService.ExtractMode.PartitionKey);
+                sessionId.Should().BeNullOrWhiteSpace();
+
+            }
+            [Test]
+            public void WhenPartitionKeyRequested_ReturnPartitionKey()
+            {
+                string primaryKey = "session5-gn84ygzmm4893m";
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var partitionKey = serviceUnderTest.ExtractInfoFromPrimaryKey(primaryKey, SessionService.ExtractMode.PartitionKey);
+                partitionKey.Should().NotBeNullOrWhiteSpace();
+                partitionKey.Should().Be("session5");
+
+            }
+            [Test]
+            public void WhenSessionIdRequested_ReturnSessionId()
+            {
+                string primaryKey = "session5-gn84ygzmm4893m";
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var sessionId = serviceUnderTest.ExtractInfoFromPrimaryKey(primaryKey, SessionService.ExtractMode.SessionId);
+                sessionId.Should().NotBeNullOrWhiteSpace();
+                sessionId.Should().Be("gn84ygzmm4893m");
+
             }
         }
     }

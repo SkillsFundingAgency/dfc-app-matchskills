@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
@@ -13,19 +14,21 @@ namespace DFC.App.MatchSkills.Controllers
         public WorkedController(IDataProtectionProvider dataProtectionProvider,
             IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService)
-            : base(dataProtectionProvider, compositeSettings)
+            : base(dataProtectionProvider, compositeSettings, sessionService)
         {
             _sessionService = sessionService;
         }
 
         [HttpPost]
         [Route("MatchSkills/body/[controller]")]
-        public IActionResult Body(WorkedBefore choice)
+        public async Task<IActionResult> Body(WorkedBefore choice)
         {
-            var sessionId = _sessionService.CreateUserSession(CompositeViewModel.PageId.Home.Value,
-                CompositeViewModel.PageId.Worked.Value).Result;
+            var sessionIdFromCookie = TryGetSessionId(this.Request);
 
-            if (!string.IsNullOrWhiteSpace(sessionId))
+            var sessionId = await _sessionService.CreateUserSession(CompositeViewModel.PageId.Home.Value,
+                CompositeViewModel.PageId.Worked.Value, sessionIdFromCookie);
+
+            if (string.IsNullOrWhiteSpace(sessionIdFromCookie))
             {
                 AppendCookie(sessionId);
             }
