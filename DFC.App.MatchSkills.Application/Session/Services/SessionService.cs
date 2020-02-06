@@ -18,6 +18,11 @@ namespace DFC.App.MatchSkills.Application.Session.Services
         private readonly ICosmosService _cosmosService;
         private readonly IOptions<SessionSettings> _sessionSettings;
 
+        public enum ExtractMode
+        {
+            PartitionKey = 0,
+            SessionId = 1
+        }
         public SessionService(ICosmosService cosmosService, IOptions<SessionSettings> sessionSettings)
         {
             Throw.IfNull(cosmosService, nameof(cosmosService));
@@ -39,8 +44,8 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             }
             else
             {
-                sessionId = ExtractSessionIdFromPrimaryKey(sessionId);
-                partitionKey = ExtractPartitionKeyFromPrimaryKey(sessionIdFromCookie);
+                sessionId = ExtractInfoFromPrimaryKey(sessionIdFromCookie, ExtractMode.SessionId);
+                partitionKey = ExtractInfoFromPrimaryKey(sessionIdFromCookie, ExtractMode.PartitionKey);
             }
 
             var userSession = new UserSession()
@@ -57,10 +62,10 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return result.IsSuccessStatusCode ? userSession.PrimaryKey : null;
         }
 
-        public Task<HttpResponseMessage> UpdateUserSessionAsync(UserSession updatedSession)
+        public async Task<HttpResponseMessage> UpdateUserSessionAsync(UserSession updatedSession)
         {
             Throw.IfNull(updatedSession, nameof(updatedSession));
-            return _cosmosService.UpsertItemAsync(updatedSession);
+            return await _cosmosService.UpsertItemAsync(updatedSession);
         }
 
         public async Task<UserSession> GetUserSession(string sessionId)
@@ -83,13 +88,14 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return userSession.PrimaryKey;
         }
 
-        public string ExtractPartitionKeyFromPrimaryKey(string sessionId)
+        public string ExtractInfoFromPrimaryKey(string sessionId, ExtractMode mode)
         {
-            return string.IsNullOrWhiteSpace(sessionId) ? null : sessionId.Split('-')[0];
-        }
-        public string ExtractSessionIdFromPrimaryKey(string sessionId)
-        {
-            return string.IsNullOrWhiteSpace(sessionId) ? null : sessionId.Split('-')[1];
+            if (string.IsNullOrWhiteSpace(sessionId))
+                return null;
+            if (!sessionId.Contains('-'))
+                return null;
+
+            return sessionId.Split('-')[(int)mode];
         }
 
     }

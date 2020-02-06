@@ -28,6 +28,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             {
                 var serviceUnderTest =
                     SessionHelper.CreateNewDysacSession(HttpClientMockFactory.Post_Successful_Mock().Object);
+
                 var results = serviceUnderTest.CreateNewSession(AssessmentTypes.Short).Result;
                 results.SessionId.Should().Be("0fcf719b-2aea-4af4-a2ba-6e73ccd5105b");
                 results.QuestionNumber.Should().Be(0);
