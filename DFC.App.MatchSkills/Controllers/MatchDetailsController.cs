@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
@@ -10,7 +11,8 @@ namespace DFC.App.MatchSkills.Controllers
 {
     public class MatchDetailsController : CompositeSessionController<MatchDetailsCompositeViewModel>
     {
-        public MatchDetailsController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings) : base(dataProtectionProvider, compositeSettings)
+        public MatchDetailsController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings,
+            ISessionService sessionService) : base(dataProtectionProvider, compositeSettings, sessionService)
         {
         }
 

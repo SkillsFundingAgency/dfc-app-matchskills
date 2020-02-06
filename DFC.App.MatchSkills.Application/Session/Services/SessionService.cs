@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {
@@ -26,10 +27,22 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             _sessionSettings = sessionSettings;
         }
 
-        public async Task<string> CreateUserSession(string previousPage, string currentPage)
+        public async Task<string> CreateUserSession(string previousPage, string currentPage, string sessionIdFromCookie = null)
         {
-            var sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
-            var partitionKey = PartitionKeyHelper.UserSession(sessionId);
+            var sessionId = string.Empty;
+            var partitionKey = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(sessionIdFromCookie))
+            {
+                sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
+                partitionKey = PartitionKeyHelper.UserSession(sessionId);
+            }
+            else
+            {
+                sessionId = ExtractSessionIdFromPrimaryKey(sessionId);
+                partitionKey = ExtractPartitionKeyFromPrimaryKey(sessionIdFromCookie);
+            }
+
             var userSession = new UserSession()
             {
                 UserSessionId = sessionId,
@@ -58,7 +71,26 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
                 : null;
         }
+        public string GeneratePrimaryKey()
+        {
+            var sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
+            var partitionKey = PartitionKeyHelper.UserSession(sessionId);
+            var userSession = new UserSession()
+            {
+                UserSessionId = sessionId,
+                PartitionKey =  partitionKey
+            };
+            return userSession.PrimaryKey;
+        }
 
+        public string ExtractPartitionKeyFromPrimaryKey(string sessionId)
+        {
+            return string.IsNullOrWhiteSpace(sessionId) ? null : sessionId.Split('-')[0];
+        }
+        public string ExtractSessionIdFromPrimaryKey(string sessionId)
+        {
+            return string.IsNullOrWhiteSpace(sessionId) ? null : sessionId.Split('-')[1];
+        }
 
     }
 }

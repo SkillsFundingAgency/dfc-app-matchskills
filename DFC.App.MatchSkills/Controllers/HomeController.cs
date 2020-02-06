@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Models;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +9,9 @@ namespace DFC.App.MatchSkills.Controllers
 {
     public class HomeController : CompositeSessionController<HomeCompositeViewModel>
     {
-        public HomeController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings)
-            : base(dataProtectionProvider,compositeSettings)
+        public HomeController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings,
+            ISessionService sessionService)
+            : base(dataProtectionProvider,compositeSettings, sessionService)
         {
         }
 
