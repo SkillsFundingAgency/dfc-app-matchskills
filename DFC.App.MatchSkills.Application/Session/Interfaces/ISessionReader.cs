@@ -7,7 +7,7 @@ namespace DFC.App.MatchSkills.Application.Session.Interfaces
     public interface ISessionReader
     {
         Task<UserSession> GetUserSession(string sessionId, string partitionKey);
-        Task<bool> CheckForExistingUserSession(string sessionId);
-        string ExtractInfoFromPrimaryKey(string sessionId, SessionService.ExtractMode mode);
+        Task<bool> CheckForExistingUserSession(string primaryKey);
+        string ExtractInfoFromPrimaryKey(string primaryKey, SessionService.ExtractMode mode);
     }
 }
