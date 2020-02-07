@@ -6,7 +6,7 @@
             <div class="govuk-grid-row">
 
                 <div class="govuk-grid-column-two-thirds">
-                    <form action="/matchskills/addskills/selectskills" method="post">
+                    <form action="/matchskills/selectskills/addskills" method="post">
 
                         <div class="results">
                             <div class="govuk-form-group">
@@ -29,9 +29,10 @@
                                         {
                                             <govukLabel id="@Model.GetElementId("GovukCheckbox","NoRequiredSkillsFound")" Text="No required skills found"></govukLabel>
                                         }
+
                                         @foreach (var skill in Model.Skills)
                                         {
-                                            <govukCheckbox id="@Model.GetElementId("GovukCheckbox-",@skill.Id)" label="@skill.Name" value="@skill.Id" AdditionalClass="checkbox-container-item"></govukCheckbox>
+                                            <govukCheckbox id="@Model.GetElementId("GovukCheckbox-",@skill.Id)" label="@skill.Name" name="@skill.Id--@skill.Name"  AdditionalClass="checkbox-container-item"></govukCheckbox>
                                         }
                                     </div>
                                 </fieldset>

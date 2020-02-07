@@ -1,4 +1,5 @@
-﻿using Dfc.ProviderPortal.Packages;
+﻿using System.Collections.Generic;
+using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
@@ -46,16 +48,27 @@ namespace DFC.App.MatchSkills.Controllers
 
             var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
             
-            ViewModel.Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
-                _apiKey, $"{_escoUrl}/occupation/{occupationId}");
+            var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
+                _apiKey, occupationId);
+
+            ViewModel.Skills = Skills.ToList(); 
             
             return base.Body();
         }
         [HttpPost]
-        [Route("MatchSkills/AddSkills/[controller]")]
-        public  void AddSkills(FormCollection collection)
+        [Route("/MatchSkills/[controller]/AddSkills")]
+        public   void AddSkills(IFormCollection formCollection)
         {
+            
+            List<Skill> skills = new List<Skill>();
+            foreach (var key in formCollection.Keys.Skip(1))
+            { 
+                string[] skill = key.Split("--"); 
+                skills.Add(new Skill(id:skill[0],name:skill[1],SkillType.Competency));                
+            }
+           
             RedirectToAction("/Matchskills/Body/Basket");
+            
         }
 
         public async Task<string> GetOccupationIdFromName(string occupation)

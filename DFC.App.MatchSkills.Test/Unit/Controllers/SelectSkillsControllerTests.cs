@@ -66,8 +66,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
             // ACTs
             var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
-            vm.Skills = result;
-            var skills = vm.Skills.ToList();
+            vm.Skills = result.ToList();
+            //var skills = vm.Skills.ToList();
             
             // ASSERT
             result.Should().NotBeNull();
