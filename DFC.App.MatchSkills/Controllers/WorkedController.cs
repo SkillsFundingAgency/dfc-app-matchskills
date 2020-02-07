@@ -23,14 +23,14 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("MatchSkills/body/[controller]")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
-            var sessionIdFromCookie = TryGetSessionId(this.Request);
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
 
-            var sessionId = await _sessionService.CreateUserSession(CompositeViewModel.PageId.Home.Value,
-                CompositeViewModel.PageId.Worked.Value, sessionIdFromCookie);
+            var primaryKey = await _sessionService.CreateUserSession(CompositeViewModel.PageId.Home.Value,
+                CompositeViewModel.PageId.Worked.Value, primaryKeyFromCookie);
 
-            if (string.IsNullOrWhiteSpace(sessionIdFromCookie))
+            if (string.IsNullOrWhiteSpace(primaryKeyFromCookie))
             {
-                AppendCookie(sessionId);
+                AppendCookie(primaryKey);
             }
             switch (choice)
             {

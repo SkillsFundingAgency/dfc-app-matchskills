@@ -10,6 +10,7 @@
     <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.17" />
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.7" />
     <PackageReference Include="Dfc.ProviderPortal.Packages" Version="0.1.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.0-beta2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">

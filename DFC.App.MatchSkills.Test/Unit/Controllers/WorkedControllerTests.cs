@@ -145,15 +145,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenSessionIdIsSet_CookieIsSaved()
         {
-            var sessionValue = "Abc123";
             var controller = new WorkedController(_dataProtectionProvider,_compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            controller.HttpContext.Request.QueryString = QueryString.Create("sessionId", sessionValue);
-            controller.Body();
+            controller.Head();
             var headers = controller.Response.Headers;
 
             headers.Should().ContainKey("set-cookie");

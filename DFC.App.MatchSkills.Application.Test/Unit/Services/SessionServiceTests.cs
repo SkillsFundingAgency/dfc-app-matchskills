@@ -148,7 +148,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public void IfSessionIdIsNull_ThrowArgumentException()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
-                serviceUnderTest.Invoking(x => x.GetUserSession(null, null)).Should().Throw<ArgumentException>();
+                serviceUnderTest.Invoking(x => x.GetUserSession(null)).Should().Throw<ArgumentException>();
             }
             [Test]
             public async Task IfResultIsNotSuccess_ReturnNull()
@@ -156,7 +156,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
                 _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)));
-                var result = await serviceUnderTest.GetUserSession("Id", "partitionKey");
+                var result = await serviceUnderTest.GetUserSession("primaryKey");
 
                 result.Should().BeNull();
             }
@@ -170,7 +170,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                         Content = new StringContent
                         (JsonConvert.SerializeObject(new UserSession()))
                     }));
-                var result = await serviceUnderTest.GetUserSession("Id", "partitionKey");
+                var result = await serviceUnderTest.GetUserSession("primaryKey");
 
                 result.Should().NotBeNull();
             }
