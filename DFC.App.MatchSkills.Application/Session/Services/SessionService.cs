@@ -71,9 +71,13 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return await _cosmosService.UpsertItemAsync(updatedSession);
         }
 
-        public async Task<UserSession> GetUserSession(string sessionId, string partitionKey)
+        public async Task<UserSession> GetUserSession(string primaryKey)
         {
-            Throw.IfNullOrWhiteSpace(sessionId, nameof(sessionId));
+            Throw.IfNullOrWhiteSpace(primaryKey, nameof(primaryKey));
+
+            var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
+            var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
+
             var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
             return result.IsSuccessStatusCode ? 
                 JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
@@ -85,10 +89,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             if (string.IsNullOrWhiteSpace(primaryKey))
                 return false;
 
-            var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
-            var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
-
-            var result = await GetUserSession(sessionId, partitionKey);
+            var result = await GetUserSession(primaryKey);
 
             if (result == null)
                 return false;

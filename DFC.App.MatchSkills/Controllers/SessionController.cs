@@ -28,22 +28,22 @@ namespace DFC.App.MatchSkills.Controllers
             });
         }
 
-        protected string TryGetSessionId(HttpRequest request)
+        protected string TryGetPrimaryKey(HttpRequest request)
         {
-            var sessionId = string.Empty;
-            if (request.Cookies.TryGetValue(CookieName, out var cookieSessionId))
+            var primaryKey = string.Empty;
+            if (request.Cookies.TryGetValue(CookieName, out var cookiePrimaryKey))
             {
-                sessionId = _dataProtector.Unprotect(cookieSessionId);
+                primaryKey = _dataProtector.Unprotect(cookiePrimaryKey);
             }
 
             var queryDictionary = System.Web.HttpUtility.ParseQueryString(request.QueryString.ToString());
             var code = queryDictionary.Get("sessionId");
             if (!string.IsNullOrEmpty(code))
             {
-                sessionId = code;
+                primaryKey = code;
             }
 
-            return string.IsNullOrWhiteSpace(sessionId) ? null : sessionId;
+            return string.IsNullOrWhiteSpace(primaryKey) ? null : primaryKey;
         }
     }
 }

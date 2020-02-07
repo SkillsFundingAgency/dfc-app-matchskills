@@ -33,6 +33,8 @@ namespace DFC.App.MatchSkills
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddApplicationInsightsTelemetry();
+
             services.AddControllersWithViews();
             services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
             services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
