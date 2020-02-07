@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Models;
@@ -22,26 +23,27 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly ServiceTaxonomySettings _settings;
         private readonly string _apiUrl;
         private readonly string _apiKey;
-        private readonly string _escoUrl;
-
-        public SelectSkillsController(IDataProtectionProvider dataProtectionProvider,IServiceTaxonomySearcher serviceTaxonomy, IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, ISessionService sessionService)  : base(dataProtectionProvider, compositeSettings, sessionService)
+        private readonly ISessionService _sessionService;
+        public SelectSkillsController(IDataProtectionProvider dataProtectionProvider, IServiceTaxonomySearcher serviceTaxonomy, 
+                IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, 
+                ISessionService sessionService)  : base(dataProtectionProvider, compositeSettings, sessionService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
             _settings = settings.Value;
             Throw.IfNull(_settings.ApiUrl, nameof(_settings.ApiUrl));
             Throw.IfNull(_settings.ApiKey, nameof(_settings.ApiKey));
-            Throw.IfNull(_settings.EscoUrl, nameof(_settings.EscoUrl));
+            Throw.IfNull(sessionService, nameof(sessionService));
             
             _serviceTaxonomy = serviceTaxonomy ?? new ServiceTaxonomyRepository();
             _settings = settings.Value;
             _apiUrl = _settings.ApiUrl;
             _apiKey = _settings.ApiKey;
-            _escoUrl = _settings.EscoUrl;
+            
         }
 
         [HttpPost]
-        [Route("MatchSkills/body/[controller]")]
+        [Route("MatchSkills/[controller]")]
         public   async Task<IActionResult> Body(string  enterJobInputAutocomplete)
         {
             ViewModel.Occupation = enterJobInputAutocomplete;
@@ -64,10 +66,12 @@ namespace DFC.App.MatchSkills.Controllers
             foreach (var key in formCollection.Keys.Skip(1))
             { 
                 string[] skill = key.Split("--"); 
-                skills.Add(new Skill(id:skill[0],name:skill[1],SkillType.Competency));                
+                skills.Add(new Skill(id:skill[0],name:skill[1]));                
             }
            
-            RedirectToAction("/Matchskills/Body/Basket");
+            var sessionIdFromCookie = TryGetSessionId(this.Request);
+
+            RedirectToAction("/Matchskills/Basket");
             
         }
 
