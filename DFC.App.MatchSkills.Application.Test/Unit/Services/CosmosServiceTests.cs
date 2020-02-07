@@ -13,6 +13,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NSubstitute.Core.Arguments;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
@@ -111,7 +112,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var client = Substitute.For<CosmosClient>();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.ReadItemAsync(null)).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.ReadItemAsync(null, null)).Should().Throw<ArgumentException>();
 
             }
 
@@ -122,7 +123,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection)
                     .ReturnsNullForAnyArgs();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.ReadItemAsync("Id")).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.ReadItemAsync("Id", "partitionKey")).Should().Throw<ArgumentException>();
 
             }
             [Test]
@@ -132,7 +133,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var container = Substitute.For<Container>();
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.ReadItemAsync("id");
+                var result = await _service.ReadItemAsync("id", "partitionKey");
                 var expected = new HttpResponseMessage(HttpStatusCode.NotFound);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -146,11 +147,11 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var response = Substitute.For<ItemResponse<object>>();
                 response.StatusCode.ReturnsForAnyArgs(HttpStatusCode.OK);
                 response.Resource.ReturnsForAnyArgs(JsonConvert.SerializeObject(new UserSession()));
-                container.ReadItemAsync<object>(Arg.Any<string>(), PartitionKey.None).Returns(Task.FromResult(response));
+                container.ReadItemAsync<object>(Arg.Any<string>(), Arg.Any<PartitionKey>()).Returns(Task.FromResult(response));
 
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.ReadItemAsync("Id");
+                var result = await _service.ReadItemAsync("Id", "partitionKey");
                 var expected = new HttpResponseMessage(HttpStatusCode.OK);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -163,11 +164,11 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 var response = Substitute.For<ItemResponse<object>>();
                 response.StatusCode.ReturnsForAnyArgs(HttpStatusCode.OK);
-                container.ReadItemAsync<object>(Arg.Any<string>(), PartitionKey.None).Returns(Task.FromResult(response));
+                container.ReadItemAsync<object>(Arg.Any<string>(), Arg.Any<PartitionKey>()).Returns(Task.FromResult(response));
 
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.ReadItemAsync("Id");
+                var result = await _service.ReadItemAsync("Id", "partitionKey");
                 var expected = new HttpResponseMessage(HttpStatusCode.NotFound);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }

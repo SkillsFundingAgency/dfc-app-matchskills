@@ -57,6 +57,10 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 LastUpdatedUtc = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
             };
 
+            var isExist = await CheckForExistingUserSession(userSession.PrimaryKey);
+            if (isExist)
+                return userSession.PrimaryKey;
+
             var result = await _cosmosService.CreateItemAsync(userSession);
             return result.IsSuccessStatusCode ? userSession.PrimaryKey : null;
         }
@@ -67,13 +71,32 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return await _cosmosService.UpsertItemAsync(updatedSession);
         }
 
-        public async Task<UserSession> GetUserSession(string sessionId)
+        public async Task<UserSession> GetUserSession(string sessionId, string partitionKey)
         {
             Throw.IfNullOrWhiteSpace(sessionId, nameof(sessionId));
-            var result = await _cosmosService.ReadItemAsync(sessionId);
+            var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
             return result.IsSuccessStatusCode ? 
                 JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
                 : null;
+        }
+
+        public async Task<bool> CheckForExistingUserSession(string primaryKey)
+        {
+            if (string.IsNullOrWhiteSpace(primaryKey))
+                return false;
+
+            var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
+            var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
+
+            var result = await GetUserSession(sessionId, partitionKey);
+
+            if (result == null)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(result.UserSessionId) || string.IsNullOrWhiteSpace(result.PartitionKey))
+                return false;
+            
+            return primaryKey == result.PrimaryKey;
         }
         public string GeneratePrimaryKey()
         {
@@ -87,14 +110,14 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return userSession.PrimaryKey;
         }
 
-        public string ExtractInfoFromPrimaryKey(string sessionId, ExtractMode mode)
+        public string ExtractInfoFromPrimaryKey(string primaryKey, ExtractMode mode)
         {
-            if (string.IsNullOrWhiteSpace(sessionId))
+            if (string.IsNullOrWhiteSpace(primaryKey))
                 return null;
-            if (!sessionId.Contains('-'))
+            if (!primaryKey.Contains('-'))
                 return null;
 
-            return sessionId.Split('-')[(int)mode];
+            return primaryKey.Split('-')[(int)mode];
         }
 
     }
