@@ -28,8 +28,8 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/head/[controller]")]
         public virtual IActionResult Head()
         {
-            var sessionId = TryGetSessionId(this.Request);
-            if (string.IsNullOrWhiteSpace(sessionId))
+            var primaryKey = TryGetPrimaryKey(this.Request);
+            if (string.IsNullOrWhiteSpace(primaryKey))
             {
                 AppendCookie(_sessionService.GeneratePrimaryKey());
             }
@@ -54,12 +54,6 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/[controller]")]
         public virtual IActionResult Body()
         {
-            var sessionId = TryGetSessionId(Request);
-            if (!string.IsNullOrWhiteSpace(sessionId))
-            {
-                AppendCookie(sessionId);
-            }
-
             return View(ViewModel);
         }
 
