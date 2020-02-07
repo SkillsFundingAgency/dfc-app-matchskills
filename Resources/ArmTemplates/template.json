@@ -58,7 +58,7 @@
                         "value": "[variables('cosmosDbCollectionName')]"
                     },
                     "partitionKey": {
-                        "value": "/_partitionKey"
+                        "value": "/partitionKey"
                     }
                 }
             }
