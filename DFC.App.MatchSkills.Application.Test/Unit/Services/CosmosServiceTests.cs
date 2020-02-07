@@ -138,6 +138,19 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
             [Test]
+            public async Task WhenItemNotFound_ReturnNotFound()
+            {
+                var client = Substitute.For<CosmosClient>();
+                var container = Substitute.For<Container>();
+                container.ReadItemAsync<object>(Arg.Any<string>(), Arg.Any<PartitionKey>())
+                    .Returns(Task.FromException<ItemResponse<object>>(new Exception("404 Not found")));
+                client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
+                _service = new CosmosService(_cosmosSettings, client);
+                var result = await _service.ReadItemAsync("id", "partitionKey");
+                var expected = new HttpResponseMessage(HttpStatusCode.NotFound);
+                result.StatusCode.Should().Be(expected.StatusCode);
+            }
+            [Test]
             public async Task WhenCorrectRequestMade_ReturnSuccessCode()
             {
                 var client = Substitute.For<CosmosClient>();
