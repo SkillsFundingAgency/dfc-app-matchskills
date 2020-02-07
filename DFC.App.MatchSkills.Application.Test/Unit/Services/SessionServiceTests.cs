@@ -44,10 +44,36 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var cosmosSub = Substitute.For<ICosmosService>();
                 cosmosSub.CreateItemAsync(default).ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.OK));
+                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
+                    .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings);
+                
                 var sessionId= await serviceUnderTest.CreateUserSession(null, null);
                 sessionId.Should().NotBeNullOrWhiteSpace();
+
+            }
+            [Test]
+            public async Task WhenSessionAlreadyExists_ReturnSessionId()
+            {
+                var existingSessionId = "session23-1wwerg8ew";
+                var userSession = new UserSession()
+                {
+                    UserSessionId = "1wwerg8ew",
+                    PartitionKey = "session23"
+                };
+                var cosmosSub = Substitute.For<ICosmosService>();
+                cosmosSub.CreateItemAsync(default).ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.OK));
+                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
+                    .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(JsonConvert.SerializeObject(userSession))
+                    }));
+                var serviceUnderTest = new SessionService(
+                    cosmosSub, _sessionSettings);
+                
+                var sessionId= await serviceUnderTest.CreateUserSession(null, null, existingSessionId);
+                sessionId.Should().Be(existingSessionId);
 
             }
 
@@ -85,9 +111,11 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var cosmosSub = Substitute.For<ICosmosService>();
                 cosmosSub.CreateItemAsync(default)
                     .ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
+                    .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings);
-                var sessionId = await serviceUnderTest.CreateUserSession(null, null);
+                var sessionId = await serviceUnderTest.CreateUserSession(null, null, "session5-gn84ygzmm4893m");
                 sessionId.Should().BeNull();
 
             }
@@ -120,15 +148,15 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public void IfSessionIdIsNull_ThrowArgumentException()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
-                serviceUnderTest.Invoking(x => x.GetUserSession(null)).Should().Throw<ArgumentException>();
+                serviceUnderTest.Invoking(x => x.GetUserSession(null, null)).Should().Throw<ArgumentException>();
             }
             [Test]
             public async Task IfResultIsNotSuccess_ReturnNull()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
-                _cosmosService.ReadItemAsync(Arg.Any<string>())
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)));
-                var result = await serviceUnderTest.GetUserSession("Id");
+                var result = await serviceUnderTest.GetUserSession("Id", "partitionKey");
 
                 result.Should().BeNull();
             }
@@ -136,13 +164,13 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public async Task IfResultIsSuccess_ReturnSuccess()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
-                _cosmosService.ReadItemAsync(Arg.Any<string>())
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                     {
                         Content = new StringContent
                         (JsonConvert.SerializeObject(new UserSession()))
                     }));
-                var result = await serviceUnderTest.GetUserSession("Id");
+                var result = await serviceUnderTest.GetUserSession("Id", "partitionKey");
 
                 result.Should().NotBeNull();
             }
@@ -202,6 +230,168 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 result.StatusCode.Should().Be(HttpStatusCode.OK);
             }
+        }
+
+        public class GeneratePrimaryKeyTests
+        {
+            private IOptions<SessionSettings> _sessionSettings;
+            private ICosmosService _cosmosService;
+
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosService = Substitute.For<ICosmosService>();
+                _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            }
+
+            [Test]
+            public void KeyShouldBeGeneratedInCorrectFormat()
+            {
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var primaryKey = serviceUnderTest.GeneratePrimaryKey();
+                primaryKey.Should().NotBeNullOrWhiteSpace();
+                primaryKey.Should().StartWith("session");
+                primaryKey.Should().Contain("-");
+            }
+        }
+
+        public class ExtractInfoFromPrimaryKeyTests
+        {
+            private IOptions<SessionSettings> _sessionSettings;
+            private ICosmosService _cosmosService;
+
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosService = Substitute.For<ICosmosService>();
+                _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            }
+
+            [Test]
+            public void WhenSessionIdIsNullOrEmpty_ReturnNull()
+            {
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var sessionId = serviceUnderTest.ExtractInfoFromPrimaryKey(null, SessionService.ExtractMode.SessionId);
+                sessionId.Should().BeNullOrWhiteSpace();
+
+            }
+            [Test]
+            public void WhenSessionIdFormatIncorrect_ReturnNull()
+            {
+                
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var sessionId = serviceUnderTest.ExtractInfoFromPrimaryKey("incorrectFormat", SessionService.ExtractMode.PartitionKey);
+                sessionId.Should().BeNullOrWhiteSpace();
+
+            }
+            [Test]
+            public void WhenPartitionKeyRequested_ReturnPartitionKey()
+            {
+                string primaryKey = "session5-gn84ygzmm4893m";
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var partitionKey = serviceUnderTest.ExtractInfoFromPrimaryKey(primaryKey, SessionService.ExtractMode.PartitionKey);
+                partitionKey.Should().NotBeNullOrWhiteSpace();
+                partitionKey.Should().Be("session5");
+
+            }
+            [Test]
+            public void WhenSessionIdRequested_ReturnSessionId()
+            {
+                string primaryKey = "session5-gn84ygzmm4893m";
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var sessionId = serviceUnderTest.ExtractInfoFromPrimaryKey(primaryKey, SessionService.ExtractMode.SessionId);
+                sessionId.Should().NotBeNullOrWhiteSpace();
+                sessionId.Should().Be("gn84ygzmm4893m");
+
+            }
+        }
+
+        public class CheckForExistingUserSessionTests
+        {
+            private IOptions<SessionSettings> _sessionSettings;
+            private ICosmosService _cosmosService;
+
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosService = Substitute.For<ICosmosService>();
+                _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            }
+
+            [Test]
+            public async Task WhenSessionIdIsNullOrEmpty_ReturnNull()
+            {
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                var sessionId = await serviceUnderTest.CheckForExistingUserSession(null);
+                sessionId.Should().BeFalse();
+
+            }
+            [Test]
+            public async Task WhenNoUserSessionExists_ReturnFalse()
+            {
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                
+                var sessionId = await serviceUnderTest.CheckForExistingUserSession("session-g2454t4f");
+                sessionId.Should().BeFalse();
+
+            }
+            [Test]
+            public async Task WhenSuccessfulCallButEmptySessionId_ReturnFalse()
+            {
+                var primaryKey = "session2-g2454t4f";
+                var userSession = new UserSession
+                {
+                    PartitionKey = "session2"
+                };
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(userSession))
+                }));
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                
+                var sessionId = await serviceUnderTest.CheckForExistingUserSession(primaryKey);
+                sessionId.Should().BeFalse();
+
+            }
+            [Test]
+            public async Task WhenSuccessfulCallButEmptyPartitionKey_ReturnFalse()
+            {
+                var primaryKey = "session2-g2454t4f";
+                var userSession = new UserSession
+                {
+                    UserSessionId = "g2454t4f"
+                };
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(userSession))
+                }));
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                
+                var sessionId = await serviceUnderTest.CheckForExistingUserSession(primaryKey);
+                sessionId.Should().BeFalse();
+
+            }
+            [Test]
+            public async Task WhenSuccessfulCallAndPrimaryKeyMatch_ReturnTrue()
+            {
+                var primaryKey = "session2-g2454t4f";
+                var userSession = new UserSession
+                {
+                    UserSessionId = "g2454t4f",
+                    PartitionKey = "session2"
+                };
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(userSession))
+                }));
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
+                
+                var sessionId = await serviceUnderTest.CheckForExistingUserSession(primaryKey);
+                sessionId.Should().BeTrue();
+
+            }
+
         }
     }
 }

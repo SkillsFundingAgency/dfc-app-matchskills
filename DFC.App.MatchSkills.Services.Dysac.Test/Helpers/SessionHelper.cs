@@ -10,14 +10,19 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Helpers
     {
         public static DysacService CreateNewDysacSession(HttpMessageHandler handler = null)
         {
-            
+            var settings = new DysacServiceSettings
+            {
+                ApiUrl = "http://localhost:7074/api/",
+                ApiKey = ""
+            };
+
+            //Resolving Sonar tests
+            var apiUrl = settings.ApiUrl;
+            var apiKey = settings.ApiKey;
             return new DysacService(log:Substitute.For<ILogger<DysacService>>(),
-                handler == null ? new RestClient() : new RestClient(handler),
-                new DysacServiceSettings
-                {
-                    ApiUrl = "http://localhost:7074/api/", 
-                    ApiKey = ""
-                });
+                handler == null ? new RestClient() : new RestClient(handler), settings
+                );
+            
             
         }
         public static DysacService CreateNewDysacSession_Invalid_RestClient()

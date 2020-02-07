@@ -17,7 +17,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.ViewModels;
+using NSubstitute;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -29,10 +31,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<ServiceTaxonomySettings> _settings;
         private ServiceTaxonomyRepository serviceTaxonomyRepository;
         private IOptions<CompositeSettings> _compositeSettings;
+        private ISessionService _sessionService;
         
         [SetUp]
         public void Init()
         {
+            _sessionService = Substitute.For<ISessionService>();
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
             _settings = Options.Create(new ServiceTaxonomySettings());
@@ -92,7 +96,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var handlerMock = GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
             serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            var sut = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings);
+            var sut = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
             var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
 
@@ -105,7 +109,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings);
+            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
            
             result.Should().NotBeNull();
@@ -117,7 +122,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings);
+            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

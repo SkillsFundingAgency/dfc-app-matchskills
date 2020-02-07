@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
@@ -23,8 +23,8 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly string _apiUrl;
         private readonly string _apiKey;
         private readonly string _escoUrl;
-        
-        public SelectSkillsController(IDataProtectionProvider dataProtectionProvider,IServiceTaxonomySearcher serviceTaxonomy, IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings)  : base(dataProtectionProvider, compositeSettings)
+
+        public SelectSkillsController(IDataProtectionProvider dataProtectionProvider,IServiceTaxonomySearcher serviceTaxonomy, IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, ISessionService sessionService)  : base(dataProtectionProvider, compositeSettings, sessionService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));

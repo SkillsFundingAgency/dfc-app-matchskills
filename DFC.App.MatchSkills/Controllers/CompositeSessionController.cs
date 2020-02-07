@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Models;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -12,20 +13,26 @@ namespace DFC.App.MatchSkills.Controllers
     public abstract class CompositeSessionController<TViewModel> : SessionController where TViewModel : CompositeViewModel, new()
     {
         protected TViewModel ViewModel { get; }
-
-        protected CompositeSessionController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings)
+        private readonly ISessionService _sessionService;
+        protected CompositeSessionController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings, ISessionService sessionService)
             : base(dataProtectionProvider)
         {
             ViewModel = new TViewModel()
             {
                 CompositeSettings = compositeSettings.Value,
             };
+            _sessionService = sessionService;
         }
 
         [HttpGet]
         [Route("/head/[controller]")]
         public virtual IActionResult Head()
         {
+            var sessionId = TryGetSessionId(this.Request);
+            if (string.IsNullOrWhiteSpace(sessionId))
+            {
+                AppendCookie(_sessionService.GeneratePrimaryKey());
+            }
             return View(ViewModel);
         }
 

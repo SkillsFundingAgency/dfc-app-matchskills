@@ -12,6 +12,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Application.Session.Services;
@@ -41,6 +42,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public void WhenHeadCalled_ReturnHtml()
         {
             var controller = new WorkedController(_dataProtectionProvider,_compositeSettings, _sessionService);
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
             var vm = result.ViewData.Model as HeadViewModel;
 
@@ -65,7 +67,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void WhenPostBodyCalledWithYes_ReturnHtml()
+        public async Task WhenPostBodyCalledWithYes_ReturnHtml()
         {
             var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -73,14 +75,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(WorkedBefore.Yes) as RedirectResult;
+            var result = await controller.Body(WorkedBefore.Yes) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.Route}");
         }
 
         [Test]
-        public void WhenPostBodyCalledWithNo_ReturnHtml()
+        public async Task WhenPostBodyCalledWithNo_ReturnHtml()
         {
             var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -88,7 +90,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(WorkedBefore.No) as RedirectResult;
+            var result = await controller.Body(WorkedBefore.No) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.Worked}");
