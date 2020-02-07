@@ -36,14 +36,14 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
             return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
 
-        public async Task<HttpResponseMessage> ReadItemAsync(string id)
+        public async Task<HttpResponseMessage> ReadItemAsync(string id, string partitionKey)
         {
             Throw.IfNullOrWhiteSpace(id, nameof(id));
 
             var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
             Throw.IfNull(container, nameof(container));
 
-            var result = await container.ReadItemAsync<object>(id, PartitionKey.None);
+            var result = await container.ReadItemAsync<object>(id, new PartitionKey(partitionKey));
 
             if (result.StatusCode == HttpStatusCode.OK)
             {

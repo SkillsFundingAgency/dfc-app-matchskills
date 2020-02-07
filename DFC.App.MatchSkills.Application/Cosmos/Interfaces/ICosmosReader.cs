@@ -5,6 +5,6 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Interfaces
 {
     public interface ICosmosReader
     {
-        Task<HttpResponseMessage> ReadItemAsync(string id);
+        Task<HttpResponseMessage> ReadItemAsync(string id, string partitionKey);
     }
 }
