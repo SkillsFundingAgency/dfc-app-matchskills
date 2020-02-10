@@ -15,7 +15,7 @@ namespace DFC.App.MatchSkills.Controllers
         protected TViewModel ViewModel { get; }
         private readonly ISessionService _sessionService;
         protected CompositeSessionController(IDataProtectionProvider dataProtectionProvider, IOptions<CompositeSettings> compositeSettings, ISessionService sessionService)
-            : base(dataProtectionProvider)
+            : base(dataProtectionProvider,sessionService)
         {
             ViewModel = new TViewModel()
             {

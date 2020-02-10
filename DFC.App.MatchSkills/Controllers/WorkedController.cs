@@ -10,29 +10,30 @@ namespace DFC.App.MatchSkills.Controllers
 {
     public class WorkedController : CompositeSessionController<WorkedCompositeViewModel>
     {
-        private readonly ISessionService _sessionService;
 
         public WorkedController(IDataProtectionProvider dataProtectionProvider,
             IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService)
             : base(dataProtectionProvider, compositeSettings, sessionService)
         {
-            _sessionService = sessionService;
         }
 
         [HttpPost]
-        [Route("MatchSkills/body/[controller]")]
+        [Route("MatchSkills/[controller]")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
 
-            var primaryKey = await _sessionService.CreateUserSession(CompositeViewModel.PageId.Home.Value,
-                CompositeViewModel.PageId.Worked.Value, primaryKeyFromCookie);
-
             if (string.IsNullOrWhiteSpace(primaryKeyFromCookie))
             {
-                AppendCookie(primaryKey);
+                await CreateUserSession(CompositeViewModel.PageId.Home.Value,
+                    CompositeViewModel.PageId.Worked.Value, primaryKeyFromCookie);
             }
+            else
+            {
+                await UpdateUserSession(primaryKeyFromCookie, CompositeViewModel.PageId.Worked.Value);
+            }
+            
 
             switch (choice)
             {
