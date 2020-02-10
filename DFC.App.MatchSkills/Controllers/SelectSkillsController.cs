@@ -65,6 +65,7 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult>  AddSkills(IFormCollection formCollection)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+
             var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
             if (resultGet.Skills == null)
             {
