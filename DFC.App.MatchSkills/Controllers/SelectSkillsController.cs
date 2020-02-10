@@ -71,14 +71,12 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 resultGet.Skills = new List<UsSkill>();
             }
-            List<Skill> skills = new List<Skill>();
+
             foreach (var key in formCollection.Keys)
             { 
                 string[] skill = key.Split("--");
-                if (skill[0].IsNullOrEmpty() || skill[0].IsNullOrEmpty())
-                {
-                   throw new ArgumentNullException(nameof(skill)); 
-                }
+                Throw.IfNull(skill[0], nameof(skill));
+                Throw.IfNull(skill[1], nameof(skill));
                 resultGet.Skills.Add(new UsSkill(skill[0],skill[1],DateTime.Now));
             }
            
