@@ -16,7 +16,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [HttpPost]
-        [Route("MatchSkills/body/[controller]")]
+        [Route("MatchSkills/[controller]")]
         public IActionResult Body(MoreSkills choice)
         {
             switch (choice)
@@ -24,8 +24,10 @@ namespace DFC.App.MatchSkills.Controllers
                 case MoreSkills.Job:
                     return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.OccupationSearch}");
                 case MoreSkills.Skill:
-                default:
                     return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreSkills}");
+                default:
+                    ViewModel.HasError = true;
+                    return base.Body();
             }
         }
     }

@@ -11,6 +11,7 @@ namespace DFC.App.MatchSkills.Controllers
     public class WorkedController : CompositeSessionController<WorkedCompositeViewModel>
     {
         private readonly ISessionService _sessionService;
+
         public WorkedController(IDataProtectionProvider dataProtectionProvider,
             IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService)
@@ -32,13 +33,16 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 AppendCookie(primaryKey);
             }
+
             switch (choice)
             {
                 case WorkedBefore.Yes:
                     return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
                 case WorkedBefore.No:
-                default:
                     return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Worked}");
+                default:
+                    ViewModel.HasError = true;
+                    return base.Body();
             }
         }
     }

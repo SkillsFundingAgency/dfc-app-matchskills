@@ -5,5 +5,6 @@
         public MoreSkillsCompositeViewModel() : base(PageId.MoreSkills, "How would you like to enter your skills?")
         {
         }
+        public bool HasError { get; set; }
     }
 }

@@ -96,6 +96,22 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Url.Should().Be($"/{CompositeViewModel.PageId.Worked}");
         }
 
+
+        [Test]
+        public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
+        {
+            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = await controller.Body(WorkedBefore.Undefined) as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().BeNull();
+        }
+
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
@@ -133,13 +149,19 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 ButtonText = "test",
                 LinkText = "test",
-                ParentModel = new WorkedCompositeViewModel(),
+                ParentModel = new WorkedCompositeViewModel()
+                {
+                    HasError = true
+                },
                 RadioButtons = new List<RadioButtonModel>
                 {
                     {new RadioButtonModel {Text = "test", Order = 1, Name = "test", Value = "test", HintText = "Hint"}}
                 },
                 Text = "test",
-                FormAction = "Action"
+                FormAction = "Action",
+                ErrorSummaryMessage = "SummaryMessage",
+                ErrorMessage = "Error",
+                HasError = false
             };
         }
         [Test]
@@ -205,7 +227,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
-
 
         }
 
