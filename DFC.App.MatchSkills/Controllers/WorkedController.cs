@@ -24,17 +24,12 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
 
-            if (string.IsNullOrWhiteSpace(primaryKeyFromCookie))
+            if (!string.IsNullOrWhiteSpace(primaryKeyFromCookie))
             {
                 await CreateUserSession(CompositeViewModel.PageId.Home.Value,
                     CompositeViewModel.PageId.Worked.Value, primaryKeyFromCookie);
             }
-            else
-            {
-                await UpdateUserSession(primaryKeyFromCookie, CompositeViewModel.PageId.Worked.Value);
-            }
             
-
             switch (choice)
             {
                 case WorkedBefore.Yes:

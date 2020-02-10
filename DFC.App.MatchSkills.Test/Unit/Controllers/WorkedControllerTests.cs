@@ -222,21 +222,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 HttpContext = new DefaultHttpContext()
             };
-
-            await controller.Body(WorkedBefore.Undefined);
-            await _sessionService.Received(1).CreateUserSession(Arg.Any<string>(),CompositeViewModel.PageId.Worked.Value,Arg.Any<string>());
-
-        }
-
-        [Test]
-        public async Task WhenWorkedControllerReceivesPostWithCookie_Then_SetCurrentPageToWorked()
-        {
-            var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-
             controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
             var requestCookie = new Mock<IRequestCookieCollection>();
 
@@ -252,12 +237,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
             httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
             controller.ControllerContext.HttpContext = httpContext.Object;
-
             await controller.Body(WorkedBefore.Undefined);
-            await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x => string.Equals(x.CurrentPage, CompositeViewModel.PageId.Worked.Value, StringComparison.InvariantCultureIgnoreCase)));
+            await _sessionService.Received(1).CreateUserSession(Arg.Any<string>(),CompositeViewModel.PageId.Worked.Value,Arg.Any<string>());
 
         }
-
 
     }
 }
