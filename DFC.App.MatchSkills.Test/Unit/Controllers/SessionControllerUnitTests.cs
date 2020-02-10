@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
@@ -45,6 +46,32 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             // Assert.
             result.Should().NotBeNull();
+        }
+
+        [Test]
+        public void WhenSessionExpired_ReturnRemoveSession()
+        {
+            var value = "Value";
+
+            var context = Substitute.For<HttpContext>();
+            context.Request.Cookies.TryGetValue(Arg.Any<string>(), out Arg.Any<string>()).Returns(x =>
+            {
+                x[1] = value;
+                return true;
+            });
+
+            var controller = new HomeController(_dataProtectionProvider, _compositeSettings, _sessionService)
+            {
+                TempData = Substitute.For<ITempDataDictionary>()
+            };
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context,
+            };
+
+
+            controller.Head();
         }
     }
 }

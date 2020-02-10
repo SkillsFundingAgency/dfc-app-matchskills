@@ -31,10 +31,14 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             _sessionSettings = sessionSettings;
         }
 
-        public async Task<string> CreateUserSession(string previousPage, string currentPage, string sessionIdFromCookie = null)
+        public async Task<string> CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie = null)
         {
             var sessionId = string.Empty;
             var partitionKey = string.Empty;
+            if (request == null)
+                request = new CreateSessionRequest();
+
+            
 
             if (string.IsNullOrWhiteSpace(sessionIdFromCookie))
             {
@@ -52,8 +56,10 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 UserSessionId = sessionId,
                 PartitionKey = partitionKey,
                 Salt = _sessionSettings.Value.Salt,
-                CurrentPage = currentPage,
-                PreviousPage = previousPage,
+                CurrentPage = request.CurrentPage,
+                PreviousPage = request.PreviousPage,
+                UserHasWorkedBefore = request.UserHasWorkedBefore,
+                RouteIncludesDysac = request.RouteIncludesDysac,
                 LastUpdatedUtc = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
             };
 
