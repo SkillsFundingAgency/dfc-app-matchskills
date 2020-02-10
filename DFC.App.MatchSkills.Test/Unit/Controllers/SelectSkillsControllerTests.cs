@@ -124,7 +124,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
             var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
 
-            result.Result.Should().Be("114e1eff-215e-47df-8e10-45a5b72f8197");
+            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
             
         }
         
