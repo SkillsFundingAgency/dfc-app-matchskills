@@ -128,47 +128,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
         }
         
-         [Test]
-        public async Task When_AddSkillsForOccupation_Then_ShouldAddSelectedSkills()
-        {
-            // ARRANGE
-
-            var subFormsCollection = Substitute.For<IFormCollection>();
-            var subSessionService = Substitute.For<ISessionService>();
-
-            var sut = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, subSessionService);
-            
-           
-            //Arrange
-            sut.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-            
-            
-            sut.ControllerContext.HttpContext.Response.Cookies.Append(".matchSkills-session", "session5-gn84ygzmm4893m", new CookieOptions
-            {
-                Secure = true,
-                IsEssential = true,
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict
-            });
-            
-
-            _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
-                .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StringContent
-                        (JsonConvert.SerializeObject(new UserSession()))
-                }));
-            
-            // ACTs
-            var result=sut.AddSkills(subFormsCollection);
-
-            // ASSERT
-            result.Should().NotBeNull();
-            
-        }
+        
 
         #region CUIScaffoldingTests
 
@@ -224,6 +184,97 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             return handlerMock;
         }
 
+    }
+
+    public class TestAddSkills
+    {
+        private const string CookieName = ".matchSkills-session";
+        private IDataProtectionProvider _dataProtectionProvider;
+        private IOptions<CompositeSettings> _compositeSettings;
+        private IDataProtector _dataProtector;
+        private ISessionService _sessionService;
+        private ServiceTaxonomyRepository _serviceTaxonomyRepository;
+        private IOptions<ServiceTaxonomySettings> _settings;
+
+        [SetUp]
+        public void Init()
+        {
+            
+            _settings = Options.Create(new ServiceTaxonomySettings());
+            _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
+            _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
+            _settings.Value.EscoUrl = "http://data.europa.eu/esco";
+            _settings.Value.SearchOccupationInAltLabels ="true";
+            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
+            var handlerMock = GetMockMessageHandler(skillsJson);
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+
+            _dataProtectionProvider = new EphemeralDataProtectionProvider();
+            _compositeSettings = Options.Create(new CompositeSettings());
+            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
+            _sessionService = Substitute.For<ISessionService>();
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+
+        }
+         [Test]
+        public async Task When_AddSkillsForOccupation_Then_ShouldAddSelectedSkills()
+
+        {
+            var subFormsCollection = Substitute.For<IFormCollection>();
+            var subSessionService = Substitute.For<ISessionService>();
+
+
+            var controller = new SelectSkillsController(_dataProtectionProvider, _serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            
+            
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
+            var requestCookie = new Mock<IRequestCookieCollection>();
+
+            string data = _dataProtector.Protect("This is my value");
+            requestCookie.Setup(x =>
+                x.TryGetValue(It.IsAny<string>(), out data)).Returns(true);
+            var httpContext = new Mock<HttpContext>();
+            var httpRequest = new Mock<HttpRequest>();
+            var httpResponse = new Mock<HttpResponse>();
+
+            httpResponse.Setup(x => x.Cookies).Returns(new Mock<IResponseCookies>().Object);
+            httpRequest.Setup(x => x.Cookies).Returns(requestCookie.Object);
+            httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
+            httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
+            controller.ControllerContext.HttpContext = httpContext.Object;
+
+            
+
+            var result = await controller.AddSkills(subFormsCollection);
+            result.Should().NotBeNull();
+           
+        }
+        public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
+        {
+            var handlerMock =  new Mock<HttpMessageHandler>(MockBehavior.Loose);
+            handlerMock
+                .Protected()
+                // Setup the PROTECTED method to mock
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+
+                // prepare the expected response of the mocked http call
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = statusToReturn,
+                    Content = new StringContent(contentToReturn)
+                })
+                .Verifiable();
+            return handlerMock;
+        }
     }
 
 }
