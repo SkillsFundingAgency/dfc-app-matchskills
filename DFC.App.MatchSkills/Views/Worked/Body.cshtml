@@ -7,8 +7,11 @@
         ButtonText = "Continue",
         LinkText = "TestLink",
         Text = "Choose one of the options below",
-        FormAction = $"body/{Model.Id}",
+        FormAction = $"{Model.Id}",
         ParentModel = Model,
+        HasError = Model.HasError,
+        ErrorMessage = "Choose whether you have worked before",
+        ErrorSummaryMessage = "You have not selected any skills",
         RadioButtons = new List<RadioButtonModel>
 {
             {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice", Value = "Yes"}},

@@ -57,5 +57,30 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.Route}");
         }
+
+        [Test]
+        public void WhenPostBodyCalledWithUndefined_ReturnHtml()
+        {
+            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = controller.Body(Route.Undefined) as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().BeNull();
+        }
+
+        [Test]
+        public void WhenRouteControllerInvoked_ThenModelPropertiesCanBeSet()
+        {
+            var model = new RouteCompositeViewModel()
+            {
+                HasError = true
+            };
+        }
+
     }
 }

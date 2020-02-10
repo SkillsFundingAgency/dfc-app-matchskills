@@ -3,9 +3,15 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, DFC.Personalisation.CommonUI
 
-<div class="govuk-form-group">
+@if (Model.HasError)
+{
+    <govukErrorSummary id="@Model.ParentModel.GetElementId("govukErrorSummary", "ErrorSummary")">
+        <govukErrorSummaryItem href="#@Model.ParentModel.GetElementId("fieldset","radio")" text="@Model.ErrorSummaryMessage"></govukErrorSummaryItem>
+    </govukErrorSummary>
+}
+<div class="govuk-form-group @(Model.HasError ?"govuk-form-group--error" : "")">
     <form method="post" id="@($"{@Model.ParentModel.Id}FormRadioForm")" action="@Model.FormAction">
-        <fieldset class="govuk-fieldset govuk-!-margin-bottom-6">
+        <fieldset class="govuk-fieldset govuk-!-margin-bottom-6" id="@Model.ParentModel.GetElementId("fieldset","radio")" >
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 
                 <govukHeadingH1 text="@Model.ParentModel.PageHeading" additional-class="govuk-fieldset__heading"></govukHeadingH1>
@@ -13,8 +19,13 @@
             <span id="sign-in-hint" class="govuk-hint">
                 @Model.Text
             </span>
-
-
+            
+            @if (Model.HasError)
+            {
+                <span id="changed-name-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> @Model.ErrorMessage
+                </span>
+            }
             @foreach (var radioButton in Model.RadioButtons)
             {
                 <govukRadioButton id="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)" name="@radioButton.Name" value="@radioButton.Value">

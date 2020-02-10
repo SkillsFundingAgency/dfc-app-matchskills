@@ -60,5 +60,29 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreSkills}");
         }
+
+        [Test]
+        public void WhenPostBodyCalledWithUndefined_ReturnHtml()
+        {
+            var controller = new MoreSkillsController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = controller.Body(MoreSkills.Undefined) as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().BeNull();
+        }
+
+        [Test]
+        public void WhenMoreSkillsControllerInvoked_ThenModelPropertiesCanBeSet()
+        {
+            var model = new MoreSkillsCompositeViewModel()
+            {
+                HasError = true
+            };
+        }
     }
 }
