@@ -72,7 +72,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings);
                 
-                var sessionId= await serviceUnderTest.CreateUserSession(null, null, existingSessionId);
+                var sessionId= await serviceUnderTest.CreateUserSession(new CreateSessionRequest(), existingSessionId);
                 sessionId.Should().Be(existingSessionId);
 
             }
@@ -115,7 +115,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings);
-                var sessionId = await serviceUnderTest.CreateUserSession(null, null, "session5-gn84ygzmm4893m");
+                var sessionId = await serviceUnderTest.CreateUserSession(new CreateSessionRequest(), "session5-gn84ygzmm4893m");
                 sessionId.Should().BeNull();
 
             }

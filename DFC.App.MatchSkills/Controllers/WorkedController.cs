@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
@@ -26,8 +27,13 @@ namespace DFC.App.MatchSkills.Controllers
 
             if (!string.IsNullOrWhiteSpace(primaryKeyFromCookie))
             {
-                await CreateUserSession(CompositeViewModel.PageId.Home.Value,
-                    CompositeViewModel.PageId.Worked.Value, primaryKeyFromCookie);
+                var createSessionRequest = new CreateSessionRequest()
+                {
+                    PreviousPage = CompositeViewModel.PageId.Home.Value,
+                    CurrentPage = CompositeViewModel.PageId.Worked.Value,
+                    UserHasWorkedBefore = choice == WorkedBefore.Yes
+                };
+                await CreateUserSession( createSessionRequest, primaryKeyFromCookie);
             }
             
             switch (choice)
