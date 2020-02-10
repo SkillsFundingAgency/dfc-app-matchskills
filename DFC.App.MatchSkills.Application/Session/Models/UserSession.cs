@@ -1,4 +1,4 @@
-﻿using DFC.Personalisation.Domain.Models;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Application.Session.Models
@@ -19,8 +19,8 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public string LastUpdatedUtc { get; set; }
         public bool? UserHasWorkedBefore { get; set; }
         public bool? RouteIncludesDysac { get; set; }
-        public string Occupation { get; set; }
-        public Skill[] Skills { get; set; }
+        public List<UsOccupation> Occupations { get; set; }
+        public List<UsSkill> Skills { get; set; }
         public string[] DysacJobCategories { get; set; }
 
     }

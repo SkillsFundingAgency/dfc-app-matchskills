@@ -10,6 +10,7 @@ using Moq;
 using NSubstitute;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -89,11 +90,11 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     CurrentPage = "string",
                     DysacJobCategories = new string[1],
                     LastUpdatedUtc = DateTime.Now.ToString(),
-                    Occupation = "string",
+                    Occupations = new List<UsOccupation>(){ new UsOccupation("1","Occupation 1",DateTime.Now), new UsOccupation("2","Occupation 1",DateTime.Now) },
                     PreviousPage = "previous",
                     Salt = "salt",
                     RouteIncludesDysac = true,
-                    Skills = new Skill[1],
+                    Skills = new List<UsSkill>(){ new UsSkill("1","skill1",DateTime.Now), new UsSkill("2","skill2",DateTime.Now) },
                     UserHasWorkedBefore = true
                 };
                 var user = userSession.UserSessionId;
@@ -101,7 +102,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var currentPage = userSession.CurrentPage;
                 var jobCat = userSession.DysacJobCategories;
                 var lastUpdated = userSession.LastUpdatedUtc;
-                var occupation = userSession.Occupation;
+                var occupations = userSession.Occupations;
                 var previousPage = userSession.PreviousPage;
                 var salt = userSession.Salt;
                 var route = userSession.RouteIncludesDysac;

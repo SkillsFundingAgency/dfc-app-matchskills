@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using Castle.Core.Internal;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace DFC.App.MatchSkills.Controllers
@@ -39,7 +41,8 @@ namespace DFC.App.MatchSkills.Controllers
             _settings = settings.Value;
             _apiUrl = _settings.ApiUrl;
             _apiKey = _settings.ApiKey;
-            
+            _sessionService = sessionService;
+
         }
 
         [HttpPost]
@@ -59,19 +62,28 @@ namespace DFC.App.MatchSkills.Controllers
         }
         [HttpPost]
         [Route("/MatchSkills/[controller]/AddSkills")]
-        public   void AddSkills(IFormCollection formCollection)
+        public async Task<IActionResult>  AddSkills(IFormCollection formCollection)
         {
-            
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+            var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
+            if (resultGet.Skills == null)
+            {
+                resultGet.Skills = new List<UsSkill>();
+            }
             List<Skill> skills = new List<Skill>();
-            foreach (var key in formCollection.Keys.Skip(1))
+            foreach (var key in formCollection.Keys)
             { 
-                string[] skill = key.Split("--"); 
-                skills.Add(new Skill(id:skill[0],name:skill[1]));                
+                string[] skill = key.Split("--");
+                if (skill[0].IsNullOrEmpty() || skill[0].IsNullOrEmpty())
+                {
+                   throw new ArgumentNullException(nameof(skill)); 
+                }
+                resultGet.Skills.Add(new UsSkill(skill[0],skill[1],DateTime.Now));
             }
            
-            var sessionIdFromCookie = TryGetSessionId(this.Request);
-
-            RedirectToAction("/Matchskills/Basket");
+            await _sessionService.UpdateUserSessionAsync(resultGet);
+            
+            return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
             
         }
 
