@@ -5,6 +5,7 @@
     <ProjectGuid>31145A33-689B-48B4-BC2F-2CCD1FC191D8</ProjectGuid>
   </PropertyGroup>
 
+
   <ItemGroup>
     <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />
     <PackageReference Include="DFC.Personalisation.CommonUI" Version="0.2.18" />

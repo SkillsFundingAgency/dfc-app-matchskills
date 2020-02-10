@@ -11,5 +11,8 @@ namespace DFC.App.MatchSkills.ViewComponents.Choice
         public List<RadioButtonModel> RadioButtons { get; set; }
         public string FormAction { get; set; }
         public CompositeViewModel ParentModel { get; set; }
+        public string ErrorMessage { get; set; }
+        public string ErrorSummaryMessage { get; set; }
+        public bool HasError { get; set; }
     }
 }
