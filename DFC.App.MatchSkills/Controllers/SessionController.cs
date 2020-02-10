@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -23,10 +24,9 @@ namespace DFC.App.MatchSkills.Controllers
             _dataProtector = dataProtectionProvider.CreateProtector(nameof(SessionController));
         }
 
-        protected async Task CreateUserSession(string previousPage, string currentPage, string sessionIdFromCookie)
+        protected async Task CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie)
         {
-            var primaryKey = await _sessionService.CreateUserSession(previousPage,
-                currentPage, sessionIdFromCookie);
+            var primaryKey = await _sessionService.CreateUserSession(request, sessionIdFromCookie);
 
             AppendCookie(primaryKey);
         }

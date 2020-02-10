@@ -238,7 +238,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
             controller.ControllerContext.HttpContext = httpContext.Object;
             await controller.Body(WorkedBefore.Undefined);
-            await _sessionService.Received(1).CreateUserSession(Arg.Any<string>(),CompositeViewModel.PageId.Worked.Value,Arg.Any<string>());
+            await _sessionService.Received(1).CreateUserSession(Arg.Any<CreateSessionRequest>(),
+                Arg.Any<string>());
 
         }
 
