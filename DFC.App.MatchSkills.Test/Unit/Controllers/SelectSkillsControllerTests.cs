@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
@@ -17,9 +18,16 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.ViewModels;
+using Microsoft.AspNetCore.Razor.Language;
+using Microsoft.Azure.Cosmos;
 using NSubstitute;
+using FluentAssertions.Common;
+using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -29,14 +37,18 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IDataProtectionProvider _dataProtectionProvider;
         private IDataProtector _dataProtector;
         private IOptions<ServiceTaxonomySettings> _settings;
-        private ServiceTaxonomyRepository serviceTaxonomyRepository;
+        private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
+        private IOptions<SessionSettings> _sessionSettings;
+        private IOptions<CosmosSettings> _cosmosSettings;
+        private Mock<CosmosClient> _client;
+        private ICosmosService _cosmosService;
         
         [SetUp]
         public void Init()
         {
-            _sessionService = Substitute.For<ISessionService>();
+            
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
             _settings = Options.Create(new ServiceTaxonomySettings());
@@ -44,14 +56,26 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
             _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _settings.Value.EscoUrl = "http://data.europa.eu/esco";
-
             _settings.Value.SearchOccupationInAltLabels ="true";
-                  
             const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
             var handlerMock = GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
-            serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
 
+            //Cosmos  Settings
+            _cosmosSettings = Options.Create(new CosmosSettings()
+            {
+                ApiUrl = "https://test-account-not-real.documents.azure.com:443/",
+                ApiKey = "VGhpcyBpcyBteSB0ZXN0",
+                DatabaseName = "DatabaseName",
+                UserSessionsCollection = "UserSessions"
+            });
+            _client = new Mock<CosmosClient>();
+            _cosmosService = Substitute.For<ICosmosService>();
+
+            //Session Settings
+            _sessionService = Substitute.For<ISessionService>();
+            _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
 
         }
         
@@ -70,8 +94,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
             // ACTs
             var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
-            vm.Skills = result;
-            var skills = vm.Skills.ToList();
+            vm.Skills = result.ToList();
+            //var skills = vm.Skills.ToList();
             
             // ASSERT
             result.Should().NotBeNull();
@@ -95,21 +119,23 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
             var handlerMock = GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
-            serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            var sut = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+            var sut = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
             var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
 
-            result.Result.Should().Be("114e1eff-215e-47df-8e10-45a5b72f8197");
+            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
             
         }
         
+        
+
         #region CUIScaffoldingTests
 
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
+            var controller = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
            
@@ -122,7 +148,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_dataProtector,serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
+            var controller = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -157,5 +183,98 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 .Verifiable();
             return handlerMock;
         }
+
     }
+
+    public class TestAddSkills
+    {
+        private const string CookieName = ".matchSkills-session";
+        private IDataProtectionProvider _dataProtectionProvider;
+        private IOptions<CompositeSettings> _compositeSettings;
+        private IDataProtector _dataProtector;
+        private ISessionService _sessionService;
+        private ServiceTaxonomyRepository _serviceTaxonomyRepository;
+        private IOptions<ServiceTaxonomySettings> _settings;
+
+        [SetUp]
+        public void Init()
+        {
+            
+            _settings = Options.Create(new ServiceTaxonomySettings());
+            _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
+            _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
+            _settings.Value.EscoUrl = "http://data.europa.eu/esco";
+            _settings.Value.SearchOccupationInAltLabels ="true";
+            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
+            var handlerMock = GetMockMessageHandler(skillsJson);
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+
+            _dataProtectionProvider = new EphemeralDataProtectionProvider();
+            _compositeSettings = Options.Create(new CompositeSettings());
+            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
+            _sessionService = Substitute.For<ISessionService>();
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+
+        }
+         [Test]
+        public async Task When_AddSkillsForOccupation_Then_ShouldAddSelectedSkills()
+
+        {
+            var subFormsCollection = Substitute.For<IFormCollection>();
+            var subSessionService = Substitute.For<ISessionService>();
+
+
+            var controller = new SelectSkillsController(_dataProtectionProvider, _serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            
+            
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
+            var requestCookie = new Mock<IRequestCookieCollection>();
+
+            string data = _dataProtector.Protect("This is my value");
+            requestCookie.Setup(x =>
+                x.TryGetValue(It.IsAny<string>(), out data)).Returns(true);
+            var httpContext = new Mock<HttpContext>();
+            var httpRequest = new Mock<HttpRequest>();
+            var httpResponse = new Mock<HttpResponse>();
+
+            httpResponse.Setup(x => x.Cookies).Returns(new Mock<IResponseCookies>().Object);
+            httpRequest.Setup(x => x.Cookies).Returns(requestCookie.Object);
+            httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
+            httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
+            controller.ControllerContext.HttpContext = httpContext.Object;
+
+            
+
+            var result = await controller.AddSkills(subFormsCollection);
+            result.Should().NotBeNull();
+           
+        }
+        public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
+        {
+            var handlerMock =  new Mock<HttpMessageHandler>(MockBehavior.Loose);
+            handlerMock
+                .Protected()
+                // Setup the PROTECTED method to mock
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+
+                // prepare the expected response of the mocked http call
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = statusToReturn,
+                    Content = new StringContent(contentToReturn)
+                })
+                .Verifiable();
+            return handlerMock;
+        }
+    }
+
 }
