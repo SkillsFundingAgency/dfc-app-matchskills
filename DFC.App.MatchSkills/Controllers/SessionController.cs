@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -33,7 +34,16 @@ namespace DFC.App.MatchSkills.Controllers
             var primaryKey = string.Empty;
             if (request.Cookies.TryGetValue(CookieName, out var cookiePrimaryKey))
             {
-                primaryKey = _dataProtector.Unprotect(cookiePrimaryKey);
+                try
+                {
+                    primaryKey = _dataProtector.Unprotect(cookiePrimaryKey);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Key outdated. Removing Now. {e}");
+                    RemoveInvalidSession();
+                }
+                
             }
 
             var queryDictionary = System.Web.HttpUtility.ParseQueryString(request.QueryString.ToString());
@@ -44,6 +54,11 @@ namespace DFC.App.MatchSkills.Controllers
             }
 
             return string.IsNullOrWhiteSpace(primaryKey) ? null : primaryKey;
+        }
+
+        protected void RemoveInvalidSession()
+        {
+            Response.Cookies.Delete(CookieName);
         }
     }
 }

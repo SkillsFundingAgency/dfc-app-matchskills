@@ -180,22 +180,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             headers.Values.First().Should().ContainMatch($"{CookieName}*");
         }
 
-        [Test]
-        public void WhenSessionIdIsNotNamedCorrectlySet_NoCookieIsSaved()
-        {
-            var controller = new WorkedController(_dataProtectionProvider,_compositeSettings, _sessionService);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-
-            controller.HttpContext.Request.QueryString = QueryString.Create("wrongId", "Abc123");
-            controller.Body();
-            var headers = controller.Response.Headers;
-
-            headers.Should().NotContainKey("set-cookie");
-            headers.Values.Should().NotContain($"{CookieName}*");
-        }
 
 
         [Test]
@@ -223,7 +207,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
             controller.ControllerContext.HttpContext = httpContext.Object;
 
-            var result = controller.Body() as ViewResult;
+            var result = controller.Head() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
