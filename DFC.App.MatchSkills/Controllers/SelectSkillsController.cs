@@ -50,8 +50,17 @@ namespace DFC.App.MatchSkills.Controllers
         public   async Task<IActionResult> Body(string  enterJobInputAutocomplete)
         {
             ViewModel.Occupation = enterJobInputAutocomplete;
-
             var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
+
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+
+            var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
+
+            if (resultGet.Occupations == null)
+            {
+                resultGet.Occupations = new List<UsOccupation>();
+            }
+            resultGet.Occupations.Add(new UsOccupation(occupationId,enterJobInputAutocomplete,DateTime.Now));
             
             var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
                 _apiKey, occupationId);
