@@ -42,11 +42,7 @@
     };
 
     function Suggest(query, populateResults) {
-        if (timer){
-            clearTimeout(timer);
-        }
-        timer = setTimeout(
-            runsearch(query, populateResults), 1000);
+        runsearch(query, populateResults);
     }
 
   
