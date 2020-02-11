@@ -29,7 +29,6 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 var createSessionRequest = new CreateSessionRequest()
                 {
-                    PreviousPage = CompositeViewModel.PageId.Home.Value,
                     CurrentPage = CompositeViewModel.PageId.Worked.Value,
                     UserHasWorkedBefore = choice == WorkedBefore.Yes
                 };

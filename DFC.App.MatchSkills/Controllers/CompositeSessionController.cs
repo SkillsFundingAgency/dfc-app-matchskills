@@ -1,9 +1,11 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Net.Http;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -62,6 +64,12 @@ namespace DFC.App.MatchSkills.Controllers
         public virtual IActionResult SidebarRight()
         {
             return View(ViewModel);
+        }
+
+        protected async Task<HttpResponseMessage> TrackPageInUserSession()
+        {
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+            return await UpdateUserSession(primaryKeyFromCookie, ViewModel.Id.Value);
         }
     }
 }

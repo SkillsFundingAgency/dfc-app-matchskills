@@ -60,7 +60,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 PreviousPage = request.PreviousPage,
                 UserHasWorkedBefore = request.UserHasWorkedBefore,
                 RouteIncludesDysac = request.RouteIncludesDysac,
-                LastUpdatedUtc = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
+                LastUpdatedUtc = DateTime.UtcNow,
             };
 
             var isExist = await CheckForExistingUserSession(userSession.PrimaryKey);

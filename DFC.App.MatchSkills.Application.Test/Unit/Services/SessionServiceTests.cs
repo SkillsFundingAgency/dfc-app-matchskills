@@ -89,7 +89,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     PartitionKey = "Key",
                     CurrentPage = "string",
                     DysacJobCategories = new string[1],
-                    LastUpdatedUtc = DateTime.Now.ToString(),
+                    LastUpdatedUtc = DateTime.UtcNow,
                     Occupations = new List<UsOccupation>(){ new UsOccupation("1","Occupation 1",DateTime.Now), new UsOccupation("2","Occupation 1",DateTime.Now) },
                     PreviousPage = "previous",
                     Salt = "salt",
