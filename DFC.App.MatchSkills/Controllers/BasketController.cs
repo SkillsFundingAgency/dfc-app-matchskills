@@ -5,6 +5,7 @@ using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -18,6 +19,8 @@ namespace DFC.App.MatchSkills.Controllers
 
         public override IActionResult Body()
         {
+            TrackPageInUserSession();
+
             // @ToDo: use real data
             ViewModel.Skills.Add(new Skill("skill1", "Dummy skill 1", SkillType.Competency));
             ViewModel.Skills.Add(new Skill("skill2", "Dummy skill 2", SkillType.Competency));

@@ -21,7 +21,7 @@ namespace DFC.App.MatchSkills.Controllers
         [HttpPost]
         public async Task<IActionResult> Body(Route choice)
         {
-            await TrackPageInUserSession();
+            TrackPageInUserSession();
 
             switch (choice)
             {

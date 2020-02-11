@@ -47,7 +47,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost]
         [Route("MatchSkills/[controller]")]
-        public   async Task<IActionResult> Body(string  enterJobInputAutocomplete)
+        public  async Task<IActionResult> Body(string  enterJobInputAutocomplete)
         {
             ViewModel.Occupation = enterJobInputAutocomplete;
             var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
@@ -71,25 +71,19 @@ namespace DFC.App.MatchSkills.Controllers
         }
         [HttpPost]
         [Route("/MatchSkills/[controller]/AddSkills")]
-        public async Task<IActionResult>  AddSkills(IFormCollection formCollection)
+        public async Task<IActionResult> AddSkills(IFormCollection formCollection)
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-
-            var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
-            if (resultGet.Skills == null)
-            {
-                resultGet.Skills = new List<UsSkill>();
-            }
+            var userSession = GetUserSession();
 
             foreach (var key in formCollection.Keys)
             { 
                 string[] skill = key.Split("--");
                 Throw.IfNull(skill[0], nameof(skill));
                 Throw.IfNull(skill[1], nameof(skill));
-                resultGet.Skills.Add(new UsSkill(skill[0],skill[1],DateTime.Now));
+                userSession.Skills.Add(new UsSkill(skill[0],skill[1],DateTime.Now));
             }
            
-            await _sessionService.UpdateUserSessionAsync(resultGet);
+            await _sessionService.UpdateUserSessionAsync(userSession);
             
             return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
             
