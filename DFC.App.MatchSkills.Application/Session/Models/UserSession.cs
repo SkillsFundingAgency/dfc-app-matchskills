@@ -20,9 +20,14 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public DateTime LastUpdatedUtc { get; set; }
         public bool? UserHasWorkedBefore { get; set; }
         public bool? RouteIncludesDysac { get; set; }
-        public List<UsOccupation> Occupations { get; set; }
-        public List<UsSkill> Skills { get; set; }
+        public ICollection<UsOccupation> Occupations { get; set; }
+        public ICollection<UsSkill> Skills { get; set; }
         public string[] DysacJobCategories { get; set; }
 
+        public UserSession()
+        {
+            Occupations = new HashSet<UsOccupation>();
+            Skills = new HashSet<UsSkill>();
+        }
     }
 }
