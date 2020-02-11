@@ -21,9 +21,7 @@ namespace DFC.App.MatchSkills.Controllers
         [HttpPost]
         public async Task<IActionResult> Body(Route choice)
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-
-            await UpdateUserSession(primaryKeyFromCookie, CompositeViewModel.PageId.Route.Value);
+            await TrackPageInUserSession();
 
             switch (choice)
             {
