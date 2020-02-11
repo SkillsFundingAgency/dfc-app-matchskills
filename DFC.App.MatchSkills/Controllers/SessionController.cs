@@ -76,7 +76,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             session.PreviousPage = session.CurrentPage;
             session.CurrentPage = currentPage;
-            
+            session.LastUpdatedUtc = DateTime.UtcNow;
 
             return await _sessionService.UpdateUserSessionAsync(session);
 

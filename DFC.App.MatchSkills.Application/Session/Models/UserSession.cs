@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Application.Session.Models
@@ -16,7 +17,7 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public string Salt { get; set; }
         public string CurrentPage { get; set; }
         public string PreviousPage { get; set; }
-        public string LastUpdatedUtc { get; set; }
+        public DateTime LastUpdatedUtc { get; set; }
         public bool? UserHasWorkedBefore { get; set; }
         public bool? RouteIncludesDysac { get; set; }
         public List<UsOccupation> Occupations { get; set; }
