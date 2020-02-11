@@ -1,10 +1,9 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Domain.Models;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers;
+using System;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {

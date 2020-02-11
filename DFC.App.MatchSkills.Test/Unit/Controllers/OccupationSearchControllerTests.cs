@@ -75,17 +75,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             occupations.Result.Should().HaveCountGreaterOrEqualTo(1);
         }
 
-        [Test]
-        public void  When_GetOccupationSkills_Then_ShouldReturnOccupations()
-        {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
-            
-            var occupations =   sut.GetOccupationSkills("Renewable energy consultant");
-            
-            occupations.Result.Should().NotBeNull();
-
-            
-        }
+       
 
         [Test]
         public void When_HeadCalled_ReturnHtml()
