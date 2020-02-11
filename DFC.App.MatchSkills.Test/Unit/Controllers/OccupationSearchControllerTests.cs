@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.Test.Helpers;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 
@@ -45,7 +46,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _compositeSettings = Options.Create(new CompositeSettings());
 
             const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = GetMockMessageHandler(skillsJson);
+            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
             serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
 
@@ -105,26 +106,5 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.ViewName.Should().BeNull();
         }
 
-        public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
-        {
-            var handlerMock =  new Mock<HttpMessageHandler>(MockBehavior.Loose);
-            handlerMock
-                .Protected()
-                // Setup the PROTECTED method to mock
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
-
-                // prepare the expected response of the mocked http call
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = statusToReturn,
-                    Content = new StringContent(contentToReturn)
-                })
-                .Verifiable();
-            return handlerMock;
-        }
     }
 }
