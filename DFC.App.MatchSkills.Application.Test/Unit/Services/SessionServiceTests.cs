@@ -89,12 +89,12 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     PartitionKey = "Key",
                     CurrentPage = "string",
                     DysacJobCategories = new string[1],
-                    LastUpdatedUtc = DateTime.Now.ToString(),
-                    Occupations = new List<UsOccupation>(){ new UsOccupation("1","Occupation 1",DateTime.Now), new UsOccupation("2","Occupation 1",DateTime.Now) },
+                    LastUpdatedUtc = DateTime.UtcNow,
+                    Occupations = new HashSet<UsOccupation>(){ new UsOccupation("1","Occupation 1",DateTime.Now), new UsOccupation("2","Occupation 1",DateTime.Now) },
                     PreviousPage = "previous",
                     Salt = "salt",
                     RouteIncludesDysac = true,
-                    Skills = new List<UsSkill>(){ new UsSkill("1","skill1",DateTime.Now), new UsSkill("2","skill2",DateTime.Now) },
+                    Skills = new HashSet<UsSkill>(){ new UsSkill("1","skill1",DateTime.Now), new UsSkill("2","skill2",DateTime.Now) },
                     UserHasWorkedBefore = true
                 };
                 var user = userSession.UserSessionId;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Application.Session.Models
@@ -16,12 +17,17 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public string Salt { get; set; }
         public string CurrentPage { get; set; }
         public string PreviousPage { get; set; }
-        public string LastUpdatedUtc { get; set; }
+        public DateTime LastUpdatedUtc { get; set; }
         public bool? UserHasWorkedBefore { get; set; }
         public bool? RouteIncludesDysac { get; set; }
-        public List<UsOccupation> Occupations { get; set; }
-        public List<UsSkill> Skills { get; set; }
+        public ISet<UsOccupation> Occupations { get; set; }
+        public ISet<UsSkill> Skills { get; set; }
         public string[] DysacJobCategories { get; set; }
 
+        public UserSession()
+        {
+            Occupations = new HashSet<UsOccupation>();
+            Skills = new HashSet<UsSkill>();
+        }
     }
 }

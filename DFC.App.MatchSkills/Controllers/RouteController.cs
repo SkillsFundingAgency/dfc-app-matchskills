@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
@@ -19,11 +18,9 @@ namespace DFC.App.MatchSkills.Controllers
 
         [Route("MatchSkills/[controller]")]
         [HttpPost]
-        public async Task<IActionResult> Body(Route choice)
+        public IActionResult Body(Route choice)
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-
-            await UpdateUserSession(primaryKeyFromCookie, CompositeViewModel.PageId.Route.Value);
+            TrackPageInUserSession();
 
             switch (choice)
             {

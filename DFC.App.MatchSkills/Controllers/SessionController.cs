@@ -76,7 +76,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             session.PreviousPage = session.CurrentPage;
             session.CurrentPage = currentPage;
-            
+            session.LastUpdatedUtc = DateTime.UtcNow;
 
             return await _sessionService.UpdateUserSessionAsync(session);
 
@@ -85,6 +85,13 @@ namespace DFC.App.MatchSkills.Controllers
         protected void RemoveInvalidSession()
         {
             Response.Cookies.Delete(CookieName);
+        }
+
+        protected UserSession GetUserSession()
+        {
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+            var userSession = _sessionService.GetUserSession(primaryKeyFromCookie).GetAwaiter().GetResult();
+            return userSession;
         }
     }
 }
