@@ -66,10 +66,11 @@ namespace DFC.App.MatchSkills.Controllers
             return View(ViewModel);
         }
 
-        protected async Task<HttpResponseMessage> TrackPageInUserSession()
+        protected HttpResponseMessage TrackPageInUserSession()
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            return await UpdateUserSession(primaryKeyFromCookie, ViewModel.Id.Value);
+            var result = UpdateUserSession(primaryKeyFromCookie, ViewModel.Id.Value).GetAwaiter().GetResult();
+            return result;
         }
     }
 }
