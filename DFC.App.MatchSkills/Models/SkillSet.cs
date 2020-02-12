@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.Personalisation.Domain.Models;
 
