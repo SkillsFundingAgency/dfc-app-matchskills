@@ -56,11 +56,12 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpGet,HttpPost]
         [Route("matchskills/OccupationSearchAuto")]
+        [Route("OccupationSearchAuto")]
         public async Task<IActionResult> OccupationSearchAuto(string occupation)
         {
             var occupations = await OccupationSearch(occupation);
-           // return this.NegotiateContentResult(occupations.Select(x => x.Name).ToList());
-           return this.Ok(occupations.Select(x => x.Name).ToList());
+           return this.NegotiateContentResult(occupations.Select(x => x.Name).ToList());
+          
         }
 
     }
