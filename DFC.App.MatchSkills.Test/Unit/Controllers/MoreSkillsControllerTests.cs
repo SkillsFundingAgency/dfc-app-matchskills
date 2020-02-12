@@ -43,7 +43,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = controller.Body(MoreSkills.Job) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.OccupationSearch}");
+            result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreJobs}");
         }
 
         [Test]
