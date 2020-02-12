@@ -61,7 +61,8 @@ namespace DFC.App.MatchSkills.Controllers
                 resultGet.Occupations = new HashSet<UsOccupation>();
             }
             resultGet.Occupations.Add(new UsOccupation(occupationId,enterJobInputAutocomplete,DateTime.Now));
-            
+            await _sessionService.UpdateUserSessionAsync(resultGet);
+
             var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
                 _apiKey, occupationId);
 

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.8" />
+    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.9" />
     <PackageReference Include="Dfc.ProviderPortal.Packages" Version="0.1.1" />
     <PackageReference Include="Hashids.net" Version="1.3.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.6.0" />
