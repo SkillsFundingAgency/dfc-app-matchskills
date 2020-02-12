@@ -94,7 +94,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
-            return occupations.SingleOrDefault(x => x.Name == occupation).Id;
+            return occupations.Single(x => x.Name == occupation).Id;
         }
     }
 }
