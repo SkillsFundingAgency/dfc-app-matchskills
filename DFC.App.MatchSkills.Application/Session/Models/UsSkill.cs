@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.Azure.Cosmos.Linq;
 
 namespace DFC.App.MatchSkills.Application.Session.Models
 {
@@ -23,7 +20,7 @@ namespace DFC.App.MatchSkills.Application.Session.Models
             return Id.GetHashCode();
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             if (null == obj) return false;
             if (!(obj is UsSkill)) return false;
