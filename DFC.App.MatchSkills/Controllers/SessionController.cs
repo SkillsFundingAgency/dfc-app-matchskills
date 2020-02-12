@@ -86,5 +86,12 @@ namespace DFC.App.MatchSkills.Controllers
         {
             Response.Cookies.Delete(CookieName);
         }
+
+        protected UserSession GetUserSession()
+        {
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+            var userSession = _sessionService.GetUserSession(primaryKeyFromCookie).GetAwaiter().GetResult();
+            return userSession;
+        }
     }
 }

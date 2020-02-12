@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace DFC.App.MatchSkills.Application.Session.Models
 {
     public class UsSkill
@@ -16,5 +15,16 @@ namespace DFC.App.MatchSkills.Application.Session.Models
             DateAdded = dateAdded;
         }
 
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (null == obj) return false;
+            if (!(obj is UsSkill)) return false;
+            return Id.Equals(((UsSkill)obj).Id);
+        }
     }
 }
