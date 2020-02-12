@@ -10,6 +10,5 @@ namespace DFC.App.MatchSkills.Application.Session.Interfaces
         Task<UserSession> GetUserSession(string primaryKey);
         Task<bool> CheckForExistingUserSession(string primaryKey);
         string ExtractInfoFromPrimaryKey(string primaryKey, SessionService.ExtractMode mode);
-        Task<Occupation[]> GetRecentlyAddedOccupations(string primaryKey);
     }
 }

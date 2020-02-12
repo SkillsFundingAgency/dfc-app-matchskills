@@ -127,17 +127,5 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
             return primaryKey.Split('-')[(int)mode];
         }
-
-        public async Task<Occupation[]> GetRecentlyAddedOccupations(string primaryKey)
-        {
-            Throw.IfNullOrWhiteSpace(primaryKey, nameof(primaryKey));
-
-            var userSession = await GetUserSession(primaryKey);
-
-            if (userSession == null)
-                return null;
-            
-            throw new NotImplementedException();
-        }
     }
 }
