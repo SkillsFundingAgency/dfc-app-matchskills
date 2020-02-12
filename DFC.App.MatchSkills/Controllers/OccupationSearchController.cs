@@ -60,7 +60,6 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var occupations = await OccupationSearch(occupation);
            return this.NegotiateContentResult(occupations.Select(x => x.Name).ToList());
-          
         }
 
     }
