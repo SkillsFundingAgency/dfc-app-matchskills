@@ -20,12 +20,8 @@ namespace DFC.App.MatchSkills.Controllers
         public override IActionResult Body()
         {
             TrackPageInUserSession();
-
-            // @ToDo: use real data
-            ViewModel.Skills.Add(new Skill("skill1", "Dummy skill 1", SkillType.Competency));
-            ViewModel.Skills.Add(new Skill("skill2", "Dummy skill 2", SkillType.Competency));
-            ViewModel.Skills.Add(new Skill("skill3", "Dummy skill 3", SkillType.Competency));
-            ViewModel.Skills.Add(new Skill("skill4", "Dummy skill 4", SkillType.Competency));
+            var userSession = GetUserSession();
+            ViewModel.Skills.LoadFromSession(userSession);
 
             return base.Body();
         }

@@ -58,7 +58,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             if (resultGet.Occupations == null)
             {
-                resultGet.Occupations = new List<UsOccupation>();
+                resultGet.Occupations = new HashSet<UsOccupation>();
             }
             resultGet.Occupations.Add(new UsOccupation(occupationId,enterJobInputAutocomplete,DateTime.Now));
             
