@@ -1,7 +1,6 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Extensions;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -59,7 +58,7 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> OccupationSearchAuto(string occupation)
         {
             var occupations = await OccupationSearch(occupation);
-           return this.NegotiateContentResult(occupations.Select(x => x.Name).ToList());
+           return this.Ok(occupations.Select(x => x.Name).ToList());
         }
 
     }
