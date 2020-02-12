@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
 using FluentAssertions;
@@ -31,7 +32,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void When_SessionIdProvided_Then_CookieIsAppended()
+        public async Task When_SessionIdProvided_Then_CookieIsAppended()
         {
             // Arrange.
             var controller = new HomeController(_dataProtectionProvider,_compositeSettings, _sessionService);
@@ -42,7 +43,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             //controller.ControllerContext.HttpContext.Session.Set("foo", null);   //  @ToDo: need to start a session for a unit test
 
             // Act.
-            var result = controller.Body() as ViewResult;
+            var result = await controller.Body() as ViewResult;
 
             // Assert.
             result.Should().NotBeNull();

@@ -68,13 +68,13 @@ namespace DFC.App.MatchSkills.Controllers
 
             ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList(); 
             
-            return base.Body();
+            return await base.Body();
         }
         [HttpPost]
         [Route("/MatchSkills/[controller]/AddSkills")]
         public async Task<IActionResult> AddSkills(IFormCollection formCollection)
         {
-            var userSession = GetUserSession();
+            var userSession = await GetUserSession();
 
             foreach (var key in formCollection.Keys)
             { 

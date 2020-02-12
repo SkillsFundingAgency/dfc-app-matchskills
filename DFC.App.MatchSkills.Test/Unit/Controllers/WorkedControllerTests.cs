@@ -53,14 +53,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void WhenBodyCalled_ReturnHtml()
+        public async Task WhenBodyCalled_ReturnHtml()
         {
             var controller = new WorkedController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-            var result = controller.Body() as ViewResult;
+            var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
@@ -155,7 +155,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 },
                 RadioButtons = new List<RadioButtonModel>
                 {
-                    {new RadioButtonModel {Text = "test", Order = 1, Name = "test", Value = "test", HintText = "Hint"}}
+                    {new RadioButtonModel {Text = "test", Order = 1, Name = "test", Value = "test", HintText = "Hint",Checked = false}}
                 },
                 Text = "test",
                 FormAction = "Action",
