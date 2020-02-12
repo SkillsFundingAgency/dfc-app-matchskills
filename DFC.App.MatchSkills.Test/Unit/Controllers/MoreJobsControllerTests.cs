@@ -4,6 +4,7 @@ using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
+using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
@@ -48,6 +49,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
             var result = controller.Body() as ViewResult;
+
+            var viewModel = new MoreJobsViewModel()
+            {
+                CompositeSettings = _compositeSettings.Value,
+                SearchService = "searchService"
+            };
+            var settings = viewModel.CompositeSettings;
+            var searchService = viewModel.SearchService;
 
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
