@@ -69,11 +69,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
-            var occupations =   sut.OccupationSearchAuto("renewable");
+            var occupations =   sut.OccupationSearchAuto("Renewable");
             
             occupations.Result.Should().NotBeNull();
-
-            occupations.Result.Should().HaveCountGreaterOrEqualTo(1);
         }
 
        
