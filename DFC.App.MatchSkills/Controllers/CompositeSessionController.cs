@@ -59,13 +59,6 @@ namespace DFC.App.MatchSkills.Controllers
             return View(ViewModel);
         }
 
-        [HttpGet]
-        [Route("/sidebarright/[controller]")]
-        public virtual IActionResult SidebarRight()
-        {
-            return View(ViewModel);
-        }
-
         protected async Task<HttpResponseMessage> TrackPageInUserSession()
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);

@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {
@@ -127,5 +128,16 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return primaryKey.Split('-')[(int)mode];
         }
 
+        public async Task<Occupation[]> GetRecentlyAddedOccupations(string primaryKey)
+        {
+            Throw.IfNullOrWhiteSpace(primaryKey, nameof(primaryKey));
+
+            var userSession = await GetUserSession(primaryKey);
+
+            if (userSession == null)
+                return null;
+            
+            throw new NotImplementedException();
+        }
     }
 }

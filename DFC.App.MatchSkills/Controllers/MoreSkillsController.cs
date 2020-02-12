@@ -22,7 +22,7 @@ namespace DFC.App.MatchSkills.Controllers
             switch (choice)
             {
                 case MoreSkills.Job:
-                    return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.OccupationSearch}");
+                    return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreJobs}");
                 case MoreSkills.Skill:
                     return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreSkills}");
                 default:
