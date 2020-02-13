@@ -39,7 +39,7 @@
 
 
 <script>
-    var data = [];
+    var dataFromSearch = [];
     document.onreadystatechange = function() {
         if (document.readyState == "complete") {
             AutoComplete();
@@ -69,20 +69,14 @@
 
 
     function runsearch(query, populateResults) {
-        const countries = [
-            'France',
-            'Germany',
-            'United Kingdom'
-        ];
-        data = countries;
-        populateResults(countries);
-        @*$.ajax({
+        $.ajax({
             type: 'GET',
             url: '@Model.SearchService/OccupationSearchAuto',
             contentType: "application/json;charset=utf-8",
             dataType: "json",
             data: { occupation: query },
             success: function (data) {
+                dataFromSearch = data;
                 populateResults(data);
             },
             error: function(jqXHR, exception) {
@@ -102,6 +96,6 @@
                     alert('Uncaught Error.\n' + jqXHR.responseText);
                 }
             }
-        });*@
+        });
     }
 </script>

@@ -36,10 +36,13 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
 
-        public override Task<IActionResult> Body()
+        public override async Task<IActionResult> Body()
         {
             ViewModel.SearchService = _settings.SearchService;
-            return base.Body();
+
+            await TrackPageInUserSession();
+
+            return await base.Body();
         }
 
         [HttpGet,HttpPost]
