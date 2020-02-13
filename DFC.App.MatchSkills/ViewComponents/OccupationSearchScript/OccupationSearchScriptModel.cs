@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.ViewModels;
-
-namespace DFC.App.MatchSkills.ViewComponents.OccupationSearchScript
+﻿namespace DFC.App.MatchSkills.ViewComponents.OccupationSearchScript
 {
     public class OccupationSearchScriptModel
     {
