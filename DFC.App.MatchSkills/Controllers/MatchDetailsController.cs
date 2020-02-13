@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
@@ -16,7 +17,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
         }
 
-        public override IActionResult Body()
+        public override Task<IActionResult> Body()
         {
             ViewModel.MissingSkills = new List<Skill>()
             {

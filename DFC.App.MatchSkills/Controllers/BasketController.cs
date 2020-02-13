@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
@@ -15,13 +16,13 @@ namespace DFC.App.MatchSkills.Controllers
         {
         }
 
-        public override IActionResult Body()
+        public override async Task<IActionResult> Body()
         {
-            TrackPageInUserSession();
-            var userSession = GetUserSession();
+            await TrackPageInUserSession();
+            var userSession = await GetUserSession();
             ViewModel.Skills.LoadFromSession(userSession);
 
-            return base.Body();
+            return await base.Body();
         }
     }
 }

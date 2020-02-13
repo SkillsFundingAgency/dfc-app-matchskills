@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
@@ -66,7 +67,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void WhenBodyCalled_ReturnHtml()
+        public async Task WhenBodyCalled_ReturnHtml()
         {
             var controller = new BasketController(_dataProtectionProvider, _compositeSettings, _sessionService);
 
@@ -93,7 +94,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
 
 
-            var result = controller.Body() as ViewResult;
+            var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
@@ -104,7 +105,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         
 
         [Test]
-        public void WhenPostBodyCalled_ReturnHtml()
+        public async Task WhenPostBodyCalled_ReturnHtml()
         {
             var controller = new BasketController(_dataProtectionProvider,_compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -112,7 +113,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body() as ViewResult;
+            var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();

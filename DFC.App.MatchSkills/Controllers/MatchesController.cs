@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
@@ -16,7 +17,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
         }
 
-        public override IActionResult Body()
+        public override Task<IActionResult> Body()
         {
             var cm = new CareerMatch()
             {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -54,16 +55,15 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpGet]
         [Route("/body/[controller]")]
-        public virtual IActionResult Body()
+        public virtual Task<IActionResult> Body()
         {
-            return View(ViewModel);
+            return Task.FromResult<IActionResult>(View(ViewModel));
         }
 
         protected async Task<HttpResponseMessage> TrackPageInUserSession()
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            var result = UpdateUserSession(primaryKeyFromCookie, ViewModel.Id.Value).GetAwaiter().GetResult();
-            return result;
+            return await UpdateUserSession(primaryKeyFromCookie, ViewModel.Id.Value, session );
         }
     }
 }

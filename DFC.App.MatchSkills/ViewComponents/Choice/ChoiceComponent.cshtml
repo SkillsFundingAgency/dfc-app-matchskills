@@ -28,7 +28,7 @@
             }
             @foreach (var radioButton in Model.RadioButtons)
             {
-                <govukRadioButton id="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)" name="@radioButton.Name" value="@radioButton.Value">
+                <govukRadioButton id="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)" name="@radioButton.Name" value="@radioButton.Value" checked="@radioButton.Checked">
                     <govukRadioLabel text="@radioButton.Text" for="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)"></govukRadioLabel>
                     @if (!string.IsNullOrEmpty(radioButton.HintText))
                     {

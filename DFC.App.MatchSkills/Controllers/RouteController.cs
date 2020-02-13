@@ -1,4 +1,6 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System;
+using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
@@ -15,12 +17,28 @@ namespace DFC.App.MatchSkills.Controllers
         {
         }
 
+        public override async Task<IActionResult> Body()
+        {
+            var session = await GetUserSession();
+
+            if (session == null)
+            {
+                throw new Exception("No session");
+            }
+
+            ViewModel.RouteIncludesDysac = session.RouteIncludesDysac;
+
+            return await base.Body();
+        }
 
         [Route("MatchSkills/[controller]")]
         [HttpPost]
-        public IActionResult Body(Route choice)
+        public async Task<IActionResult> Body(Route choice)
         {
-            TrackPageInUserSession();
+            var routeIncludesDysac = choice == Route.Undefined ? (bool?)null : choice == Route.JobsAndSkills;
+            var userSession = await GetUserSession();
+            userSession.RouteIncludesDysac = routeIncludesDysac;
+            await TrackPageInUserSession(userSession);
 
             switch (choice)
             {
@@ -30,7 +48,7 @@ namespace DFC.App.MatchSkills.Controllers
                     return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
                 default:
                     ViewModel.HasError = true;
-                    return base.Body();
+                    return await base.Body();
             }
         }
     }
