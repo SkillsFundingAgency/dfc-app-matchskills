@@ -32,11 +32,9 @@
 
 
 <script>
-  
-    var timer;
-    
-    document.onreadystatechange = () => {
-        if (document.readyState === 'complete') {
+
+    document.onreadystatechange = function() {
+        if (document.readyState == "complete") {
             AutoComplete();
         }
     };
