@@ -39,12 +39,5 @@ namespace DFC.App.MatchSkills.Controllers
         {
             return View(ReturnPath("body", "OccupationSearchResults"));
         }
-
-        [HttpGet]
-        [Route("/sidebarright/"+ PathName)]
-        public override IActionResult SidebarRight()
-        {
-            return View(ReturnPath("sidebarright"));
-        }
     }
 }
