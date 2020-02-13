@@ -1,8 +1,7 @@
-﻿using DFC.Personalisation.Domain.Models;
+﻿using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.Personalisation.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Models
 {
