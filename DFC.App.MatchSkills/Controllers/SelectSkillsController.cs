@@ -61,19 +61,20 @@ namespace DFC.App.MatchSkills.Controllers
                 resultGet.Occupations = new HashSet<UsOccupation>();
             }
             resultGet.Occupations.Add(new UsOccupation(occupationId,enterJobInputAutocomplete,DateTime.Now));
-            
+            await _sessionService.UpdateUserSessionAsync(resultGet);
+
             var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
                 _apiKey, occupationId);
 
             ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList(); 
             
-            return base.Body();
+            return await base.Body();
         }
         [HttpPost]
         [Route("/MatchSkills/[controller]/AddSkills")]
         public async Task<IActionResult> AddSkills(IFormCollection formCollection)
         {
-            var userSession = GetUserSession();
+            var userSession = await GetUserSession();
 
             foreach (var key in formCollection.Keys)
             { 

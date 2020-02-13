@@ -24,13 +24,15 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+            var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
+
 
             if (!string.IsNullOrWhiteSpace(primaryKeyFromCookie))
             {
                 var createSessionRequest = new CreateSessionRequest()
                 {
                     CurrentPage = CompositeViewModel.PageId.Worked.Value,
-                    UserHasWorkedBefore = choice == WorkedBefore.Yes
+                    UserHasWorkedBefore = userWorkedBefore
                 };
                 await CreateUserSession( createSessionRequest, primaryKeyFromCookie);
             }
@@ -43,7 +45,7 @@ namespace DFC.App.MatchSkills.Controllers
                     return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Worked}");
                 default:
                     ViewModel.HasError = true;
-                    return base.Body();
+                    return await base.Body();
             }
         }
     }

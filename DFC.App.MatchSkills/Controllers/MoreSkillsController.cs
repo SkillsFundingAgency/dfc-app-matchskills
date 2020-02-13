@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
@@ -17,7 +18,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost]
         [Route("MatchSkills/[controller]")]
-        public IActionResult Body(MoreSkills choice)
+        public async Task<IActionResult> Body(MoreSkills choice)
         {
             switch (choice)
             {
@@ -27,7 +28,7 @@ namespace DFC.App.MatchSkills.Controllers
                     return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreSkills}");
                 default:
                     ViewModel.HasError = true;
-                    return base.Body();
+                    return await base.Body();
             }
         }
     }

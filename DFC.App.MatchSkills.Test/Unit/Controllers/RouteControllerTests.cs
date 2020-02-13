@@ -12,6 +12,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -32,9 +33,26 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
         }
 
+        [Test]
+        public async Task When_BodyCalledWithoutCookie_Then_ThowError()
+        {
+
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsNullForAnyArgs();
+            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+
+            Func<Task> act = async () => { await controller.Body(); };
+
+            await act.Should().ThrowAsync<Exception>();
+        }
+
 
         [Test]
-        public void WhenPostBodyCalledWithJobs_ReturnHtml()
+        public async Task WhenBodyCalled_ThenSessionIsLoaded()
         {
             var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -42,14 +60,29 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(Route.Jobs) as RedirectResult;
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.Model.As<RouteCompositeViewModel>().RouteIncludesDysac.Should().BeNull();
+        }
+
+        [Test]
+        public async Task WhenPostBodyCalledWithJobs_ReturnHtml()
+        {
+            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = await controller.Body(Route.Jobs) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.OccupationSearch}");
         }
 
         [Test]
-        public void WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
+        public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
             var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -57,14 +90,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(Route.JobsAndSkills) as RedirectResult;
+            var result = await controller.Body(Route.JobsAndSkills) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.Route}");
         }
 
         [Test]
-        public void WhenPostBodyCalledWithUndefined_ReturnHtml()
+        public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
             var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -72,7 +105,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(Route.Undefined) as ViewResult;
+            var result = await controller.Body(Route.Undefined) as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
@@ -88,7 +121,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
+        public async Task WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
         {
             var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -96,8 +129,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            controller.Body(Route.Undefined);
-            _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x => string.Equals(x.CurrentPage, CompositeViewModel.PageId.Route.Value, StringComparison.InvariantCultureIgnoreCase)));
+            await controller.Body(Route.Undefined);
+            await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x => 
+                string.Equals(x.CurrentPage, CompositeViewModel.PageId.Route.Value, 
+                    StringComparison.InvariantCultureIgnoreCase)));
 
         }
     }
