@@ -1,4 +1,5 @@
-﻿using Dfc.ProviderPortal.Packages;
+﻿using System.Threading.Tasks;
+using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -25,10 +26,14 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
 
-        public override IActionResult Body()
+        public override async Task<IActionResult> Body()
         {
+            await TrackPageInUserSession();
+            var userSession = await GetUserSession();
+            ViewModel.Occupations.LoadFromSession(userSession);
             ViewModel.SearchService = _settings.SearchService;
-            return base.Body();
+            return await base.Body();
+
         }
     }
 }

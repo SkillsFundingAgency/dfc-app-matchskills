@@ -28,10 +28,10 @@
         <div class="govuk-grid-column-one-third">
             <govukHeadingH3 text="Occupations you've recently added"></govukHeadingH3>
             <govukBulletedList>
-                <govukListItem text="Word Processing"></govukListItem>
-                <govukListItem text="Spreadsheets"></govukListItem>
-                <govukListItem text="Filing"></govukListItem>
-                <govukListItem text="Minute Taking"></govukListItem>
+                @foreach (var occupation in Model.Occupations)
+                {
+                    <govukListItem text="@occupation.Name"></govukListItem>
+                }
             </govukBulletedList>
         </div>
     </div>
