@@ -12,17 +12,7 @@
                 <p>You can add skills from more than one job to your skills list.</p>
 
 
-                <govukAutoComplete Id="moreJob-autocomplete"
-                                   Element="moreJob-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
-                                   autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
-                                   minLength="2" name="EnterJobInputAutocomplete">
-                    <govukAutocompleteLabel Text="Enter your current or previous job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="moreJob-autocomplete"></govukAutocompleteLabel>
 
-
-                </govukAutoComplete>
-                <br />
-                <br />
-                <govukSecondaryButton id="@Model.GetElementId("govukSecondaryButton","Search")" text="Search"></govukSecondaryButton>
             </form>
         </div>
         <div class="govuk-grid-column-one-third">
@@ -36,48 +26,4 @@
         </div>
     </div>
 </div>
-<script>
 
-    var timer;
-
-    document.onreadystatechange = () => {
-        if (document.readyState === 'complete') {
-            AutoComplete();
-        }
-    };
-
-    function Suggest(query, populateResults) {
-        runsearch(query, populateResults);
-    }
-
-
-    function runsearch(query, populateResults) {
-        $.ajax({
-            type: 'GET',
-            url: '@Model.SearchService/OccupationSearchAuto',
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            data: { occupation: query },
-            success: function (data) {
-                populateResults(data);
-            },
-            error: function(jqXHR, exception) {
-                if (jqXHR.status === 0) {
-                    console.log('**MatchSkills:Not connect.\n Verify Network.');
-                } else if (jqXHR.status == 404) {
-                    alert('Requested page not found. [404]');
-                } else if (jqXHR.status == 500) {
-                    console.log('**MatchSkills:500 Error.');
-                } else if (exception === 'parsererror') {
-                    alert('Requested JSON parse failed.');
-                } else if (exception === 'timeout') {
-                    alert('Time out error.');
-                } else if (exception === 'abort') {
-                    alert('Ajax request aborted.');
-                } else {
-                    alert('Uncaught Error.\n' + jqXHR.responseText);
-                }
-            }
-        });
-    }
-</script>
