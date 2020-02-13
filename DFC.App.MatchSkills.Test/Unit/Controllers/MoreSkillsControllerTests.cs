@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
@@ -32,7 +33,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
 
         [Test]
-        public void WhenPostBodyCalledWithJobs_ReturnHtml()
+        public async Task WhenPostBodyCalledWithJobs_ReturnHtml()
         {
             var controller = new MoreSkillsController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -40,14 +41,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(MoreSkills.Job) as RedirectResult;
+            var result = await controller.Body(MoreSkills.Job) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.OccupationSearch}");
         }
 
         [Test]
-        public void WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
+        public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
             var controller = new MoreSkillsController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -55,14 +56,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(MoreSkills.Skill) as RedirectResult;
+            var result = await controller.Body(MoreSkills.Skill) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreSkills}");
         }
 
         [Test]
-        public void WhenPostBodyCalledWithUndefined_ReturnHtml()
+        public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
             var controller = new MoreSkillsController(_dataProtectionProvider, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -70,7 +71,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body(MoreSkills.Undefined) as ViewResult;
+            var result = await controller.Body(MoreSkills.Undefined) as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();

@@ -57,7 +57,7 @@ namespace DFC.App.MatchSkills.Controllers
                     Console.WriteLine($"Key outdated. Removing Now. {e}");
                     RemoveInvalidSession();
                 }
-                
+
             }
 
             var queryDictionary = System.Web.HttpUtility.ParseQueryString(request.QueryString.ToString());
@@ -70,16 +70,18 @@ namespace DFC.App.MatchSkills.Controllers
             return string.IsNullOrWhiteSpace(primaryKey) ? null : primaryKey;
         }
 
-        protected async Task<HttpResponseMessage> UpdateUserSession(string sessionId, string currentPage )
+        protected async Task<HttpResponseMessage> UpdateUserSession(string sessionId, string currentPage, UserSession session = null)
         {
-            var session = await _sessionService.GetUserSession(sessionId);
-
+            if (session == null)
+            {
+                 session = await _sessionService.GetUserSession(sessionId);
+            }
+            
             session.PreviousPage = session.CurrentPage;
             session.CurrentPage = currentPage;
             session.LastUpdatedUtc = DateTime.UtcNow;
 
             return await _sessionService.UpdateUserSessionAsync(session);
-
         }
 
         protected void RemoveInvalidSession()
@@ -87,11 +89,10 @@ namespace DFC.App.MatchSkills.Controllers
             Response.Cookies.Delete(CookieName);
         }
 
-        protected UserSession GetUserSession()
+        protected async Task<UserSession> GetUserSession()
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            var userSession = _sessionService.GetUserSession(primaryKeyFromCookie).GetAwaiter().GetResult();
-            return userSession;
+            return await _sessionService.GetUserSession(primaryKeyFromCookie);
         }
     }
 }

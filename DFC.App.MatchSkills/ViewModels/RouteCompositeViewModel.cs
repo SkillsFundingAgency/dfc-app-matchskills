@@ -8,5 +8,7 @@
         }
 
         public bool HasError { get; set; }
+
+        public bool? RouteIncludesDysac { get; set; }
     }
 }

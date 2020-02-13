@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
@@ -50,7 +51,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
         }
         [Test]
-        public void WhenBodyCalled_ReturnHtml()
+        public async Task WhenBodyCalled_ReturnHtml()
         {
             var controller = new HomeController(_dataProtectionProvider,_compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
@@ -58,7 +59,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = controller.Body() as ViewResult;
+            var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();

@@ -90,14 +90,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void WhenBody_Called_ReturnHtml()
+        public async Task WhenBody_Called_ReturnHtml()
         {
             var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             sut.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-            var result = sut.Body() as ViewResult;
+            var result = await sut.Body() as ViewResult;
 
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

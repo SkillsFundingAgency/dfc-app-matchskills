@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.DataProtection;
@@ -38,7 +39,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [Route("/body")]
-        public override IActionResult Body()
+        public override Task<IActionResult> Body()
         {
             return base.Body();
         }

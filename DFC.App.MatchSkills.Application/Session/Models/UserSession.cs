@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Application.Session.Models
@@ -8,6 +9,7 @@ namespace DFC.App.MatchSkills.Application.Session.Models
     {
         [JsonIgnore]
         public string PrimaryKey => $"{PartitionKey}-{UserSessionId}";
+
         [JsonProperty("partitionKey")]
         public string PartitionKey { get; set; }
         [JsonProperty("id")]

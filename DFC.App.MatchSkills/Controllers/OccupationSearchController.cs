@@ -36,7 +36,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
 
-        public override IActionResult Body()
+        public override Task<IActionResult> Body()
         {
             ViewModel.SearchService = _settings.SearchService;
             return base.Body();
