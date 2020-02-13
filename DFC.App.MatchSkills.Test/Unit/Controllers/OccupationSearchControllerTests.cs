@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Test.Helpers;
+using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 
@@ -102,6 +103,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
+            result.ViewData.Model.As<OccupationSearchCompositeViewModel>().HasError.Should().BeFalse();
         }
 
     }

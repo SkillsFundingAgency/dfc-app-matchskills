@@ -8,5 +8,6 @@
         }
 
         public string SearchService { get; set; }
+        public bool HasError { get; set; }
     }
 }
