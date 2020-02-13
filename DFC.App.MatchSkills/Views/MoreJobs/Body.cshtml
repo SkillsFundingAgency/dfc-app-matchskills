@@ -1,10 +1,26 @@
-﻿@using DFC.App.MatchSkills.ViewModels
+﻿@using DFC.App.MatchSkills.ViewComponents.OccupationSearchScript
+@using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.MoreJobsViewModel
+
+@{
+
+    var searchService = Model.SearchService;
+    var autoCompleteElementName = Model.GetElementId("govukAutoComplete", Model.AutoCompleteElementName);
+    var formElementName = Model.GetElementId("form", Model.FormElementName);
+    var autoCompleteError = Model.GetElementId("govukAutoCompleteError", "SearchError");
+    var searchButton = Model.GetElementId("govukSecondaryButton", "Search");
+
+}
+
+<govukErrorSummary hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#@autoCompleteElementName" text="Enter a job title"></govukErrorSummaryItem>
+</govukErrorSummary>
+
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form action="@CompositeViewModel.PageId.SelectSkills" method="post">
+            <form id="@formElementName" action="@CompositeViewModel.PageId.SelectSkills" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
                 <govukHeadingH1 Text="Enter your job title" />
 
                 <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
@@ -12,7 +28,18 @@
                 <p>You can add skills from more than one job to your skills list.</p>
 
 
+                <govukAutoComplete Id="@autoCompleteElementName"
+                                   Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
+                                   autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
+                                   minLength="2" name="EnterJobInputAutocomplete">
+                    <govukAutoCompleteError id="@autoCompleteError" text="Enter a job title" hidden="@(!Model.HasError)"></govukAutoCompleteError>
+                    <govukAutocompleteLabel Text="Enter your current or previous job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="@autoCompleteElementName"></govukAutocompleteLabel>
 
+
+                </govukAutoComplete>
+                <br />
+                <br />
+                <govukSecondaryButton id="@searchButton" text="Search"></govukSecondaryButton>
             </form>
         </div>
         <div class="govuk-grid-column-one-third">
@@ -26,4 +53,14 @@
         </div>
     </div>
 </div>
-
+@{
+    var scriptModel = new OccupationSearchScriptModel()
+    {
+        SearchService = Model.SearchService,
+        AutoCompleteElementName = autoCompleteElementName,
+        FormElementName = formElementName,
+        AutoCompleteError = autoCompleteError,
+        SearchButton = searchButton
+    };
+}
+<partial name="~/ViewComponents/OccupationSearchScript/Default.cshtml" model="@scriptModel" />

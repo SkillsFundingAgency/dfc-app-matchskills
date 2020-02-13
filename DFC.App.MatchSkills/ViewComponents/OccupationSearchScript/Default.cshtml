@@ -1,24 +1,30 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, DFC.Personalisation.CommonUI
+@model DFC.App.MatchSkills.ViewComponents.OccupationSearchScript.OccupationSearchScriptModel
 
-<govukAutoComplete Id="occupations-autocomplete"
-                   Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
-                   autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
-                   minLength="2" name="EnterJobInputAutocomplete">
-    <govukAutocompleteLabel Text="Enter your job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="occupations-autocomplete"></govukAutocompleteLabel>
+    <script>
+    var dataFromSearch = [];
+    document.onreadystatechange = function() {
 
-
-</govukAutoComplete>
-
-
-
-<script>
-
-    var timer;
-
-    document.onreadystatechange = () => {
-        if (document.readyState === 'complete') {
+        if (document.readyState == "complete") {
             AutoComplete();
+            const autoCompleteElement = $('#@Model.AutoCompleteElementName');
+            const searchButton = $('#@Model.SearchButton');
+            const summary = $('.govuk-error-summary');
+            const autoCompleteError = $('#@Model.AutoCompleteError');
+            const display = {"display":""};
+            const form = $('#@Model.FormElementName');
+            searchButton.click(function(e) {
+
+
+                if (autoCompleteElement[0].value === '' || data.length <= 0  || $.inArray(autoCompleteElement[0].value, data) === -1) {
+                    e.preventDefault();
+                    summary.css(display);
+                    autoCompleteError.css(display);
+                    form.addClass('govuk-form-group--error');
+                }
+
+            });
         }
     };
 
@@ -35,6 +41,7 @@
             dataType: "json",
             data: { occupation: query },
             success: function (data) {
+                dataFromSearch = data;
                 populateResults(data);
             },
             error: function(jqXHR, exception) {
@@ -56,4 +63,4 @@
             }
         });
     }
-</script>
+    </script>

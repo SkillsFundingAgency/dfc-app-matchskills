@@ -9,5 +9,7 @@
 
         public string SearchService { get; set; }
         public bool HasError { get; set; }
+        public string AutoCompleteElementName { get;} = "OccupationAutoComplete";
+        public string FormElementName { get; } = "OccupationSearch";
     }
 }
