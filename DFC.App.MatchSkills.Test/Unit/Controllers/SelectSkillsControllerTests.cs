@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
@@ -135,11 +136,38 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
+            var _sessionService = Substitute.For<ISessionService>();
             var controller = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
+            controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
+            var requestCookie = new Mock<IRequestCookieCollection>();
+
+            string data = _dataProtector.Protect("This is my value");
+            requestCookie.Setup(x =>
+                x.TryGetValue(It.IsAny<string>(), out data)).Returns(true);
+            var httpContext = new Mock<HttpContext>();
+            var httpRequest = new Mock<HttpRequest>();
+            var httpResponse = new Mock<HttpResponse>();
+
+            httpResponse.Setup(x => x.Cookies).Returns(new Mock<IResponseCookies>().Object);
+            httpRequest.Setup(x => x.Cookies).Returns(requestCookie.Object);
+            httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
+            httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
+            controller.ControllerContext.HttpContext = httpContext.Object;
+
+            var userSession = new UserSession()
+            {
+                Occupations = new HashSet<UsOccupation>(2)
+                {
+                    new UsOccupation("1", "FirstOccupation", DateTime.UtcNow),
+                    new UsOccupation("2", "SecondOccupation", DateTime.UtcNow)
+                }
+            };
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(userSession);
+
             var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
