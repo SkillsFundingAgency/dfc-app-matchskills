@@ -1,4 +1,5 @@
-﻿@model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
+﻿@using System.Net
+@model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
 
 
         <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
@@ -32,6 +33,7 @@
 
                                         @foreach (var skill in Model.Skills)
                                         {
+                                            
                                             <govukCheckbox id="@Model.GetElementId("GovukCheckbox-",@skill.Id)" label="@skill.Name" name="@skill.Id--@skill.Name"  AdditionalClass="checkbox-container-item"></govukCheckbox>
                                         }
                                     </div>
