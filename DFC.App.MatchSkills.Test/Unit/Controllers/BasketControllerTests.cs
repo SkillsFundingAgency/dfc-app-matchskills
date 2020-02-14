@@ -138,29 +138,5 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
         }
-
-        [Test]
-        public void WhenSidebarRightCalled_ReturnHtml()
-        {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService);
-            var result = controller.SidebarRight() as ViewResult;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
-        }
-        public void WhenSessionIdIsSet_CookieIsSaved()
-        {
-            var controller = new BasketController(_dataProtectionProvider,_compositeSettings, _sessionService);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-
-            controller.Head();
-            var headers = controller.Response.Headers;
-
-            headers.Should().ContainKey("set-cookie");
-            headers.Values.First().Should().ContainMatch($"{CookieName}*");
-        }
     }
 }

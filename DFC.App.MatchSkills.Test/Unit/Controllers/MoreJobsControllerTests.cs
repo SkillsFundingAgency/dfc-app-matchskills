@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Interfaces;
 using Moq;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
@@ -27,6 +28,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<ServiceTaxonomySettings> _settings;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
+        private ICookieService _cookieService;
 
         [SetUp]
         public void Init()
@@ -45,6 +47,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
             _sessionService = Substitute.For<ISessionService>();
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+            _cookieService = Substitute.For<ICookieService>();
 
         }
 
@@ -52,7 +55,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBody_Called_ReturnHtml()
         {
             var controller =
-                new MoreJobsController(_dataProtectionProvider, _settings, _compositeSettings, _sessionService);
+                new MoreJobsController(_settings, _compositeSettings, _sessionService, _cookieService);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -94,7 +97,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBody_Called_WithData_ReturnHtml()
         {
             var controller =
-                new MoreJobsController(_dataProtectionProvider, _settings, _compositeSettings, _sessionService)
+                new MoreJobsController(_settings, _compositeSettings, _sessionService, _cookieService)
                 {
                     ControllerContext = new ControllerContext {HttpContext = new DefaultHttpContext()}
                 };
