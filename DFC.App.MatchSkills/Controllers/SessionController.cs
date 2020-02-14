@@ -1,11 +1,11 @@
-﻿using System;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
-using Microsoft.AspNetCore.DataProtection;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -14,14 +14,13 @@ namespace DFC.App.MatchSkills.Controllers
     /// </summary>
     public abstract class SessionController : Controller
     {
-        private const string CookieName = ".matchSkills-session";
-        private readonly IDataProtector _dataProtector;
         private readonly ISessionService _sessionService;
+        private readonly ICookieService _cookieService;
 
-        protected SessionController(IDataProtectionProvider dataProtectionProvider, ISessionService sessionService)
+        protected SessionController(ISessionService sessionService, ICookieService cookieService)
         {
             _sessionService = sessionService;
-            _dataProtector = dataProtectionProvider.CreateProtector(nameof(SessionController));
+            _cookieService = cookieService;
         }
 
         protected async Task CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie)
@@ -33,41 +32,12 @@ namespace DFC.App.MatchSkills.Controllers
 
         protected void AppendCookie(string sessionId)
         {
-            var value = _dataProtector.Protect(sessionId);
-            Response.Cookies.Append(CookieName, value, new CookieOptions
-            {
-                Secure = true,
-                IsEssential = true,
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict
-            });
+            _cookieService.AppendCookie(sessionId, Response);
         }
 
         protected string TryGetPrimaryKey(HttpRequest request)
         {
-            var primaryKey = string.Empty;
-            if (request.Cookies.TryGetValue(CookieName, out var cookiePrimaryKey))
-            {
-                try
-                {
-                    primaryKey = _dataProtector.Unprotect(cookiePrimaryKey);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Key outdated. Removing Now. {e}");
-                    RemoveInvalidSession();
-                }
-
-            }
-
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(request.QueryString.ToString());
-            var code = queryDictionary.Get("sessionId");
-            if (!string.IsNullOrEmpty(code))
-            {
-                primaryKey = code;
-            }
-
-            return string.IsNullOrWhiteSpace(primaryKey) ? null : primaryKey;
+            return _cookieService.TryGetPrimaryKey(request, Response);
         }
 
         protected async Task<HttpResponseMessage> UpdateUserSession(string sessionId, string currentPage, UserSession session = null)
@@ -82,11 +52,6 @@ namespace DFC.App.MatchSkills.Controllers
             session.LastUpdatedUtc = DateTime.UtcNow;
 
             return await _sessionService.UpdateUserSessionAsync(session);
-        }
-
-        protected void RemoveInvalidSession()
-        {
-            Response.Cookies.Delete(CookieName);
         }
 
         protected async Task<UserSession> GetUserSession()

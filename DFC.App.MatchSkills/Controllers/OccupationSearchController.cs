@@ -2,12 +2,12 @@
 using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -24,13 +24,12 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly ServiceTaxonomySettings _settings;
         private readonly ISessionService _sessionService;
        
-        public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,
-            IServiceTaxonomySearcher serviceTaxonomy, 
+        public OccupationSearchController(IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings,
             IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService) 
-            : base(dataProtectionProvider, compositeSettings,
-                sessionService)
+            ISessionService sessionService, ICookieService cookieService) 
+            : base(compositeSettings,
+                sessionService, cookieService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
@@ -39,7 +38,7 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
         }
 
-
+        [SessionRequired]
         public override async Task<IActionResult> Body()
         {
             ViewModel.SearchService = _settings.SearchService;
@@ -49,6 +48,7 @@ namespace DFC.App.MatchSkills.Controllers
             return await base.Body();
         }
 
+        [SessionRequired]
         [HttpGet,HttpPost]
         [Route("/OccupationSearch")]
         public async Task<IEnumerable<Occupation>> OccupationSearch(string occupation)
@@ -59,6 +59,7 @@ namespace DFC.App.MatchSkills.Controllers
             return occupations.ToList();
         }
 
+        [SessionRequired]
         [HttpGet,HttpPost]
         [Route("Matchskills/OccupationSearchAuto")]
         [Route("OccupationSearchAuto")]

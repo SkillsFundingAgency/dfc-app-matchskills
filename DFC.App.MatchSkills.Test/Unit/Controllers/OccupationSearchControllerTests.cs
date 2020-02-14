@@ -1,46 +1,40 @@
-﻿using System;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.Test.Helpers;
+using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Moq;
-using Moq.Protected;
-using NUnit.Framework;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.Test.Helpers;
-using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.Http;
 using NSubstitute;
+using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DFC.App.MatchSkills.Interfaces;
+using DFC.App.MatchSkills.Service;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
 
     public class OccupationSearchControllerTests
     {
-        private IDataProtectionProvider _dataProtectionProvider;
-        private IDataProtector _dataProtector;
         private IOptions<ServiceTaxonomySettings> _settings;
         private IOptions<CompositeSettings> _compositeSettings;
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private const string Path = "OccupationSearch";
         private ISessionService _sessionService;
-        
+        private ICookieService _cookieService;
+
         [SetUp]
         public void Init()
         {
-            _dataProtectionProvider = new EphemeralDataProtectionProvider();
-            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
             _settings = Options.Create(new ServiceTaxonomySettings());
             _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
             _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
@@ -54,13 +48,15 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
 
+            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+
 
         }
         
         [Test]
         public void  When_OccupationSearch_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
             var occupations =   sut.OccupationSearch("renewable");
             
@@ -71,7 +67,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void  When_OccupationSearchAuto_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
             var occupations =   sut.OccupationSearchAuto("Renewable");
             
@@ -113,7 +109,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void When_HeadCalled_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             sut.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = sut.Head() as ViewResult;
             
@@ -126,7 +122,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBody_Called_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             sut.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
