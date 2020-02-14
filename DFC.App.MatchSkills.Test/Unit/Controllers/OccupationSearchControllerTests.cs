@@ -32,7 +32,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IDataProtector _dataProtector;
         private IOptions<ServiceTaxonomySettings> _settings;
         private IOptions<CompositeSettings> _compositeSettings;
-        private ServiceTaxonomyRepository serviceTaxonomyRepository;
+        private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private const string Path = "OccupationSearch";
         private ISessionService _sessionService;
         
@@ -51,7 +51,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
             var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
-            serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
 
 
@@ -60,7 +60,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void  When_OccupationSearch_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
             var occupations =   sut.OccupationSearch("renewable");
             
@@ -71,7 +71,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void  When_OccupationSearchAuto_Then_ShouldReturnOccupations()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             
             var occupations =   sut.OccupationSearchAuto("Renewable");
             
@@ -83,7 +83,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void When_HeadCalled_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             sut.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = sut.Head() as ViewResult;
             
@@ -96,13 +96,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBody_Called_ReturnHtml()
         {
-            var sut = new OccupationSearchController(_dataProtector,serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
             sut.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
             var result = await sut.Body() as ViewResult;
-
 
             await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
                 string.Equals(x.CurrentPage, CompositeViewModel.PageId.OccupationSearch.Value,
@@ -112,6 +111,20 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
             result.ViewData.Model.As<OccupationSearchCompositeViewModel>().HasError.Should().BeFalse();
+        }
+        [Test]
+        public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
+        {
+            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
+            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            
+            var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
+
+            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
+            
         }
 
     }

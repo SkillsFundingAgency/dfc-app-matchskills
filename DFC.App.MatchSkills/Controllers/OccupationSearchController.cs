@@ -1,4 +1,5 @@
-﻿using Dfc.ProviderPortal.Packages;
+﻿using System;
+using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -20,6 +22,7 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
+        private readonly ISessionService _sessionService;
        
         public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,
             IServiceTaxonomySearcher serviceTaxonomy, 
@@ -33,6 +36,7 @@ namespace DFC.App.MatchSkills.Controllers
             Throw.IfNull(settings, nameof(settings));
             _serviceTaxonomy = serviceTaxonomy ?? new ServiceTaxonomyRepository();
             _settings = settings.Value;
+            _sessionService = sessionService;
         }
 
 
@@ -56,14 +60,37 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [HttpGet,HttpPost]
-        [Route("matchskills/OccupationSearchAuto")]
+        [Route("Matchskills/OccupationSearchAuto")]
         [Route("OccupationSearchAuto")]
         public async Task<IActionResult> OccupationSearchAuto(string occupation)
         {
             var occupations = await OccupationSearch(occupation);
            return this.Ok(occupations.Select(x => x.Name).ToList());
         }
+        [HttpPost]
+        [Route("/matchskills/occupationSearch/SearchSkills")]
+        public async Task<IActionResult> SearchSkills(string enterJobInputAutocomplete)
+        {
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+            var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
+            var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
 
+            if (resultGet.Occupations == null)
+            {
+                resultGet.Occupations = new HashSet<UsOccupation>();
+            }
+            
+            resultGet.Occupations.Add(new UsOccupation(occupationId, enterJobInputAutocomplete, DateTime.Now));
+            await _sessionService.UpdateUserSessionAsync(resultGet);
+            
+            return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SelectSkills}");
+        }
+        public async Task<string> GetOccupationIdFromName(string occupation)
+        {
+            var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
+                _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
+            return occupations.Single(x => x.Name == occupation).Id;
+        }
     }
 
 }

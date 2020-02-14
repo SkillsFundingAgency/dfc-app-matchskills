@@ -43,32 +43,25 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
 
         }
-
-        [HttpPost]
-        [Route("MatchSkills/[controller]")]
-        public  async Task<IActionResult> Body(string  enterJobInputAutocomplete)
+         public override async Task<IActionResult> Body()
         {
-            ViewModel.Occupation = enterJobInputAutocomplete;
-            var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
-
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-
             var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
 
-            if (resultGet.Occupations == null)
-            {
-                resultGet.Occupations = new HashSet<UsOccupation>();
-            }
-            resultGet.Occupations.Add(new UsOccupation(occupationId,enterJobInputAutocomplete,DateTime.Now));
-            await _sessionService.UpdateUserSessionAsync(resultGet);
-
+            Throw.IfNull(resultGet.Occupations, nameof(resultGet.Occupations));
+            
+            var occupation = resultGet.Occupations.OrderByDescending(o => o.DateAdded).First();
+            
+            ViewModel.Occupation = occupation.Name;
+            
             var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
-                _apiKey, occupationId);
+                _apiKey, occupation.Id);
 
             ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList(); 
             
             return await base.Body();
         }
+        
         [HttpPost]
         [Route("/MatchSkills/[controller]/AddSkills")]
         public async Task<IActionResult> AddSkills(IFormCollection formCollection)
@@ -86,14 +79,8 @@ namespace DFC.App.MatchSkills.Controllers
             await _sessionService.UpdateUserSessionAsync(userSession);
             
             return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
-            
         }
 
-        public async Task<string> GetOccupationIdFromName(string occupation)
-        {
-            var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
-                _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
-            return occupations.Single(x => x.Name == occupation).Id;
-        }
+       
     }
 }

@@ -114,20 +114,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         
         }
 
-        [Test]
-        public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
-        {
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
-            var restClient = new RestClient(handlerMock.Object);
-            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            var sut = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
-            
-            var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
-
-            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
-            
-        }
+       
         
 
         #region CUIScaffoldingTests
