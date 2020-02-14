@@ -78,7 +78,37 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             occupations.Result.Should().NotBeNull();
         }
 
-       
+        [Test]
+        public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
+        {
+            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
+            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            
+            var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
+
+            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
+        }
+
+        [Test]
+        public void When_SearchSkill_Then_RedirectToSelectSkillsView()
+        {
+            
+            var _sessionService = Substitute.For<ISessionService>();
+            
+            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+           sut.ControllerContext = new ControllerContext{
+               HttpContext = new DefaultHttpContext()
+           };
+
+           sut.ControllerContext=MockHelpers.GetControllerContext();
+           
+           sut.SearchSkills("Refuse collector");
+
+        }
+
 
         [Test]
         public void When_HeadCalled_ReturnHtml()
@@ -112,20 +142,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.ViewName.Should().BeNull();
             result.ViewData.Model.As<OccupationSearchCompositeViewModel>().HasError.Should().BeFalse();
         }
-        [Test]
-        public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
-        {
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
-            var restClient = new RestClient(handlerMock.Object);
-            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            var sut = new OccupationSearchController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
-            
-            var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
-
-            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
-            
-        }
-
+       
     }
 }
