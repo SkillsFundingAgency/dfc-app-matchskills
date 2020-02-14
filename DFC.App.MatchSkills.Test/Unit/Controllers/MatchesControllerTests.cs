@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.Service;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -15,23 +17,23 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     [TestFixture]
     public class MatchesControllerTests
     {
-        private IDataProtectionProvider _dataProtectionProvider;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-  
+        private ICookieService _cookieService;
+
 
         [SetUp]
         public void Init()
         {
             _sessionService = Substitute.For<ISessionService>();
-            _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _compositeSettings = Options.Create(new CompositeSettings());
+            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
         }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new MatchesController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

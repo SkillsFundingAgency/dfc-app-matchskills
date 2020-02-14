@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.Service;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +23,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IDataProtector _dataProtector;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-
+        private ICookieService _cookieService;
         [SetUp]
         public void Init()
         {
@@ -29,13 +31,15 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
             _compositeSettings = Options.Create(new CompositeSettings());
+
+            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
         }
 
         [Test]
         public async Task When_SessionIdProvided_Then_CookieIsAppended()
         {
             // Arrange.
-            var controller = new HomeController(_dataProtectionProvider,_compositeSettings, _sessionService);
+            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -61,7 +65,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 return true;
             });
 
-            var controller = new HomeController(_dataProtectionProvider, _compositeSettings, _sessionService)
+            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService)
             {
                 TempData = Substitute.For<ITempDataDictionary>()
             };

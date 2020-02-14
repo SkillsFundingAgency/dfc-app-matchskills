@@ -1,34 +1,32 @@
-﻿using System;
-using System.Linq;
+﻿using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.Test.Helpers;
+using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
+using NSubstitute;
 using NUnit.Framework;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
-using DFC.App.MatchSkills.Application.Cosmos.Models;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Test.Helpers;
-using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.Razor.Language;
-using Microsoft.Azure.Cosmos;
-using NSubstitute;
-using FluentAssertions.Common;
-using Newtonsoft.Json;
+using DFC.App.MatchSkills.Interfaces;
+using DFC.App.MatchSkills.Service;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -45,6 +43,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<CosmosSettings> _cosmosSettings;
         private Mock<CosmosClient> _client;
         private ICosmosService _cosmosService;
+        private ICookieService _cookieService;
         
         [SetUp]
         public void Init()
@@ -77,6 +76,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             //Session Settings
             _sessionService = Substitute.For<ISessionService>();
             _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
 
         }
         
@@ -121,7 +121,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            var sut = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var sut = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
             var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
 
@@ -135,7 +135,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
            
@@ -148,7 +148,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_dataProtector,_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -176,6 +176,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<ServiceTaxonomySettings> _settings;
 
+        private ICookieService _cookieService;
+
         [SetUp]
         public void Init()
         {
@@ -195,6 +197,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _sessionService = Substitute.For<ISessionService>();
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
 
+            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+
         }
          [Test]
         public async Task When_AddSkillsForOccupation_Then_ShouldAddSelectedSkills()
@@ -204,7 +208,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var subSessionService = Substitute.For<ISessionService>();
 
 
-            var controller = new SelectSkillsController(_dataProtectionProvider, _serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
             
             controller.ControllerContext = new ControllerContext

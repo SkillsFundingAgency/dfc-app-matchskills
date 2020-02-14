@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using Dfc.ProviderPortal.Packages;
+﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -14,12 +14,11 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly ServiceTaxonomySettings _settings;
 
-        public MoreJobsController(IDataProtectionProvider dataProtectionProvider,
-            IOptions<ServiceTaxonomySettings> settings,
+        public MoreJobsController(IOptions<ServiceTaxonomySettings> settings,
             IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService)
-            : base(dataProtectionProvider, compositeSettings,
-                sessionService)
+            ISessionService sessionService, ICookieService cookieService)
+            : base( compositeSettings,
+                sessionService, cookieService)
         {
             Throw.IfNull(settings, nameof(settings));
             _settings = settings.Value;
