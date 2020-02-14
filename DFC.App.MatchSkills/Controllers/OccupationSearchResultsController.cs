@@ -33,6 +33,7 @@ namespace DFC.App.MatchSkills.Controllers
             return View(ReturnPath("bodytop"));
         }
 
+        [SessionRequired]
         [HttpGet]
         [Route("/body/"+ PathName)]
         public override IActionResult Body()

@@ -2,12 +2,12 @@
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -25,9 +25,9 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly string _apiUrl;
         private readonly string _apiKey;
         private readonly ISessionService _sessionService;
-        public SelectSkillsController(IDataProtectionProvider dataProtectionProvider, IServiceTaxonomySearcher serviceTaxonomy, 
+        public SelectSkillsController(IServiceTaxonomySearcher serviceTaxonomy, 
                 IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, 
-                ISessionService sessionService)  : base(dataProtectionProvider, compositeSettings, sessionService)
+                ISessionService sessionService, ICookieService cookieService)  : base(compositeSettings, sessionService, cookieService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));

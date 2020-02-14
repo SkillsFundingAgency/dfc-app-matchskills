@@ -12,25 +12,26 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Interfaces;
+using DFC.App.MatchSkills.Service;
 using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
     public class RouteControllerTests
     {
-        private IDataProtectionProvider _dataProtectionProvider;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
+        private ICookieService _cookieService;
 
 
         [SetUp]
         public void Init()
         {
             _sessionService = Substitute.For<ISessionService>();
-            var dataProvider = new EphemeralDataProtectionProvider();
-            _dataProtectionProvider = dataProvider.CreateProtector(nameof(SessionController));
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
         }
 
         [Test]
@@ -38,7 +39,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
 
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsNullForAnyArgs();
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -54,7 +55,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ThenSessionIsLoaded()
         {
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -69,7 +70,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobs_ReturnHtml()
         {
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -84,7 +85,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -99,7 +100,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -123,7 +124,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
         {
-            var controller = new RouteController(_dataProtectionProvider, _compositeSettings, _sessionService);
+            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
