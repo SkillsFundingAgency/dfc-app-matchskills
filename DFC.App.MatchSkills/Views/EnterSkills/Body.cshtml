@@ -1,0 +1,44 @@
+﻿@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.EnterSkillsCompositeViewModel
+
+<govukErrorSummary hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#enterSkillsTextInputSearch" text="Enter a skill"></govukErrorSummaryItem>
+</govukErrorSummary>
+
+
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form id="@Model.GetElementId("form", "EnterSkillsSearch")" action="@CompositeViewModel.PageId.SelectSkills" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
+                <govukHeadingH1 Text="Search for a skill" />
+
+                <p>Enter the name of the skills that you would like to match to careers. For example: ‘public speaking’.</p>
+
+                <govukBulletedList text="These can be skills that you’ve learnt through:">
+                    <govukListItem text="paid work"></govukListItem>
+                    <govukListItem text="volunteering"></govukListItem>
+                    <govukListItem text="education"></govukListItem>
+                    <govukListItem text="your responsibilities outside of work"></govukListItem>
+                </govukBulletedList>
+                
+                <govukLabel for="@Model.GetElementId("input", "EnterSkillsInput")" text="Search for a skill" additional-class="govuk-!-font-weight-bold"></govukLabel>
+                <div>
+                    <govukTextInput id="@Model.GetElementId("input", "EnterSkillsInput")" additional-class="govuk-input--width-20">
+                        <govukHint HintText="You can search for a specific skill (like measuring spirit level) or a skill group (like bricklaying)"></govukHint>
+                    </govukTextInput>
+                    <govukSecondaryButton id="@Model.GetElementId("govukSecondaryButton", "Search")" text="Search"></govukSecondaryButton>
+                </div>
+
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <govukHeadingH3 text="Skills you've recently added"></govukHeadingH3>
+            <govukBulletedList>
+                @foreach (var skill in Model.Skills)
+                {
+                    <govukListItem text="@skill.Name"></govukListItem>
+                }
+            </govukBulletedList>
+        </div>
+    </div>
+</div>

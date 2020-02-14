@@ -25,7 +25,7 @@ namespace DFC.App.MatchSkills.Controllers
                 case MoreSkills.Job:
                     return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreJobs}");
                 case MoreSkills.Skill:
-                    return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreSkills}");
+                    return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.EnterSkills}");
                 default:
                     ViewModel.HasError = true;
                     return await base.Body();
