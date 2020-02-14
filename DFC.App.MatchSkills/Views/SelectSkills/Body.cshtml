@@ -1,4 +1,5 @@
-﻿@model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
+﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
+@model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
 
 
         <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
@@ -6,7 +7,7 @@
             <div class="govuk-grid-row">
 
                 <div class="govuk-grid-column-two-thirds">
-                    <form action="/matchskills/addskills/selectskills" method="post">
+                    <form action="/matchskills/selectskills/addskills" method="post">
 
                         <div class="results">
                             <div class="govuk-form-group">
@@ -29,10 +30,13 @@
                                         {
                                             <govukLabel id="@Model.GetElementId("GovukCheckbox","NoRequiredSkillsFound")" Text="No required skills found"></govukLabel>
                                         }
-                                        @foreach (var skill in Model.Skills)
+                                        else
                                         {
-                                            <govukCheckbox id="@Model.GetElementId("GovukCheckbox-",@skill.Id)" label="@skill.Name" value="@skill.Id" AdditionalClass="checkbox-container-item"></govukCheckbox>
+                                            var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox);
+                                            slm.Skills.LoadFrom(Model.Skills);
+                                            @await Component.InvokeAsync("SkillsList",slm);
                                         }
+
                                     </div>
                                 </fieldset>
                             </div>

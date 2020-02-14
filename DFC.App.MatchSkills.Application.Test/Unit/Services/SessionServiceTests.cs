@@ -10,6 +10,7 @@ using Moq;
 using NSubstitute;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -72,7 +73,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings);
                 
-                var sessionId= await serviceUnderTest.CreateUserSession(null, null, existingSessionId);
+                var sessionId= await serviceUnderTest.CreateUserSession(new CreateSessionRequest(), existingSessionId);
                 sessionId.Should().Be(existingSessionId);
 
             }
@@ -88,12 +89,12 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     PartitionKey = "Key",
                     CurrentPage = "string",
                     DysacJobCategories = new string[1],
-                    LastUpdatedUtc = DateTime.Now.ToString(),
-                    Occupation = "string",
+                    LastUpdatedUtc = DateTime.UtcNow,
+                    Occupations = new HashSet<UsOccupation>(){ new UsOccupation("1","Occupation 1",DateTime.Now), new UsOccupation("2","Occupation 1",DateTime.Now) },
                     PreviousPage = "previous",
                     Salt = "salt",
                     RouteIncludesDysac = true,
-                    Skills = new Skill[1],
+                    Skills = new HashSet<UsSkill>(){ new UsSkill("1","skill1",DateTime.Now), new UsSkill("2","skill2",DateTime.Now) },
                     UserHasWorkedBefore = true
                 };
                 var user = userSession.UserSessionId;
@@ -101,7 +102,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var currentPage = userSession.CurrentPage;
                 var jobCat = userSession.DysacJobCategories;
                 var lastUpdated = userSession.LastUpdatedUtc;
-                var occupation = userSession.Occupation;
+                var occupations = userSession.Occupations;
                 var previousPage = userSession.PreviousPage;
                 var salt = userSession.Salt;
                 var route = userSession.RouteIncludesDysac;
@@ -115,7 +116,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings);
-                var sessionId = await serviceUnderTest.CreateUserSession(null, null, "session5-gn84ygzmm4893m");
+                var sessionId = await serviceUnderTest.CreateUserSession(new CreateSessionRequest(), "session5-gn84ygzmm4893m");
                 sessionId.Should().BeNull();
 
             }
@@ -148,7 +149,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public void IfSessionIdIsNull_ThrowArgumentException()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
-                serviceUnderTest.Invoking(x => x.GetUserSession(null, null)).Should().Throw<ArgumentException>();
+                serviceUnderTest.Invoking(x => x.GetUserSession(null)).Should().Throw<ArgumentException>();
             }
             [Test]
             public async Task IfResultIsNotSuccess_ReturnNull()
@@ -156,7 +157,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings);
                 _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)));
-                var result = await serviceUnderTest.GetUserSession("Id", "partitionKey");
+                var result = await serviceUnderTest.GetUserSession("primaryKey");
 
                 result.Should().BeNull();
             }
@@ -170,7 +171,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                         Content = new StringContent
                         (JsonConvert.SerializeObject(new UserSession()))
                     }));
-                var result = await serviceUnderTest.GetUserSession("Id", "partitionKey");
+                var result = await serviceUnderTest.GetUserSession("primaryKey");
 
                 result.Should().NotBeNull();
             }

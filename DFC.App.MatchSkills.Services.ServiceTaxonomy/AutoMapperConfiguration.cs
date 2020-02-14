@@ -1,10 +1,9 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Domain.Models;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers;
+using System;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
@@ -40,7 +39,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ConstructUsing(dest => new Occupation(dest.Uri, dest.Occupation,dest.LastModified));
             
             CreateMap<StOccupationSearchResult.StsOccupation, Occupation>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => MappingHelper.GetIdFromUrl(src.Uri)))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Occupation.FirstCharToUpper()))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
                 .ConstructUsing(dest => new Occupation(dest.Uri, dest.Occupation,dest.LastModified));

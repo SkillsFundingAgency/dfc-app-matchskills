@@ -6,7 +6,6 @@ using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
-using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -31,10 +30,14 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             _sessionSettings = sessionSettings;
         }
 
-        public async Task<string> CreateUserSession(string previousPage, string currentPage, string sessionIdFromCookie = null)
+        public async Task<string> CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie = null)
         {
             var sessionId = string.Empty;
             var partitionKey = string.Empty;
+            if (request == null)
+                request = new CreateSessionRequest();
+
+            
 
             if (string.IsNullOrWhiteSpace(sessionIdFromCookie))
             {
@@ -52,9 +55,11 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 UserSessionId = sessionId,
                 PartitionKey = partitionKey,
                 Salt = _sessionSettings.Value.Salt,
-                CurrentPage = currentPage,
-                PreviousPage = previousPage,
-                LastUpdatedUtc = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
+                CurrentPage = request.CurrentPage,
+                PreviousPage = request.PreviousPage,
+                UserHasWorkedBefore = request.UserHasWorkedBefore,
+                RouteIncludesDysac = request.RouteIncludesDysac,
+                LastUpdatedUtc = DateTime.UtcNow,
             };
 
             var isExist = await CheckForExistingUserSession(userSession.PrimaryKey);
@@ -71,9 +76,13 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return await _cosmosService.UpsertItemAsync(updatedSession);
         }
 
-        public async Task<UserSession> GetUserSession(string sessionId, string partitionKey)
+        public async Task<UserSession> GetUserSession(string primaryKey)
         {
-            Throw.IfNullOrWhiteSpace(sessionId, nameof(sessionId));
+            Throw.IfNullOrWhiteSpace(primaryKey, nameof(primaryKey));
+
+            var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
+            var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
+
             var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
             return result.IsSuccessStatusCode ? 
                 JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
@@ -85,10 +94,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             if (string.IsNullOrWhiteSpace(primaryKey))
                 return false;
 
-            var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
-            var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
-
-            var result = await GetUserSession(sessionId, partitionKey);
+            var result = await GetUserSession(primaryKey);
 
             if (result == null)
                 return false;
@@ -119,6 +125,5 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
             return primaryKey.Split('-')[(int)mode];
         }
-
     }
 }

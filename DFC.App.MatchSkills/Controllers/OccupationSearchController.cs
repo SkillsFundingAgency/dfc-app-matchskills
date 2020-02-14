@@ -1,36 +1,32 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
 
 namespace DFC.App.MatchSkills.Controllers
 {
 
     public class OccupationSearchController : CompositeSessionController<OccupationSearchCompositeViewModel>
     {
-        private const string PathName = "OccupationSearch";
-
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
        
-        public OccupationSearchController(IDataProtectionProvider dataProtectionProvider,
-            IServiceTaxonomySearcher serviceTaxonomy, 
+        public OccupationSearchController(IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings,
             IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService) 
-            : base(dataProtectionProvider, compositeSettings,
-                sessionService)
+            ISessionService sessionService, ICookieService cookieService) 
+            : base(compositeSettings,
+                sessionService, cookieService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
@@ -38,13 +34,17 @@ namespace DFC.App.MatchSkills.Controllers
             _settings = settings.Value;
         }
 
-
-        public override IActionResult Body()
+        [SessionRequired]
+        public override async Task<IActionResult> Body()
         {
             ViewModel.SearchService = _settings.SearchService;
-            return base.Body();
+
+            await TrackPageInUserSession();
+
+            return await base.Body();
         }
 
+        [SessionRequired]
         [HttpGet,HttpPost]
         [Route("/OccupationSearch")]
         public async Task<IEnumerable<Occupation>> OccupationSearch(string occupation)
@@ -55,25 +55,15 @@ namespace DFC.App.MatchSkills.Controllers
             return occupations.ToList();
         }
 
+        [SessionRequired]
         [HttpGet,HttpPost]
-        [Route("/OccupationSearchAuto")]
-        public async Task<IEnumerable> OccupationSearchAuto(string occupation)
+        [Route("matchskills/OccupationSearchAuto")]
+        [Route("OccupationSearchAuto")]
+        public async Task<IActionResult> OccupationSearchAuto(string occupation)
         {
             var occupations = await OccupationSearch(occupation);
-            return occupations.Select(x =>x.Name).ToList();
+           return this.Ok(occupations.Select(x => x.Name).ToList());
         }
-
-        [Route("matchskills/GetOccupationSkills")]
-        [HttpPost,HttpGet]
-        public  async Task<IActionResult> GetOccupationSkills(string  enterJobInputAutocomplete)
-        {
-            var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
-                _settings.ApiKey, enterJobInputAutocomplete, bool.Parse(_settings.SearchOccupationInAltLabels));
-            var occupationId = occupations.Single(x => x.Name == enterJobInputAutocomplete).Id;
-            
-           return View("/views/SelectSkills/index.cshtml",occupationId);
-        }
-     
 
     }
 

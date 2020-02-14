@@ -33,18 +33,12 @@ namespace DFC.App.MatchSkills.Controllers
             return View(ReturnPath("bodytop"));
         }
 
+        [SessionRequired]
         [HttpGet]
         [Route("/body/"+ PathName)]
         public override IActionResult Body()
         {
             return View(ReturnPath("body", "OccupationSearchResults"));
-        }
-
-        [HttpGet]
-        [Route("/sidebarright/"+ PathName)]
-        public override IActionResult SidebarRight()
-        {
-            return View(ReturnPath("sidebarright"));
         }
     }
 }

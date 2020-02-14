@@ -1,4 +1,5 @@
-﻿using Dfc.ProviderPortal.Packages;
+﻿using System;
+using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using Microsoft.Azure.Cosmos;
@@ -42,20 +43,26 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
 
             var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
             Throw.IfNull(container, nameof(container));
-
-            var result = await container.ReadItemAsync<object>(id, new PartitionKey(partitionKey));
-
-            if (result.StatusCode == HttpStatusCode.OK)
+            try
             {
-                if(result.Resource == null)
-                    return new HttpResponseMessage(HttpStatusCode.NotFound);
+                var result = await container.ReadItemAsync<object>(id, new PartitionKey(partitionKey));
 
-                return new HttpResponseMessage(HttpStatusCode.OK)
+                if (result.StatusCode == HttpStatusCode.OK)
                 {
-                    Content = new StringContent(result.Resource.ToString()) 
-                };
+                    if(result.Resource == null)
+                        return new HttpResponseMessage(HttpStatusCode.NotFound);
+
+                    return new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(result.Resource.ToString()) 
+                    };
+                }
             }
-    
+            catch (Exception e)
+            {
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            }
+
             return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
         public async Task<HttpResponseMessage> UpsertItemAsync(object item)

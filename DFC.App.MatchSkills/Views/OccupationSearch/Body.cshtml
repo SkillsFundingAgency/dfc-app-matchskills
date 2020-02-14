@@ -1,82 +1,57 @@
-﻿@using DFC.App.MatchSkills.ViewModels
+﻿@using DFC.App.MatchSkills.ViewComponents.OccupationSearchScript
+@using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.OccupationSearchCompositeViewModel
+
+@{
+
+    var searchService = Model.SearchService;
+    var autoCompleteElementName = Model.GetElementId("govukAutoComplete", Model.AutoCompleteElementName);
+    var formElementName = Model.GetElementId("form", Model.FormElementName);
+    var autoCompleteError = Model.GetElementId("govukAutoCompleteError", "SearchError");
+    var searchButton = Model.GetElementId("govukSecondaryButton", "Search");
+    
+}
+
+<govukErrorSummary hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#@autoCompleteElementName" text="Enter a job title"></govukErrorSummaryItem>
+</govukErrorSummary>
+
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form action="@CompositeViewModel.PageRegion.Body/@CompositeViewModel.PageId.SelectSkills"  method="post">
+            <form id="@formElementName" action="@CompositeViewModel.PageId.SelectSkills" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
                 <govukHeadingH1 Text="Enter your current or previous job title" />
 
                 <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
 
                 <p>You can add skills from more than one job to your skills list.</p>
 
-               
-                <govukAutoComplete Id="occupations-autocomplete"
+
+                <govukAutoComplete Id="@autoCompleteElementName"
                                    Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
                                    autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
                                    minLength="2" name="EnterJobInputAutocomplete">
-                    <govukAutocompleteLabel Text="Enter your job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="occupations-autocomplete"></govukAutocompleteLabel>
-                   
-                    
+                    <govukAutoCompleteError id="@autoCompleteError" text="Enter a job title" hidden="@(!Model.HasError)"></govukAutoCompleteError>
+                    <govukAutocompleteLabel Text="Enter your job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="@autoCompleteElementName"></govukAutocompleteLabel>
+
+
                 </govukAutoComplete>
                 <br />
                 <br />
-                <govukSecondaryButton id="@Model.GetElementId("govukSecondaryButton","Search")" text="Search"></govukSecondaryButton>
+                <govukSecondaryButton id="@searchButton" text="Search"></govukSecondaryButton>
             </form>
         </div>
     </div>
 </div>
-
-
-
-
-<script>
-  
-    var timer;
-    
-    document.onreadystatechange = () => {
-        if (document.readyState === 'complete') {
-            AutoComplete();
-        }
+@{
+    var scriptModel = new OccupationSearchScriptModel()
+    {
+        SearchService = Model.SearchService,
+        AutoCompleteElementName = autoCompleteElementName,
+        FormElementName = formElementName,
+        AutoCompleteError = autoCompleteError,
+        SearchButton = searchButton
     };
-
-    function Suggest(query, populateResults) {
-        if (timer){
-            clearTimeout(timer);
-        }
-        timer = setTimeout(
-            runsearch(query, populateResults), 1000);
-    }
-
-  
-    function runsearch(query, populateResults) {
-        $.ajax({
-            type: 'GET',
-            url: '@Model.SearchService/OccupationSearchAuto',
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            data: { occupation: query },
-            success: function (data) {
-                populateResults(data);
-            },
-            error: function(jqXHR, exception) {
-                if (jqXHR.status === 0) {
-                    console.log('**MatchSkills:Not connect.\n Verify Network.');
-                } else if (jqXHR.status == 404) {
-                    alert('Requested page not found. [404]');
-                } else if (jqXHR.status == 500) {
-                    console.log('**MatchSkills:500 Error.');
-                } else if (exception === 'parsererror') {
-                    alert('Requested JSON parse failed.');
-                } else if (exception === 'timeout') {
-                    alert('Time out error.');
-                } else if (exception === 'abort') {
-                    alert('Ajax request aborted.');
-                } else {
-                    alert('Uncaught Error.\n' + jqXHR.responseText);
-                }
-            }
-        });
-    }
-</script>
+}
+<partial name="~/ViewComponents/OccupationSearchScript/Default.cshtml" model="@scriptModel" />

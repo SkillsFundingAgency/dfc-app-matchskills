@@ -26,12 +26,13 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId Home { get; } = new PageId("home");
             public static PageId Worked { get; } = new PageId("worked");
             public static PageId OccupationSearch { get; } = new PageId("occupationSearch");
-            public static PageId SkillsBasket { get; } = new PageId("skillsList");
+            public static PageId SkillsBasket { get; } = new PageId("basket");
             public static PageId Route { get; } = new PageId("route");
             public static PageId Matches { get; } = new PageId("matches");
             public static PageId MoreSkills { get; } = new PageId("moreSkills");
             public static PageId MatchDetails { get; } = new PageId("matchDetails");
             public static  PageId SelectSkills { get; } = new PageId("selectSkills");
+            public static  PageId MoreJobs { get; } = new PageId("moreJobs");
             
         }
 

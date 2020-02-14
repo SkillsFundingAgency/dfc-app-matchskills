@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -9,41 +14,50 @@ namespace DFC.App.MatchSkills.Controllers
     /// </summary>
     public abstract class SessionController : Controller
     {
-        private const string CookieName = ".matchSkills-session";
-        private readonly IDataProtector _dataProtector;
+        private readonly ISessionService _sessionService;
+        private readonly ICookieService _cookieService;
 
-        protected SessionController(IDataProtectionProvider dataProtectionProvider)
+        protected SessionController(ISessionService sessionService, ICookieService cookieService)
         {
-            _dataProtector = dataProtectionProvider.CreateProtector(nameof(SessionController));
+            _sessionService = sessionService;
+            _cookieService = cookieService;
         }
+
+        protected async Task CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie)
+        {
+            var primaryKey = await _sessionService.CreateUserSession(request, sessionIdFromCookie);
+
+            AppendCookie(primaryKey);
+        }
+
         protected void AppendCookie(string sessionId)
         {
-            var value = _dataProtector.Protect(sessionId);
-            Response.Cookies.Append(CookieName, value, new CookieOptions
-            {
-                Secure = true,
-                IsEssential = true,
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict
-            });
+            _cookieService.AppendCookie(sessionId, Response);
         }
 
-        protected string TryGetSessionId(HttpRequest request)
+        protected string TryGetPrimaryKey(HttpRequest request)
         {
-            var sessionId = string.Empty;
-            if (request.Cookies.TryGetValue(CookieName, out var cookieSessionId))
-            {
-                sessionId = _dataProtector.Unprotect(cookieSessionId);
-            }
+            return _cookieService.TryGetPrimaryKey(request, Response);
+        }
 
-            var queryDictionary = System.Web.HttpUtility.ParseQueryString(request.QueryString.ToString());
-            var code = queryDictionary.Get("sessionId");
-            if (!string.IsNullOrEmpty(code))
+        protected async Task<HttpResponseMessage> UpdateUserSession(string sessionId, string currentPage, UserSession session = null)
+        {
+            if (session == null)
             {
-                sessionId = code;
+                 session = await _sessionService.GetUserSession(sessionId);
             }
+            
+            session.PreviousPage = session.CurrentPage;
+            session.CurrentPage = currentPage;
+            session.LastUpdatedUtc = DateTime.UtcNow;
 
-            return string.IsNullOrWhiteSpace(sessionId) ? null : sessionId;
+            return await _sessionService.UpdateUserSessionAsync(session);
+        }
+
+        protected async Task<UserSession> GetUserSession()
+        {
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+            return await _sessionService.GetUserSession(primaryKeyFromCookie);
         }
     }
 }
