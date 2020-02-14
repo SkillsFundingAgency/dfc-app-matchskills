@@ -16,7 +16,6 @@ namespace DFC.App.MatchSkills.Controllers
     public abstract class CompositeSessionController<TViewModel> : SessionController where TViewModel : CompositeViewModel, new()
     {
         protected TViewModel ViewModel { get; }
-        private readonly ISessionService _sessionService;
         protected CompositeSessionController(IOptions<CompositeSettings> compositeSettings, 
             ISessionService sessionService, ICookieService cookieService)
             : base(sessionService, cookieService)
@@ -25,7 +24,6 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 CompositeSettings = compositeSettings.Value,
             };
-            _sessionService = sessionService;
         }
 
         [HttpGet]
