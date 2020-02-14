@@ -7,6 +7,7 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewComponents
     [TestFixture]
     public class SkillsListViewModelUnitTests
     {
+        [Test]
         public void When_Created_Then_RequiredFieldsMustBePopulated()
         {
             // Arrange
@@ -21,6 +22,7 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewComponents
             vm.ListType.Should().Be(listItemType);
         }
 
+        [Test]
         public void When_Created_Then_SkillsShouldBeEmpty()
         {
             // Arrange
@@ -35,6 +37,7 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewComponents
             vm.Skills.Should().BeEmpty();
         }
 
+        [Test]
         public void When_SettingHTML_Then_HTMLShouldBeSet()
         {
             // Arrange
