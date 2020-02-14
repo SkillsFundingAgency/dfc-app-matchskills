@@ -1,4 +1,4 @@
-﻿@using DFC.App.MatchSkills.ViewComponents.SkillsBasket
+﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
 @using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.SkillsBasketCompositeViewModel
 
@@ -9,9 +9,13 @@
             These are the skills that you’ve developed so far.
         </p>
         <p>Skills you have added:</p>
-
-        @await Component.InvokeAsync(nameof(SkillsBasket), Model.Skills)
-
+        @{
+            var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
+            slm.Skills.LoadFrom(Model.Skills);
+            slm.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
+            slm.EndSkillsListHTML = "</ul>";
+        }
+        @await Component.InvokeAsync("SkillsList", slm)
         <p><a class="govuk-link" href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.MoreSkills">Add more skills to this list</a></p>
 
         <br>

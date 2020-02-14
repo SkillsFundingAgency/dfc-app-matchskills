@@ -20,7 +20,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
             await TrackPageInUserSession();
             var userSession = await GetUserSession();
-            ViewModel.Skills.LoadFromSession(userSession);
+            ViewModel.Skills.LoadFrom(userSession);
 
             return await base.Body();
         }
