@@ -8,15 +8,36 @@ namespace DFC.App.MatchSkills.Models
     [Serializable]
     public class SkillSet : HashSet<Skill>
     {
-        public void LoadFromSession(UserSession userSession)
+        public void LoadFrom(UserSession userSession)
         {
-            if (null == userSession || null == userSession.Skills || 0 == userSession.Skills.Count)
-            {
-                this.Clear();
-            }
-            else
+            this.Clear();
+            if (null != userSession)
             {
                 foreach (var skill in userSession.Skills)
+                {
+                    this.Add(new Skill(skill.Id, skill.Name));
+                }
+            }
+        }
+
+        public void LoadFrom(SkillSet skills)
+        {
+            this.Clear();
+            if (null != skills)
+            {
+                foreach (var skill in skills)
+                {
+                    this.Add(new Skill(skill.Id, skill.Name));
+                }
+            }
+        }
+
+        public void LoadFrom(List<Skill> skills)
+        {
+            this.Clear();
+            if (null != skills)
+            {
+                foreach (var skill in skills)
                 {
                     this.Add(new Skill(skill.Id, skill.Name));
                 }
