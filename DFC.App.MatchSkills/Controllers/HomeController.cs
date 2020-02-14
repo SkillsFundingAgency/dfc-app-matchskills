@@ -44,12 +44,6 @@ namespace DFC.App.MatchSkills.Controllers
             return base.Body();
         }
 
-        [Route("/sidebarright")]
-        public override IActionResult SidebarRight()
-        {
-            return base.SidebarRight();
-        }
-
         #endregion Default Routes
     }
 }

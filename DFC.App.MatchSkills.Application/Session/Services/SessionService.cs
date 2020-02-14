@@ -6,7 +6,6 @@ using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
-using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -126,6 +125,5 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
             return primaryKey.Split('-')[(int)mode];
         }
-
     }
 }

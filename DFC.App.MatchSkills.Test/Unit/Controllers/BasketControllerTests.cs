@@ -158,16 +158,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void WhenSidebarRightCalled_ReturnHtml()
-        {
-            var controller = new BasketController(_dataProtectionProvider,_compositeSettings, _sessionService);
-            var result = controller.SidebarRight() as ViewResult;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
-        }
-
-        [Test]
         public void WhenSessionIdIsSet_CookieIsSaved()
         {
             var controller = new BasketController(_dataProtectionProvider,_compositeSettings, _sessionService);

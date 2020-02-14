@@ -12,7 +12,6 @@ namespace DFC.App.MatchSkills.Controllers
         public abstract IActionResult Breadcrumb();
         public abstract IActionResult BodyTop();
         public abstract IActionResult Body();
-        public abstract IActionResult SidebarRight();
 
         protected string ReturnPath(string segmentName, string path = "")
         {

@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Controllers;
+﻿using System;
+using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -15,8 +16,10 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Test.Helpers;
+using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 
@@ -49,6 +52,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
             var restClient = new RestClient(handlerMock.Object);
             serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
 
 
         }
@@ -99,9 +103,15 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             };
             var result = await sut.Body() as ViewResult;
 
+
+            await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
+                string.Equals(x.CurrentPage, CompositeViewModel.PageId.OccupationSearch.Value,
+                    StringComparison.InvariantCultureIgnoreCase)));
+
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
+            result.ViewData.Model.As<OccupationSearchCompositeViewModel>().HasError.Should().BeFalse();
         }
 
     }
