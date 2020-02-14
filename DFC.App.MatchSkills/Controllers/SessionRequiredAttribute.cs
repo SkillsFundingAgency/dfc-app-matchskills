@@ -11,8 +11,8 @@ namespace DFC.App.MatchSkills.Controllers
     {
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var sessionService = context.HttpContext.RequestServices.GetService<ISessionService>();
-            var cookieService = context.HttpContext.RequestServices.GetService<ICookieService>();
+            var sessionService = (ISessionService)context.HttpContext.RequestServices.GetService(typeof(ISessionService));
+            var cookieService = (ICookieService) context.HttpContext.RequestServices.GetService(typeof(ICookieService));
             var cookie =
                 cookieService.TryGetPrimaryKey(context.HttpContext.Request, context.HttpContext.Response);
             ThrowNoSession(cookie);

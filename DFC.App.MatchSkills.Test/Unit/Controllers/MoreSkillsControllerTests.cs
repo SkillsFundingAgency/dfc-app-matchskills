@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
@@ -31,6 +32,20 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 .ReturnsForAnyArgs("This is My Value");
         }
 
+        [Test]
+        public async Task WhenBodyCalledWithJobs_ReturnHtml()
+        {
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().BeNull();
+        }
 
         [Test]
         public async Task WhenPostBodyCalledWithJobs_ReturnHtml()
@@ -84,6 +99,23 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 HasError = true
             };
+        }
+
+
+        [Test]
+        public async Task WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
+        {
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            await controller.Body(MoreSkills.Undefined);
+            await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
+                string.Equals(x.CurrentPage, CompositeViewModel.PageId.MoreSkills.Value,
+                    StringComparison.InvariantCultureIgnoreCase)));
+
         }
     }
 }

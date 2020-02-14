@@ -27,7 +27,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var primaryKey = await _sessionService.CreateUserSession(request, sessionIdFromCookie);
 
-            _cookieService.AppendCookie(primaryKey, Response);
+            AppendCookie(primaryKey);
         }
 
         protected void AppendCookie(string sessionId)
