@@ -186,7 +186,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         }
 
         [Test]
-        public void When_STOccupationSkills_CreatedAllPropertoieSet()
+        public void When_STOccupationSkills_CreatedAllPropertiesSet()
         {
             var sut = new StOccupationSkills()
             {
@@ -219,7 +219,81 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 
         }
 
-        
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsRequestCreated_Then_SkillsListShouldBeInitialised()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsRequest();
+
+            // Assert
+            x.SkillList.Should().NotBeNull();
+            x.SkillList.Should().HaveCount(0);
+        }
+
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsRequestInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsRequest()
+            {
+                MinimumMatchingSkills = 7,
+            };
+
+            // Assert
+            x.MinimumMatchingSkills.Should().Be(7);
+        }
+
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsResponseCreated_Then_SkillsListShouldBeInitialised()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsResponse();
+
+            // Assert
+            x.MatchingOccupations.Should().NotBeNull();
+            x.MatchingOccupations.Should().HaveCount(0);
+        }
+
+        [Test]
+        public void When_MatchedOccupationInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
+            {
+                JobProfileTitle = "testValue",
+                JobProfileUri = "testValue",
+                MatchingEssentialSkills = 1,
+                MatchingOptionalSkills = 2,
+                LastModified = DateTime.UtcNow,
+                Uri = "testValue",
+                TotalOccupationEssentialSkills = 3,
+                TotalOccupationOptionalSkills = 4,
+            };
+
+            // Assert
+            x.JobProfileTitle.Should().Be("testValue");
+            x.JobProfileUri.Should().Be("testValue");
+            x.Uri.Should().Be("testValue");
+            x.MatchingEssentialSkills.Should().Be(1);
+            x.MatchingOptionalSkills.Should().Be(2);
+            x.TotalOccupationEssentialSkills.Should().Be(3);
+            x.TotalOccupationOptionalSkills.Should().Be(4);
+            x.LastModified.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(0, 1, 0));
+        }
+
+
 
         class MockResult
         {
