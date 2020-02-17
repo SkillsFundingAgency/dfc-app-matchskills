@@ -21,7 +21,7 @@ namespace DFC.App.MatchSkills.Controllers
     public class SelectSkillsController :  CompositeSessionController<SelectSkillsCompositeViewModel>
     {
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
-        private readonly ServiceTaxonomySettings _settings;
+        
         private readonly string _apiUrl;
         private readonly string _apiKey;
         private readonly ISessionService _sessionService;
@@ -29,17 +29,17 @@ namespace DFC.App.MatchSkills.Controllers
                 IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, 
                 ISessionService sessionService, ICookieService cookieService)  : base(compositeSettings, sessionService, cookieService)
         {
+            
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
-            _settings = settings.Value;
-            Throw.IfNull(_settings.ApiUrl, nameof(_settings.ApiUrl));
-            Throw.IfNull(_settings.ApiKey, nameof(_settings.ApiKey));
-            Throw.IfNull(sessionService, nameof(sessionService));
             
+            Throw.IfNull(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
+            Throw.IfNull(settings.Value.ApiKey, nameof(settings.Value.ApiKey));
+            Throw.IfNull(sessionService, nameof(sessionService));
+         
             _serviceTaxonomy = serviceTaxonomy ?? new ServiceTaxonomyRepository();
-            _settings = settings.Value;
-            _apiUrl = _settings.ApiUrl;
-            _apiKey = _settings.ApiKey;
+            _apiUrl = settings.Value.ApiUrl;
+            _apiKey = settings.Value.ApiKey;
             _sessionService = sessionService;
 
         }

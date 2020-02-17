@@ -1,12 +1,12 @@
-﻿using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+﻿using System.Linq;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
@@ -23,13 +23,10 @@ using Moq;
 using Moq.Protected;
 using NSubstitute;
 using NUnit.Framework;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Interfaces;
-using DFC.App.MatchSkills.Service;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -99,7 +96,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             // ACTs
             var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
             vm.Skills = result.ToList();
-            //var skills = vm.Skills.ToList();
+           
             
             // ASSERT
             result.Should().NotBeNull();

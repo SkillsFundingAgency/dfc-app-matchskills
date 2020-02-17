@@ -76,16 +76,24 @@ namespace DFC.App.MatchSkills.Test.Helpers
             return controllerContext;
         }
 
-        public static UserSession GetUserSession()
-        {   
-            var userSession = new UserSession()
+        public static UserSession GetUserSession(bool withOccupations=true)
+        {
+            var userSession = new UserSession();
+            if (withOccupations)
             {
-                Occupations = new HashSet<UsOccupation>(2)
-                {
-                    new UsOccupation("1", "FirstOccupation", DateTime.UtcNow),
-                    new UsOccupation("2", "SecondOccupation", DateTime.UtcNow)
-                }
-            };
+                userSession.Occupations = new HashSet<UsOccupation>(2)
+                    {
+                        new UsOccupation("1", "FirstOccupation", DateTime.UtcNow),
+                        new UsOccupation("2", "SecondOccupation", DateTime.UtcNow)
+                    }
+                    ;
+            }
+            else
+            {
+                userSession.Occupations = null;
+            }
+            
+            
             return userSession;
         }
 
