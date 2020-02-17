@@ -1,0 +1,86 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
+@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.EnterSkillsCompositeViewModel
+
+@{ 
+
+        var textInputElementName = @Model.GetElementId("input", "EnterSkillsInput");
+        var formElementName = Model.GetElementId("form", "EnterSkillsSearch");
+        var textInputError = Model.GetElementId("govukTextInputError", "SearchError");
+        var searchButton = Model.GetElementId("govukSecondaryButton", "Search");
+        var skillSearchGroup = "skillSearchGroup";
+}
+<govukErrorSummary hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#@textInputError" text="Enter a skill"></govukErrorSummaryItem>
+</govukErrorSummary>
+
+
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form id="@formElementName" action="@CompositeViewModel.PageId.SelectSkills" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
+                <govukHeadingH1 Text="Search for a skill" />
+
+                <p>Enter the name of the skills that you would like to match to careers. For example: ‘public speaking’.</p>
+
+                <govukBulletedList text="These can be skills that you’ve learnt through:">
+                    <govukListItem text="paid work"></govukListItem>
+                    <govukListItem text="volunteering"></govukListItem>
+                    <govukListItem text="education"></govukListItem>
+                    <govukListItem text="your responsibilities outside of work"></govukListItem>
+                </govukBulletedList>
+                
+                <div id="@skillSearchGroup" class="govuk-form-group">
+
+                <govukLabel for="@textInputElementName" text="Search for a skill" additional-class="govuk-!-font-weight-bold"></govukLabel>
+                
+                    <govukTextInput id="@textInputElementName" additional-class="govuk-input--width-20">
+                        <govukHint HintText="You can search for a specific skill (like measuring spirit level) or a skill group (like bricklaying)"></govukHint>
+                        <govukError Id="@textInputError" Text="Enter a Skill" hidden="@(!Model.HasError)"></govukError>
+                    </govukTextInput>
+                    <govukSecondaryButton id="@searchButton" text="Search"></govukSecondaryButton>
+                </div>
+
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <govukHeadingH3 text="Skills you've recently added"></govukHeadingH3>
+            @{
+                var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
+                slm.Skills.LoadFrom(Model.Skills);
+                slm.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
+                slm.EndSkillsListHTML = "</ul>";
+            }
+            @await Component.InvokeAsync("SkillsList", slm)
+        </div>
+    </div>
+</div>
+<script>
+
+    document.onreadystatechange = function() {
+
+        if (document.readyState === "complete") {
+            const textInputElement = $('#@textInputElementName');
+            const searchButton = $('#@searchButton');
+            const summary = $('.govuk-error-summary');
+            const textInputError = $('#@textInputError');
+            const display = {"display":""};
+            const form = $('#@skillSearchGroup');
+            searchButton.click(function(e) {
+
+                var textInputValue = textInputElement[0].value;
+
+                if (textInputValue != undefined) {
+                    textInputValue = textInputValue.trim();
+                }
+                if (textInputValue === undefined || textInputValue === "") {
+                    e.preventDefault();
+                    summary.css(display);
+                    textInputError.css(display);
+                    form.addClass('govuk-form-group--error');
+                }
+
+            });
+        }
+    };
+</script>
