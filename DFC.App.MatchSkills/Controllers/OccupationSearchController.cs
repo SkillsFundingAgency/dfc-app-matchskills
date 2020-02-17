@@ -59,7 +59,7 @@ namespace DFC.App.MatchSkills.Controllers
             return occupations.ToList();
         }
 
-        [SessionRequired]
+        
         [HttpGet,HttpPost]
         [Route("Matchskills/OccupationSearchAuto")]
         [Route("OccupationSearchAuto")]
