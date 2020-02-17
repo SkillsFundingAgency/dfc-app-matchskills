@@ -35,9 +35,7 @@ namespace DFC.App.MatchSkills.Controllers
             }
             else
             {
-                var session = await GetUserSession();
-                await UpdateUserSession(primaryKeyFromCookie,
-                    CompositeViewModel.PageId.Worked.Value, session);
+                await TrackPageInUserSession();
             }
 
             return await base.Body();
@@ -54,7 +52,7 @@ namespace DFC.App.MatchSkills.Controllers
             var session = await GetUserSession();
             session.UserHasWorkedBefore = userWorkedBefore;
             await UpdateUserSession(primaryKeyFromCookie,
-                CompositeViewModel.PageId.Worked.Value, session);
+                ViewModel.Id.Value, session);
 
 
             switch (choice)
