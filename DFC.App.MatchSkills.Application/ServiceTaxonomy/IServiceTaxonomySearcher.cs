@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.Application.ServiceTaxonomy
@@ -10,6 +11,6 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy
         Task<Skill[]> GetAllSkillsForOccupation<TSkills>(string apiPath, string ocpApimSubscriptionKey, string occupation);
         
         // TBD what to return - MatchedOccupation[] perhaps?
-        Task<object[]> FindOccupationsForSkills(string apiPath, string ocpApimSubscriptionKey, string[] skillIds);
+        Task<OccupationMatch[]> FindOccupationsForSkills(string apiPath, string ocpApimSubscriptionKey, string[] skillIds, int minimumMatchingSkills);
     }
 }

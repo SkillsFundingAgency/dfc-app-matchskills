@@ -93,9 +93,10 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
                 "http://data.europa.eu/esco/skill/ab2bb44a-3956-4028-8715-8b70b1960b99",  // "lift heavy weights
                 "http://data.europa.eu/esco/skill/28cb374e-6261-4133-8371-f9a5470145da",  // "operate forklift"
             };
+            int minimumMatchingSkills = 1;
 
             // Act
-            var result = await _subjectUnderTest.FindOccupationsForSkills(_settings.ApiUrl, _settings.ApiKey, skillIds);
+            var result = await _subjectUnderTest.FindOccupationsForSkills(_settings.ApiUrl, _settings.ApiKey, skillIds, minimumMatchingSkills);
 
             // Assert
             result.Should().NotBeNull();

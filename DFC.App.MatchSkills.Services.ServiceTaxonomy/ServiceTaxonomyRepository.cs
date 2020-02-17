@@ -8,7 +8,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
@@ -84,11 +84,11 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
         }
 
-        public async Task<object[]> FindOccupationsForSkills(string apiPath, string ocpApimSubscriptionKey, string[] skillIds)
+        public async Task<OccupationMatch[]> FindOccupationsForSkills(string apiPath, string ocpApimSubscriptionKey, string[] skillIds, int minimumMatchingSkills)
         {
             var request = new GetOccupationsWithMatchingSkillsRequest()
             {
-                MinimumMatchingSkills = 1,
+                MinimumMatchingSkills = minimumMatchingSkills,
             };
             foreach (var skill in skillIds)
             {
@@ -98,10 +98,9 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             var jsonPayload = JsonConvert.SerializeObject(request);
             var postData = new StringContent(jsonPayload, Encoding.UTF8, MediaTypeNames.Application.Json);
             var response = await GetJsonListPost<GetOccupationsWithMatchingSkillsResponse>($"{apiPath}/GetOccupationsWithMatchingSkills/Execute", ocpApimSubscriptionKey, postData);
-            
-            // transform response to some sort of MatchedOccupation object
 
-            return null;
+            var result = Mapping.Mapper.Map<OccupationMatch[]>(response.MatchingOccupations);
+            return result;
         }
     }
     
