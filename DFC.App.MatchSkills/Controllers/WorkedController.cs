@@ -18,25 +18,45 @@ namespace DFC.App.MatchSkills.Controllers
             : base(compositeSettings, sessionService, cookieService)
         {
         }
-        
+
+        public override async Task<IActionResult> Body()
+        {
+
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+
+
+            if (string.IsNullOrWhiteSpace(primaryKeyFromCookie))
+            {
+                var createSessionRequest = new CreateSessionRequest()
+                {
+                    CurrentPage = CompositeViewModel.PageId.Worked.Value
+                };
+                await CreateUserSession(createSessionRequest, primaryKeyFromCookie);
+            }
+            else
+            {
+                var session = await GetUserSession();
+                await UpdateUserSession(primaryKeyFromCookie,
+                    CompositeViewModel.PageId.Worked.Value, session);
+            }
+
+            return await base.Body();
+        }
+
         [HttpPost]
+        [SessionRequired]
         [Route("MatchSkills/[controller]")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
 
+            var session = await GetUserSession();
+            session.UserHasWorkedBefore = userWorkedBefore;
+            await UpdateUserSession(primaryKeyFromCookie,
+                CompositeViewModel.PageId.Worked.Value, session);
 
-            if (!string.IsNullOrWhiteSpace(primaryKeyFromCookie))
-            {
-                var createSessionRequest = new CreateSessionRequest()
-                {
-                    CurrentPage = CompositeViewModel.PageId.Worked.Value,
-                    UserHasWorkedBefore = userWorkedBefore
-                };
-                await CreateUserSession( createSessionRequest, primaryKeyFromCookie);
-            }
-            
+
             switch (choice)
             {
                 case WorkedBefore.Yes:

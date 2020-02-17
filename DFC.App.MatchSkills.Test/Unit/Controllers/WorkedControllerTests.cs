@@ -13,6 +13,8 @@ using NSubstitute;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AspNetCore;
+using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -152,27 +154,42 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void WhenCookieIsSet_CookieIsUpdated()
+        public async Task When_VisitingTheWorkedPageWithACookie_Then_CookieIsUpdatedAndCurrentPageIsSetToWorked()
         {
             var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-
             controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
+
             _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("This is My Value");
+                .ReturnsForAnyArgs("test");
+            await controller.Body();
+            await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x=>
+                x.CurrentPage == CompositeViewModel.PageId.Worked.Value));
+        }
 
-            var result = controller.Head() as ViewResult;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
 
+        [Test]
+        public async Task When_VisitingTheWorkedPageWithoutACookie_Then_CreateCookie()
+        {
+            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
+
+            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
+                .ReturnsNullForAnyArgs();
+            await controller.Body();
+            await _sessionService.Received(1).CreateUserSession(Arg.Any<CreateSessionRequest>(),
+                Arg.Any<string>());
         }
 
         [Test]
-        public async Task WhenWorkedControllerReceivesPostWithoutCookie_Then_SetCurrentPageToWorked()
+        public async Task When_PostingBackToTheWorkedPage_Then_UpdateSessionWithWorkedPageChoice()
         {
             var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
@@ -180,12 +197,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
             controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
-            
+
             _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("This is My Value");
-            await controller.Body(WorkedBefore.Undefined);
-            await _sessionService.Received(1).CreateUserSession(Arg.Any<CreateSessionRequest>(),
-                Arg.Any<string>());
+                .ReturnsForAnyArgs("test");
+            await controller.Body(WorkedBefore.Yes);
+            await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
+                x.UserHasWorkedBefore == true));
 
         }
 
