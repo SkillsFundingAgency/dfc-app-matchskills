@@ -185,7 +185,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 HttpContext = new DefaultHttpContext()
             };
-            controller.HttpContext.Request.QueryString = QueryString.Create(MockHelpers.GetCookieName, "Abc123");
+            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
             
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
 

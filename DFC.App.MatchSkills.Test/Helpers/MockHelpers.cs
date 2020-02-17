@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Service;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -20,9 +21,8 @@ namespace DFC.App.MatchSkills.Test.Helpers
 {
     public static class MockHelpers
     {
-        public static string GetCookieName { get; } = ".matchSkill-session";
-    
-
+       
+        
     public static  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
         {
             var handlerMock =  new Mock<HttpMessageHandler>(MockBehavior.Loose);

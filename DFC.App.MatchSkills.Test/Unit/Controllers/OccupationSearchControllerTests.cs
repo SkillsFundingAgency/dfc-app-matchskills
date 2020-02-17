@@ -31,7 +31,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private const string Path = "OccupationSearch";
         private ISessionService _sessionService;
         private ICookieService _cookieService;
-
+        const string SkillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
+        
         [SetUp]
         public void Init()
         {
@@ -42,14 +43,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
 
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
+            
+            var handlerMock = MockHelpers.GetMockMessageHandler(SkillsJson);
             var restClient = new RestClient(handlerMock.Object);
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-
             _cookieService = new CookieService(new EphemeralDataProtectionProvider());
-
 
         }
         
@@ -77,8 +76,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
         {
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
+            
+            var handlerMock = MockHelpers.GetMockMessageHandler(SkillsJson);
             var restClient = new RestClient(handlerMock.Object);
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
             var sut = new OccupationSearchController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService,_cookieService);
@@ -93,8 +92,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             
             var _sessionService = Substitute.For<ISessionService>();
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
+            
+            var handlerMock = MockHelpers.GetMockMessageHandler(SkillsJson);
             var restClient = new RestClient(handlerMock.Object);
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
 
