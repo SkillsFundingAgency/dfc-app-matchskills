@@ -2,12 +2,12 @@
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
-using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
@@ -82,6 +82,26 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}/GetOccupationsByLabel/Execute/?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey,postData);
             
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
+        }
+
+        public async Task<object[]> FindOccupationsForSkills(string apiPath, string ocpApimSubscriptionKey, string[] skillIds)
+        {
+            var request = new GetOccupationsWithMatchingSkillsRequest()
+            {
+                MinimumMatchingSkills = 1,
+            };
+            foreach (var skill in skillIds)
+            {
+                request.SkillList.Add(skill);
+            }
+
+            var jsonPayload = JsonConvert.SerializeObject(request);
+            var postData = new StringContent(jsonPayload, Encoding.UTF8, MediaTypeNames.Application.Json);
+            var response = await GetJsonListPost<GetOccupationsWithMatchingSkillsResponse>($"{apiPath}/GetOccupationsWithMatchingSkills/Execute", ocpApimSubscriptionKey, postData);
+            
+            // transform response to some sort of MatchedOccupation object
+
+            return null;
         }
     }
     
