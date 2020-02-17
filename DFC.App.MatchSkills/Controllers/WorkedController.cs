@@ -1,42 +1,62 @@
-﻿using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
+
     public class WorkedController : CompositeSessionController<WorkedCompositeViewModel>
     {
 
-        public WorkedController(IDataProtectionProvider dataProtectionProvider,
-            IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService)
-            : base(dataProtectionProvider, compositeSettings, sessionService)
+        public WorkedController(IOptions<CompositeSettings> compositeSettings,
+            ISessionService sessionService, ICookieService cookieService)
+            : base(compositeSettings, sessionService, cookieService)
         {
         }
 
+        public override async Task<IActionResult> Body()
+        {
+
+            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
+
+
+            if (string.IsNullOrWhiteSpace(primaryKeyFromCookie))
+            {
+                var createSessionRequest = new CreateSessionRequest()
+                {
+                    CurrentPage = CompositeViewModel.PageId.Worked.Value
+                };
+                await CreateUserSession(createSessionRequest, primaryKeyFromCookie);
+            }
+            else
+            {
+                var session = await GetUserSession();
+                await UpdateUserSession(primaryKeyFromCookie,
+                    CompositeViewModel.PageId.Worked.Value, session);
+            }
+
+            return await base.Body();
+        }
+
         [HttpPost]
+        [SessionRequired]
         [Route("MatchSkills/[controller]")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
 
+            var session = await GetUserSession();
+            session.UserHasWorkedBefore = userWorkedBefore;
+            await UpdateUserSession(primaryKeyFromCookie,
+                CompositeViewModel.PageId.Worked.Value, session);
 
-            if (!string.IsNullOrWhiteSpace(primaryKeyFromCookie))
-            {
-                var createSessionRequest = new CreateSessionRequest()
-                {
-                    CurrentPage = CompositeViewModel.PageId.Worked.Value,
-                    UserHasWorkedBefore = userWorkedBefore
-                };
-                await CreateUserSession( createSessionRequest, primaryKeyFromCookie);
-            }
-            
+
             switch (choice)
             {
                 case WorkedBefore.Yes:
