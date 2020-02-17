@@ -43,7 +43,8 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
 
         }
-         public override async Task<IActionResult> Body()
+
+        private async Task GetSessionData()
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
             var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
@@ -58,14 +59,24 @@ namespace DFC.App.MatchSkills.Controllers
                 _apiKey, occupation.Id);
 
             ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList(); 
+        }
+         public override async Task<IActionResult> Body()
+         {
+             await GetSessionData();
             
             return await base.Body();
         }
         
         [HttpPost]
-        [Route("/MatchSkills/[controller]/AddSkills")]
-        public async Task<IActionResult> AddSkills(IFormCollection formCollection)
+        [Route("/MatchSkills/[controller]")]
+        public async Task<IActionResult> Body(IFormCollection formCollection)
         {
+            await GetSessionData();
+            if (formCollection.Keys.Count == 0)
+            {
+                ViewModel.HasError = true;
+                return await base.Body();
+            }
             var userSession = await GetUserSession();
 
             foreach (var key in formCollection.Keys)

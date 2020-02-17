@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
@@ -27,6 +28,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Primitives;
+using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -175,9 +178,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task When_AddSkillsForOccupation_Then_ShouldAddSelectedSkills()
 
         {
-            var subFormsCollection = Substitute.For<IFormCollection>();
+            
             var subSessionService = Substitute.For<ISessionService>();
-
+            
 
             var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
@@ -186,10 +189,19 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
             controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
-            
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+            
+            var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
+            dic.Add("somekey--somevalue", "key1");
+            dic.Add("somekey1--somevalue1", "key2");
+            var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
+           
 
-            var result = await controller.AddSkills(subFormsCollection) as RedirectResult;
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
+
+            var result = await controller.Body(collection) as RedirectResult;
+            
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"/{CompositeViewModel.PageId.SkillsBasket}");
