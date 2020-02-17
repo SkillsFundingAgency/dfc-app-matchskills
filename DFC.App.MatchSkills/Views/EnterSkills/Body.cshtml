@@ -1,4 +1,4 @@
-﻿@using DFC.App.MatchSkills.ViewComponents.SkillsBasket
+﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
 @using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.EnterSkillsCompositeViewModel
 
@@ -45,7 +45,13 @@
         </div>
         <div class="govuk-grid-column-one-third">
             <govukHeadingH3 text="Skills you've recently added"></govukHeadingH3>
-            @await Component.InvokeAsync(nameof(SkillsBasket), Model.Skills)
+            @{
+                var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
+                slm.Skills.LoadFrom(Model.Skills);
+                slm.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
+                slm.EndSkillsListHTML = "</ul>";
+            }
+            @await Component.InvokeAsync("SkillsList", slm)
         </div>
     </div>
 </div>
