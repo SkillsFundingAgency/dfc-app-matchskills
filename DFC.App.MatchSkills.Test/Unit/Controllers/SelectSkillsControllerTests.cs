@@ -1,9 +1,12 @@
-﻿using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+﻿using System.Linq;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
@@ -20,13 +23,10 @@ using Moq;
 using Moq.Protected;
 using NSubstitute;
 using NUnit.Framework;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Interfaces;
-using DFC.App.MatchSkills.Service;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -96,7 +96,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             // ACTs
             var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
             vm.Skills = result.ToList();
-            //var skills = vm.Skills.ToList();
+           
             
             // ASSERT
             result.Should().NotBeNull();
@@ -114,20 +114,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         
         }
 
-        [Test]
-        public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
-        {
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
-            var restClient = new RestClient(handlerMock.Object);
-            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            var sut = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
-            
-            var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
-
-            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
-            
-        }
+       
         
 
         #region CUIScaffoldingTests
@@ -143,22 +130,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
         }
-
-        
-        [Test]
-        public async Task WhenBodyCalled_ReturnHtml()
-        {
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService, _cookieService);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-            var result = await controller.Body() as ViewResult;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
-        }
-
 
        
         #endregion
@@ -210,26 +181,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
-            
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-            controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
-            var requestCookie = new Mock<IRequestCookieCollection>();
-
-            string data = _dataProtector.Protect("This is my value");
-            requestCookie.Setup(x =>
-                x.TryGetValue(It.IsAny<string>(), out data)).Returns(true);
-            var httpContext = new Mock<HttpContext>();
-            var httpRequest = new Mock<HttpRequest>();
-            var httpResponse = new Mock<HttpResponse>();
-
-            httpResponse.Setup(x => x.Cookies).Returns(new Mock<IResponseCookies>().Object);
-            httpRequest.Setup(x => x.Cookies).Returns(requestCookie.Object);
-            httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
-            httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
-            controller.ControllerContext.HttpContext = httpContext.Object;
+            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
+            
+            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
 
             var result = await controller.AddSkills(subFormsCollection) as RedirectResult;
             result.Should().NotBeNull();
