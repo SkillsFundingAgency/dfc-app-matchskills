@@ -215,6 +215,33 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Url.Should().Be($"/{CompositeViewModel.PageId.SkillsBasket}");
         }
        
+        [Test]
+        public async Task When_AddSkillsWithNoSkillsPassed_Then_ShowError()
+
+        {
+            
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
+            
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
+            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+            
+            var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
+          
+            var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
+           
+
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
+
+            var result = await controller.Body(collection);
+            
+            result.Should().NotBeNull();
+          
+        }
     }
 
 }
