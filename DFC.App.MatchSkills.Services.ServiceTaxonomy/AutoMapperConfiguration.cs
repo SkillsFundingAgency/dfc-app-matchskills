@@ -51,6 +51,14 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ForMember(dest => dest.SkillType, opt => opt.MapFrom(src => src.Type))
                 
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill,  (SkillType)Enum.Parse(typeof(SkillType),dest.Type,true)));
+            
+            CreateMap<StLabelSkill, Skill>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => MappingHelper.GetIdFromUrl(src.Uri)))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.FirstCharToUpper()))
+                .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))
+                .ForMember(dest => dest.SkillType, opt => opt.MapFrom(src => src.SkillType))
+                
+                .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill,  (SkillType)Enum.Parse(typeof(SkillType),dest.SkillType,true)));
         }
 
     }

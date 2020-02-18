@@ -34,6 +34,7 @@ namespace DFC.App.MatchSkills.ViewModels
             public static  PageId SelectSkills { get; } = new PageId("selectSkills");
             public static  PageId MoreJobs { get; } = new PageId("moreJobs");
             public static  PageId EnterSkills { get; } = new PageId("enterSkills");
+            public static  PageId RelatedSkills { get; } = new PageId("relatedSkills");
             
         }
 
