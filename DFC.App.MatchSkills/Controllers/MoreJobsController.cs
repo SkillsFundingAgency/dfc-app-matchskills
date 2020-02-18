@@ -24,15 +24,14 @@ namespace DFC.App.MatchSkills.Controllers
             _settings = settings.Value;
         }
 
-
+        [SessionRequired]
         public override async Task<IActionResult> Body()
         {
-            await TrackPageInUserSession();
             var userSession = await GetUserSession();
+            await TrackPageInUserSession(userSession);
             ViewModel.Occupations.LoadFromSession(userSession);
             ViewModel.SearchService = _settings.SearchService;
             return await base.Body();
-
         }
     }
 }

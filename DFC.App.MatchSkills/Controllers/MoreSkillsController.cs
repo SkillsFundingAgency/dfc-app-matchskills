@@ -19,6 +19,7 @@ namespace DFC.App.MatchSkills.Controllers
         [SessionRequired]
         public override async Task<IActionResult> Body()
         {
+           await TrackPageInUserSession();
             return await base.Body();
         }
 
@@ -27,8 +28,6 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("MatchSkills/[controller]")]
         public async Task<IActionResult> Body(MoreSkills choice)
         {
-            await TrackPageInUserSession(await GetUserSession());
-
             switch (choice)
             {
                 case MoreSkills.Job:
