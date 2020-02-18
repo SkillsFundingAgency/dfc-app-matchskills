@@ -129,7 +129,7 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchOccupationInAltLabels",
-                                "value": "true"
+                                "value": "false"
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchSkillInAltLabels",

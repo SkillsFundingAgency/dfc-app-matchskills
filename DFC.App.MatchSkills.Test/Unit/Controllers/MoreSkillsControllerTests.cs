@@ -74,7 +74,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(MoreSkills.Skill) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreSkills}");
+            result.Url.Should().Be($"/{CompositeViewModel.PageId.EnterSkills}");
         }
 
         [Test]
