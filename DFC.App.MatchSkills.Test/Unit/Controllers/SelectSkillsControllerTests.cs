@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
@@ -23,13 +21,13 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Primitives;
-using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -117,7 +115,25 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         
         }
 
-       
+        [Test]
+        public async Task When_Body_Then_LoadBodyAndGetSessionData()
+        {
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService, _cookieService)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
+            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
+            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+            
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            
+            var result = await controller.Body();
+            
+            result.Should().NotBeNull();
+        }
         
 
         #region CUIScaffoldingTests
@@ -142,10 +158,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
     public class TestAddSkills
     {
-        private const string CookieName = ".matchSkills-session";
         private IDataProtectionProvider _dataProtectionProvider;
         private IOptions<CompositeSettings> _compositeSettings;
-        private IDataProtector _dataProtector;
         private ISessionService _sessionService;
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<ServiceTaxonomySettings> _settings;
@@ -164,13 +178,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var handlerMock = MockHelpers.GetMockMessageHandler();
             var restClient = new RestClient(handlerMock.Object);
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
             _sessionService = Substitute.For<ISessionService>();
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-
             _cookieService = new CookieService(new EphemeralDataProtectionProvider());
 
         }
@@ -179,9 +190,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
         {
             
-            var subSessionService = Substitute.For<ISessionService>();
-            
-
             var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
             controller.ControllerContext = new ControllerContext
