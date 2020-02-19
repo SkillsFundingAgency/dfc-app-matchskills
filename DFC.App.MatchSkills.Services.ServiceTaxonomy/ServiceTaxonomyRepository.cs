@@ -9,8 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
-using System.Collections.Generic;
-using AutoMapper;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
