@@ -18,7 +18,7 @@
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form id="@formElementName" action="/matchskills/relatedskills/getRelatedSkills" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
+            <form id="@formElementName" method="post">
                 <govukHeadingH1 Text="Search for a skill" />
 
                 <p>Enter the name of the skills that you would like to match to careers. For example: ‘public speaking’.</p>
@@ -30,7 +30,7 @@
                     <govukListItem text="your responsibilities outside of work"></govukListItem>
                 </govukBulletedList>
                 
-                <div id="@skillSearchGroup" class="govuk-form-group">
+                <div id="@skillSearchGroup" class="govuk-form-group @(Model.HasError ? "govuk-form-group--error": "")">
 
                 <govukLabel for="@textInputElementName" text="Search for a skill" additional-class="govuk-!-font-weight-bold"></govukLabel>
                 
@@ -55,32 +55,3 @@
         </div>
     </div>
 </div>
-<script>
-
-    document.onreadystatechange = function() {
-
-        if (document.readyState === "complete") {
-            const textInputElement = $('#@textInputElementName');
-            const searchButton = $('#@searchButton');
-            const summary = $('.govuk-error-summary');
-            const textInputError = $('#@textInputError');
-            const display = {"display":""};
-            const form = $('#@skillSearchGroup');
-            searchButton.click(function(e) {
-
-                var textInputValue = textInputElement[0].value;
-
-                if (textInputValue != undefined) {
-                    textInputValue = textInputValue.trim();
-                }
-                if (textInputValue === undefined || textInputValue === "") {
-                    e.preventDefault();
-                    summary.css(display);
-                    textInputError.css(display);
-                    form.addClass('govuk-form-group--error');
-                }
-
-            });
-        }
-    };
-</script>

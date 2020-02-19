@@ -42,12 +42,19 @@ namespace DFC.App.MatchSkills.Controllers
 
         }
 
+        [SessionRequired]
+        [HttpGet]
+        public override async Task<IActionResult> Body()
+        {
+            return await base.Body();
+        }
 
         [SessionRequired]
-        [Route("/MatchSkills/[controller]/GetRelatedSkills")]
-        public async Task<IActionResult> Body(string enterSkillsInputInput)
+        [HttpGet]
+        [Route("/body/[controller]/{*searchTerm}")]
+        public async Task<IActionResult> Body(string searchTerm)
         {
-            await GetRelatedSkills(enterSkillsInputInput);
+            await GetRelatedSkills(searchTerm);
             return await base.Body();
         }
 
