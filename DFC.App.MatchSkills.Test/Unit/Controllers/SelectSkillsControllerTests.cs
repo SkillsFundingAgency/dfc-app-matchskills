@@ -216,7 +216,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
        
         [Test]
-        public async Task When_AddSkillsWithNoSkillsPassed_Then_ShowError()
+        public async Task When_AddSkillsWithNoSkillsPassed_Then_Error()
 
         {
             
@@ -237,10 +237,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
 
-            var result = await controller.Body(collection);
+            var result = await controller.Body(collection) as ViewResult;
+            var viewResultModel = result.Model as SelectSkillsCompositeViewModel;
+            viewResultModel.HasError.Should().Be(true);
             
-            result.Should().NotBeNull();
-          
         }
     }
 
