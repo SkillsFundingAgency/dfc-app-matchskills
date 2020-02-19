@@ -64,7 +64,7 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> Body(IFormCollection formCollection, string searchTerm)
         {
             var search = searchTerm;
-            if (formCollection.Keys.Count == 1)
+            if (formCollection.Keys.Count <= 1)
             {
                 ViewModel.HasError = true;
                 await GetRelatedSkills(search);
@@ -96,11 +96,14 @@ namespace DFC.App.MatchSkills.Controllers
             var userSession = await GetUserSession();
 
             ViewModel.Skills.LoadFrom(userSession);
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var skills = await _serviceTaxonomy.GetSkillsByLabel<Skill[]>($"{_apiUrl}",
+                    _apiKey, ViewModel.SearchTerm);
+                List<Skill> filteredSkills = skills.Where(x => x.RelationshipType == RelationshipType.Essential).ToList();
+                ViewModel.RelatedSkills.LoadFrom(filteredSkills);
+            }
 
-            var skills = await _serviceTaxonomy.GetSkillsByLabel<Skill[]>($"{_apiUrl}",
-                _apiKey, ViewModel.SearchTerm);
-            List<Skill> filteredSkills = skills.Where(x => x.RelationshipType == RelationshipType.Essential).ToList();
-            ViewModel.RelatedSkills.LoadFrom(filteredSkills);
         }
 
     }
