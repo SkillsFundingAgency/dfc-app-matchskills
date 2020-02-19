@@ -11,7 +11,9 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using Newtonsoft.Json.Linq;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 {
@@ -293,6 +295,75 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             x.LastModified.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(0, 1, 0));
         }
 
+
+        [Test]
+        public void When_OccupationMatchInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new OccupationMatch()
+            {
+                JobProfileTitle = "testValue",
+                JobProfileUri = "anotherTestValue",
+                MatchingEssentialSkills = 1,
+                MatchingOptionalSkills = 2,
+                LastModified = DateTime.UtcNow,
+                Uri = "testValue",
+                TotalOccupationEssentialSkills = 3,
+                TotalOccupationOptionalSkills = 4,
+            };
+
+            // Assert
+            x.JobProfileTitle.Should().Be("testValue");
+            x.JobProfileUri.Should().Be("anotherTestValue");
+            x.Uri.Should().Be("testValue");
+            x.MatchingEssentialSkills.Should().Be(1);
+            x.MatchingOptionalSkills.Should().Be(2);
+            x.TotalOccupationEssentialSkills.Should().Be(3);
+            x.TotalOccupationOptionalSkills.Should().Be(4);
+            x.LastModified.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(0, 1, 0));
+        }
+
+        [TestCase("https://dev.api.nationalcareersservice.org.uk", "key")]
+        public async Task When_SkillMatchInitialised_Then_SkillResultShouldBePopulated(string url, string apiKey)
+        {
+            // ARRANGE
+            var results = new OccupationMatch[]
+            {
+                new OccupationMatch() { JobProfileTitle = "Baggage Handler" },
+
+            };
+            string matchedOccupationJson = JObject.FromObject(results).ToString();
+            var handlerMock = GetMockMessageHandler(matchedOccupationJson);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+            var skillIds = new string[]
+            {
+                "skill1",
+                "skill2",
+                "skill3"
+            };
+            var minimumMatchingSkills = 1;
+
+            // ACTs
+            var result = await subjectUnderTest.FindOccupationsForSkills(url, apiKey, skillIds, minimumMatchingSkills);
+
+            // ASSERT
+            result.Should().NotBeNull();
+            
+
+
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Get // we expected a GET request
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        }
 
 
         class MockResult
