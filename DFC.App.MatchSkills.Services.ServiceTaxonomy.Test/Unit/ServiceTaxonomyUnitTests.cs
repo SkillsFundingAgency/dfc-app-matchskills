@@ -11,7 +11,10 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 {
@@ -252,7 +255,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         }
 
         [Test]
-        public void When_STOccupationSkills_CreatedAllPropertoieSet()
+        public void When_STOccupationSkills_CreatedAllPropertiesSet()
         {
             var sut = new StOccupationSkills()
             {
@@ -285,7 +288,159 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 
         }
 
-        
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsRequestCreated_Then_SkillsListShouldBeInitialised()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsRequest();
+
+            // Assert
+            x.SkillList.Should().NotBeNull();
+            x.SkillList.Should().HaveCount(0);
+        }
+
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsRequestInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsRequest()
+            {
+                MinimumMatchingSkills = 7,
+            };
+
+            // Assert
+            x.MinimumMatchingSkills.Should().Be(7);
+        }
+
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsResponseCreated_Then_SkillsListShouldBeInitialised()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsResponse();
+
+            // Assert
+            x.MatchingOccupations.Should().NotBeNull();
+            x.MatchingOccupations.Should().HaveCount(0);
+        }
+
+        [Test]
+        public void When_MatchedOccupationInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
+            {
+                JobProfileTitle = "testValue",
+                JobProfileUri = "anotherTestValue",
+                MatchingEssentialSkills = 1,
+                MatchingOptionalSkills = 2,
+                LastModified = DateTime.UtcNow,
+                Uri = "testValue",
+                TotalOccupationEssentialSkills = 3,
+                TotalOccupationOptionalSkills = 4,
+            };
+
+            // Assert
+            x.JobProfileTitle.Should().Be("testValue");
+            x.JobProfileUri.Should().Be("anotherTestValue");
+            x.Uri.Should().Be("testValue");
+            x.MatchingEssentialSkills.Should().Be(1);
+            x.MatchingOptionalSkills.Should().Be(2);
+            x.TotalOccupationEssentialSkills.Should().Be(3);
+            x.TotalOccupationOptionalSkills.Should().Be(4);
+            x.LastModified.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(0, 1, 0));
+        }
+
+
+        [Test]
+        public void When_OccupationMatchInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new OccupationMatch()
+            {
+                JobProfileTitle = "testValue",
+                JobProfileUri = "anotherTestValue",
+                MatchingEssentialSkills = 1,
+                MatchingOptionalSkills = 2,
+                LastModified = DateTime.UtcNow,
+                Uri = "testValue",
+                TotalOccupationEssentialSkills = 3,
+                TotalOccupationOptionalSkills = 4,
+            };
+
+            // Assert
+            x.JobProfileTitle.Should().Be("testValue");
+            x.JobProfileUri.Should().Be("anotherTestValue");
+            x.Uri.Should().Be("testValue");
+            x.MatchingEssentialSkills.Should().Be(1);
+            x.MatchingOptionalSkills.Should().Be(2);
+            x.TotalOccupationEssentialSkills.Should().Be(3);
+            x.TotalOccupationOptionalSkills.Should().Be(4);
+            x.LastModified.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(0, 1, 0));
+        }
+
+        [TestCase("https://dev.api.nationalcareersservice.org.uk", "key")]
+        public async Task When_SkillMatchInitialised_Then_SkillResultShouldBePopulated(string url, string apiKey)
+        {
+            // ARRANGE
+            var stresponse = new GetOccupationsWithMatchingSkillsResponse();
+            stresponse.MatchingOccupations.Add( 
+                new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
+                {
+                    JobProfileTitle = "Baggage Handler",
+                    JobProfileUri = "http://jobprofile",
+                    LastModified = DateTime.UtcNow,
+                    MatchingEssentialSkills = 5,
+                    MatchingOptionalSkills = 3,
+                    TotalOccupationEssentialSkills = 10,
+                    TotalOccupationOptionalSkills = 4,
+                });
+            string matchedOccupationJson = JsonConvert.SerializeObject(stresponse);
+            var handlerMock = GetMockMessageHandler(matchedOccupationJson);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+            var skillIds = new string[]
+            {
+                "skill1",
+                "skill2",
+                "skill3"
+            };
+            var minimumMatchingSkills = 1;
+
+            // ACTs
+            var result = await subjectUnderTest.FindOccupationsForSkills(url, apiKey, skillIds, minimumMatchingSkills);
+
+            // ASSERT
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result[0].JobProfileTitle.Should().Be("Baggage Handler");
+
+            /*
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Get // we expected a GET request
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+            */
+        }
+
 
         class MockResult
         {
