@@ -161,8 +161,74 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         
         }
 
+        [TestCase("https://dev.api.nationalcareersservice.org.uk", "key")]
+        public async Task When_GetSkillsByLabel_Then_ShouldReturnSkillsList(string url, string apiKey)
+        {
+            // ARRANGE
+            const string skillsJson = "{  " +
+                                      "\"skills\": [" +
+                                      "{    \"skillType\": \"knowledge\",    \"skill\": \"toxicology\",    \"lastModified\": \"2016-12-20T19:32:45Z\",    \"alternativeLabels\": [\"study of toxicity\", \"chemical toxicity\", \"study of adverse effects of chemicals\", \"studies of toxicity\"],    \"uri\": \"http:\\/\\/data.europa.eu\\/esco\\/skill\\/b70ab677-5781-40b5-9198-d98f4a34310f\",    \"matches\": {      \"hiddenLabels\": []," + "      \"skill\": [\"toxicology\"],      \"alternativeLabels\": [\"study of toxicity\", \"chemical toxicity\", \"studies of toxicity\"]    },    \"skillReusability\": \"cross-sectoral\"  }, " +
+                                      "{    \"skillType\": \"competency\",    \"skill\": \"perform toxicological studies\",    \"lastModified\": \"2016-12-20T19:37:05Z\",    \"alternativeLabels\": [\"apply toxicological testing methods\", \"perform toxicological tests\", \"perform toxicological study\", \"carry out toxicological studies\"],    \"uri\": \"http:\\/\\/data.europa.eu\\/esco\\/skill\\/000bb1e4-89f0-4b86-be05-05ece3641724\",    \"matches\": {      \"hiddenLabels\": [],      \"skill\": [\"perform toxicological studies\"],      \"alternativeLabels\": [\"apply toxicological testing methods\", \"perform toxicological tests\", \"perform toxicological study\", \"carry out toxicological studies\"]    },    \"skillReusability\": \"cross-sectoral\"  }, " +
+                                      "{    \"skillType\": \"knowledge\",    \"skill\": \"food toxicity\",    \"lastModified\": \"2016-12-20T19:05:31Z\",    \"alternativeLabels\": [\"food spoilage\", \"prevention of food poisoning\", \"toxicity of foods\", \"food poisoning\", \"the  toxicity of food\"],    \"uri\": \"http:\\/\\/data.europa.eu\\/esco\\/skill\\/4e081e0a-e25f-4f6e-9c75-e9043ba08aad\",    \"matches\": {      \"hiddenLabels\": [],      \"skill\": [\"food toxicity\"],      \"alternativeLabels\": [\"toxicity of foods\", \"the  toxicity of food\"]    },    \"skillReusability\": \"sector-specific\"  }]}";
+            var handlerMock = GetMockMessageHandler(skillsJson, HttpStatusCode.OK);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+
+            // ACTs
+            var result = await subjectUnderTest.GetSkillsByLabel<Skill[]>(url, apiKey, "toxic");
+
+            // ASSERT
+            result.Should().NotBeNull();
+            result.Length.Should().Be(3);
 
 
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+
+        }
+        [Test]
+        public void When_StLabelSkills_CreatedAllPropertiesSet()
+        {
+            var sut = new StLabelSkills()
+            {
+                Skills = new StLabelSkill[]
+                {
+                    new StLabelSkill()
+                    {
+                        Uri="skilluri",
+                        Skill="Skill Name",
+                        AlternativeLabels = new [] {"label1","label2"},
+                        SkillReusability = "SkillReusability",
+                        LastModified =Convert.ToDateTime("1-Oct-2010"),
+                        SkillType = "SkillType",
+                        RelationshipType = "RelationshipType",
+                        Matches = new Matches()
+                        {
+                            Skill = new string[1]{"test"},
+                            AlternativeLabels = new string[1]{"test"},
+                            HiddenLabels = new string[1]{"test"},
+                        }
+
+                    }
+                }
+            };
+
+            sut.Skills[0].Uri.Should().Be("skilluri");
+            sut.Skills[0].Skill.Should().Be("Skill Name");
+            sut.Skills[0].AlternativeLabels[0].Should().Be("label1");
+            sut.Skills[0].SkillReusability.Should().Be("SkillReusability");
+            var lastModified = sut.Skills[0].LastModified;
+            sut.Skills[0].SkillType.Should().Be("SkillType");
+            sut.Skills[0].RelationshipType.Should().Be("RelationshipType");
+            var matchers = sut.Skills[0].Matches;
+
+        }
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
         {
             var handlerMock =  new Mock<HttpMessageHandler>(MockBehavior.Loose);
