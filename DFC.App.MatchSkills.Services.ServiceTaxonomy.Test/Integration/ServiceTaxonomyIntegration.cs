@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
     [TestFixture]
-    [Ignore("Settings Issue")]
+    //[Ignore("Settings Issue")]
     class ServiceTaxonomyIntegration
     {
         // [Ignore("Need to figure out how we are going to handle the settings")]
@@ -100,7 +100,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().HaveCount(24);
+            result.Should().HaveCount(33);
         }
 
     }

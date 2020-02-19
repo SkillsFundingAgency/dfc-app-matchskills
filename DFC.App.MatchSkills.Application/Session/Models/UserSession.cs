@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using Newtonsoft.Json;
 
@@ -25,11 +26,13 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public ISet<UsOccupation> Occupations { get; set; }
         public ISet<UsSkill> Skills { get; set; }
         public string[] DysacJobCategories { get; set; }
+        public IList<OccupationMatch> OccupationMatches { get; set; }
 
         public UserSession()
         {
             Occupations = new HashSet<UsOccupation>();
             Skills = new HashSet<UsSkill>();
+            OccupationMatches = new List<OccupationMatch>();
         }
     }
 }

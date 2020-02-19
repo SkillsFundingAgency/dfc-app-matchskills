@@ -30,6 +30,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ISessionService _sessionService;
         private IOptions<ServiceTaxonomySettings> _settings;
         private ICookieService _cookieService;
+        private ServiceTaxonomyRepository _serviceTaxonomyRepository;
+
+        const string SkillsJson = "{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";
 
         [SetUp]
         public void Init()
@@ -40,7 +43,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _settings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _settings.Value.EscoUrl = "http://data.europa.eu/esco";
             _settings.Value.SearchOccupationInAltLabels = "true";
-            var handlerMock = MockHelpers.GetMockMessageHandler();
+            var handlerMock = MockHelpers.GetMockMessageHandler(SkillsJson);
             var restClient = new RestClient(handlerMock.Object);
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
@@ -48,12 +51,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _cookieService = Substitute.For<ICookieService>();
             _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
                 .ReturnsForAnyArgs("This is My Value");
+            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
         }
 
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository);
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
 
             var result = controller.Head() as ViewResult;
@@ -67,7 +71,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -122,7 +126,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository);
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -132,7 +136,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository);
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

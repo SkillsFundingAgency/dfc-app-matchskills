@@ -31,7 +31,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public async Task WhenBodyCalled_ReturnHtml()
+         public async Task WhenBodyCalled_ReturnHtml()
         {
             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
