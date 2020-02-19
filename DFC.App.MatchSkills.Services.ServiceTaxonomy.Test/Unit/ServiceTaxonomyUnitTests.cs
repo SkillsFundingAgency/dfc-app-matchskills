@@ -273,7 +273,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             var x = new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
             {
                 JobProfileTitle = "testValue",
-                JobProfileUri = "testValue",
+                JobProfileUri = "anotherTestValue",
                 MatchingEssentialSkills = 1,
                 MatchingOptionalSkills = 2,
                 LastModified = DateTime.UtcNow,
@@ -284,7 +284,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 
             // Assert
             x.JobProfileTitle.Should().Be("testValue");
-            x.JobProfileUri.Should().Be("testValue");
+            x.JobProfileUri.Should().Be("anotherTestValue");
             x.Uri.Should().Be("testValue");
             x.MatchingEssentialSkills.Should().Be(1);
             x.MatchingOptionalSkills.Should().Be(2);
