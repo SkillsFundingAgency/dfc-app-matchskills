@@ -26,6 +26,9 @@
         },
         "serviceTaxonomyApiKey": {
             "type": "securestring"
+        },
+        "performSearchOccupationInAltLabels": {
+            "type": "string"
         }
     },
     "variables": {
@@ -129,7 +132,7 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchOccupationInAltLabels",
-                                "value": "false"
+                                "value": "[parameters('performSearchOccupationInAltLabels')]"
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchSkillInAltLabels",

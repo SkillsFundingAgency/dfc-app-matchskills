@@ -25,6 +25,9 @@
         },
         "serviceTaxonomyApiKey": {
             "value": "__ApimServiceTaxonomyKey__"
+        },
+        "performSearchOccupationInAltLabels": {
+            "value": "__performSearchOccupationInAltLabels__"
         }
     }
 }
