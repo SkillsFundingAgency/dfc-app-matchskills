@@ -3,7 +3,7 @@
 @model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
 
 <govukErrorSummary hidden="@(!Model.HasError)">
-    <govukErrorSummaryItem href="#selectskills" text="There is a problem Choose skills to add to your skills list"></govukErrorSummaryItem>
+    <govukErrorSummaryItem href="#selectskills" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
 </govukErrorSummary>
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
@@ -13,7 +13,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form action="@CompositeViewModel.PageId.SelectSkills"  method="post">
                
-                <div class="results  ">
+                <div class="results  @(Model.HasError ? "govuk-form-group--error": "") ">
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset" id="selectskills">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -30,7 +30,7 @@
                                 If you have a skill that you do not want to use for career matching, do not add it to your skills list.
                             </p>
 
-                                <div class="govuk-checkboxes @(Model.HasError ? "govuk-form-group--error": "") skill-list-container checkbox-container">
+                                <div class="govuk-checkboxes skill-list-container checkbox-container">
                                     @if (Model.HasError)
                                     {
                                         <span id="changed-name-error" class="govuk-error-message">
