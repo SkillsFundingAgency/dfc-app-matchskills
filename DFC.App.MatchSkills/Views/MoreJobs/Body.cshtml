@@ -20,7 +20,7 @@
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form id="@formElementName" action="@CompositeViewModel.PageId.SelectSkills" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
+            <form id="@formElementName" action="@CompositeViewModel.PageId.OccupationSearch/GetSkillsForOccupation" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
                 <govukHeadingH1 Text="Enter your job title" />
 
                 <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
