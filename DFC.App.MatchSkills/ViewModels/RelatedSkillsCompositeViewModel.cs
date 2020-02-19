@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Models;
+﻿using DFC.App.MatchSkills.Models;
 
 namespace DFC.App.MatchSkills.ViewModels
 {
