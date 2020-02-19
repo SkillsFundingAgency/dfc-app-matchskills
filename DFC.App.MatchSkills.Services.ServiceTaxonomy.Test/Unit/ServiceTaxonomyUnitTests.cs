@@ -335,7 +335,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 new OccupationMatch() { JobProfileTitle = "Baggage Handler" },
 
             };
-            string matchedOccupationJson = JObject.FromObject(results).ToString();
+            string matchedOccupationJson = JArray.FromObject(results).ToString();
             var handlerMock = GetMockMessageHandler(matchedOccupationJson);
             var restClient = new RestClient(handlerMock.Object);
             var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
