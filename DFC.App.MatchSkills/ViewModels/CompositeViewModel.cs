@@ -33,6 +33,7 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId MatchDetails { get; } = new PageId("matchDetails");
             public static  PageId SelectSkills { get; } = new PageId("selectSkills");
             public static  PageId MoreJobs { get; } = new PageId("moreJobs");
+            public static  PageId EnterSkills { get; } = new PageId("enterSkills");
             
         }
 

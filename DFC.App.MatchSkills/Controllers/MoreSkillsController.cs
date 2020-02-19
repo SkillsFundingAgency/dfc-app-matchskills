@@ -19,6 +19,7 @@ namespace DFC.App.MatchSkills.Controllers
         [SessionRequired]
         public override async Task<IActionResult> Body()
         {
+           await TrackPageInUserSession();
             return await base.Body();
         }
 
@@ -27,14 +28,12 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("MatchSkills/[controller]")]
         public async Task<IActionResult> Body(MoreSkills choice)
         {
-            await TrackPageInUserSession(await GetUserSession());
-
             switch (choice)
             {
                 case MoreSkills.Job:
                     return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreJobs}");
                 case MoreSkills.Skill:
-                    return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.MoreSkills}");
+                    return RedirectPermanent($"{base.ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.EnterSkills}");
                 default:
                     ViewModel.HasError = true;
                     return await base.Body();

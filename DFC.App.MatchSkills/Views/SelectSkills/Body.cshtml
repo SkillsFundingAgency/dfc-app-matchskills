@@ -1,49 +1,56 @@
 ﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
+@using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
 
+<govukErrorSummary hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#selectskills" text="There is a problem Choose skills to add to your skills list"></govukErrorSummaryItem>
+</govukErrorSummary>
 
-        <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
 
-            <div class="govuk-grid-row">
+    <div class="govuk-grid-row">
 
-                <div class="govuk-grid-column-two-thirds">
-                    <form action="/matchskills/selectskills/addskills" method="post">
+        <div class="govuk-grid-column-two-thirds">
+            <form action="@CompositeViewModel.PageId.SelectSkills"  method="post">
+               
+                <div class="results  ">
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" id="selectskills">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <govukHeadingH1 Text="@Model.PageHeading" />
+                            </legend>
+                          
+                            <p>
+                                These are some of the skills you may have used in the role of <strong>@Model.Occupation</strong>.
+                            </p>
+                            <p>
+                                From the list below, select the skills that you would like to match to careers.
+                            </p>
+                            <p>
+                                If you have a skill that you do not want to use for career matching, do not add it to your skills list.
+                            </p>
 
-                        <div class="results">
-                            <div class="govuk-form-group">
-                                <fieldset class="govuk-fieldset">
-                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                        <govukHeadingH1 Text="@Model.PageHeading" />
-                                    </legend>
-                                    <p>
-                                        These are some of the skills you may have used in the role of <strong>@Model.Occupation</strong>.
-                                    </p>
-                                    <p>
-                                        From the list below, select the skills that you would like to match to careers.
-                                    </p>
-                                    <p>
-                                        If you have a skill that you do not want to use for career matching, do not add it to your skills list.
-                                    </p>
-
-                                    <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container">
-                                        @if (Model.Skills.Count == 0)
-                                        {
-                                            <govukLabel id="@Model.GetElementId("GovukCheckbox","NoRequiredSkillsFound")" Text="No required skills found"></govukLabel>
-                                        }
-                                        else
-                                        {
-                                            var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox);
-                                            slm.Skills.LoadFrom(Model.Skills);
-                                            @await Component.InvokeAsync("SkillsList",slm);
-                                        }
-
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
-                        <govukButton id="@Model.GetElementId("govukButton","Addtoskillslist")" text="Add to skills list"/>
-                    </form>
+                                <div class="govuk-checkboxes @(Model.HasError ? "govuk-form-group--error": "") skill-list-container checkbox-container">
+                                    @if (Model.HasError)
+                                    {
+                                        <span id="changed-name-error" class="govuk-error-message">
+                                            <span class="govuk-visually-hidden">Error:</span> Choose skills to add to your skills list
+                                        </span>
+                                    }
+                                    @{
+                                        var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox);
+                                        slm.Skills.LoadFrom(Model.Skills);
+                                        @await Component.InvokeAsync("SkillsList", slm)
+                                        ;
+                                    }
+                                </div>
+                        
+                            </fieldset>
+                    </div>
                 </div>
-                </div>
+                <govukButton id="@Model.GetElementId("govukButton","Addtoskillslist")" text="Add to skills list" />
+            </form>
+        </div>
     </div>
+</div>
 

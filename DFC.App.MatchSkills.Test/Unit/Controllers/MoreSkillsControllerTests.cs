@@ -74,7 +74,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(MoreSkills.Skill) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreSkills}");
+            result.Url.Should().Be($"/{CompositeViewModel.PageId.EnterSkills}");
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
 
         [Test]
-        public async Task WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
+        public async Task WhenMoreSkillsVisited_Then_SetCurrentPageToMoreSkills()
         {
             var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
@@ -111,7 +111,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            await controller.Body(MoreSkills.Undefined);
+            await controller.Body();
             await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
                 string.Equals(x.CurrentPage, CompositeViewModel.PageId.MoreSkills.Value,
                     StringComparison.InvariantCultureIgnoreCase)));

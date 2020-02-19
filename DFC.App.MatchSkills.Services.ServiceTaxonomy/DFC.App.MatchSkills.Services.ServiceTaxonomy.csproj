@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="DFC.Personalisation.Common" Version="0.1.14" />
-    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.9" />
+    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.10" />
   </ItemGroup>
 
   <ItemGroup>
