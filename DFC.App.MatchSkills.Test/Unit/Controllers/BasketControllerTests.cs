@@ -101,11 +101,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
 
-            var result = await controller.Body();
+            var result = await controller.Submit();
 
             result.Should().NotBeNull();
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
+            result.Should().BeOfType<RedirectResult>();
         }
 
         /*
