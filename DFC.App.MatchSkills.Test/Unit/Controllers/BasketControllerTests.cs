@@ -86,6 +86,28 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.ViewName.Should().BeNull();
         }
 
+        [Test]
+        public async Task WhenSubmitCalled_ReturnHtml()
+        {
+            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository);
+            {
+                controller.ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                };
+            };
+            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
+            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+
+            var result = await controller.Body();
+
+            result.Should().NotBeNull();
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+        }
+
         /*
          // WIP - refactor the tests which need a session
         
