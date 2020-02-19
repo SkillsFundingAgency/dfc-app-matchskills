@@ -25,6 +25,9 @@
         },
         "serviceTaxonomyApiKey": {
             "value": "not-a-real-apim-key"
+        },
+        "performSearchOccupationInAltLabels": {
+            "value": "false"
         }
     }
 }
