@@ -36,7 +36,7 @@
                 
                     <govukTextInput id="@textInputElementName" additional-class="govuk-input--width-20">
                         <govukHint HintText="You can search for a specific skill (like measuring spirit level) or a skill group (like bricklaying)"></govukHint>
-                        <govukError Id="@textInputError" Text="Enter a skill" hidden="@(!Model.HasError)"></govukError>
+                        <govukTextInputError Id="@textInputError" Text="Enter a Skill" hidden="@(!Model.HasError)"></govukTextInputError>
                     </govukTextInput>
                     <govukSecondaryButton id="@searchButton" text="Search"></govukSecondaryButton>
                 </div>

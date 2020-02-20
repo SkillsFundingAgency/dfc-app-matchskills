@@ -8,6 +8,19 @@ namespace DFC.App.MatchSkills.Models
     [Serializable]
     public class SkillSet : HashSet<Skill>
     {
+
+        public void LoadSkillsToRemove(UserSession userSession)
+        {
+            this.Clear();
+            if (null != userSession)
+            {
+                foreach (var skill in userSession.SkillsToRemove)
+                {
+                    this.Add(new Skill(skill.Id, skill.Name));
+                }
+            }
+        }
+
         public void LoadFrom(UserSession userSession)
         {
             this.Clear();
