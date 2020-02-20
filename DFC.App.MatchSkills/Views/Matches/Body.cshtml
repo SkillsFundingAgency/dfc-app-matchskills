@@ -8,33 +8,22 @@
     <div class="app-grey govuk-body">
         <div class="govuk-main-wrapper govuk-width-container">
             <p><partial name="_MatchesCount"/></p>
-            <div class="">
-                <div class="govuk-grid-column-one-third">
-                    <div class="app-sidebar app-advisor-panel">
-                        <!-- partial: _CategoryFilter -->
-                        <!-- partial: _MatchStrengthFilter -->
+
+            <div class="app-results ">
+                    <hr>
+                    <div class="sort-container govuk-!-margin-bottom-6">
+                        <!-- partial: _SortOptions -->
                     </div>
-                </div>
-                <div class="govuk-grid-column-two-thirds app-intro">
-                    <div class="app-results ">
-                        <div class="app-results__item">
-                            <hr>
-                            <div class="sort-container govuk-!-margin-bottom-6">
-                                <!-- partial: _SortOptions -->
-                            </div>
-                            <ul class="app-long-results list govuk-list" id="app-results-list--long">
-                                <li class="">
-                                    @foreach (var careerMatch in Model.CareerMatches)
-                                    {
-                                        <partial name="_MatchResult" model="careerMatch"/>
-                                    }
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- partial: _SortOptions -->
-                </div>
+                    <ul class="app-results list govuk-list" id="app-results-list--long">
+                        @foreach (var careerMatch in Model.CareerMatches)
+                        {
+                            <li class="app-results__item govuk-clearfix">
+                                <partial name="_MatchResult" model="careerMatch"/>
+                            </li>
+                        }
+                    </ul>
             </div>
+            
         </div>
     </div>
 </div>
