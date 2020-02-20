@@ -99,7 +99,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Submit();
 
