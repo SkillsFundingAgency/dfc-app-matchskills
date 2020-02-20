@@ -13,8 +13,10 @@ namespace DFC.App.MatchSkills.Test.Unit.ViewModels
         public void When_OccupationSet_Then_ToReturnOccupation()
         {
             // Arrange.
-            var vm = new OccupationSearchResultsCompositeViewModel();
-            vm.HasError = true;
+            var vm = new OccupationSearchResultsCompositeViewModel
+            {
+                HasError = true
+            };
             // Assert.
             vm.HasError.Should().Be(true);
         }
