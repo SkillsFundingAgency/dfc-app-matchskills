@@ -28,6 +28,9 @@
         },
         "performSearchOccupationInAltLabels": {
             "value": "__performSearchOccupationInAltLabels__"
+        },
+        "performSearchSkillInAltLabels": {
+            "value": "__performSearchSkillInAltLabels__"
         }
     }
 }
