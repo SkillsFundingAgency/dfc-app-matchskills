@@ -1,0 +1,33 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
+@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.RemoveSkillsCompositeViewModel
+
+@{
+    var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox);
+    slm.Skills.LoadFrom(Model.Skills);
+}
+
+<govukErrorSummary id="@Model.GetElementId("govukErrorSummary", "ErrorSummary")" hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#@Model.GetElementId("fieldset","radio")" text="Choose skills to remove from your skills list"></govukErrorSummaryItem>
+</govukErrorSummary>
+
+<div class="govuk-grid-column-two-thirds">
+    <form action="/matchskills/@CompositeViewModel.PageId.ConfirmRemove.Value" method="post">
+        <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <govukHeadingH1 Text="Your current skills list" />
+                    <span class="govuk-hint">Select the skills you would like to remove.</span>
+                </legend>
+                <govukError text="Choose skills to remove from your skills list" id="@Model.GetElementId("govukError","ErrorMessage")"
+                            hidden="@(!Model.HasError)"></govukError>
+                <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container ">
+                    @await Component.InvokeAsync("SkillsList", slm)
+                </div>
+            </fieldset>
+        </div>
+        <govukButton id="@Model.GetElementId("govukButton","RemoveSelectSkills")" text="Remove selected skills" />
+        <govukButtonLink id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkTitle="Cancel Remove Skills" LinkText="Cancel" LinkHref="@CompositeViewModel.PageId.SkillsBasket"></govukButtonLink>
+    </form>
+</div>

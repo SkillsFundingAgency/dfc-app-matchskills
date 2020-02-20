@@ -28,10 +28,12 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public string[] DysacJobCategories { get; set; }
         public IList<OccupationMatch> OccupationMatches { get; set; }
 
+        public ISet<UsSkill> SkillsToRemove { get; set; }
         public UserSession()
         {
             Occupations = new HashSet<UsOccupation>();
             Skills = new HashSet<UsSkill>();
+            SkillsToRemove = new HashSet<UsSkill>();
             OccupationMatches = new List<OccupationMatch>();
         }
     }

@@ -9,34 +9,36 @@
         <govukErrorSummaryItem href="#@Model.ParentModel.GetElementId("fieldset","radio")" text="@Model.ErrorSummaryMessage"></govukErrorSummaryItem>
     </govukErrorSummary>
 }
-<div class="govuk-form-group @(Model.HasError ?"govuk-form-group--error" : "")">
+<div class="govuk-form-group">
     <form method="post" id="@($"{@Model.ParentModel.Id}FormRadioForm")" action="@Model.FormAction">
-        <fieldset class="govuk-fieldset govuk-!-margin-bottom-6" id="@Model.ParentModel.GetElementId("fieldset","radio")" >
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <div class="govuk-form-group   @(Model.HasError ? "govuk-form-group--error" : "")">
+            <fieldset class="govuk-fieldset govuk-!-margin-bottom-6" id="@Model.ParentModel.GetElementId("fieldset", "radio")">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 
-                <govukHeadingH1 text="@Model.ParentModel.PageHeading" additional-class="govuk-fieldset__heading"></govukHeadingH1>
-            </legend>
-            <span id="sign-in-hint" class="govuk-hint">
-                @Model.Text
-            </span>
-            
-            @if (Model.HasError)
-            {
-                <span id="changed-name-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> @Model.ErrorMessage
+                    <govukHeadingH1 text="@Model.ParentModel.PageHeading" additional-class="govuk-fieldset__heading"></govukHeadingH1>
+                </legend>
+                <span id="sign-in-hint" class="govuk-hint">
+                    @Model.Text
                 </span>
-            }
-            @foreach (var radioButton in Model.RadioButtons)
-            {
-                <govukRadioButton id="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)" name="@radioButton.Name" value="@radioButton.Value" checked="@radioButton.Checked">
-                    <govukRadioLabel text="@radioButton.Text" for="@Model.ParentModel.GetElementId("govUkRadioButton",@radioButton.Value)"></govukRadioLabel>
-                    @if (!string.IsNullOrEmpty(radioButton.HintText))
-                    {
-                        <govukRadioHint hint-text="@radioButton.HintText" id="@Model.ParentModel.GetElementId("govUkRadioHint",@radioButton.Value)"></govukRadioHint>
-                    }
-                </govukRadioButton>
-            }
-        </fieldset>
-        <govukButton text="@Model.ButtonText" id="@Model.ParentModel.GetElementId("govUkButton",Model.ButtonText)" disabled="false"></govukButton>
+
+                @if (Model.HasError)
+                {
+                    <span id="changed-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @Model.ErrorMessage
+                    </span>
+                }
+                @foreach (var radioButton in Model.RadioButtons)
+                {
+                    <govukRadioButton id="@Model.ParentModel.GetElementId("govUkRadioButton", @radioButton.Value)" name="@radioButton.Name" value="@radioButton.Value" checked="@radioButton.Checked">
+                        <govukRadioLabel text="@radioButton.Text" for="@Model.ParentModel.GetElementId("govUkRadioButton", @radioButton.Value)"></govukRadioLabel>
+                        @if (!string.IsNullOrEmpty(radioButton.HintText))
+                        {
+                            <govukRadioHint hint-text="@radioButton.HintText" id="@Model.ParentModel.GetElementId("govUkRadioHint", @radioButton.Value)"></govukRadioHint>
+                        }
+                    </govukRadioButton>
+                }
+            </fieldset>
+        </div>
+        <govukButton text="@Model.ButtonText" id="@Model.ParentModel.GetElementId("govUkButton", Model.ButtonText)" disabled="false"></govukButton>
     </form>
 </div>

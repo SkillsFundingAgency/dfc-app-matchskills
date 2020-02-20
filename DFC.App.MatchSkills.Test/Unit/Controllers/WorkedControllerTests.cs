@@ -76,7 +76,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(WorkedBefore.Yes) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.Route}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.Route}");
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(WorkedBefore.No) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.Worked}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.Worked}");
         }
 
 
@@ -104,10 +104,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body(WorkedBefore.Undefined) as ViewResult;
+            var result = await controller.Body(WorkedBefore.Undefined) as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.Worked}?errors=true");
         }
 
         [Test]
