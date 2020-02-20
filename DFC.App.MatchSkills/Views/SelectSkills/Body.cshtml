@@ -2,6 +2,7 @@
 @using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
 
+
 <govukErrorSummary hidden="@(!Model.HasError)">
     <govukErrorSummaryItem href="#selectskills" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
 </govukErrorSummary>
@@ -29,8 +30,7 @@
                             <p>
                                 If you have a skill that you do not want to use for career matching, do not add it to your skills list.
                             </p>
-
-                                <div class="govuk-checkboxes skill-list-container checkbox-container">
+    
                                     @if (Model.HasError)
                                     {
                                         <span id="changed-name-error" class="govuk-error-message">
@@ -39,12 +39,13 @@
                                     }
                                     @{
                                         var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox);
+                                        slm.BeginSkillsListHTML = "<div class=\"govuk-checkboxes skill-list-container dual-checkbox-container\">";
+                                        slm.EndSkillsListHTML = "</div>";
                                         slm.Skills.LoadFrom(Model.Skills);
                                         @await Component.InvokeAsync("SkillsList", slm)
                                         ;
                                     }
-                                </div>
-                        
+                                
                             </fieldset>
                     </div>
                 </div>

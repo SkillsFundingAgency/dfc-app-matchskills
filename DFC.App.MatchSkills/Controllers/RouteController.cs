@@ -23,7 +23,7 @@ namespace DFC.App.MatchSkills.Controllers
             var session = await GetUserSession();
             
             ViewModel.RouteIncludesDysac = session.RouteIncludesDysac;
-
+            ViewModel.HasError = HasErrors();
             return await base.Body();
         }
 
@@ -40,12 +40,11 @@ namespace DFC.App.MatchSkills.Controllers
             switch (choice)
             {
                 case Route.Jobs:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.OccupationSearch}");
+                    return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
                 case Route.JobsAndSkills:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
+                    return RedirectTo(CompositeViewModel.PageId.Route.Value);
                 default:
-                    ViewModel.HasError = true;
-                    return await base.Body();
+                    return RedirectWithError(ViewModel.Id.Value);
             }
         }
     }
