@@ -36,8 +36,10 @@ namespace DFC.App.MatchSkills.Controllers
             else
             {
                 await TrackPageInUserSession();
+                var session = await GetUserSession();
+                ViewModel.HasWorkedBefore = session.UserHasWorkedBefore;
             }
-
+            
             return await base.Body();
         }
 
