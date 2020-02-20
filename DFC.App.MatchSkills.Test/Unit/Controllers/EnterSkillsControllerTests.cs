@@ -49,6 +49,34 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
+        public async Task WhenPostBodyWithBlankInputCalled_ReturnHtml()
+        {
+            var controller = new EnterSkillsController(_compositeSettings, _sessionService, _cookieService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = await controller.Body("") as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().BeNull();
+        }
+        [Test]
+        public async Task WhenPostBodyWithValidInputCalled_ReturnHtml()
+        {
+            var controller = new EnterSkillsController(_compositeSettings, _sessionService, _cookieService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = await controller.Body("Car") as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be("/relatedSkills?searchTerm=Car");
+        }
+        [Test]
         public void WhenEnterSkillsControllerInvoked_ThenModelPropertiesCanBeSetAndRetrieved()
         {
             var model = new EnterSkillsCompositeViewModel()

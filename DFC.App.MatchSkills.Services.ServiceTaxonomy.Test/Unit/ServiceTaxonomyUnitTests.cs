@@ -11,7 +11,10 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 {
@@ -161,8 +164,74 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         
         }
 
+        [TestCase("https://dev.api.nationalcareersservice.org.uk", "key")]
+        public async Task When_GetSkillsByLabel_Then_ShouldReturnSkillsList(string url, string apiKey)
+        {
+            // ARRANGE
+            const string skillsJson = "{  " +
+                                      "\"skills\": [" +
+                                      "{    \"skillType\": \"knowledge\",    \"skill\": \"toxicology\",    \"lastModified\": \"2016-12-20T19:32:45Z\",    \"alternativeLabels\": [\"study of toxicity\", \"chemical toxicity\", \"study of adverse effects of chemicals\", \"studies of toxicity\"],    \"uri\": \"http:\\/\\/data.europa.eu\\/esco\\/skill\\/b70ab677-5781-40b5-9198-d98f4a34310f\",    \"matches\": {      \"hiddenLabels\": []," + "      \"skill\": [\"toxicology\"],      \"alternativeLabels\": [\"study of toxicity\", \"chemical toxicity\", \"studies of toxicity\"]    },    \"skillReusability\": \"cross-sectoral\"  }, " +
+                                      "{    \"skillType\": \"competency\",    \"skill\": \"perform toxicological studies\",    \"lastModified\": \"2016-12-20T19:37:05Z\",    \"alternativeLabels\": [\"apply toxicological testing methods\", \"perform toxicological tests\", \"perform toxicological study\", \"carry out toxicological studies\"],    \"uri\": \"http:\\/\\/data.europa.eu\\/esco\\/skill\\/000bb1e4-89f0-4b86-be05-05ece3641724\",    \"matches\": {      \"hiddenLabels\": [],      \"skill\": [\"perform toxicological studies\"],      \"alternativeLabels\": [\"apply toxicological testing methods\", \"perform toxicological tests\", \"perform toxicological study\", \"carry out toxicological studies\"]    },    \"skillReusability\": \"cross-sectoral\"  }, " +
+                                      "{    \"skillType\": \"knowledge\",    \"skill\": \"food toxicity\",    \"lastModified\": \"2016-12-20T19:05:31Z\",    \"alternativeLabels\": [\"food spoilage\", \"prevention of food poisoning\", \"toxicity of foods\", \"food poisoning\", \"the  toxicity of food\"],    \"uri\": \"http:\\/\\/data.europa.eu\\/esco\\/skill\\/4e081e0a-e25f-4f6e-9c75-e9043ba08aad\",    \"matches\": {      \"hiddenLabels\": [],      \"skill\": [\"food toxicity\"],      \"alternativeLabels\": [\"toxicity of foods\", \"the  toxicity of food\"]    },    \"skillReusability\": \"sector-specific\"  }]}";
+            var handlerMock = GetMockMessageHandler(skillsJson, HttpStatusCode.OK);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+
+            // ACTs
+            var result = await subjectUnderTest.GetSkillsByLabel<Skill[]>(url, apiKey, "toxic");
+
+            // ASSERT
+            result.Should().NotBeNull();
+            result.Length.Should().Be(3);
 
 
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+
+        }
+        [Test]
+        public void When_StLabelSkills_CreatedAllPropertiesSet()
+        {
+            var sut = new StLabelSkills()
+            {
+                Skills = new StLabelSkill[]
+                {
+                    new StLabelSkill()
+                    {
+                        Uri="skilluri",
+                        Skill="Skill Name",
+                        AlternativeLabels = new [] {"label1","label2"},
+                        SkillReusability = "SkillReusability",
+                        LastModified =Convert.ToDateTime("1-Oct-2010"),
+                        SkillType = "SkillType",
+                        RelationshipType = "RelationshipType",
+                        Matches = new Matches()
+                        {
+                            Skill = new string[1]{"test"},
+                            AlternativeLabels = new string[1]{"test"},
+                            HiddenLabels = new string[1]{"test"},
+                        }
+
+                    }
+                }
+            };
+
+            sut.Skills[0].Uri.Should().Be("skilluri");
+            sut.Skills[0].Skill.Should().Be("Skill Name");
+            sut.Skills[0].AlternativeLabels[0].Should().Be("label1");
+            sut.Skills[0].SkillReusability.Should().Be("SkillReusability");
+            var lastModified = sut.Skills[0].LastModified;
+            sut.Skills[0].SkillType.Should().Be("SkillType");
+            sut.Skills[0].RelationshipType.Should().Be("RelationshipType");
+            var matchers = sut.Skills[0].Matches;
+
+        }
         public  Mock<HttpMessageHandler> GetMockMessageHandler(string contentToReturn="{'Id':1,'Value':'1'}", HttpStatusCode statusToReturn=HttpStatusCode.OK)
         {
             var handlerMock =  new Mock<HttpMessageHandler>(MockBehavior.Loose);
@@ -186,7 +255,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
         }
 
         [Test]
-        public void When_STOccupationSkills_CreatedAllPropertoieSet()
+        public void When_STOccupationSkills_CreatedAllPropertiesSet()
         {
             var sut = new StOccupationSkills()
             {
@@ -219,7 +288,159 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
 
         }
 
-        
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsRequestCreated_Then_SkillsListShouldBeInitialised()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsRequest();
+
+            // Assert
+            x.SkillList.Should().NotBeNull();
+            x.SkillList.Should().HaveCount(0);
+        }
+
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsRequestInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsRequest()
+            {
+                MinimumMatchingSkills = 7,
+            };
+
+            // Assert
+            x.MinimumMatchingSkills.Should().Be(7);
+        }
+
+        [Test]
+        public void When_GetOccupationsWithMatchingSkillsResponseCreated_Then_SkillsListShouldBeInitialised()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsResponse();
+
+            // Assert
+            x.MatchingOccupations.Should().NotBeNull();
+            x.MatchingOccupations.Should().HaveCount(0);
+        }
+
+        [Test]
+        public void When_MatchedOccupationInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
+            {
+                JobProfileTitle = "testValue",
+                JobProfileUri = "anotherTestValue",
+                MatchingEssentialSkills = 1,
+                MatchingOptionalSkills = 2,
+                LastModified = DateTime.UtcNow,
+                Uri = "testValue",
+                TotalOccupationEssentialSkills = 3,
+                TotalOccupationOptionalSkills = 4,
+            };
+
+            // Assert
+            x.JobProfileTitle.Should().Be("testValue");
+            x.JobProfileUri.Should().Be("anotherTestValue");
+            x.Uri.Should().Be("testValue");
+            x.MatchingEssentialSkills.Should().Be(1);
+            x.MatchingOptionalSkills.Should().Be(2);
+            x.TotalOccupationEssentialSkills.Should().Be(3);
+            x.TotalOccupationOptionalSkills.Should().Be(4);
+            x.LastModified.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(0, 1, 0));
+        }
+
+
+        [Test]
+        public void When_OccupationMatchInitialised_Then_PropertiesShouldHaveValues()
+        {
+            // Arrange
+
+
+            // Act
+            var x = new OccupationMatch()
+            {
+                JobProfileTitle = "testValue",
+                JobProfileUri = "anotherTestValue",
+                MatchingEssentialSkills = 1,
+                MatchingOptionalSkills = 2,
+                LastModified = DateTime.UtcNow,
+                Uri = "testValue",
+                TotalOccupationEssentialSkills = 3,
+                TotalOccupationOptionalSkills = 4,
+            };
+
+            // Assert
+            x.JobProfileTitle.Should().Be("testValue");
+            x.JobProfileUri.Should().Be("anotherTestValue");
+            x.Uri.Should().Be("testValue");
+            x.MatchingEssentialSkills.Should().Be(1);
+            x.MatchingOptionalSkills.Should().Be(2);
+            x.TotalOccupationEssentialSkills.Should().Be(3);
+            x.TotalOccupationOptionalSkills.Should().Be(4);
+            x.LastModified.Should().BeCloseTo(DateTime.UtcNow, new TimeSpan(0, 1, 0));
+        }
+
+        [TestCase("https://dev.api.nationalcareersservice.org.uk", "key")]
+        public async Task When_SkillMatchInitialised_Then_SkillResultShouldBePopulated(string url, string apiKey)
+        {
+            // ARRANGE
+            var stresponse = new GetOccupationsWithMatchingSkillsResponse();
+            stresponse.MatchingOccupations.Add( 
+                new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
+                {
+                    JobProfileTitle = "Baggage Handler",
+                    JobProfileUri = "http://jobprofile",
+                    LastModified = DateTime.UtcNow,
+                    MatchingEssentialSkills = 5,
+                    MatchingOptionalSkills = 3,
+                    TotalOccupationEssentialSkills = 10,
+                    TotalOccupationOptionalSkills = 4,
+                });
+            string matchedOccupationJson = JsonConvert.SerializeObject(stresponse);
+            var handlerMock = GetMockMessageHandler(matchedOccupationJson);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+            var skillIds = new string[]
+            {
+                "skill1",
+                "skill2",
+                "skill3"
+            };
+            var minimumMatchingSkills = 1;
+
+            // ACTs
+            var result = await subjectUnderTest.FindOccupationsForSkills(url, apiKey, skillIds, minimumMatchingSkills);
+
+            // ASSERT
+            result.Should().NotBeNull();
+            result.Should().HaveCount(1);
+            result[0].JobProfileTitle.Should().Be("Baggage Handler");
+
+            /*
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Get // we expected a GET request
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+            */
+        }
+
 
         class MockResult
         {

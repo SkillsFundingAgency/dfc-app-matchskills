@@ -2,13 +2,13 @@
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
-using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
@@ -58,6 +58,14 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 
+        public async Task<Skill[]> GetSkillsByLabel<TSkills>(string apiPath, string ocpApimSubscriptionKey, string label)
+        {
+            label ??= ""; 
+            var postData = new StringContent($"{{ \"label\": \"{label.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
+            var result = await GetJsonListPost<StLabelSkills>($"{apiPath}/GetSkillsByLabel/Execute/?matchAltLabels=false", ocpApimSubscriptionKey,postData);
+            return Mapping.Mapper.Map<Skill[]>(result.Skills);
+        }
+
 
         public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey) 
         {
@@ -82,6 +90,25 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}/GetOccupationsByLabel/Execute/?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey,postData);
             
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
+        }
+
+        public async Task<OccupationMatch[]> FindOccupationsForSkills(string apiPath, string ocpApimSubscriptionKey, string[] skillIds, int minimumMatchingSkills)
+        {
+            var request = new GetOccupationsWithMatchingSkillsRequest()
+            {
+                MinimumMatchingSkills = minimumMatchingSkills,
+            };
+            foreach (var skill in skillIds)
+            {
+                request.SkillList.Add(skill);
+            }
+
+            var jsonPayload = JsonConvert.SerializeObject(request);
+            var postData = new StringContent(jsonPayload, Encoding.UTF8, MediaTypeNames.Application.Json);
+            var response = await GetJsonListPost<GetOccupationsWithMatchingSkillsResponse>($"{apiPath}/GetOccupationsWithMatchingSkills/Execute", ocpApimSubscriptionKey, postData);
+
+            var result = Mapping.Mapper.Map<OccupationMatch[]>(response.MatchingOccupations);
+            return result;
         }
     }
     

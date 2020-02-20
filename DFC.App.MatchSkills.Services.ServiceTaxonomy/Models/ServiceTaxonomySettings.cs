@@ -10,6 +10,7 @@
       
         public string SearchService { get; set; }
         public string EscoUrl { get; set; }
-        
+
+        public int MinimumMatchingSkills { get; set; }
     }
 }
