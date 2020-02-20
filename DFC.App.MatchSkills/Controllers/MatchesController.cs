@@ -2,7 +2,6 @@
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
-using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -17,23 +16,30 @@ namespace DFC.App.MatchSkills.Controllers
         {
         }
 
-        public override Task<IActionResult> Body()
+        public override async Task<IActionResult> Body()
         {
-            var cm = new CareerMatch()
+            var userSession = await GetUserSession();
+            if (null != userSession)
             {
-                JobSectorGrowthDescription = "Increasing",
-            };
-            cm.JobProfile.Title = "Job Title of First Match";
-            cm.JobProfile.Description = "Here is a description of the job profile.";
-            cm.MatchedSkills.Add(new Skill("fm1", "First matched skill", SkillType.Competency));
-            cm.MatchedSkills.Add(new Skill("fm2", "Second  matched skill", SkillType.Competency));
-            cm.MatchedSkills.Add(new Skill("fm3", "Third matched skill", SkillType.Competency));
-            cm.UnMatchedSkills.Add(new Skill("um1", "First unmatched skill", SkillType.Competency));
+                foreach (var match in userSession.OccupationMatches)
+                {
+                    var cm = new CareerMatch()
+                    {
+                        JobSectorGrowthDescription = "", // @ToDo: hook up to the LMI API
+                    };
+                    cm.JobProfile.Title = match.JobProfileTitle;
+                    cm.JobProfile.Description = "";   // @ToDo: get the description of the job profile
+                    cm.JobProfile.Url = match.JobProfileUri;
+                    cm.MatchingEssentialSkills = match.MatchingEssentialSkills;
+                    cm.MatchingOptionalSkills = match.MatchingOptionalSkills;
+                    cm.TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills;
+                    cm.TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills;
+                    cm.SourceSkillCount = userSession.Skills.Count;
+                    ViewModel.CareerMatches.Add(cm);
+                }
+            }
 
-            ViewModel.CareerMatches.Add(cm);
-
-            return base.Body();
+            return await base.Body();
         }
-
     }
 }

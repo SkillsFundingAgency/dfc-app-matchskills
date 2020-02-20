@@ -4,6 +4,7 @@ using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
+using DFC.App.MatchSkills.Test.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -31,13 +32,18 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public async Task WhenBodyCalled_ReturnHtml()
+         public async Task WhenBodyCalled_ReturnHtml()
         {
             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
+            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
+            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+
             var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

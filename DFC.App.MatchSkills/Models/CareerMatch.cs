@@ -14,6 +14,17 @@ namespace DFC.App.MatchSkills.Models
 
         public ICollection<Skill> UnMatchedSkills { get; set; }
 
+        public int MatchingEssentialSkills { get; set; }
+
+
+        public int MatchingOptionalSkills { get; set; }
+
+        public int TotalOccupationEssentialSkills { get; set; }
+
+        public int TotalOccupationOptionalSkills { get; set; }
+
+        public int SourceSkillCount { get; set; }
+
         public CareerMatch()
         {
             JobProfile = new JobProfile();
@@ -28,10 +39,11 @@ namespace DFC.App.MatchSkills.Models
             {
                 int matchStrength = 0;
 
-                if (MatchedSkills.Count > 0 && UnMatchedSkills.Count > 0)
+                //   percentage match calculation = total number of skills matched in ST / total number of skills added to the skills list = % match  (eg. 8 skills matched in ST / 10 skills in skills list = 80% skills match)
+                if (SourceSkillCount > 0)
                 {
-                    decimal total = MatchedSkills.Count + UnMatchedSkills.Count;
-                    matchStrength = Convert.ToInt32(Math.Round((MatchedSkills.Count / total) * 100, 0, MidpointRounding.AwayFromZero));
+                    decimal total = MatchingEssentialSkills + MatchingOptionalSkills;
+                    matchStrength = Convert.ToInt32(Math.Round((total / SourceSkillCount) * 100, 0, MidpointRounding.AwayFromZero));
                 }
 
                 return matchStrength;

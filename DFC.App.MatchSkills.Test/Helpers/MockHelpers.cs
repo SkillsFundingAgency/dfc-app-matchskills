@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
-using DFC.App.MatchSkills.Service;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Moq.Protected;
-using NSubstitute;
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Test.Helpers
@@ -76,7 +72,7 @@ namespace DFC.App.MatchSkills.Test.Helpers
             return controllerContext;
         }
 
-        public static UserSession GetUserSession(bool withOccupations=true)
+        public static UserSession GetUserSession(bool withOccupations=true, bool withMatches = true, bool withSkills = true)
         {
             var userSession = new UserSession();
             if (withOccupations)
@@ -88,12 +84,29 @@ namespace DFC.App.MatchSkills.Test.Helpers
                     }
                     ;
             }
-            else
+            if (withMatches)
             {
-                userSession.Occupations = null;
+                userSession.OccupationMatches.Add(new OccupationMatch()
+                    {
+                        JobProfileTitle = "Mock Title",
+                        JobProfileUri = "http://mockjoburl",
+                        LastModified = DateTime.UtcNow,
+                        TotalOccupationEssentialSkills = 12,
+                        MatchingEssentialSkills = 6,
+                        TotalOccupationOptionalSkills = 4,
+                        MatchingOptionalSkills = 2,
+                        Uri = "MatchUri",
+                    }
+                );
             }
-            
-            
+
+            if (withSkills)
+            {
+                userSession.Skills.Add(new UsSkill("http://data.europa.eu/esco/skill/ab2bb44a-3956-4028-8715-8b70b1960b99", "lift heavy weights", DateTime.UtcNow));
+                userSession.Skills.Add(new UsSkill("http://data.europa.eu/esco/skill/28cb374e-6261-4133-8371-f9a5470145da", "operate forklift", DateTime.UtcNow));
+            }
+
+
             return userSession;
         }
 

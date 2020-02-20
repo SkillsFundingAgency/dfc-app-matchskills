@@ -21,6 +21,7 @@ namespace DFC.App.MatchSkills.Test.Models
             sut.Description.Should().BeEmpty();
             sut.Skills.Should().NotBeNull();
             sut.Skills.Should().HaveCount(0);
+            sut.Url.Should().BeEmpty();
         }
     }
 }

@@ -100,6 +100,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 
             // Assert
             result.Should().NotBeNull();
+            result.Should().HaveCount(33);
         }
 
     }
