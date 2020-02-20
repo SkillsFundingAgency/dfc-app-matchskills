@@ -58,6 +58,14 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 
+        public async Task<Skill[]> GetSkillsByLabel<TSkills>(string apiPath, string ocpApimSubscriptionKey, string label)
+        {
+            label ??= ""; 
+            var postData = new StringContent($"{{ \"label\": \"{label.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
+            var result = await GetJsonListPost<StLabelSkills>($"{apiPath}/GetSkillsByLabel/Execute/?matchAltLabels=false", ocpApimSubscriptionKey,postData);
+            return Mapping.Mapper.Map<Skill[]>(result.Skills);
+        }
+
 
         public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey) 
         {
