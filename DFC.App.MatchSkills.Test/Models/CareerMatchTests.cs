@@ -57,7 +57,7 @@ namespace DFC.App.MatchSkills.Test.Models
             var result = cm.MatchStrengthPercentage;
 
             // Assert.
-            result.Should().Be(75);
+            result.Should().Be(10, because:"we matched one skill out of ten essential skills");
         }
     }
 }
