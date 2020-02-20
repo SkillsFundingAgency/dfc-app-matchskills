@@ -28,13 +28,13 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         public MappingProfile()
         {
             CreateMap<StSkill, Skill>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => MappingHelper.GetIdFromUrl(src.Uri)))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.FirstCharToUpper()))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))                     
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill, (SkillType)Enum.Parse(typeof(SkillType),dest.SkillType,true)))
                 ;
             CreateMap<StOccupation, Occupation>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => MappingHelper.GetIdFromUrl(src.Uri)))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Occupation.FirstCharToUpper()))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))
                 .ConstructUsing(dest => new Occupation(dest.Uri, dest.Occupation,dest.LastModified));
@@ -46,7 +46,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ConstructUsing(dest => new Occupation(dest.Uri, dest.Occupation,dest.LastModified));
             
             CreateMap<StOccupationSkills.StOsSkill, Skill>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => MappingHelper.GetIdFromUrl(src.Uri)))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.FirstCharToUpper()))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))
                 .ForMember(dest => dest.SkillType, opt => opt.MapFrom(src => src.Type))
@@ -55,9 +55,8 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
             CreateMap<GetOccupationsWithMatchingSkillsResponse.MatchedOccupation, OccupationMatch>();
 
-            
             CreateMap<StLabelSkill, Skill>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => MappingHelper.GetIdFromUrl(src.Uri)))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.FirstCharToUpper()))
                 .ForMember(dest => dest.AlternativeNames, opt => opt.MapFrom(src => src.AlternativeLabels))
                 .ForMember(dest => dest.SkillType, opt => opt.MapFrom(src => src.SkillType))
