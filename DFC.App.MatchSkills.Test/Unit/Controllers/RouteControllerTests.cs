@@ -79,7 +79,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(Route.Jobs) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.OccupationSearch}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.OccupationSearch}");
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(Route.JobsAndSkills) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.Route}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.Route}");
         }
 
         [Test]
@@ -106,10 +106,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body(Route.Undefined) as ViewResult;
+            var result = await controller.Body(Route.Undefined) as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.Route}?errors=true");
         }
 
         [Test]

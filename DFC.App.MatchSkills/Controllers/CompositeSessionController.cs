@@ -27,37 +27,56 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [HttpGet]
-        [Route("/head/[controller]")]
+        [Route("/head/[controller]/{id?}")]
         public virtual IActionResult Head()
         {
             return View(ViewModel);
         }
 
         [HttpGet]
-        [Route("/bodytop/[controller]")]
+        [Route("/bodytop/[controller]/{id?}")]
         public virtual IActionResult BodyTop()
         {
             return View(ViewModel);
         }
 
         [HttpGet]
-        [Route("/breadcrumb/[controller]")]
+        [Route("/breadcrumb/[controller]/{id?}")]
         public virtual IActionResult Breadcrumb()
         {
             return View(ViewModel);
         }
 
         [HttpGet]
-        [Route("/body/[controller]")]
+        [Route("/body/[controller]/{id?}")]
         public virtual Task<IActionResult> Body()
         {
             return Task.FromResult<IActionResult>(View(ViewModel));
+        }
+
+        protected virtual IActionResult RedirectWithError(string controller)
+        {
+            return RedirectTo($"{controller}?errors=true");
         }
 
         protected async Task<HttpResponseMessage> TrackPageInUserSession(UserSession session = null)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
             return await UpdateUserSession(primaryKeyFromCookie, ViewModel.Id.Value, session);
+        }
+
+        protected bool HasErrors()
+        {
+            var errorsString = Request.Query["errors"];
+            var parsed = bool.TryParse(errorsString, out var error);
+            return parsed && error;
+        }
+
+        protected IActionResult RedirectTo(string relativeAddress)
+        {
+            relativeAddress = $"~{ViewModel.CompositeSettings.Path}/" + relativeAddress;
+            
+            return Redirect(relativeAddress);
         }
     }
 }
