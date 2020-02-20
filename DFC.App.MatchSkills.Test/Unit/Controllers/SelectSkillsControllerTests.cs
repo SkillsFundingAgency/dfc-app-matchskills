@@ -176,7 +176,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _settings.Value.EscoUrl = "http://data.europa.eu/esco";
             _settings.Value.SearchOccupationInAltLabels ="true";
             var handlerMock = MockHelpers.GetMockMessageHandler();
-            var restClient = new RestClient(handlerMock.Object);
+            var restClient = new RestClient(handlerMock.Object); 
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _compositeSettings = Options.Create(new CompositeSettings());
