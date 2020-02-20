@@ -20,12 +20,16 @@ namespace DFC.App.MatchSkills.Test.Models
             sut.Should().NotBeNull();
             sut.JobSectorGrowthDescription.Should().BeEmpty();
             sut.JobProfile.Should().NotBeNull();
+            sut.JobProfile.Title.Should().BeEmpty();
+            sut.JobProfile.Description.Should().BeEmpty();
+            sut.JobProfile.Url.Should().BeEmpty();
             sut.MatchedSkills.Should().NotBeNull();
             sut.UnMatchedSkills.Should().NotBeNull();
             sut.MatchingEssentialSkills.Should().Be(0);
             sut.MatchingOptionalSkills.Should().Be(0);
             sut.TotalOccupationEssentialSkills.Should().Be(0);
             sut.TotalOccupationOptionalSkills.Should().Be(0);
+            sut.SourceSkillCount.Should().Be(0);
         }
 
         [Test]
