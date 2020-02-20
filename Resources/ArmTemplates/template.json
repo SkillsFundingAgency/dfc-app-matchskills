@@ -29,6 +29,9 @@
         },
         "performSearchOccupationInAltLabels": {
             "type": "string"
+        },
+        "performSearchSkillInAltLabels": {
+            "type": "string"
         }
     },
     "variables": {
@@ -136,7 +139,7 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchSkillInAltLabels",
-                                "value": "true"
+                                "value": "[parameters('performSearchSkillInAltLabels')]"
                             },
                             {
                                 "name": "ServiceTaxonomySettings__EscoUrl",
