@@ -26,13 +26,15 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> Body(string enterSkillsInputInput)
         {
 
+            enterSkillsInputInput = System.Web.HttpUtility.UrlEncode(enterSkillsInputInput);
+
             if (string.IsNullOrWhiteSpace(enterSkillsInputInput))
             {
                 ViewModel.HasError = true;
                 await LoadSkills();
                 return await base.Body();
             }
-            return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.RelatedSkills}?searchTerm={enterSkillsInputInput}");
+            return RedirectTo($"{CompositeViewModel.PageId.RelatedSkills}?searchTerm={enterSkillsInputInput}");
         }
 
         public async Task LoadSkills()

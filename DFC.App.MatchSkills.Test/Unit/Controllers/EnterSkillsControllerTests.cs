@@ -74,7 +74,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body("Car") as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be("/relatedSkills?searchTerm=Car");
+            result.Url.Should().Be("~/relatedSkills?searchTerm=Car");
         }
         [Test]
         public void WhenEnterSkillsControllerInvoked_ThenModelPropertiesCanBeSetAndRetrieved()
