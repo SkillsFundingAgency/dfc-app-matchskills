@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.Controllers
             if (userSession.Skills.Count > 0)
             {
                 int minimumMatch = Math.Min(_minimumMatchingSkills, userSession.Skills.Count);
-                var skillIds = userSession.Skills.Select(s => $"{_skillUrlBase}{s.Id}").ToArray();
+                var skillIds = userSession.Skills.Select(skill => skill.Id).ToArray();
                 userSession.OccupationMatches = await _serviceTaxonomy.FindOccupationsForSkills(_apiUrl, _apiKey, skillIds, minimumMatch);
             }
             await _sessionService.UpdateUserSessionAsync(userSession);

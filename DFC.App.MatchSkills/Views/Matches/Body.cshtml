@@ -15,7 +15,7 @@
                         <!-- partial: _SortOptions -->
                     </div>
                     <ul class="app-results list govuk-list" id="app-results-list--long">
-                        @foreach (var careerMatch in Model.CareerMatches)
+                        @foreach (var careerMatch in Model.CareerMatches.OrderByDescending(cm => cm.MatchStrengthPercentage))
                         {
                             <li class="app-results__item govuk-clearfix">
                                 <partial name="_MatchResult" model="careerMatch"/>
