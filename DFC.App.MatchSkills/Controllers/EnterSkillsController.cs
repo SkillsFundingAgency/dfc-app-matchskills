@@ -1,10 +1,12 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System.Text.Encodings.Web;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -26,13 +28,15 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> Body(string enterSkillsInputInput)
         {
 
+            enterSkillsInputInput = System.Web.HttpUtility.UrlEncode(enterSkillsInputInput);
+
             if (string.IsNullOrWhiteSpace(enterSkillsInputInput))
             {
                 ViewModel.HasError = true;
                 await LoadSkills();
                 return await base.Body();
             }
-            return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.RelatedSkills}?searchTerm={enterSkillsInputInput}");
+            return RedirectTo($"{CompositeViewModel.PageId.RelatedSkills}?searchTerm={enterSkillsInputInput}");
         }
 
         public async Task LoadSkills()
