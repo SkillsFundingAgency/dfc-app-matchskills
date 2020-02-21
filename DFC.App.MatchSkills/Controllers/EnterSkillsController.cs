@@ -25,7 +25,7 @@ namespace DFC.App.MatchSkills.Controllers
         [HttpPost]
         [SessionRequired]
         [Route("MatchSkills/[controller]")]
-        public async Task<IActionResult> Body(string enterSkillsInputInput)
+        public IActionResult Body(string enterSkillsInputInput)
         {
 
             if (string.IsNullOrWhiteSpace(enterSkillsInputInput))
