@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Interfaces;
@@ -12,7 +9,6 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
 using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
