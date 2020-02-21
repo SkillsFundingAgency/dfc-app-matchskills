@@ -59,5 +59,19 @@ namespace DFC.App.MatchSkills.Test.Models
             // Assert.
             result.Should().Be(10, because:"we matched one skill out of ten essential skills");
         }
+
+        [Test]
+        public void When_JobProfileUriProvided_Then_MatchSkillDetailUrlGenerated()
+        {
+            // Arrange
+            var cm = new CareerMatch();
+
+            // Act.
+            var url = cm.GetDetailsUrl("http://nationalcareers.service.gov.uk/jobprofile/4ade6bd5-9180-49cf-8270-6ff4730b3b2e");
+
+            // Assert.
+            url.Should().NotBeNullOrWhiteSpace();
+            url.Should().Be("/matchskills/MatchDetails/&id=4ade6bd5-9180-49cf-8270-6ff4730b3b2e");
+        }
     }
 }
