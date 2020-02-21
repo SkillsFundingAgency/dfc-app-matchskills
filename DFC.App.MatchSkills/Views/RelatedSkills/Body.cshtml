@@ -21,9 +21,7 @@
                         </legend>
                         <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">
                             <govukHeadingH3 text="@Model.RelatedSkills.Count Result@(Model.RelatedSkills.Count > 1 || Model.RelatedSkills.Count == 0 ? "s" : "") for @Model.SearchTerm"></govukHeadingH3>
-                            <span id="@checkboxError" class="govuk-error-message" hidden="@(!Model.HasError)">
-                                <span class="govuk-visually-hidden">Error:</span> Choose skills to add to your skills list
-                            </span>
+                            <govukError id="@checkboxError" hidden="@(!Model.HasError)" text="Choose skills to add to your skills list"></govukError>
                             <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container ">
                                 @if (Model.RelatedSkills.Count == 0)
                                 {

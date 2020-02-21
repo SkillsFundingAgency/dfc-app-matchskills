@@ -39,7 +39,9 @@ namespace DFC.App.MatchSkills.Controllers
                 var session = await GetUserSession();
                 ViewModel.HasWorkedBefore = session.UserHasWorkedBefore;
             }
-            
+
+            ViewModel.HasError = HasErrors();
+
             return await base.Body();
         }
 
@@ -56,16 +58,14 @@ namespace DFC.App.MatchSkills.Controllers
             await UpdateUserSession(primaryKeyFromCookie,
                 ViewModel.Id.Value, session);
 
-
             switch (choice)
             {
                 case WorkedBefore.Yes:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
+                    return RedirectTo(CompositeViewModel.PageId.Route.Value);
                 case WorkedBefore.No:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Worked}");
+                    return RedirectTo(CompositeViewModel.PageId.Worked.Value);
                 default:
-                    ViewModel.HasError = true;
-                    return await base.Body();
+                    return RedirectWithError(ViewModel.Id.Value);
             }
         }
     }

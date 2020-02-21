@@ -23,19 +23,22 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 foreach (var match in userSession.OccupationMatches)
                 {
-                    var cm = new CareerMatch()
+                    if (match.MatchingEssentialSkills > 0)
                     {
-                        JobSectorGrowthDescription = "", // @ToDo: hook up to the LMI API
-                    };
-                    cm.JobProfile.Title = match.JobProfileTitle;
-                    cm.JobProfile.Description = "";   // @ToDo: get the description of the job profile
-                    cm.JobProfile.Url = match.JobProfileUri;
-                    cm.MatchingEssentialSkills = match.MatchingEssentialSkills;
-                    cm.MatchingOptionalSkills = match.MatchingOptionalSkills;
-                    cm.TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills;
-                    cm.TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills;
-                    cm.SourceSkillCount = userSession.Skills.Count;
-                    ViewModel.CareerMatches.Add(cm);
+                        var cm = new CareerMatch()
+                        {
+                            JobSectorGrowthDescription = string.Empty,
+                        };
+                        cm.JobProfile.Title = match.JobProfileTitle;
+                        cm.JobProfile.Description = "Job profile description will go here.";
+                        cm.JobProfile.Url = match.JobProfileUri;
+                        cm.MatchingEssentialSkills = match.MatchingEssentialSkills;
+                        cm.MatchingOptionalSkills = match.MatchingOptionalSkills;
+                        cm.TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills;
+                        cm.TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills;
+                        cm.SourceSkillCount = userSession.Skills.Count;
+                        ViewModel.CareerMatches.Add(cm);
+                    }
                 }
             }
 

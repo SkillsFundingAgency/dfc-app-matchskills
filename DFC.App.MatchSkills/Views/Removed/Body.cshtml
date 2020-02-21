@@ -1,0 +1,22 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
+@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.RemovedCompositeViewModel
+
+@{
+    var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
+    slm.Skills.LoadFrom(Model.Skills);
+    slm.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
+    slm.EndSkillsListHTML = "</ul>";
+}
+
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-6">
+            <govukHeadingH1 additional-class="govuk-panel__title" text="Skill(s) removed"></govukHeadingH1>
+        </div>
+        <govukHeadingH2 text="You have successfully  removed the following skills from your skills list"></govukHeadingH2>
+
+        @await Component.InvokeAsync("SkillsList", slm)
+        
+
+        <govukLink id="@Model.GetElementId("govukButtonLink", "ReturnToSkillsList")" Link-Title="Return to skills list" Link-Text="Return to your skills list" Link-Href="@CompositeViewModel.PageId.SkillsBasket"></govukLink>
+    </div>
