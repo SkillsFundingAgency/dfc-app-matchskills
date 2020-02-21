@@ -3,7 +3,11 @@
 @model DFC.App.MatchSkills.ViewModels.RemoveSkillsCompositeViewModel
 
 @{
-    var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox);
+    var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox)
+    {
+        BeginSkillsListHTML = "<div class=\"govuk-checkboxes skill-list-container govuk-checkboxes--small dual-checkbox-container\">",
+        EndSkillsListHTML = "</div>"
+    };
     slm.Skills.LoadFrom(Model.Skills);
 }
 
@@ -22,9 +26,9 @@
                 </legend>
                 <govukError text="Choose skills to remove from your skills list" id="@Model.GetElementId("govukError","ErrorMessage")"
                             hidden="@(!Model.HasError)"></govukError>
-                <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container ">
-                    @await Component.InvokeAsync("SkillsList", slm)
-                </div>
+                
+                @await Component.InvokeAsync("SkillsList", slm)
+                
             </fieldset>
         </div>
         <govukButton id="@Model.GetElementId("govukButton","RemoveSelectSkills")" text="Remove selected skills" />
