@@ -45,8 +45,8 @@ namespace DFC.App.MatchSkills.Controllers
 
         private async Task GetSessionData()
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
+            var resultGet = await GetUserSession();
+            await TrackPageInUserSession(resultGet);
 
             Throw.IfNull(resultGet.Occupations, nameof(resultGet.Occupations));
             
@@ -62,8 +62,9 @@ namespace DFC.App.MatchSkills.Controllers
          public override async Task<IActionResult> Body()
          {
              await GetSessionData();
-            
-            return await base.Body();
+             ViewModel.HasError = HasErrors();
+
+             return await base.Body();
         }
         
         [HttpPost]
@@ -74,7 +75,7 @@ namespace DFC.App.MatchSkills.Controllers
             if (formCollection.Keys.Count == 0)
             {
                 ViewModel.HasError = true;
-                return await base.Body();
+                return RedirectWithError(ViewModel.Id.Value);
             }
             var userSession = await GetUserSession();
 
@@ -87,8 +88,8 @@ namespace DFC.App.MatchSkills.Controllers
             }
            
             await _sessionService.UpdateUserSessionAsync(userSession);
-            
-            return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
+
+            return RedirectTo(CompositeViewModel.PageId.SkillsBasket.Value);
         }
 
        

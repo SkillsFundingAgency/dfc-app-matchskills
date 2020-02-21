@@ -116,13 +116,29 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             var formCollection = Substitute.For<IFormCollection>();
             formCollection.Keys.Count.ReturnsForAnyArgs(0);
-            var result = await controller.Body(formCollection, String.Empty) as ViewResult;
-            var model = result.Model as RelatedSkillsCompositeViewModel;
-            model.HasError.Should().BeTrue();
+            var result = await controller.Body(formCollection, String.Empty) as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.RelatedSkills}?errors=true");
         }
+
+        [Test]
+        public async Task WhenPostBodyHasNoValues_FlagError_ReturnHtmlWithSearchTerm()
+        {
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var formCollection = Substitute.For<IFormCollection>();
+            formCollection.Keys.Count.ReturnsForAnyArgs(0);
+            var result = await controller.Body(formCollection, "skills") as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.RelatedSkills}?errors=true&searchTerm=skills");
+        }
+
         [Test]
         public async Task WhenPostBodyHasOneValue_FlagError_ReturnHtml()
         {
@@ -134,12 +150,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             var formCollection = Substitute.For<IFormCollection>();
             formCollection.Keys.Count.ReturnsForAnyArgs(1);
-            var result = await controller.Body(formCollection, String.Empty) as ViewResult;
-            var model = result.Model as RelatedSkillsCompositeViewModel;
-            model.HasError.Should().BeTrue();
+            var result = await controller.Body(formCollection, String.Empty) as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.RelatedSkills}?errors=true");
         }
 
         [Test]
@@ -168,7 +182,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.SkillsBasket}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.SkillsBasket}");
         }
         [Test]
         public async Task When_AddSkillsWithoutSearchTerm_Then_ShouldAddSelectedSkills()
@@ -195,7 +209,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.SkillsBasket}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.SkillsBasket}");
         }
         [Test]
         public void WhenRelatedSkillsControllerInvoked_ThenModelPropertiesCanBeSetAndRetrieved()

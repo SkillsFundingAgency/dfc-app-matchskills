@@ -57,10 +57,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body("") as ViewResult;
+            var result = await controller.Body("") as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.EnterSkills}?errors=true");
         }
         [Test]
         public async Task WhenPostBodyWithValidInputCalled_ReturnHtml()
@@ -74,7 +74,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body("Car") as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be("/relatedSkills?searchTerm=Car");
+            result.Url.Should().Be("~/relatedSkills?searchTerm=Car");
         }
         [Test]
         public void WhenEnterSkillsControllerInvoked_ThenModelPropertiesCanBeSetAndRetrieved()
