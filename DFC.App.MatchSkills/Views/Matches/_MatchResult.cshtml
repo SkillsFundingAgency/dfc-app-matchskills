@@ -1,8 +1,10 @@
-﻿@model DFC.App.MatchSkills.Models.CareerMatch
+﻿@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.Models.CareerMatch
 
 <div class="app-long-results__item">
     <div class="result-description">
-        <h3 class="govuk-heading-m"><a href="@Model.JobProfile.Url">@Model.JobProfile.Title</a></h3>
+        <h3 class="govuk-heading-m"><a href="@CompositeViewModel.PageId.MatchDetails">@Model.JobProfile.Title</a></h3>
+        <h3 class="govuk-heading-m"><a href="@CompositeViewModel.PageId.MatchDetails?id=@Model.JobProfile.ProfileGuid">@Model.JobProfile.Title</a></h3>
         <p>@Model.JobProfile.Description</p>
     </div>
     <div class="ncs-progress govuk-clearfix">
