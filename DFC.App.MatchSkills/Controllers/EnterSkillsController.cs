@@ -1,12 +1,10 @@
-﻿using System.Text.Encodings.Web;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DFC.App.MatchSkills.Controllers
 {
