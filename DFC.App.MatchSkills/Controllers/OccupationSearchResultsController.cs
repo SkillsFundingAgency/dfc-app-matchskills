@@ -12,9 +12,7 @@ namespace DFC.App.MatchSkills.Controllers
     public class OccupationSearchResultsController : CompositeSessionController<OccupationSearchResultsCompositeViewModel>
     {
         
-        public OccupationSearchResultsController(IServiceTaxonomySearcher serviceTaxonomy, 
-            IOptions<ServiceTaxonomySettings> settings,
-            IOptions<CompositeSettings> compositeSettings,
+        public OccupationSearchResultsController(IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService, ICookieService cookieService) 
             : base(compositeSettings,
                 sessionService, cookieService)
