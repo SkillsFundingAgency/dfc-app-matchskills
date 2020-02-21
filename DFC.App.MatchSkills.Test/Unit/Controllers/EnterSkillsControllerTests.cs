@@ -49,7 +49,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public async Task WhenPostBodyWithBlankInputCalled_ReturnHtml()
+        public void WhenPostBodyWithBlankInputCalled_ReturnHtml()
         {
             var controller = new EnterSkillsController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
@@ -57,13 +57,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body("") as RedirectResult;
+            var result = controller.Body("") as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"~/{CompositeViewModel.PageId.EnterSkills}?errors=true");
         }
         [Test]
-        public async Task WhenPostBodyWithValidInputCalled_ReturnHtml()
+        public void WhenPostBodyWithValidInputCalled_ReturnHtml()
         {
             var controller = new EnterSkillsController(_compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
@@ -71,7 +71,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body("Car") as RedirectResult;
+            var result = controller.Body("Car") as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be("~/relatedSkills?searchTerm=Car");
