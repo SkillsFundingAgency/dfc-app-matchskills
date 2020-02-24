@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
-    class ApiDefinitionControllerTests
+    public class ApiDefinitionControllerTests
     {
         [Test]
         public void When_ApiDefiniton_Then_ReturnApiDefinition()
@@ -22,7 +22,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             results.Should().BeOfType(typeof(OkObjectResult));
         }
 
-        [Test] public void When_ApiDefinitonBlank_Then_ReturnNoContent()
+        [Test] 
+        public void When_ApiDefinitonBlank_Then_ReturnNoContent()
         {
             var _fileService = Substitute.For<IFileService>();
             _fileService.ReadAllText("").ReturnsForAnyArgs("");
