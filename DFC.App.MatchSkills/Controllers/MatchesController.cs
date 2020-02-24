@@ -37,6 +37,7 @@ namespace DFC.App.MatchSkills.Controllers
                         cm.TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills;
                         cm.TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills;
                         cm.SourceSkillCount = userSession.Skills.Count;
+                        cm.EscoURIGuid = match.Uri.Replace("http://data.europa.eu/esco/occupation/", "");
                         ViewModel.CareerMatches.Add(cm);
                     }
                 }

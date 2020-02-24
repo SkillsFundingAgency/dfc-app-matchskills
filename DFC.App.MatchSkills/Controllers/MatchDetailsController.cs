@@ -23,6 +23,7 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
         private readonly ISessionService _sessionService;
+        private const string EscoOccupationUri = "http://data.europa.eu/esco/occupation/";
 
         public MatchDetailsController(IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings,
@@ -56,9 +57,11 @@ namespace DFC.App.MatchSkills.Controllers
             var skillsGap = await GetSkillsGap(id);
 
             ViewModel.MissingSkills = skillsGap.MissingSkills;
-            ViewModel.CareerDescription = skillsGap.CareerDescription;
-            ViewModel.MatchingSkills = skillsGap.MatchingSkills; 
-            ViewModel.CareerTitle = skillsGap.CareerTitle;
+            ViewModel.MatchingSkills = skillsGap.MatchingSkills;
+            ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
+            //TODO: Use correct function when ST integrates CareerDescription
+            //ViewModel.CareerDescription = skillsGap.CareerDescription;
+            ViewModel.CareerDescription = $"This is a description about {ViewModel.CareerTitle}.";
 
             return await base.Body();
         }
@@ -70,13 +73,9 @@ namespace DFC.App.MatchSkills.Controllers
 
             var userSession = await GetUserSession();
 
-            var occupation = userSession.Occupations.Where(x => x.Name.Contains(id)).Select(x => x.Name)
-                .FirstOrDefault();
+            var occupation = RecreateEscoUri(id);
 
-            if (string.IsNullOrWhiteSpace(occupation))
-                return null;
-            
-            var skillsList = userSession.Skills.Select(x => x.Name).ToArray();
+            var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
 
             if (userSession.Skills == null || userSession.Skills.Count == 0)
                 return null;
@@ -84,6 +83,19 @@ namespace DFC.App.MatchSkills.Controllers
 
             return await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
                 _settings.ApiKey, occupation, skillsList);
+        }
+
+        private string RecreateEscoUri(string id)
+        {
+            return $"{EscoOccupationUri}{id}";
+        }
+
+        public string UpperCaseFirstLetter(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+            
+            return char.ToUpper(str[0]) + str.Substring(1);
         }
     }
 }

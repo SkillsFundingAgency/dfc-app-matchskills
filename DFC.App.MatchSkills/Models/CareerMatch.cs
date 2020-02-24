@@ -25,6 +25,8 @@ namespace DFC.App.MatchSkills.Models
 
         public int SourceSkillCount { get; set; }
 
+        public string EscoURIGuid { get; set; }
+
         public CareerMatch()
         {
             JobProfile = new JobProfile();

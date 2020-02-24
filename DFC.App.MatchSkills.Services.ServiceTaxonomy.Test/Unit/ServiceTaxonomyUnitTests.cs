@@ -484,6 +484,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             // ASSERT
             result.Should().NotBeNull();
             result.CareerTitle.Should().Be("grants management officer");
+            var description = result.CareerDescription;
             result.MissingSkills.Length.Should().Be(3);
 
             handlerMock.Protected().Verify(
@@ -495,6 +496,29 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                 ItExpr.IsAny<CancellationToken>()
             );
         
+        }
+        [Test]
+        public void WhenSkillsGapAnalysisCreated_Assign_RetrieveValues()
+        {
+            var skillsGapAnalysis = new SkillsGapAnalysis()
+            {
+                MissingSkills = new StOccupationSkills.StOsSkill[1]{ new StOccupationSkills.StOsSkill()},
+                MatchingSkills = new StOccupationSkills.StOsSkill[1]{ new StOccupationSkills.StOsSkill()},
+                AlternativeLabels = new string[1]{"Label"},
+                JobProfileTitle = "JobProfileTitle",
+                JobProfileUri = new Uri("https://dev.api.nationalcareersservice.org.uk/test/"),
+                LastModified = DateTimeOffset.UtcNow,
+                Occupation = "Occupation",
+                Uri = new Uri("https://dev.api.nationalcareersservice.org.uk/test/")
+            };
+            var missingSkills = skillsGapAnalysis.MissingSkills;
+            var matchingSkills = skillsGapAnalysis.MatchingSkills;
+            var alternativeLabels = skillsGapAnalysis.AlternativeLabels;
+            var jobProfileTitle = skillsGapAnalysis.JobProfileTitle;
+            var jobProfileUri = skillsGapAnalysis.JobProfileUri;
+            var lastModified = skillsGapAnalysis.LastModified;
+            var occupation = skillsGapAnalysis.Occupation;
+            var uri = skillsGapAnalysis.Uri;
         }
         class MockResult
         {

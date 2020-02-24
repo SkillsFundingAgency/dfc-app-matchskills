@@ -8,7 +8,7 @@
         <div class="job-profile-subsection-content">
             <div class="">
                 <p><strong></strong></p>
-                <govukBulletedList text="Skills for you to develop: ">
+                <govukBulletedList>
                     @foreach (var skill in Model.MatchingSkills)
                     {
                         <govukListItem text="@skill"></govukListItem>

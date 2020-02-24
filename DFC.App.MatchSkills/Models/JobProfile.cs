@@ -9,8 +9,6 @@ namespace DFC.App.MatchSkills.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }
-
-        public string ProfileGuid => Url.Replace("http://nationalcareers.service.gov.uk/jobprofile/", "");
         public ICollection<Skill> Skills { get; set; }
 
         public JobProfile()
