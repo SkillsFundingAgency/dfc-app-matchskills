@@ -122,17 +122,16 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 ControllerContext = new ControllerContext
                 {
-                    HttpContext = new DefaultHttpContext()
-                }
-            };
-            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
-            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+                HttpContext = new DefaultHttpContext()
+            }
+        }; 
             
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             
-            var result = await controller.Body();
-            
-            result.Should().NotBeNull();
+            await controller.Body();
+
+            await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
+                x.CurrentPage == CompositeViewModel.PageId.SelectSkills.Value));
         }
         
 
@@ -212,7 +211,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.SkillsBasket}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.SkillsBasket}");
         }
        
         [Test]
@@ -237,10 +236,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
 
-            var result = await controller.Body(collection) as ViewResult;
-            var viewResultModel = result.Model as SelectSkillsCompositeViewModel;
-            viewResultModel.HasError.Should().Be(true);
-            
+            var result = await controller.Body(collection) as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.SelectSkills}?errors=true");
+
         }
     }
 

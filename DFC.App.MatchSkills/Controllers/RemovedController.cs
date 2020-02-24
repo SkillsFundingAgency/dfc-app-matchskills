@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -26,7 +27,11 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var userSession = await GetUserSession();
 
-            ViewModel.Skills.LoadSkillsToRemove(userSession);
+            foreach (var skill in userSession.SkillsToRemove)
+            {
+                ViewModel.Skills.Add(new Skill(skill.Id, skill.Name));
+            }
+            
             userSession.SkillsToRemove = new HashSet<UsSkill>();
             await UpdateUserSession(userSession.UserSessionId, ViewModel.Id.Value, userSession);
             return await base.Body();

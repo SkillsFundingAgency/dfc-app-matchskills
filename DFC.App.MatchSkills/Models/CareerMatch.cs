@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Dfc.ProviderPortal.Packages;
 using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.Models
@@ -53,6 +55,15 @@ namespace DFC.App.MatchSkills.Models
 
                 return matchStrength;
             }
+        }
+
+        public string GetDetailsUrl(string jobProfileUrl)
+        {
+            Throw.IfNullOrEmpty(jobProfileUrl, nameof(jobProfileUrl));
+            var jobProfileGuid = jobProfileUrl.Split('/').Last();
+            string url = $"/matchskills/MatchDetails/&id={jobProfileGuid}";
+
+            return url;
         }
     }
 }

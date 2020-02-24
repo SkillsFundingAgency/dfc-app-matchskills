@@ -4,14 +4,14 @@
 
 @{
     var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
-    slm.Skills.LoadFrom(Model.Skills);
+    slm.Skills = Model.Skills;
     slm.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
     slm.EndSkillsListHTML = "</ul>";
 }
 
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-6">
-            <govukHeadingH1 additional-class="govuk-panel__title" text="Skill(s) removed"></govukHeadingH1>
+            <govukHeadingH1 additional-class="govuk-panel__title govuk-panel--confirmation" text="Skill(s) removed"></govukHeadingH1>
         </div>
         <govukHeadingH2 text="You have successfully  removed the following skills from your skills list"></govukHeadingH2>
 

@@ -1,7 +1,14 @@
 ﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
 @using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.SelectSkillsCompositeViewModel
-
+@{
+    var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox)
+    {
+        BeginSkillsListHTML = "<div class=\"govuk-checkboxes skill-list-container govuk-checkboxes--small dual-checkbox-container\">",
+        EndSkillsListHTML = "</div>"
+    };
+    slm.Skills.LoadFrom(Model.Skills);
+}
 
 <govukErrorSummary hidden="@(!Model.HasError)">
     <govukErrorSummaryItem href="#selectskills" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
@@ -37,15 +44,8 @@
                                             <span class="govuk-visually-hidden">Error:</span> Choose skills to add to your skills list
                                         </span>
                                     }
-                                    @{
-                                        var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox);
-                                        slm.BeginSkillsListHTML = "<div class=\"govuk-checkboxes skill-list-container dual-checkbox-container\">";
-                                        slm.EndSkillsListHTML = "</div>";
-                                        slm.Skills.LoadFrom(Model.Skills);
-                                        @await Component.InvokeAsync("SkillsList", slm)
-                                        ;
-                                    }
-                                
+                                    @await Component.InvokeAsync("SkillsList", slm)
+                                    
                             </fieldset>
                     </div>
                 </div>

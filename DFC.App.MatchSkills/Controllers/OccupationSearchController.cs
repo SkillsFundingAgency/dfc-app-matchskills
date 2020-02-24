@@ -1,7 +1,7 @@
-﻿using System;
-using Dfc.ProviderPortal.Packages;
+﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
@@ -10,10 +10,10 @@ using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -66,7 +66,11 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> OccupationSearchAuto(string occupation)
         {
             var occupations = await OccupationSearch(occupation);
-           return this.Ok(occupations.Select(x => x.Name).ToList());
+            
+            if (!occupations.Any())
+                return NoContent();
+            
+            return this.Ok(occupations.Select(x => x.Name).ToList());
         }
         [HttpPost]
         [Route("/matchskills/occupationSearch/GetSkillsForOccupation")]

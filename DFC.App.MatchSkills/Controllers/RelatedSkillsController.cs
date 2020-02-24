@@ -55,6 +55,7 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> Body(string searchTerm)
         {
             await GetRelatedSkills(searchTerm);
+            ViewModel.HasError = HasErrors();
             return await base.Body();
         }
 
@@ -68,7 +69,7 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 ViewModel.HasError = true;
                 await GetRelatedSkills(search);
-                return await base.Body();
+                return RedirectWithError(ViewModel.Id.Value, string.IsNullOrEmpty(searchTerm) ? "" : $"searchTerm={searchTerm}");
             }
             var userSession = await GetUserSession();
 
@@ -86,7 +87,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             await _sessionService.UpdateUserSessionAsync(userSession);
 
-            return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
+            return RedirectTo(CompositeViewModel.PageId.SkillsBasket.Value);
         }
 
         public async Task GetRelatedSkills(string searchTerm)

@@ -64,14 +64,32 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void  When_OccupationSearchAuto_Then_ShouldReturnOccupations()
+        public async Task When_OccupationSearchAutoFindsOccupations_Then_ShouldReturnOccupations()
         {
             var sut = new OccupationSearchController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
-            var occupations =   sut.OccupationSearchAuto("Renewable");
+            var occupations =  await sut.OccupationSearchAuto("Renewable");
             
-            occupations.Result.Should().NotBeNull();
+            occupations.Should().NotBeNull();
+            occupations.Should().BeOfType<OkObjectResult>();
         }
+
+        [Test]
+        public async Task When_OccupationSearchAutoFails_Then_ShouldReturnNoContent()
+        {
+            // @ToDo: Do this properly. For now we'll set up a local mock for this test.
+            var m = MockHelpers.GetMockMessageHandler("{}");
+            var rc= new RestClient(m.Object);
+            var str = new ServiceTaxonomyRepository(rc);
+
+            var sut = new OccupationSearchController(str, _settings, _compositeSettings, _sessionService, _cookieService);
+
+            var occupations = await sut.OccupationSearchAuto("fgsdhfgsdf");
+
+            occupations.Should().NotBeNull();
+            occupations.Should().BeOfType<NoContentResult>();
+        }
+
 
         [Test]
         public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
