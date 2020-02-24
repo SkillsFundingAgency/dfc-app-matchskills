@@ -67,7 +67,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var occupations = await OccupationSearch(occupation);
             
-            if (occupations.Any())
+            if (!occupations.Any())
                 return NoContent();
             
             return this.Ok(occupations.Select(x => x.Name).ToList());
