@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Text;
+using DFC.App.MatchSkills.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -9,12 +11,23 @@ namespace DFC.App.MatchSkills.Controllers
 {
     public class ApiDefinitionController : Controller
     {
+        private readonly IFileService _fileService;
+        public ApiDefinitionController(IFileService fileService)
+        {
+            _fileService = fileService;
+        }
+
         [HttpGet]
         [Route("/apiDefinition")]
+       
         public IActionResult Index()
         {
-            var apiDefinition = System.IO.File.ReadAllText(@"Docs\OccupationSearchAuto.json");
-            return this.Ok(apiDefinition);
+            var apiDefinition = _fileService.ReadAllText(@"Docs\OccupationSearchAuto.json");
+            if (string.IsNullOrEmpty(apiDefinition))
+                return NoContent();
+
+            var jsonData = new JsonResult(JsonConvert.DeserializeObject(apiDefinition));
+            return Ok(jsonData);
         }
     }
 }
