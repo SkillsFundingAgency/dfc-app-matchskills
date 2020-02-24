@@ -12,6 +12,7 @@ using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
+using DFC.App.MatchSkills.ViewModels;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -46,6 +47,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService, _cookieService);
             _controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
+        [Test]
+        public async Task WhenBaseBodyCalled_ReturnHtml()
+        {
+            var result = await _controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().BeNull();
+        }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
@@ -74,7 +83,22 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.ViewName.Should().BeNull();
         }
 
+        [Test]
+        public async Task WhenBodyWithEmptyIdCalled_ReturnMatches()
+        {
+            var result = await _controller.Body("") as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"{CompositeViewModel.PageId.Matches}");
+        }
 
+        [Test]
+        public void When_UpperCaseFirstLetterCalled_ReturnCorrectValue()
+        {
+            var input = "this is a string";
+            var result = _controller.UpperCaseFirstLetter(input);
+            result.Should().Be("This is a string");
+        }
     }
     public class GetSkillsGapTests
     {
