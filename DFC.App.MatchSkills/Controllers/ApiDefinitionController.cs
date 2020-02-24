@@ -1,11 +1,5 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Text;
-using DFC.App.MatchSkills.Interfaces;
+﻿using DFC.App.MatchSkills.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Controllers
 {
