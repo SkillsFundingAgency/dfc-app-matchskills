@@ -22,7 +22,6 @@ namespace DFC.App.MatchSkills.Controllers
         public override async Task<IActionResult> Body()
         {
             ViewModel.HasError = HasErrors();
-            if (ViewModel.HasError) return await base.Body();
 
             var userSession = await GetUserSession();
             userSession.SkillsToRemove = new HashSet<UsSkill>();
