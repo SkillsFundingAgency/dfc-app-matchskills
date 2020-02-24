@@ -26,8 +26,7 @@ namespace DFC.App.MatchSkills.Controllers
             if (string.IsNullOrEmpty(apiDefinition))
                 return NoContent();
 
-            var jsonData = new JsonResult(JsonConvert.DeserializeObject(apiDefinition));
-            return Ok(jsonData);
+            return Ok(apiDefinition);
         }
     }
 }

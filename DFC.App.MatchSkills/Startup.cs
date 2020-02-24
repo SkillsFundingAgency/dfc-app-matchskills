@@ -50,6 +50,7 @@ namespace DFC.App.MatchSkills
             services.AddScoped<ICosmosService, CosmosService>();
             services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<ISessionService, SessionService>();
+            services.AddScoped<IFileService, FileService>();
             
 
             services.AddCors(options =>
