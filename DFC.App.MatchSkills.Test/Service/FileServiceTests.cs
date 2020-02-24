@@ -11,10 +11,10 @@ namespace DFC.App.MatchSkills.Test.Service
         public void When_ReadAllText_ReturnTextFromFile()
         {
              var _fileService = Substitute.For<IFileService>();
-            
-             var results = _fileService.ReadAllText("").ReturnsForAnyArgs("My File Content");
+             _fileService.ReadAllText("").ReturnsForAnyArgs("My File Content");
+             var results = _fileService.ReadAllText("");
              
-            results.Should().Be("My File Content");
+             results.Should().Be("My File Content");
             
         }
     }
