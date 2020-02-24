@@ -8,10 +8,10 @@
         <div class="job-profile-subsection-content">
             <div class="">
                 <p><strong></strong></p>
-                <govukBulletedList text="Skills for you to develop: ">
+                <govukBulletedList>
                     @foreach (var skill in Model.MatchingSkills)
                     {
-                        <govukListItem text="@skill.Name"></govukListItem>
+                        <govukListItem text="@skill"></govukListItem>
                     }
                 </govukBulletedList>
             </div>
@@ -25,7 +25,7 @@
                 <govukBulletedList>
                     @foreach (var skill in Model.MissingSkills)
                     {
-                        <govukListItem text="@skill.Name"></govukListItem>
+                        <govukListItem text="@skill"></govukListItem>
                     }
                 </govukBulletedList>
             </div>

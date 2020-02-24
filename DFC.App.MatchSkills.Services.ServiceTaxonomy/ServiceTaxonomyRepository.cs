@@ -1,14 +1,14 @@
 ﻿using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using DFC.Personalisation.Domain.Models;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 {
@@ -64,6 +64,16 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             var postData = new StringContent($"{{ \"label\": \"{label.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
             var result = await GetJsonListPost<StLabelSkills>($"{apiPath}/GetSkillsByLabel/Execute/?matchAltLabels=false", ocpApimSubscriptionKey,postData);
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
+        }
+
+        public async Task<SkillsGap> GetSkillsGapForOccupationAndGivenSkills<TOccupations>(string apiPath, string ocpApimSubscriptionKey,
+            string occupation, string[] skillList)
+        {
+            occupation ??= ""; 
+            skillList ??= new string[0]; 
+            var postData = new StringContent($"{{  \"skillList\": [    \"{string.Join(',', skillList)}\"  ],  \"occupation\": \"{occupation}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
+            var result = await GetJsonListPost<SkillsGapAnalysis>($"{apiPath}/getskillsgapforoccupationandgivenskills/Execute/", ocpApimSubscriptionKey,postData);
+            return Mapping.Mapper.Map<SkillsGap>(result);
         }
 
 

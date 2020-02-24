@@ -440,8 +440,86 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             );
             */
         }
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
+        public async Task WhenGetSkillsGapForOccupationAndGivenSkills_WithNullParams_Then_ShouldReturnNoContent(string url,string apiKey)
+        {
+            // ARRANGE
+            var handlerMock = GetMockMessageHandler("",HttpStatusCode.NoContent);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+            
+            // ACTs
+            var result = await subjectUnderTest.GetSkillsGapForOccupationAndGivenSkills<SkillsGapAnalysis>(url,apiKey,null, null) ;
+            
+            // ASSERT
+            result.Should().BeNull();
 
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post 
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        
+        }
 
+        [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
+        public async Task WhenGetSkillsGapForOccupationAndGivenSkills_Then_ShouldReturnSKillsAnalysis(string url,string apiKey)
+        {
+            // ARRANGE
+            const string skillsJson = "{  \"occupation\": \"grants management officer\",  \"missingSkills\": [{    \"relationshipType\": \"essential\",    " +
+                                      "\"skill\": \"keep grant applicant informed\",    \"lastModified\": \"2016-12-20T20:16:59Z\",    \"alternativeLabels\": [\"keep grant applicant notified\", \"keep scholarship applicant notified\", \"keep grant applicant advised\", \"keep grant applicant briefed\", \"keep scholarship applicant advised\", \"keep scholarship applicant briefed\"],    \"type\": \"competency\",    \"uri\": \"http://data.europa.eu/esco/skill/c0f8207c-2377-4fe2-abc4-b173cc4c31c8\",    \"skillReusability\": \"occupation-specific\"  }, {    \"relationshipType\": \"essential\",    " +
+                                      "\"skill\": \"grant concessions\",    \"lastModified\": \"2016-12-20T20:13:59Z\",    \"alternativeLabels\": [\"issue concessions\", \"develop concessionary policies\", \"allow concessionary policies\", \"agree concessionary policies\", \"agree concessions\", \"allow concessions\", \"enable concessions\", \"enable concessionary policies\"],    \"type\": \"competency\",    \"uri\": \"http://data.europa.eu/esco/skill/1ccf5bda-d904-4d00-9c71-9b8f0196e9f9\",    \"skillReusability\": \"sector-specific\"  }, {    \"relationshipType\": \"essential\",    " +
+                                      "\"skill\": \"report on grants\",    \"lastModified\": \"2016-12-20T20:16:12Z\",    \"alternativeLabels\": [\"summarise grants\", \"administer allocations\", \"report donor and recipient\", \"detail grants\", \"administer grants summarise grants\", \"summarise allocations\", \"detail allocations\"],    \"type\": \"competency\",    \"uri\": \"http://data.europa.eu/esco/skill/0b6cc8e4-b34d-4631-9061-3ba839ecc640\",    \"skillReusability\": \"occupation-specific\"  }],  " +
+                                      "\"jobProfileTitle\": null,  \"matchingSkills\": [],  \"lastModified\": \"2017-02-02T10:53:11Z\",  \"alternativeLabels\": [\"proposals manager\", \"grants officer\"],  \"jobProfileUri\": null,  \"uri\": \"http://data.europa.eu/esco/occupation/89330b57-6a30-40e1-b623-50f47a4b0c34\"}";
+            var handlerMock = GetMockMessageHandler(skillsJson, HttpStatusCode.OK);
+            var restClient = new RestClient(handlerMock.Object);
+            var subjectUnderTest = new ServiceTaxonomyRepository(restClient);
+            
+            // ACTs
+            var result = await subjectUnderTest.GetSkillsGapForOccupationAndGivenSkills<SkillsGapAnalysis>(url,apiKey,null, null) ;
+            
+            // ASSERT
+            result.Should().NotBeNull();
+            result.CareerTitle.Should().Be("grants management officer");
+            var description = result.CareerDescription;
+            result.MissingSkills.Length.Should().Be(3);
+
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(), // we expected a single external request
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post 
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
+        
+        }
+        [Test]
+        public void WhenSkillsGapAnalysisCreated_Assign_RetrieveValues()
+        {
+            var skillsGapAnalysis = new SkillsGapAnalysis()
+            {
+                MissingSkills = new StOccupationSkills.StOsSkill[1]{ new StOccupationSkills.StOsSkill()},
+                MatchingSkills = new StOccupationSkills.StOsSkill[1]{ new StOccupationSkills.StOsSkill()},
+                AlternativeLabels = new string[1]{"Label"},
+                JobProfileTitle = "JobProfileTitle",
+                JobProfileUri = new Uri("https://dev.api.nationalcareersservice.org.uk/test/"),
+                LastModified = DateTimeOffset.UtcNow,
+                Occupation = "Occupation",
+                Uri = new Uri("https://dev.api.nationalcareersservice.org.uk/test/")
+            };
+            var missingSkills = skillsGapAnalysis.MissingSkills;
+            var matchingSkills = skillsGapAnalysis.MatchingSkills;
+            var alternativeLabels = skillsGapAnalysis.AlternativeLabels;
+            var jobProfileTitle = skillsGapAnalysis.JobProfileTitle;
+            var jobProfileUri = skillsGapAnalysis.JobProfileUri;
+            var lastModified = skillsGapAnalysis.LastModified;
+            var occupation = skillsGapAnalysis.Occupation;
+            var uri = skillsGapAnalysis.Uri;
+        }
         class MockResult
         {
             public int Id { get; set; }

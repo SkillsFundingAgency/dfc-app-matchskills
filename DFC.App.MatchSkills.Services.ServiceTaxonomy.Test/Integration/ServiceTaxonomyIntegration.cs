@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
