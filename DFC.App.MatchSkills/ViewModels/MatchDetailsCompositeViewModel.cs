@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using DFC.Personalisation.Domain.Models;
-using NSubstitute.Routing.AutoValues;
-
-namespace DFC.App.MatchSkills.ViewModels
+﻿namespace DFC.App.MatchSkills.ViewModels
 {
     public class  MatchDetailsCompositeViewModel : CompositeViewModel
     {

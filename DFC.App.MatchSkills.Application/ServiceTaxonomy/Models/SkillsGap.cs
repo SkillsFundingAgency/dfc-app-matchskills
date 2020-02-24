@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
+﻿namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
 {
     public class SkillsGap
     {

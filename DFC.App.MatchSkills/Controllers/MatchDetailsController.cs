@@ -1,20 +1,16 @@
-﻿using System;
+﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.ViewModels;
-using DFC.Personalisation.Domain.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
-using Dfc.ProviderPortal.Packages;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using DFC.App.MatchSkills.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -22,7 +18,6 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
-        private readonly ISessionService _sessionService;
         private const string EscoOccupationUri = "http://data.europa.eu/esco/occupation/";
 
         public MatchDetailsController(IServiceTaxonomySearcher serviceTaxonomy, 
@@ -33,7 +28,6 @@ namespace DFC.App.MatchSkills.Controllers
             Throw.IfNull(settings, nameof(settings));
             _serviceTaxonomy = serviceTaxonomy ?? new ServiceTaxonomyRepository();
             _settings = settings.Value;
-            _sessionService = sessionService;
 
         }
 
@@ -60,7 +54,6 @@ namespace DFC.App.MatchSkills.Controllers
             ViewModel.MatchingSkills = skillsGap.MatchingSkills;
             ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
             //TODO: Use correct function when ST integrates CareerDescription
-            //ViewModel.CareerDescription = skillsGap.CareerDescription;
             ViewModel.CareerDescription = $"This is a description about {ViewModel.CareerTitle}.";
 
             return await base.Body();
@@ -79,7 +72,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             if (userSession.Skills == null || userSession.Skills.Count == 0)
                 return null;
-
+            
 
             return await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
                 _settings.ApiKey, occupation, skillsList);
