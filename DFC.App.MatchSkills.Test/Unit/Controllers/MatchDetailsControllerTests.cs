@@ -1,9 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.Test.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +27,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
         private ICookieService _cookieService;
+        private IServiceTaxonomySearcher _serviceTaxonomy;
+        private IOptions<ServiceTaxonomySettings> _serviceTaxonomySettings;
+        private MatchDetailsController _controller;
 
 
         [SetUp]
@@ -28,12 +38,15 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
             _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+            _serviceTaxonomy = new ServiceTaxonomyRepository();
+            _serviceTaxonomySettings = Options.Create(new ServiceTaxonomySettings());
+            _controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new MatchDetailsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService, _cookieService);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -43,5 +56,59 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
         }
+
+
     }
+    public class GetSkillsGapTests
+    {
+        private IOptions<CompositeSettings> _compositeSettings;
+        private ISessionService _sessionService;
+        private ICookieService _cookieService;
+        private IServiceTaxonomySearcher _serviceTaxonomy;
+        private IOptions<ServiceTaxonomySettings> _serviceTaxonomySettings;
+        private MatchDetailsController _controller;
+
+
+        [SetUp]
+        public void Init()
+        {
+            _sessionService = Substitute.For<ISessionService>();
+            _compositeSettings = Options.Create(new CompositeSettings());
+            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+            _serviceTaxonomy = new ServiceTaxonomyRepository();
+            _serviceTaxonomySettings = Options.Create(new ServiceTaxonomySettings());
+            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService, _cookieService);
+            _controller.ControllerContext.HttpContext = new DefaultHttpContext();
+
+        }
+        [Test]
+        public async Task If_IdIsNull_ReturnNull()
+        {
+            var skillsGap = await _controller.GetSkillsGap("");
+            skillsGap.Should().BeNull();
+
+        }
+        [Test]
+        public async Task If_OccupationIsEmpty_ReturnNull()
+        {
+            _sessionService.GetUserSession(Arg.Any<string>()).Returns(new UserSession());
+            var skillsGap = await _controller.GetSkillsGap("id");
+            skillsGap.Should().BeNull();
+        }
+        [Test]
+        public async Task If_SkillsAreEmpty_ReturnNull()
+        {
+            var userSession = new UserSession
+            {
+                Occupations = new HashSet<UsOccupation>(1)
+                {
+                    new UsOccupation("id", "id", DateTime.UtcNow)
+                }
+            };
+            _sessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            var skillsGap = await _controller.GetSkillsGap("id");
+            skillsGap.Should().BeNull();
+        }
+    }
+
 }

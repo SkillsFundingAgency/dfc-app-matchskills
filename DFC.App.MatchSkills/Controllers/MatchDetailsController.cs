@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
@@ -6,11 +7,14 @@ using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using Dfc.ProviderPortal.Packages;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -49,27 +53,37 @@ namespace DFC.App.MatchSkills.Controllers
                 return RedirectPermanent(CompositeViewModel.PageId.Matches.Value);
             }
 
-            ViewModel.MissingSkills = new List<Skill>()
-                {
-                    new Skill("1","to be thorough and pay attention to detail",SkillType.Competency),
-                    new Skill("1","the ability to work well with others",SkillType.Competency),
-                    new Skill("1","administration skills",SkillType.Competency),
-                    new Skill("1","customer service skills",SkillType.Competency)
-                };
-            ViewModel.CareerDescription =
-                "Accounting technicians handle day-to-day financial matters in all types of business.";
-            ViewModel.MatchingSkills = new List<Skill>
-                {
-                    new Skill("1","the ability to use your initiative",SkillType.Competency),
-                    new Skill("1","to be flexible and open to change",SkillType.Competency),
-                    new Skill("1","maths knowledge",SkillType.Competency),
-                    new Skill("1","excellent verbal communication skills",SkillType.Competency),
-                    new Skill("1","to be able to use a computer and the main software packages confidently",SkillType.Competency)
-                };
-            ViewModel.CareerTitle = "Accounting technician";
+            var skillsGap = await GetSkillsGap(id);
+
+            ViewModel.MissingSkills = skillsGap.MissingSkills;
+            ViewModel.CareerDescription = skillsGap.CareerDescription;
+            ViewModel.MatchingSkills = skillsGap.MatchingSkills; 
+            ViewModel.CareerTitle = skillsGap.CareerTitle;
 
             return await base.Body();
         }
 
+        public async Task<SkillsGap> GetSkillsGap(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return null;
+
+            var userSession = await GetUserSession();
+
+            var occupation = userSession.Occupations.Where(x => x.Name.Contains(id)).Select(x => x.Name)
+                .FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(occupation))
+                return null;
+            
+            var skillsList = userSession.Skills.Select(x => x.Name).ToArray();
+
+            if (userSession.Skills == null || userSession.Skills.Count == 0)
+                return null;
+
+
+            return await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
+                _settings.ApiKey, occupation, skillsList);
+        }
     }
 }

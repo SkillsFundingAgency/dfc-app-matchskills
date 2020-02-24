@@ -4,6 +4,7 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Domain.Models;
 using System;
+using System.Linq;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
@@ -62,6 +63,14 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ForMember(dest => dest.SkillType, opt => opt.MapFrom(src => src.SkillType))
                 
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill,  (SkillType)Enum.Parse(typeof(SkillType),dest.SkillType,true)));
+            
+            CreateMap<SkillsGapAnalysis, SkillsGap>()
+                .ForMember(dest => dest.CareerTitle, opt => opt.MapFrom(src => src.Occupation))
+                //TODO Map Career description with ST adds functionality into API
+                //.ForMember(dest => dest.CareerDescription, opt => opt.MapFrom(src => src))
+                .ForMember(dest => dest.MissingSkills, opt => opt.MapFrom(src => src.MissingSkills.Select(x => x.Skill)))
+                .ForMember(dest => dest.MatchingSkills, opt => opt.MapFrom(src => src.MatchingSkills.Select(x => x.Skill)))
+                .ConstructUsing(dest => new SkillsGap());
         }
 
     }

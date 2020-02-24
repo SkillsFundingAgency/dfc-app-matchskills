@@ -13,5 +13,7 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy
         // TBD what to return - MatchedOccupation[] perhaps?
         Task<OccupationMatch[]> FindOccupationsForSkills(string apiPath, string ocpApimSubscriptionKey, string[] skillIds, int minimumMatchingSkills);
         Task<Skill[]> GetSkillsByLabel<TSkills>(string apiPath, string ocpApimSubscriptionKey, string label);
+
+        Task<SkillsGap> GetSkillsGapForOccupationAndGivenSkills<TOccupations>(string apiPath, string ocpApimSubscriptionKey, string occupation, string[] skillList);
     }
 }
