@@ -54,9 +54,16 @@ namespace DFC.App.MatchSkills.Controllers
             return Task.FromResult<IActionResult>(View(ViewModel));
         }
 
-        protected virtual IActionResult RedirectWithError(string controller)
+        protected virtual IActionResult RedirectWithError(string controller, string parameters = "")
         {
-            return RedirectTo($"{controller}?errors=true");
+            
+
+            if (!string.IsNullOrEmpty(parameters))
+            {
+                 parameters = $"&{parameters}";
+            }
+
+            return RedirectTo($"{controller}?errors=true{parameters}");
         }
 
         protected async Task<HttpResponseMessage> TrackPageInUserSession(UserSession session = null)
