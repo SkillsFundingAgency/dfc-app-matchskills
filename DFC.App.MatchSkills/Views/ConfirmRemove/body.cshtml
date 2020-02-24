@@ -9,29 +9,28 @@
     slm.EndSkillsListHTML = "</ul>";
 }
 
-<<div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-column-two-thirds">
 
-    <form action="/matchskills/@CompositeViewModel.PageId.Removed.Value" method="post">
-        <div class="govuk-form-group">
+    <div class="govuk-form-group">
 
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <govukHeadingH1 Text="Do you want to remove the displayed skills from your skills list?" />
-                </legend>
-                <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container ">
-                    @await Component.InvokeAsync("SkillsList", slm)
-                </div>
-            </fieldset>
-        </div>
-        <form action="/matchskills/@CompositeViewModel.PageId.Removed.Value">
-            @foreach (var skill in Model.Skills)
-            {
-                <input id="@skill.Id" name="@skill.Id--@skill.Name" value="@skill.Name" type="hidden" />
-            }
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <govukHeadingH1 Text="Do you want to remove the displayed skills from your skills list?" />
+            </legend>
+            <div class="govuk-checkboxes govuk-checkboxes--small skill-list-container checkbox-container">
+                @await Component.InvokeAsync("SkillsList", slm)
+            </div>
+        </fieldset>
+    </div>
+    <form action="/matchskills/@CompositeViewModel.PageId.Removed.Value">
+        @foreach (var skill in Model.Skills)
+        {
+            <input id="@skill.Id" name="@skill.Id--@skill.Name" value="@skill.Name" type="hidden" />
+        }
 
-            <govukButton id="@Model.GetElementId("govukButton","RemoveSelectedSkills")" text="Remove selected skills" />
-            <govukButtonLink id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkTitle="Cancel Remove Skills" LinkText="Cancel" LinkHref="@CompositeViewModel.PageId.ConfirmRemove/RemoveSkillsSessionClear"></govukButtonLink>
+        <govukButton id="@Model.GetElementId("govukButton","RemoveSelectedSkills")" text="Remove selected skills" />
+        <govukButtonLink additional-class="govuk-button--secondary" id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkTitle="Cancel Remove Skills" LinkText="Cancel" LinkHref="@CompositeViewModel.PageId.SkillsBasket"></govukButtonLink>
 
-        </form>
     </form>
+
 </div>
