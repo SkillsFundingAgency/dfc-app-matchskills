@@ -18,7 +18,6 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
-        private const string EscoOccupationUri = "http://data.europa.eu/esco/occupation/";
 
         public MatchDetailsController(IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings,
@@ -66,7 +65,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             var userSession = await GetUserSession();
 
-            var occupation = RecreateEscoUri(id);
+            var occupation = userSession.OccupationMatches.Where(x => x.JobProfileUri.Contains(id)).Select(x => x.Uri).FirstOrDefault();
 
             var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
 
@@ -76,11 +75,6 @@ namespace DFC.App.MatchSkills.Controllers
 
             return await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
                 _settings.ApiKey, occupation, skillsList);
-        }
-
-        private string RecreateEscoUri(string id)
-        {
-            return $"{EscoOccupationUri}{id}";
         }
 
         public string UpperCaseFirstLetter(string str)

@@ -27,8 +27,6 @@ namespace DFC.App.MatchSkills.Models
 
         public int SourceSkillCount { get; set; }
 
-        public string EscoURIGuid { get; set; }
-
         public CareerMatch()
         {
             JobProfile = new JobProfile();
@@ -61,7 +59,7 @@ namespace DFC.App.MatchSkills.Models
         {
             Throw.IfNullOrEmpty(jobProfileUrl, nameof(jobProfileUrl));
             var jobProfileGuid = jobProfileUrl.Split('/').Last();
-            string url = $"/matchskills/MatchDetails/&id={jobProfileGuid}";
+            string url = $"/matchskills/MatchDetails?id={jobProfileGuid}";
 
             return url;
         }

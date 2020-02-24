@@ -2,7 +2,7 @@
 @model DFC.App.MatchSkills.Models.CareerMatch
 
 <div class="result-description">
-    <h3 class="govuk-heading-m"><a href="@CompositeViewModel.PageId.MatchDetails?id=@Model.EscoURIGuid">@Model.JobProfile.Title</a></h3>
+    <h3 class="govuk-heading-m"><a href="@Model.GetDetailsUrl(Model.JobProfile.Url)">@Model.JobProfile.Title</a></h3>
     <p>@Model.JobProfile.Description</p>
 </div>
 <div class="ncs-progress govuk-clearfix">
