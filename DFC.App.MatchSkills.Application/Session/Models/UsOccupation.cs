@@ -9,11 +9,11 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public DateTime DateAdded { get; set; }
         
 
-        public UsOccupation(string id, string name,DateTime dateAdded)
+        public UsOccupation(string id, string name)
         {
             Id = id;
             Name = name;
-            DateAdded = dateAdded;
+            DateAdded = DateTime.UtcNow;
         }
     }
 }

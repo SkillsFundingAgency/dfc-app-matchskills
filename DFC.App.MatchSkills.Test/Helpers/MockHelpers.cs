@@ -79,8 +79,8 @@ namespace DFC.App.MatchSkills.Test.Helpers
             {
                 userSession.Occupations = new HashSet<UsOccupation>(2)
                     {
-                        new UsOccupation("1", "FirstOccupation", DateTime.UtcNow),
-                        new UsOccupation("2", "SecondOccupation", DateTime.UtcNow)
+                        new UsOccupation("1", "FirstOccupation"),
+                        new UsOccupation("2", "SecondOccupation")
                     }
                     ;
             }
@@ -102,8 +102,8 @@ namespace DFC.App.MatchSkills.Test.Helpers
 
             if (withSkills)
             {
-                userSession.Skills.Add(new UsSkill("http://data.europa.eu/esco/skill/ab2bb44a-3956-4028-8715-8b70b1960b99", "lift heavy weights", DateTime.UtcNow));
-                userSession.Skills.Add(new UsSkill("http://data.europa.eu/esco/skill/28cb374e-6261-4133-8371-f9a5470145da", "operate forklift", DateTime.UtcNow));
+                userSession.Skills.Add(new UsSkill("http://data.europa.eu/esco/skill/ab2bb44a-3956-4028-8715-8b70b1960b99", "lift heavy weights"));
+                userSession.Skills.Add(new UsSkill("http://data.europa.eu/esco/skill/28cb374e-6261-4133-8371-f9a5470145da", "operate forklift"));
             }
 
 

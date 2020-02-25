@@ -16,8 +16,8 @@ namespace DFC.App.MatchSkills.Application.Test.Models
         {
             // Arrange
             var id = @"/esco/skill/fe29e658-7cad-4b70-a169-10a240ec0bef";
-            var skill_1 = new UsSkill(id, "work in a logistics team", DateTime.UtcNow);
-            var skill_2 = new UsSkill(id, "work as part of a logistics team", DateTime.UtcNow);
+            var skill_1 = new UsSkill(id, "work in a logistics team");
+            var skill_2 = new UsSkill(id, "work as part of a logistics team");
 
             // Act
             var isEqual = skill_1.Equals(skill_2);
@@ -32,8 +32,8 @@ namespace DFC.App.MatchSkills.Application.Test.Models
             // Arrange
             var id_1 = @"/esco/skill/fe29e658-7cad-4b70-a169-10a240ec0bef";
             var id_2 = @"/esco/skill/fe29e658-7cad-4b70-a169-10a240ec0bff";
-            var skill_1 = new UsSkill(id_1, "work in a logistics team", DateTime.UtcNow);
-            var skill_2 = new UsSkill(id_2, "work in a logistics team", DateTime.UtcNow);
+            var skill_1 = new UsSkill(id_1, "work in a logistics team");
+            var skill_2 = new UsSkill(id_2, "work in a logistics team");
 
             // Act
             var isEqual = skill_1.Equals(skill_2);

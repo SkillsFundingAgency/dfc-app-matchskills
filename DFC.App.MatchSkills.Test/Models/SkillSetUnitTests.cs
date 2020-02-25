@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.Test.Models
             {
                 // Arrange
                 UserSession session = new UserSession();
-                session.Skills.Add(new UsSkill("id", "name", DateTime.UtcNow));
+                session.Skills.Add(new UsSkill("id", "name"));
                 var skillset = new SkillSet();
 
                 // Act
