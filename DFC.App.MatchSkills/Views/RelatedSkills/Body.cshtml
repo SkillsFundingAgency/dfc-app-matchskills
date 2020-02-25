@@ -12,7 +12,7 @@
     slm.Skills.LoadFrom(Model.RelatedSkills);
 }
 <govukErrorSummary hidden="@(!Model.HasError)">
-    <govukErrorSummaryItem href="#" text="You have not selected any skills"></govukErrorSummaryItem>
+    <govukErrorSummaryItem href="#" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
 </govukErrorSummary>
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
@@ -32,7 +32,10 @@
 
                                 @if (Model.RelatedSkills.Count == 0)
                                 {
-                                    <govukLabel id="@Model.GetElementId("govukCheckbox", "NoRelatedSkillsFound")" Text="No related skills found"></govukLabel>
+                                    <govukBulletedList text="Your search for '@Model.SearchTerm' returned no results. Try:">
+                                        <govukListItem text="using a different term (for example, 'driving' instead of 'operating a vehicle')"></govukListItem>
+                                        <govukListItem text="entering a specific job title to see the skills associated with it"></govukListItem>
+                                    </govukBulletedList>
                                 }
                                 else
                                 {
