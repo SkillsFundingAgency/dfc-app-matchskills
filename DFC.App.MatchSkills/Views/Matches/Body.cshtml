@@ -4,26 +4,147 @@
     <govukHeadingH1 text="@Model.PageHeading"></govukHeadingH1>
 </div>
 
-<div class="govuk-grid-row margin-reset">
-    <div class="app-grey govuk-body">
-        <div class="govuk-main-wrapper govuk-width-container">
-            <p><partial name="_MatchesCount"/></p>
+<div class="govuk-main-wrapper govuk-width-container">
+    @*<div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">
+                Based on the skills in your skills list these are the roles your skills matched to.
+            </p>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="grey border-bottom app-save-panel--alt p-right">
+                <span class="govuk-heading-m">Return to this later</span><a href="#">Save my progress</a>
+            </div>
+        </div>
+    </div>*@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <p><partial name="_MatchesCount" /></p>
+        </div>
+    </div>
 
-            <div class="app-results ">
-                    <hr>
-                    <div class="sort-container govuk-!-margin-bottom-6">
-                        <!-- partial: _SortOptions -->
+    <div class="govuk-grid-row">
+        @*<div class="govuk-grid-column-one-third">
+            <div class="app-sidebar app-advisor-panel">
+                <div class="filters-container">
+                    <div class="filter-label">
+                        <h2 class="govuk-heading-s govuk-!-margin-0">Filter by category</h2>
                     </div>
-                    <ul class="app-results list govuk-list" id="app-results-list--long">
+                    <div class="filter-box">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-visually-hidden">Choose desired job categories</legend>
+                            <div class="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input checked="checked" class="govuk-radios__input" data-val="true" data-val-required="The CourseHours field is required." id="CourseHours_All" name="CourseHours" type="radio" value="All">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="CourseHours_All">All</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="CourseHours_Fulltime" name="CourseHours" type="radio" value="Fulltime">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="CourseHours_Fulltime">Administration</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="CourseHours_PartTime" name="CourseHours" type="radio" value="PartTime">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="CourseHours_PartTime">Animal care</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="CourseHours_Flexible" name="CourseHours" type="radio" value="Flexible">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="CourseHours_Flexible">Beauty and wellbeing</label>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="filters-container">
+                    <div class="filter-label">
+                        <h2 class="govuk-heading-s govuk-!-margin-0">Filter by match strength</h2>
+                    </div>
+                    <div class="filter-box">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-visually-hidden">Choose desired match strength</legend>
+                            <div class="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input checked="checked" class="govuk-radios__input" data-val="true" data-val-required="Match strength is required." id="match_all" name="match_all" type="radio" value="All_strengths">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="match_all">All</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="80-100" name="CourseHours" type="radio" value="Fulltime">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="80-100">80 - 100%</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="50-79" name="CourseHours" type="radio" value="PartTime">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="50-79">50 - 79%</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="less_than_50" name="CourseHours" type="radio" value="Flexible">
+                                    <label class="govuk-label govuk-radios__label govuk-!-font-size-16" for="less_than_50">less than 50%</label>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    </div>
+                    <button class="govuk-button">Apply filters</button>
+                </div>
+            </div>
+        </div>*@
+        <div class="govuk-grid-column-two-thirds app-intro">
+            <div class="app-results ">
+                <div class="app-results__item">
+                    <hr>
+                    @*<div class="sort-container govuk-!-margin-bottom-6">
+                        <span><strong>Sort by:</strong></span>
+                        <ul class="sort-list">
+                            <li class="sort-list-item"><a href="#">Match %</a></li>
+                            <li class="sort-list-item"><a href="#">A - Z</a></li>
+                            <li class="sort-list-item"><a href="#">Job sector growth</a></li>
+                        </ul>
+                    </div>*@
+                    <div class="app-long-results list govuk-list govuk-grid-row" id="app-results-list--long">
                         @foreach (var careerMatch in Model.CareerMatches.OrderByDescending(cm => cm.MatchStrengthPercentage))
                         {
-                            <li class="app-results__item govuk-clearfix">
-                                <partial name="_MatchResult" model="careerMatch"/>
-                            </li>
+                            <partial name="_MatchResult" model="careerMatch" />
                         }
-                    </ul>
+                        
+                    </div>
+                </div>
             </div>
-            
+            @*<nav role="navigation" aria-label="Pagination">
+                <div class="pagination__summary">Showing 1 - 5 of 25 results</div>
+                <ul class="previous-next-navigation govuk-!-margin-top-3">
+
+                    <li class="next">
+                        <a href="#">
+                            <span class="pagination-label">Next</span>
+                            <span class="govuk-visually-hidden">page</span>
+                            <span class="page-numbers">2 of 5</span>
+                        </a>
+                    </li>
+                </ul>
+
+
+
+            </nav>*@
         </div>
     </div>
 </div>
+@*<div class="govuk-grid-row">
+   
+    <div class="govuk-grid-column-two-thirds app-intro">
+        <p><partial name="_MatchesCount" /></p>
+        <hr>
+        <div id="results">
+            <div class="results-block">
+                <div class="inner-block">
+                    <ol class="results-list">
+                        @foreach (var careerMatch in Model.CareerMatches.OrderByDescending(cm => cm.MatchStrengthPercentage))
+                        {
+                            <li>
+                                <partial name="_MatchResult" model="careerMatch" />
+                            </li>
+                        }
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
