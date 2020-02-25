@@ -84,7 +84,7 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 resultGet.Occupations = new HashSet<UsOccupation>();
             }
-            if (resultGet.Occupations.Any(o=>o.Id == occupationId)==false)
+            if (!resultGet.Occupations.Any(o => o.Id == occupationId))
                 resultGet.Occupations.Add(new UsOccupation(occupationId, enterJobInputAutocomplete));
             await _sessionService.UpdateUserSessionAsync(resultGet);
             
