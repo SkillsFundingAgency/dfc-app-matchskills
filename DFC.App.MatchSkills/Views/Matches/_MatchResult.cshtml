@@ -1,14 +1,60 @@
 ﻿@using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.Models.CareerMatch
 
-<div class="result-description">
-    <h3 class="govuk-heading-m"><a href="@Model.GetDetailsUrl(Model.JobProfile.Url)">@Model.JobProfile.Title</a></h3>
-    <p>@Model.JobProfile.Description</p>
-</div>
-<div class="ncs-progress govuk-clearfix">
-    <span class="ncs-progress__count ">
-        <strong class="govuk-!-font-size-28">@Model.MatchStrengthPercentage%</strong><br/>
-        <strong class="small">Skills&nbsp;match</strong>
-    </span>
-    <div class="ncs-progress__bar"><span style="width: @Model.MatchStrengthPercentage%"></span></div>
+<div class="govuk-!-width-full">
+    <div class="app-long-results__item">
+        <div class="result-description">
+            <h3><a href="@Model.GetDetailsUrl(Model.JobProfile.Url)">@Model.JobProfile.Title</a></h3>
+            <p>@Model.JobProfile.Description</p>
+        </div>
+        <div class="ncs-progress govuk-clearfix">
+            <span class="ncs-progress__count app-results__cta"><b class="govuk-!-font-size-28">@Model.MatchStrengthPercentage%</b> <span class-="govuk-!-font-size-18"><b class="govuk-!-font-size-16 small">Skills match</b></span></span>
+            <div class="ncs-progress__bar"><span style="width: @Model.MatchStrengthPercentage%"></span></div>
+        </div>
+        @*<div class="govuk-!-font-size-14 govuk-clearfix"><strong>Job sector growth:</strong> <i class="embedded-fa-icon fa-arrow-up"></i>Increasing</div>
+        <details class="govuk-details float-reset" data-module="govuk-details">
+            <summary class="govuk-details__summary govuk-!-font-size-14">
+                <span class="govuk-details__summary-text ">
+                    More about this match
+                </span>
+            </summary>
+            <div class="govuk-details__text ">
+                <div class="govuk-grid-column-one-half">
+                    <p><strong>Your matching skills:</strong></p>
+                    <ul class="govuk-list govuk-list--bullet skills-list">
+                        <li class="no-border">
+                            Matching Skill
+                        </li>
+                        <li class="no-border">
+                            Matching Skill
+                        </li>
+                        <li class="no-border">
+                            Matching Skill
+                        </li>
+                        <li class="no-border">
+                            Matching Skill
+                        </li>
+                        <li class="no-border">
+                            Matching Skill
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-grid-column-one-half">
+                    <p><strong>Skills you'll need to gain:</strong></p>
+                    <ul class="govuk-list govuk-list--bullet skills-list">
+                        <li class="no-border">
+                            Missing Skill
+                        </li>
+                        <li class="no-border">
+                            Missing Skill
+                        </li>
+                        <li class="no-border">
+                            Missing Skill
+                        </li>
+                        <li class="no-border">Missing Skill</li>
+                    </ul>
+                </div>
+            </div>
+        </details>*@
+    </div>
 </div>
