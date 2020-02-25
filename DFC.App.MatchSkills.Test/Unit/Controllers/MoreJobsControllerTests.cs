@@ -130,8 +130,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 Occupations = new HashSet<UsOccupation>(2)
                 {
-                    new UsOccupation("1", "FirstOccupation", DateTime.UtcNow),
-                    new UsOccupation("2", "SecondOccupation", DateTime.UtcNow)
+                    new UsOccupation("1", "FirstOccupation"),
+                    new UsOccupation("2", "SecondOccupation")
                 }
             };
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(userSession);
