@@ -73,11 +73,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 SkillsToRemove = new HashSet<UsSkill>
                 {
-                    new UsSkill("1", "test", DateTime.Now)
+                    new UsSkill("1", "test")
                 },
                 Skills = new HashSet<UsSkill>
                 {
-                    new UsSkill("1", "test", DateTime.Now)
+                    new UsSkill("1", "test")
                 }
             });
 
