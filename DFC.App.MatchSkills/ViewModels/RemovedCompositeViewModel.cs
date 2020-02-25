@@ -10,5 +10,6 @@ namespace DFC.App.MatchSkills.ViewModels
         }
 
         public SkillSet Skills { get; set; }
+        public bool HasRemainingSkills { get; set; }
     }
 }

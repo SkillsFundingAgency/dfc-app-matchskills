@@ -63,11 +63,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 Occupations = new HashSet<UsOccupation>(1)
                 {
-                    new UsOccupation("id", "id", DateTime.UtcNow)
+                    new UsOccupation("id", "id")
                 },
                 Skills = new HashSet<UsSkill>(1)
                 {
-                    new UsSkill("id", "id", DateTime.UtcNow)
+                    new UsSkill("id", "id")
                 }
             };
 
@@ -136,7 +136,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 Occupations = new HashSet<UsOccupation>(1)
                 {
-                    new UsOccupation("id", "id", DateTime.UtcNow)
+                    new UsOccupation("id", "id")
                 }
             };
             _sessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);

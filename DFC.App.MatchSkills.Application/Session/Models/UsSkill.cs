@@ -8,11 +8,11 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public string Id { get; set; }
         public DateTime DateAdded { get; set; }
 
-        public UsSkill(string id, string name,DateTime dateAdded)
+        public UsSkill(string id, string name)
         {
             Id = id;
             Name = name;
-            DateAdded = dateAdded;
+            DateAdded = DateTime.UtcNow;
         }
 
         public override int GetHashCode()

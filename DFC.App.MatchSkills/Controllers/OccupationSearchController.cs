@@ -84,8 +84,8 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 resultGet.Occupations = new HashSet<UsOccupation>();
             }
-            
-            resultGet.Occupations.Add(new UsOccupation(occupationId, enterJobInputAutocomplete, DateTime.Now));
+            if (!resultGet.Occupations.Any(o => o.Id == occupationId))
+                resultGet.Occupations.Add(new UsOccupation(occupationId, enterJobInputAutocomplete));
             await _sessionService.UpdateUserSessionAsync(resultGet);
             
             return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SelectSkills}");

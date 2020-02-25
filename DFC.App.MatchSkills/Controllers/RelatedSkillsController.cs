@@ -82,7 +82,7 @@ namespace DFC.App.MatchSkills.Controllers
                 string[] skill = key.Split("--");
                 Throw.IfNull(skill[0], nameof(skill));
                 Throw.IfNull(skill[1], nameof(skill));
-                userSession.Skills.Add(new UsSkill(skill[0], skill[1], DateTime.Now));
+                userSession.Skills.Add(new UsSkill(skill[0], skill[1]));
             }
 
             await _sessionService.UpdateUserSessionAsync(userSession);
