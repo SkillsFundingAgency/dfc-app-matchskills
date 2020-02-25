@@ -71,7 +71,12 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         {
             occupation ??= ""; 
             skillList ??= new string[0]; 
-            var postData = new StringContent($"{{  \"skillList\": [    \"{string.Join(',', skillList)}\"  ],  \"occupation\": \"{occupation}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
+            var request = new SkillsGapRequest()
+            {
+                Occupation = occupation,
+                SkillList = skillList
+            };
+            var postData = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, MediaTypeNames.Application.Json);
             var result = await GetJsonListPost<SkillsGapAnalysis>($"{apiPath}/getskillsgapforoccupationandgivenskills/Execute/", ocpApimSubscriptionKey,postData);
             return Mapping.Mapper.Map<SkillsGap>(result);
         }
