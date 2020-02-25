@@ -520,6 +520,24 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             var occupation = skillsGapAnalysis.Occupation;
             var uri = skillsGapAnalysis.Uri;
         }
+
+        [Test]
+        public void WhenSkillsGapRequestMade_ReturnValues()
+        {
+            var request = new SkillsGapRequest()
+            {
+                Occupation = "Occupation",
+                SkillList = new string[1]
+                {
+                    "Skills"
+                }
+            };
+            var occupation = request.Occupation;
+            var skills = request.SkillList;
+
+            occupation.Should().Be("Occupation");
+            skills[0].Should().Be("Skills");
+        }
         class MockResult
         {
             public int Id { get; set; }
