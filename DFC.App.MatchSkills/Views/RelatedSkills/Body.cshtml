@@ -12,7 +12,7 @@
     slm.Skills.LoadFrom(Model.RelatedSkills);
 }
 <govukErrorSummary hidden="@(!Model.HasError)">
-    <govukErrorSummaryItem href="#" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
+    <govukErrorSummaryItem href="#selectSkills" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
 </govukErrorSummary>
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
@@ -22,7 +22,7 @@
                 <form id="@form" action="/matchskills/relatedskills/addskills" method="post">
                     @Html.HiddenFor(x => x.SearchTerm)
                     <div class="govuk-form-group">
-                        <fieldset class="govuk-fieldset">
+                        <fieldset class="govuk-fieldset" id="selectSkills">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                                 <govukHeadingH1 Text="@Model.PageHeading" />
                             </legend>
