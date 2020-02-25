@@ -66,6 +66,32 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                     x.CurrentPage == CompositeViewModel.PageId.Removed.Value));
         }
 
+        [Test]
+        public async Task When_RemovedCalledAndUserStillHasSkillsInTheBasket_ThenReturnViewWithHasMoreSkills()
+        {
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession
+            {
+                SkillsToRemove = new HashSet<UsSkill>
+                {
+                    new UsSkill("1", "test", DateTime.Now)
+                },
+                Skills = new HashSet<UsSkill>
+                {
+                    new UsSkill("1", "test", DateTime.Now)
+                }
+            });
+
+
+            var controller = new RemovedController(_compositeSettings, _sessionService, _cookieService);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            var result = await controller.Body() as ViewResult;
+            result.Model.As<RemovedCompositeViewModel>().HasRemainingSkills.Should().BeTrue();
+            result.Model.As<RemovedCompositeViewModel>().Skills.Count.Should().Be(1);
+        }
+
 
         [Test]
         public async Task When_RemovedPostedTo_ReturnRedirect()

@@ -19,9 +19,9 @@
     <form action="/matchskills/@CompositeViewModel.PageId.ConfirmRemove.Value" method="post">
         <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">
 
-            <fieldset class="govuk-fieldset">
+            <fieldset class="govuk-fieldset" id="@Model.GetElementId("fieldset","radio")">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <govukHeadingH1 Text="Your current skills list" />
+                    <govukHeadingH1 Text="Remove skills" />
                     <span class="govuk-hint">Select the skills you would like to remove.</span>
                 </legend>
                 <govukError text="Choose skills to remove from your skills list" id="@Model.GetElementId("govukError","ErrorMessage")"

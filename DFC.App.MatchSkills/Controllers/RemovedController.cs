@@ -31,7 +31,7 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 ViewModel.Skills.Add(new Skill(skill.Id, skill.Name));
             }
-            
+            ViewModel.HasRemainingSkills = userSession.Skills.Count > 0;
             userSession.SkillsToRemove = new HashSet<UsSkill>();
             await UpdateUserSession(userSession.UserSessionId, ViewModel.Id.Value, userSession);
             return await base.Body();
