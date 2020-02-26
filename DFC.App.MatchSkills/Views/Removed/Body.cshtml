@@ -10,24 +10,26 @@
 }
 
 <div class="govuk-grid-column-two-thirds">
-    <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-6">
-        <govukHeadingH1 additional-class="govuk-panel__title govuk-panel--confirmation" text="Skill(s) removed"></govukHeadingH1>
-    </div>
-    <govukHeadingH3 text="You have successfully removed the following skills from your skills list"></govukHeadingH3>
-
-    @await Component.InvokeAsync("SkillsList", slm)
-
-    @if (!Model.HasRemainingSkills)
-    {
-        <govukHeadingH3 text="Your skills list is now empty"></govukHeadingH3>
-        <div class="govuk-body">
-            To find career matches, you can <govukLink id="@Model.GetElementId("govukButtonLink", "moreSkills")" Link-Title="Return to skills list" Link-Text="Return to your skills list" Link-Href="@CompositeViewModel.PageId.MoreSkills"></govukLink>
+    <div class="govuk-grid-row">
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-6">
+            <govukHeadingH1 additional-class="govuk-panel__title govuk-panel--confirmation" text="Skill(s) removed"></govukHeadingH1>
         </div>
-    }
-    else
-    {
-        <govukLink id="@Model.GetElementId("govukButtonLink", "ReturnToSkillsList")" Link-Title="Return to skills list" Link-Text="Return to your skills list" Link-Href="@CompositeViewModel.PageId.SkillsBasket"></govukLink>
+        <govukHeadingH3 text="You have successfully removed the following skills from your skills list"></govukHeadingH3>
 
-    }
+        @await Component.InvokeAsync("SkillsList", slm)
 
+        @if (!Model.HasRemainingSkills)
+        {
+            <govukHeadingH3 text="Your skills list is now empty"></govukHeadingH3>
+            <div class="govuk-body">
+                To find career matches, you can <govukLink id="@Model.GetElementId("govukButtonLink", "moreSkills")" Link-Title="add skills" Link-Text="add skills to your list" Link-Href="@CompositeViewModel.PageId.MoreSkills"></govukLink>
+            </div>
+        }
+        else
+        {
+            <govukLink id="@Model.GetElementId("govukButtonLink", "ReturnToSkillsList")" Link-Title="Return to skills list" Link-Text="Return to your skills list" Link-Href="@CompositeViewModel.PageId.SkillsBasket"></govukLink>
+
+        }
+
+    </div>
 </div>
