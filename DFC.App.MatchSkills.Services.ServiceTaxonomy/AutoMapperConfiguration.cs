@@ -68,8 +68,8 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ForMember(dest => dest.CareerTitle, opt => opt.MapFrom(src => src.Occupation))
                 //TODO Map Career description with ST adds functionality into API
                 //.ForMember(dest => dest.CareerDescription, opt => opt.MapFrom(src => src))
-                .ForMember(dest => dest.MissingSkills, opt => opt.MapFrom(src => src.MissingSkills.Select(x => x.Skill)))
-                .ForMember(dest => dest.MatchingSkills, opt => opt.MapFrom(src => src.MatchingSkills.Select(x => x.Skill)))
+                .ForMember(dest => dest.MissingSkills, opt => opt.MapFrom(src => src.MissingSkills.Where(x => x.RelationshipType == RelationshipType.Essential).Select(x => x.Skill)))
+                .ForMember(dest => dest.MatchingSkills, opt => opt.MapFrom(src => src.MatchingSkills.Where(x => x.RelationshipType == RelationshipType.Essential).Select(x => x.Skill)))
                 .ConstructUsing(dest => new SkillsGap());
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
 {
@@ -14,7 +15,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
 
             public class StOsSkill
             {
-                public string RelationshipType { get; set; }
+                public RelationshipType RelationshipType { get; set; }
                 public string Skill { get; set; }
                 public DateTime LastModified { get; set; }
                 public string[] AlternativeLabels { get; set; }

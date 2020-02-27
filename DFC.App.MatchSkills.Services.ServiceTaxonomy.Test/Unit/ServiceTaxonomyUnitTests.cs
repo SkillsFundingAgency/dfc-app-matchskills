@@ -269,7 +269,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                     {
                         AlternativeLabels = new [] {"label1","label2"},
                         LastModified =Convert.ToDateTime("1-Oct-2010"),
-                        RelationshipType = "RelationshipType",
+                        RelationshipType = RelationshipType.Essential,
                         Skill="Skill Name",
                         SkillReusability = "SkillReusability",
                         Type="skilltype",
@@ -284,7 +284,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             sut.AlternativeLabels.Should().BeEquivalentTo(new[] {"label1", "label2"});
             sut.Skills[0].Uri.Should().Be("skilluri");
             sut.Skills[0].SkillReusability.Should().Be("SkillReusability");
-            sut.Skills[0].RelationshipType.Should().Be("RelationshipType");
+            sut.Skills[0].RelationshipType.Should().Be(RelationshipType.Essential);
 
         }
 
