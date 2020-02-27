@@ -8,6 +8,9 @@
                 <method>GET</method>
             </allowed-methods>
         </cors>
+        <rate-limit-by-key  calls="__AllowedClientRequestsPerMinute__"
+            renewal-period="60"
+            counter-key="@(context.Request.IpAddress)"/>
         <base />
     </inbound>
     <backend>
