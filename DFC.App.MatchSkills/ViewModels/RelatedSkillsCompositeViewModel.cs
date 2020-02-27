@@ -4,7 +4,7 @@ namespace DFC.App.MatchSkills.ViewModels
 {
     public class RelatedSkillsCompositeViewModel : CompositeViewModel
     {
-        public RelatedSkillsCompositeViewModel() : base(PageId.RelatedSkills, "Select Skills")
+        public RelatedSkillsCompositeViewModel() : base(PageId.RelatedSkills, "Select skills")
         {
             Skills = new SkillSet();
             RelatedSkills = new SkillSet();

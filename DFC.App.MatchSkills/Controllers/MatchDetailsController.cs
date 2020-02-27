@@ -48,7 +48,7 @@ namespace DFC.App.MatchSkills.Controllers
             }
 
             var skillsGap = await GetSkillsGap(id);
-
+            
             ViewModel.MissingSkills = skillsGap.MissingSkills;
             ViewModel.MatchingSkills = skillsGap.MatchingSkills;
             ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
