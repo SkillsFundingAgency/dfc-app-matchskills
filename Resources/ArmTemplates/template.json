@@ -40,7 +40,7 @@
     "variables": {
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-pers-matchskills'))]",
-        "apimProductDisplayName": "Personalisation Match Skills API",
+        "apimProductDisplayName": "Personalisation Match Skills",
         "cosmosDbCollectionName": "UserSessions",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
         "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]"
