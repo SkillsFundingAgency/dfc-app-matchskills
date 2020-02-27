@@ -2,7 +2,7 @@
     <inbound>
         <cors>
             <allowed-origins>
-                <origin>https://__WebAppDomain__/</origin>
+                <origin>https://__CorsAllowedDomain__/</origin>
             </allowed-origins>
             <allowed-methods preflight-result-max-age="300">
                 <method>GET</method>
