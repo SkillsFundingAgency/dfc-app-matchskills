@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "apimServiceName": {
+            "type": "string"
+        },
         "appServiceDomain": {
             "type": "string"
         },
@@ -37,11 +40,57 @@
     "variables": {
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-pers-matchskills'))]",
+        "apimProductDisplayName": "Personalisation Match Skills API",
+        "cosmosDbCollectionName": "UserSessions",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
-        "cosmosDbCollectionName": "UserSessions"
+        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]"
     },
     "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "MatchSkillsApiLogger",
+            "resourceGroup": "[parameters('sharedResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-logger.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apimServiceName": {
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "productDisplayName": {
+                        "value": "[variables('apimProductDisplayName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "MatchSkillsApiProduct",
+            "resourceGroup": "[parameters('sharedResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-product')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apimServiceName": {
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "productDisplayName": {
+                        "value": "[variables('apimProductDisplayName')]"
+                    },
+                    "allowAnonymousAccess": {
+                        "value": true
+                    }
+                }
+            }
+        },
         {
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollectionName'))]",
