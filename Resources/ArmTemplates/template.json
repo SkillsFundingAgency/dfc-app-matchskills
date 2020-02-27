@@ -171,6 +171,14 @@
                                 "value": "1"
                             },
                             {
+                                "name": "WEBSITE_RUN_FROM_PACKAGE",
+                                "value": "1"
+                            },
+                            {
+                                "name": "FUNCTIONS_WORKER_RUNTIME",
+                                "value": "dotnet"
+                            },
+                            {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                 "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
                             },
@@ -231,5 +239,6 @@
             ]
         }
     ],
-        "outputs": {}
+    "outputs": {
     }
+}
