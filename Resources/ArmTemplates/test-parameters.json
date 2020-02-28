@@ -9,7 +9,7 @@
             "value": "azurewebsites.net"
         },
         "dfcSharedResourceGroup": {
-            "value": "dfc-foo-shared-rg"
+            "value": "dfc-test-template-rg"
         },
         "Environment": {
             "value": "FOO"
