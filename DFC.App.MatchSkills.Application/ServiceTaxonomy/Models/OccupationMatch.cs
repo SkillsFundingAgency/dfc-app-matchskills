@@ -1,4 +1,5 @@
 ﻿using System;
+using DFC.App.MatchSkills.Application.LMI.Models;
 
 namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
 {
@@ -20,6 +21,7 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
         public int TotalOccupationOptionalSkills { get; set; }
 
         public string Uri { get; set; }
-
+        public int SocCode { get; set; }
+        public JobGrowth JobGrowth { get; set; }
     }
 }
