@@ -1,0 +1,31 @@
+﻿@model DFC.App.MatchSkills.ViewComponents.Pagination.PaginationViewModel
+
+<nav role="navigation" aria-label="Pagination">
+    <div class="pagination__summary">@Model.ShowResultsString</div>
+    <ul class="previous-next-navigation govuk-!-margin-top-3">
+        
+        @if (@Model.NextPage.HasValue)
+        {
+            <li class="next">
+                <a href="@Model.NextPageLink">
+                    <span class="pagination-label">Next</span>
+                    <span class="govuk-visually-hidden">page</span>
+                    <span class="page-numbers">@Model.NextPage.Value of @Model.TotalPages</span>
+                </a>
+            </li>
+        }
+        
+        @if (Model.PreviousPage.HasValue)
+        {
+            <li class="previous">
+                <a href="@Model.PreviousPageLink">
+                    <span class="pagination-label">Previous</span>
+                    <span class="govuk-visually-hidden">page</span>
+                    <span class="page-numbers">@Model.PreviousPage.Value of @Model.TotalPages</span>
+                </a>
+            </li>
+        }
+
+    </ul>
+    
+</nav>
