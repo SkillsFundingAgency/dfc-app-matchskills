@@ -75,7 +75,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-product')]",
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-product.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
