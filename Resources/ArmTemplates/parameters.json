@@ -8,6 +8,9 @@
         "appServiceDomain": {
             "value": "__FunctionAppDomain__"
         },
+        "dfcSharedResourceGroup": {
+            "value": "__SharedResourceGroupName__"
+        },
         "Environment": {
             "value": "__ReleaseEnvironmentName__"
         },

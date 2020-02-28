@@ -8,6 +8,9 @@
         "appServiceDomain": {
             "value": "azurewebsites.net"
         },
+        "dfcSharedResourceGroup": {
+            "value": "dfc-foo-shared-rg"
+        },
         "Environment": {
             "value": "FOO"
         },

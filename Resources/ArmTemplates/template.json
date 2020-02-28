@@ -8,6 +8,9 @@
         "appServiceDomain": {
             "type": "string"
         },
+        "dfcSharedResourceGroup": {
+            "type": "string"
+        },
         "environment": {
             "type": "string"
         },
@@ -49,7 +52,7 @@
         {
             "apiVersion": "2017-05-10",
             "name": "MatchSkillsApiLogger",
-            "resourceGroup": "[parameters('sharedResourceGroup')]",
+            "resourceGroup": "[parameters('dfcSharedResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -70,7 +73,7 @@
         {
             "apiVersion": "2017-05-10",
             "name": "MatchSkillsApiProduct",
-            "resourceGroup": "[parameters('sharedResourceGroup')]",
+            "resourceGroup": "[parameters('dfcSharedResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
