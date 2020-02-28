@@ -21,7 +21,7 @@ namespace DFC.App.MatchSkills.ViewComponents.SkillsList
 
         public string BeginSkillsListHTML { get; set; }
         public string EndSkillsListHTML { get; set; }
-
+        public bool AllSkillsSelected { get; set; }
         public string ItemIdPrefix { get; }
 
         public SkillsListViewModel(string itemIdPrefix, ListItemType listType)

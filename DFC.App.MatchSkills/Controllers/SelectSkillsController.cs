@@ -63,7 +63,7 @@ namespace DFC.App.MatchSkills.Controllers
          {
              await GetSessionData();
              ViewModel.HasError = HasErrors();
-
+             
              return await base.Body();
         }
         
@@ -92,6 +92,15 @@ namespace DFC.App.MatchSkills.Controllers
             return RedirectTo(CompositeViewModel.PageId.SkillsBasket.Value);
         }
 
+        
+        [Route("/body/[controller]/SkillSelectToggle")]
+        [SessionRequired]
+        public async Task<IActionResult> SkillSelectToggle(bool toggle)
+        {
+            await GetSessionData();
+            ViewModel.AllSkillsSelected = !toggle;
+            return View("body",ViewModel);
+        }
        
     }
 }
