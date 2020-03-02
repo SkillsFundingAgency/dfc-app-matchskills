@@ -2,10 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "apimServiceName": {
+        "apimProxyAddress": {
             "type": "string"
         },
-        "appServiceDomain": {
+        "apimServiceName": {
             "type": "string"
         },
         "dfcSharedResourceGroup": {
@@ -207,7 +207,7 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchService",
-                                "value": "[concat('https://', variables('webAppName'), '.', parameters('appServiceDomain'))]"
+                                "value": "[concat(parameters('apimProxyAddress'), '/matchskills/OccupationSearchAuto')]"
                             },
                             {
                                 "name": "CompositeSettings__Path",
