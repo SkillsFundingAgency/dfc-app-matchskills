@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Application.LMI.Interfaces;
+using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
+using DFC.Personalisation.Common.Net.RestClient;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.LMI.Interfaces;
-using DFC.App.MatchSkills.Application.LMI.Models;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
-using DFC.Personalisation.Common.Net.RestClient;
-using Dfc.ProviderPortal.Packages;
-using Microsoft.Azure.Cosmos.Linq;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {
