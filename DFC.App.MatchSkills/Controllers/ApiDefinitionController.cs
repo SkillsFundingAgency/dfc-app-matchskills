@@ -25,6 +25,7 @@ namespace DFC.App.MatchSkills.Controllers
             var hostName = Request.Headers["HOSTNAME"].ToString();
             var apiDefinition = _fileService.ReadAllText(@"Docs\OccupationSearchAuto.json");
             apiDefinition = apiDefinition.Replace("{serverurl}", $"{hostName}.azurewebsites.net");
+
             if (string.IsNullOrEmpty(apiDefinition))
                 return NoContent();
 
