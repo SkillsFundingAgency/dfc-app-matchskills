@@ -11,7 +11,7 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly IFileService _fileService;
        
-        public ApiDefinitionController(IFileService fileService,  IOptions<ServiceTaxonomySettings> settings)
+        public ApiDefinitionController(IFileService fileService)
         {
             _fileService = fileService;
        
