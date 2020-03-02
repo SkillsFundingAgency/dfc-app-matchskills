@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dfc.ProviderPortal.Packages;
+﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.Personalisation.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
