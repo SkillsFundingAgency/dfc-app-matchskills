@@ -11,6 +11,7 @@
             <span class="ncs-progress__count app-results__cta"><b class="govuk-!-font-size-28">@Model.MatchStrengthPercentage%</b> <span class-="govuk-!-font-size-18"><b class="govuk-!-font-size-16 small">Skills match</b></span></span>
             <div class="ncs-progress__bar"><span style="width: @Model.MatchStrengthPercentage%"></span></div>
         </div>
+        <partial name="_JobSectorGrowth" model="@Model" />
         @*<div class="govuk-!-font-size-14 govuk-clearfix"><strong>Job sector growth:</strong> <i class="embedded-fa-icon fa-arrow-up"></i>Increasing</div>
         <details class="govuk-details float-reset" data-module="govuk-details">
             <summary class="govuk-details__summary govuk-!-font-size-14">

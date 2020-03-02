@@ -25,12 +25,10 @@ namespace DFC.App.MatchSkills.Controllers
                 {
                     if (match.MatchingEssentialSkills > 0)
                     {
-                        var cm = new CareerMatch()
-                        {
-                            JobSectorGrowthDescription = string.Empty,
-                        };
+                        var cm = new CareerMatch();
                         cm.JobProfile.Title = match.JobProfileTitle;
                         cm.JobProfile.Description = "Job profile description will go here.";
+                        cm.JobSectorGrowthDescription = match.JobGrowth;
                         cm.JobProfile.Url = match.JobProfileUri;
                         cm.MatchingEssentialSkills = match.MatchingEssentialSkills;
                         cm.MatchingOptionalSkills = match.MatchingOptionalSkills;

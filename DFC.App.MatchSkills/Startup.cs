@@ -1,6 +1,9 @@
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
+using DFC.App.MatchSkills.Application.LMI.Interfaces;
+using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Application.LMI.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
@@ -44,6 +47,7 @@ namespace DFC.App.MatchSkills
             services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
             services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
             services.Configure<SessionSettings>(Configuration.GetSection(nameof(SessionSettings)));
+            services.Configure<LmiSettings>(Configuration.GetSection(nameof(LmiSettings)));
             services.AddScoped((x) => new CosmosClient(
                 accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
                 authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
@@ -51,6 +55,7 @@ namespace DFC.App.MatchSkills
             services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<ILmiService, LmiService>();
             
 
             services.AddCors(options =>
