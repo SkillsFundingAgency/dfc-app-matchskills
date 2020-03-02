@@ -5,7 +5,8 @@
     var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox)
     {
         BeginSkillsListHTML = "<div class=\"govuk-checkboxes skill-list-container govuk-checkboxes--small dual-checkbox-container\">",
-        EndSkillsListHTML = "</div>"
+        EndSkillsListHTML = "</div>",
+        AllSkillsSelected = Model.AllSkillsSelected
     };
     slm.Skills.LoadFrom(Model.Skills);
 }
@@ -19,15 +20,15 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            <form action="@CompositeViewModel.PageId.SelectSkills"  method="post">
-               
+            <form action="@CompositeViewModel.PageId.SelectSkills" method="post">
+
                 <div class="results  @(Model.HasError ? "govuk-form-group--error": "") ">
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset" id="selectskills">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                                 <govukHeadingH1 Text="@Model.PageHeading" />
                             </legend>
-                          
+
                             <p>
                                 These are some of the skills you may have used in the role of <strong>@Model.Occupation</strong>.
                             </p>
@@ -37,16 +38,19 @@
                             <p>
                                 If you have a skill that you do not want to use for career matching, do not add it to your skills list.
                             </p>
-    
-                                    @if (Model.HasError)
-                                    {
-                                        <span id="changed-name-error" class="govuk-error-message">
-                                            <span class="govuk-visually-hidden">Error:</span> Choose skills to add to your skills list
-                                        </span>
-                                    }
-                                    @await Component.InvokeAsync("SkillsList", slm)
-                                    
-                            </fieldset>
+
+                            @if (Model.HasError)
+                            {
+                                <span id="changed-name-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> Choose skills to add to your skills list
+                                </span>
+                            }
+                            <govukLink id="@Model.GetElementId("govukLink","SkillSelectToggle")"   link-href="/matchskills/@CompositeViewModel.PageId.SelectSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
+
+
+                            @await Component.InvokeAsync("SkillsList", slm)
+
+                        </fieldset>
                     </div>
                 </div>
                 <govukButton id="@Model.GetElementId("govukButton","Addtoskillslist")" text="Add to skills list" />
@@ -54,4 +58,3 @@
         </div>
     </div>
 </div>
-

@@ -133,7 +133,26 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
                 x.CurrentPage == CompositeViewModel.PageId.SelectSkills.Value));
         }
-        
+
+        [Test]
+        public async Task When_Toggle_Then_ViewModelAllSkillsSelectedToggled()
+        {
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService, _cookieService)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            }; 
+            
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+
+    
+            var result = await controller.SkillSelectToggle(false) as ViewResult;
+            var vm = result.ViewData.Model as SelectSkillsCompositeViewModel;
+            vm.AllSkillsSelected.Should().BeTrue();
+
+        }
 
         #region CUIScaffoldingTests
 

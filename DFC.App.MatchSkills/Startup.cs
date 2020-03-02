@@ -44,6 +44,7 @@ namespace DFC.App.MatchSkills
             services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
             services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
             services.Configure<SessionSettings>(Configuration.GetSection(nameof(SessionSettings)));
+            services.Configure<PageSettings>(Configuration.GetSection(nameof(PageSettings)));
             services.AddScoped((x) => new CosmosClient(
                 accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
                 authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
