@@ -11,7 +11,7 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly IFileService _fileService;
        
-        public ApiDefinitionController(IFileService fileService,  IOptions<ServiceTaxonomySettings> settings)
+        public ApiDefinitionController(IFileService fileService)
         {
             _fileService = fileService;
        
@@ -22,7 +22,7 @@ namespace DFC.App.MatchSkills.Controllers
        
         public IActionResult Index()
         {
-            var hostName = Request.Headers["HOSTNAME"].ToString();
+            var hostName = Request.Host.HasValue ? Request.Host.Value : string.Empty;
             var apiDefinition = _fileService.ReadAllText(@"Docs\OccupationSearchAuto.json");
             apiDefinition = apiDefinition.Replace("{serverurl}", $"{hostName}.azurewebsites.net");
 
