@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "{serverurl}"
+      "url": "https://{serverurl}"
     }
   ],
   "paths": {
