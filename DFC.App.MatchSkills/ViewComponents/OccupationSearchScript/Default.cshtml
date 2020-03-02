@@ -36,7 +36,7 @@
     function runsearch(query, populateResults) {
         $.ajax({
             type: 'GET',
-            url: '@Model.SearchService/OccupationSearchAuto',
+            url: '@Model.SearchService',
             contentType: "application/json;charset=utf-8",
             dataType: "json",
             data: { occupation: query },
