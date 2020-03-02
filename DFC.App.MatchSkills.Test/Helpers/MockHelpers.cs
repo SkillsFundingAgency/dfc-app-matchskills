@@ -87,8 +87,19 @@ namespace DFC.App.MatchSkills.Test.Helpers
             if (withMatches)
             {
                 userSession.OccupationMatches.Add(new OccupationMatch()
+                {
+                    JobProfileTitle = "Mock Title",
+                    JobProfileUri = "http://mockjoburl",
+                    LastModified = DateTime.UtcNow,
+                    TotalOccupationEssentialSkills = 12,
+                    MatchingEssentialSkills = 6,
+                    TotalOccupationOptionalSkills = 4,
+                    MatchingOptionalSkills = 2,
+                    Uri = "MatchUri",
+                });
+                userSession.OccupationMatches.Add(new OccupationMatch()
                     {
-                        JobProfileTitle = "Mock Title",
+                        JobProfileTitle = "Mock Title2",
                         JobProfileUri = "http://mockjoburl",
                         LastModified = DateTime.UtcNow,
                         TotalOccupationEssentialSkills = 12,
