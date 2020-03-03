@@ -42,7 +42,7 @@ namespace DFC.App.MatchSkills.Controllers
                 {
                     page = ViewModel.TotalPages;
                 }
-                var skip = page > 1 ? page * pageSize : 0;
+                var skip = page > 1 ? (page -1) * pageSize : 0;
 
                 foreach (var match in userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0)
                     .OrderByDescending(x => x.MatchStrengthPercentage).Skip(skip).Take(pageSize))
@@ -65,7 +65,7 @@ namespace DFC.App.MatchSkills.Controllers
             }
             
             ViewModel.CurrentPage = page;
-            var startValue = page > 1 ? pageSize * page + 1 : 1;
+            var startValue = page > 1 ? pageSize * (page-1) + 1 : 1;
             var endValue = totalMatches < startValue + pageSize
                 ? totalMatches
                 : startValue + pageSize - 1;
@@ -79,6 +79,11 @@ namespace DFC.App.MatchSkills.Controllers
             if (totalResults < 1 || totalResults <= pageSize)
             {
                 return 1;
+            }
+
+            if (totalResults % pageSize > 1 && totalResults % pageSize < 5)
+            {
+                return (totalResults / pageSize) + 1;
             }
 
             return totalResults / pageSize;
