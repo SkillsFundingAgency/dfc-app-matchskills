@@ -68,6 +68,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 Skills = new HashSet<UsSkill>(1)
                 {
                     new UsSkill("id", "id")
+                },
+                OccupationMatches = new List<OccupationMatch>()
+                {
+                    new OccupationMatch()
+                    {
+                        Uri = "id",
+                        JobProfileUri = "id"
+                    }
                 }
             };
 

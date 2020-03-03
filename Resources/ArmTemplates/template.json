@@ -38,6 +38,9 @@
         },
         "performSearchSkillInAltLabels": {
             "type": "string"
+        },
+        "CompositeUiCdnUrl": {
+            "type": "string"
         }
     },
     "variables": {
@@ -232,6 +235,14 @@
                             {
                                 "name": "SessionSettings__Salt",
                                 "value": "ncs"
+                            },
+                            {
+                                "name": "CompositeSettings__CDN",
+                                "value": "[parameters('CompositeUiCdnUrl')]"
+                            },
+                            {
+                                "name": "LmiSettings__ApiUrl",
+                                "value": "http://api.lmiforall.org.uk/api/v1/"
                             }
                         ]
                     }

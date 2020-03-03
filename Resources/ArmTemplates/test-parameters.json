@@ -37,6 +37,9 @@
         },
         "performSearchSkillInAltLabels": {
             "value": "false"
+        },
+        "CompositeUiCdnUrl": {
+            "value": "https://cdn.composite.test.org/"
         }
     }
 }

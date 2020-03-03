@@ -52,7 +52,7 @@ namespace DFC.App.MatchSkills.Controllers
                         JobSectorGrowthDescription = string.Empty,
                     };
                     cm.JobProfile.Title = match.JobProfileTitle;
-                    cm.JobProfile.Description = "Job profile description will go here.";
+                    cm.JobProfile.Description = match.JobProfileDescription;
                     cm.JobProfile.Url = match.JobProfileUri;
                     cm.MatchingEssentialSkills = match.MatchingEssentialSkills;
                     cm.MatchingOptionalSkills = match.MatchingOptionalSkills;

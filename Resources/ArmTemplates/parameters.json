@@ -37,6 +37,9 @@
         },
         "performSearchSkillInAltLabels": {
             "value": "__performSearchSkillInAltLabels__"
+        },
+        "CompositeUiCdnUrl": {
+            "value": "__CompositeUiCdnUrl__"
         }
     }
 }

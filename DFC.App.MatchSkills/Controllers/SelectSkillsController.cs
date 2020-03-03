@@ -23,7 +23,9 @@ namespace DFC.App.MatchSkills.Controllers
         
         private readonly string _apiUrl;
         private readonly string _apiKey;
+        private readonly string _cdn;
         private readonly ISessionService _sessionService;
+
         public SelectSkillsController(IServiceTaxonomySearcher serviceTaxonomy, 
                 IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, 
                 ISessionService sessionService, ICookieService cookieService)  : base(compositeSettings, sessionService, cookieService)
@@ -40,6 +42,7 @@ namespace DFC.App.MatchSkills.Controllers
             _apiUrl = settings.Value.ApiUrl;
             _apiKey = settings.Value.ApiKey;
             _sessionService = sessionService;
+            _cdn = compositeSettings.Value.CDN ?? "";
 
         }
 
@@ -57,7 +60,8 @@ namespace DFC.App.MatchSkills.Controllers
             var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
                 _apiKey, occupation.Id);
 
-            ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList(); 
+            ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList();
+            ViewModel.CDN = _cdn;
         }
          public override async Task<IActionResult> Body()
          {
