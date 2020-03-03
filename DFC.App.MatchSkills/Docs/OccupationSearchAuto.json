@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/Execute/": {
+    "/OccupationSearchAuto/": {
       "get": {
         "tags": [
           "occupation"

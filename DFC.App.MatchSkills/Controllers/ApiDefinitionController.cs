@@ -24,7 +24,7 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var hostName = Request.Host.HasValue ? Request.Host.Value : string.Empty;
             var apiDefinition = _fileService.ReadAllText(@"Docs\OccupationSearchAuto.json");
-            apiDefinition = apiDefinition.Replace("{serverurl}", $"{hostName}.azurewebsites.net");
+            apiDefinition = apiDefinition.Replace("{serverurl}", hostName);
 
             if (string.IsNullOrEmpty(apiDefinition))
                 return NoContent();
