@@ -1,12 +1,13 @@
 <policies>
     <inbound>
         <cors>
-            <allowed-origins>
-                <origin>https://__CorsAllowedDomain__/</origin>
-            </allowed-origins>
+            <allowed-origins>__CorsAllowedDomain__</allowed-origins>
             <allowed-methods preflight-result-max-age="300">
                 <method>GET</method>
             </allowed-methods>
+            <allowed-headers>
+                <header>content-type</header>
+            </allowed-headers>
         </cors>
         <rate-limit-by-key  calls="__AllowedClientRequestsPerMinute__"
             renewal-period="60"
