@@ -17,10 +17,14 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
 {
     public class LmiService : ILmiService
     {
-        private readonly RestClient _restClient;
+        private readonly IRestClient _restClient;
         private readonly IOptions<LmiSettings> _settings;
 
-        public LmiService(RestClient restClient, IOptions<LmiSettings> settings)
+        public LmiService()
+        {
+            _restClient = new RestClient();
+        }
+        public LmiService(IRestClient restClient, IOptions<LmiSettings> settings)
         {
             _restClient = restClient ?? new RestClient();
             Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
