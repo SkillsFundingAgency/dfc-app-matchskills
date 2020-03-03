@@ -10,6 +10,7 @@ using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +41,7 @@ namespace DFC.App.MatchSkills
             services.AddControllersWithViews();
             services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
             services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
+            services.AddScoped<IRestClient, RestClient>();
             services.Configure<ServiceTaxonomySettings>(Configuration.GetSection(nameof(ServiceTaxonomySettings)));
             services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
             services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
