@@ -27,6 +27,7 @@ namespace DFC.App.MatchSkills.Models
 
         public int SourceSkillCount { get; set; }
 
+        public bool ShowLmiData { get; set; }
         public CareerMatch()
         {
             JobProfile = new JobProfile();

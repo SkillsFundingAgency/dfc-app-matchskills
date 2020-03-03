@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.LMI.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -43,7 +44,7 @@ namespace DFC.App.MatchSkills.Controllers
                     page = ViewModel.TotalPages;
                 }
                 var skip = page > 1 ? page * pageSize : 0;
-
+                var showLmiData = userSession.OccupationMatches.All(x => x.JobGrowth != JobGrowth.Undefined);
                 foreach (var match in userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0)
                     .OrderByDescending(x => x.MatchStrengthPercentage).Skip(skip).Take(pageSize))
                 {
@@ -58,6 +59,7 @@ namespace DFC.App.MatchSkills.Controllers
                     cm.TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills;
                     cm.SourceSkillCount = userSession.Skills.Count;
                     cm.MatchStrengthPercentage = match.MatchStrengthPercentage;
+                    cm.ShowLmiData = showLmiData;
                     ViewModel.CareerMatches.Add(cm);
                 }
             }
