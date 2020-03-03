@@ -17,6 +17,9 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
             [JsonProperty("jobProfileTitle")]
             public string JobProfileTitle { get; set; }
 
+            [JsonProperty("jobProfileDescription")]
+            public string JobProfileDescription { get; set; }
+
             [JsonProperty("totalOccupationEssentialSkills")]
             public int TotalOccupationEssentialSkills { get; set; }
             
@@ -42,5 +45,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
         {
             MatchingOccupations = new List<MatchedOccupation>();
         }
+        
     }
 }

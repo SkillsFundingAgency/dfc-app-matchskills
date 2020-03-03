@@ -52,8 +52,7 @@ namespace DFC.App.MatchSkills.Controllers
             ViewModel.MissingSkills = skillsGap.MissingSkills;
             ViewModel.MatchingSkills = skillsGap.MatchingSkills;
             ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
-            //TODO: Use correct function when ST integrates CareerDescription
-            ViewModel.CareerDescription = $"This is a description about {ViewModel.CareerTitle}.";
+            ViewModel.CareerDescription = skillsGap.CareerDescription;
 
             return await base.Body();
         }
@@ -65,16 +64,26 @@ namespace DFC.App.MatchSkills.Controllers
 
             var userSession = await GetUserSession();
 
-            var occupation = userSession.OccupationMatches.Where(x => x.JobProfileUri.Contains(id)).Select(x => x.Uri).FirstOrDefault();
+            var occupationMatch =
+                userSession.OccupationMatches.FirstOrDefault(x => x.JobProfileUri.Contains(id));
 
-            var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
+            if (occupationMatch != null)
+            {
+                var occupation = occupationMatch.Uri;
 
-            if (userSession.Skills == null || userSession.Skills.Count == 0)
-                return null;
+                var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
+
+                if (userSession.Skills == null || userSession.Skills.Count == 0)
+                    return null;
             
 
-            return await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
-                _settings.ApiKey, occupation, skillsList);
+                var skillsGap =  await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
+                    _settings.ApiKey, occupation, skillsList);
+                skillsGap.CareerDescription = occupationMatch.JobProfileDescription;
+                return skillsGap;
+            }
+
+            return null;
         }
 
         public string UpperCaseFirstLetter(string str)

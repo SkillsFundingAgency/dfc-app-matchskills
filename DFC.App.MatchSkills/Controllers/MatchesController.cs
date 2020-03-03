@@ -50,7 +50,7 @@ namespace DFC.App.MatchSkills.Controllers
                 {
                     var cm = new CareerMatch();
                     cm.JobProfile.Title = match.JobProfileTitle;
-                    cm.JobProfile.Description = "Job profile description will go here.";
+                    cm.JobProfile.Description = match.JobProfileDescription;
                     cm.JobProfile.Url = match.JobProfileUri;
                     cm.JobSectorGrowthDescription = match.JobGrowth;
                     cm.MatchingEssentialSkills = match.MatchingEssentialSkills;

@@ -54,7 +54,8 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 
                 .ConstructUsing(dest => new Skill(dest.Uri, dest.Skill,  (SkillType)Enum.Parse(typeof(SkillType),dest.Type,true)));
 
-            CreateMap<GetOccupationsWithMatchingSkillsResponse.MatchedOccupation, OccupationMatch>();
+            CreateMap<GetOccupationsWithMatchingSkillsResponse.MatchedOccupation, OccupationMatch>()
+                .ForMember(dest => dest.JobProfileDescription, opt => opt.MapFrom(src => MappingHelper.StripHTML(src.JobProfileDescription)));
 
             CreateMap<StLabelSkill, Skill>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Uri))
@@ -66,8 +67,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             
             CreateMap<SkillsGapAnalysis, SkillsGap>()
                 .ForMember(dest => dest.CareerTitle, opt => opt.MapFrom(src => src.Occupation))
-                //TODO Map Career description with ST adds functionality into API
-                //.ForMember(dest => dest.CareerDescription, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.MissingSkills, opt => opt.MapFrom(src => src.MissingSkills.Where(x => x.RelationshipType == RelationshipType.Essential).Select(x => x.Skill)))
                 .ForMember(dest => dest.MatchingSkills, opt => opt.MapFrom(src => src.MatchingSkills.Where(x => x.RelationshipType == RelationshipType.Essential).Select(x => x.Skill)))
                 .ConstructUsing(dest => new SkillsGap());

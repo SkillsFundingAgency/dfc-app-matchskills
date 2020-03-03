@@ -12,6 +12,7 @@ namespace DFC.App.MatchSkills.ViewModels
         public string ErrorSummaryMessage { get; set; }
         public bool HasError { get; set; }
         public bool AllSkillsSelected { get; set; }
+        public string CDN { get; set; }
         public SelectSkillsCompositeViewModel()  : base(PageId.SelectSkills, "Select your skills")
         {
             AllSkillsSelected = false;

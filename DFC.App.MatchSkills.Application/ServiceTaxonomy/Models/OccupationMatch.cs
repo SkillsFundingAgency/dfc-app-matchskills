@@ -8,6 +8,7 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
     {
         public string JobProfileTitle { get; set; }
 
+        public string JobProfileDescription { get; set; }
         public string JobProfileUri { get; set; }
 
         public DateTime LastModified { get; set; }
