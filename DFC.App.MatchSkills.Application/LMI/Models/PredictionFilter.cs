@@ -12,12 +12,4 @@ namespace DFC.App.MatchSkills.Application.LMI.Models
         Gender
 
     }
-    public class WfPredictionRequest
-    {
-        [JsonProperty("soc")]
-        public int SocCode { get; set; }
-        [JsonProperty("filter")]
-        public PredictionFilter FilterType { get; set; }
-
-    }
 }

@@ -2,18 +2,13 @@
 using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
+using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using DFC.Personalisation.Common.Extensions;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {
@@ -38,16 +33,27 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
         {
             if(matches == null || matches.Count == 0)
                 return matches;
+
+            var tasks = new List<Task>();
             foreach (var match in matches)
             {
+                tasks.Add(Task.Run(async () =>
+                {
+                    var prediction = await GetPredictionsForSocCode(match.SocCode, PredictionFilter.Region);
+                    if (prediction != null)
+                        match.JobGrowth = DetermineJobSectorGrowth(prediction);
+                }));
 
-                var prediction = await GetPredictionsForSocCode(match.SocCode, PredictionFilter.Region);
-                if(prediction != null)
-                    match.JobGrowth = DetermineJobSectorGrowth(prediction);
+
             }
+
+            var t = Task.WhenAll(tasks);
+            t.Wait();
 
             return matches;
         }
+
+        
         public async Task<WfPredictionResult> GetPredictionsForSocCode(int socCode, PredictionFilter filter)
         {
             if (socCode <= 0)

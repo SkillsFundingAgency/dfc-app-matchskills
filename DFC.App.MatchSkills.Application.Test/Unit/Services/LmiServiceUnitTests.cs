@@ -39,7 +39,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public async Task IfMatchesIsNull_ReturnMatches()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_settings);
 
                 var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(null);
 
