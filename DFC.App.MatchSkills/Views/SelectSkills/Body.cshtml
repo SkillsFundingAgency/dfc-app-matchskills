@@ -39,13 +39,21 @@
                                 If you have a skill that you do not want to use for career matching, do not add it to your skills list.
                             </p>
 
+                            <div class="govuk-inset-text">
+                                <p>
+                                    If you want to add a skill that does not appear on the list below, try
+                                    <govukLink id="@Model.GetElementId("govukLink","EnterSkills")" link-href="@CompositeViewModel.PageId.EnterSkills" link-text="searching"></govukLink>
+                                    for it.
+                                </p>
+                            </div>
+
                             @if (Model.HasError)
                             {
                                 <span id="changed-name-error" class="govuk-error-message">
                                     <span class="govuk-visually-hidden">Error:</span> Choose skills to add to your skills list
                                 </span>
                             }
-                            <govukLink id="@Model.GetElementId("govukLink","SkillSelectToggle")"   link-href="/matchskills/@CompositeViewModel.PageId.SelectSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
+                            <govukLink id="@Model.GetElementId("govukLink","SkillSelectToggle")" link-href="/matchskills/@CompositeViewModel.PageId.SelectSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
 
 
                             @await Component.InvokeAsync("SkillsList", slm)
