@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.Controllers
             ViewModel.MatchingSkills = skillsGap.MatchingSkills;
             ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
             ViewModel.CareerDescription = skillsGap.CareerDescription;
-
+            ViewModel.JobGrowth = skillsGap.JobGrowth;
             return await base.Body();
         }
 
@@ -80,6 +80,7 @@ namespace DFC.App.MatchSkills.Controllers
                 var skillsGap =  await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
                     _settings.ApiKey, occupation, skillsList);
                 skillsGap.CareerDescription = occupationMatch.JobProfileDescription;
+                skillsGap.JobGrowth = occupationMatch.JobGrowth;
                 return skillsGap;
             }
 

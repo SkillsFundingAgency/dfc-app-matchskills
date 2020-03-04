@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using DFC.Personalisation.Common.Extensions;
@@ -70,7 +71,8 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
 
             var year = DateTime.UtcNow.Year;
             var currentYearTotal = CalculateTotal(result, year);
-            var previousYearTotal = CalculateTotal(result, year - 1);
+            var previousYearTotal =
+                CalculateTotal(result, result.PredictedEmployment.Select(x => x.Year).AsEnumerable().First());
             return currentYearTotal > previousYearTotal ? JobGrowth.Increasing : JobGrowth.Decreasing;
         }
 
@@ -89,6 +91,7 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
                 .Select(x => x.Breakdown).FirstOrDefault());
             return yearBreakdown.Sum(x => x.Employment);
         }
+
 
         
     }
