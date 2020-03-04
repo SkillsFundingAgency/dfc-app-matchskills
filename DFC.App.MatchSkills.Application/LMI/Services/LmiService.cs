@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using DFC.Personalisation.Common.Extensions;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {
@@ -20,9 +21,11 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
         private readonly IRestClient _restClient;
         private readonly IOptions<LmiSettings> _settings;
 
-        public LmiService()
+        public LmiService(IOptions<LmiSettings> settings)
         {
             _restClient = new RestClient();
+            Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
+            _settings = settings;
         }
         public LmiService(IRestClient restClient, IOptions<LmiSettings> settings)
         {
@@ -48,13 +51,16 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
         {
             if (socCode <= 0)
                 return null;
-            var request = new WfPredictionRequest()
+            try
             {
-                FilterType = filter,
-                SocCode = socCode
-            };
-            var postData = new StringContent($"{JsonConvert.SerializeObject(request)}", Encoding.UTF8, MediaTypeNames.Application.Json);
-            return await _restClient.PostAsync<WfPredictionResult>($"{_settings.Value.ApiUrl}/wf/predict/breakdown/{filter}?soc={socCode}", postData);
+                return await _restClient.GetAsync<WfPredictionResult>(
+                    $"{_settings.Value.ApiUrl}/wf/predict/breakdown/{filter.ToLower()}?soc={socCode}");
+            }
+            catch
+            {
+                return null;
+            }
+
         }
 
         internal JobGrowth DetermineJobSectorGrowth(WfPredictionResult result)
