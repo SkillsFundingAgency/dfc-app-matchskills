@@ -1,4 +1,6 @@
-﻿namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
+﻿using DFC.App.MatchSkills.Application.LMI.Models;
+
+namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
 {
     public class SkillsGap
     {
@@ -9,6 +11,7 @@
         public string CareerDescription { get; set; }
 
         public string[] MatchingSkills { get; set; }
+        public JobGrowth JobGrowth { get; set; }
 
     }
 }

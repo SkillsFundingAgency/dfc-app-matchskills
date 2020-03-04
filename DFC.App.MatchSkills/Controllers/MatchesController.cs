@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.LMI.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -42,24 +43,24 @@ namespace DFC.App.MatchSkills.Controllers
                 {
                     page = ViewModel.TotalPages;
                 }
+                var showLmiData = userSession.OccupationMatches.All(x => x.JobGrowth != JobGrowth.Undefined);
                 var skip = page > 1 ? (page -1) * pageSize : 0;
 
                 foreach (var match in userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0)
                     .OrderByDescending(x => x.MatchStrengthPercentage).Skip(skip).Take(pageSize))
                 {
-                    var cm = new CareerMatch()
-                    {
-                        JobSectorGrowthDescription = string.Empty,
-                    };
+                    var cm = new CareerMatch();
                     cm.JobProfile.Title = match.JobProfileTitle;
                     cm.JobProfile.Description = match.JobProfileDescription;
                     cm.JobProfile.Url = match.JobProfileUri;
+                    cm.JobSectorGrowthDescription = match.JobGrowth;
                     cm.MatchingEssentialSkills = match.MatchingEssentialSkills;
                     cm.MatchingOptionalSkills = match.MatchingOptionalSkills;
                     cm.TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills;
                     cm.TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills;
                     cm.SourceSkillCount = userSession.Skills.Count;
                     cm.MatchStrengthPercentage = match.MatchStrengthPercentage;
+                    cm.ShowLmiData = showLmiData;
                     ViewModel.CareerMatches.Add(cm);
                 }
             }

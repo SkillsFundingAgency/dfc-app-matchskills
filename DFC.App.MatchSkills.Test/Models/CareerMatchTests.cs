@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Models;
+﻿using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Models;
 using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
 using NUnit.Framework;
@@ -18,7 +19,7 @@ namespace DFC.App.MatchSkills.Test.Models
 
             // Assert.
             sut.Should().NotBeNull();
-            sut.JobSectorGrowthDescription.Should().BeEmpty();
+            sut.JobSectorGrowthDescription.Should().Be(JobGrowth.Undefined);
             sut.JobProfile.Should().NotBeNull();
             sut.JobProfile.Title.Should().BeEmpty();
             sut.JobProfile.Description.Should().BeEmpty();

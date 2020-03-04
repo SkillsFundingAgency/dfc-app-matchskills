@@ -1,4 +1,5 @@
 ﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.Personalisation.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace DFC.App.MatchSkills.Models
     {
         public JobProfile JobProfile { get; set; }
         
-        public string JobSectorGrowthDescription { get; set; }
+        public JobGrowth JobSectorGrowthDescription { get; set; }
 
         public ICollection<Skill> MatchedSkills { get; set; }
 
@@ -26,10 +27,10 @@ namespace DFC.App.MatchSkills.Models
 
         public int SourceSkillCount { get; set; }
 
+        public bool ShowLmiData { get; set; }
         public CareerMatch()
         {
             JobProfile = new JobProfile();
-            JobSectorGrowthDescription = string.Empty;
             MatchedSkills = new List<Skill>();
             UnMatchedSkills = new List<Skill>();
         }

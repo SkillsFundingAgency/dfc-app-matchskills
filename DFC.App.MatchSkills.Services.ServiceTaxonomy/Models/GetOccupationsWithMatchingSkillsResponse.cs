@@ -34,6 +34,8 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
             
             [JsonProperty("lastModified")]
             public DateTime LastModified { get; set; }
+            [JsonProperty("socCode")]
+            public int SocCode { get; set; }
         }
 
         [JsonProperty("matchingOccupations")]
