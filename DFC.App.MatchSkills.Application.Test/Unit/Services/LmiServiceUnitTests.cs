@@ -1,18 +1,15 @@
-﻿using System;
-using DFC.App.MatchSkills.Application.LMI.Models;
+﻿using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.LMI.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Test.Unit.Helpers;
 using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
@@ -37,7 +34,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
 
             [Test]
-            public async Task IfMatchesIsNull_ReturnMatches()
+            public void IfMatchesIsNull_ReturnMatches()
             {
                 var serviceUnderTest = new LmiService(_settings);
 
@@ -46,7 +43,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 result.Should().BeNull();
             }
             [Test]
-            public async Task IfMatchesIsEmpty_ReturnMatches()
+            public void IfMatchesIsEmpty_ReturnMatches()
             {
                 var serviceUnderTest = new LmiService(_restClient, _settings);
                 var matches = new List<OccupationMatch>();
@@ -56,7 +53,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 result.Should().Equal(matches);
             }
             [Test]
-            public async Task IfSocCodeIsZero_ReturnMatchesWithoutGrowth()
+            public void IfSocCodeIsZero_ReturnMatchesWithoutGrowth()
             {
                 var serviceUnderTest = new LmiService(_restClient, _settings);
                 var matches = new List<OccupationMatch>
@@ -72,7 +69,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
             }
             [Test]
-            public async Task IfSocCodeIsLessThanZero_ReturnMatchesWithoutGrowth()
+            public void IfSocCodeIsLessThanZero_ReturnMatchesWithoutGrowth()
             {
                 var serviceUnderTest = new LmiService(_restClient, _settings);
                 var matches = new List<OccupationMatch>
@@ -88,7 +85,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
             }
             [Test]
-            public async Task IfUnsuccessfulCall_ReturnMatchesWithoutGrowth()
+            public void IfUnsuccessfulCall_ReturnMatchesWithoutGrowth()
             {
                 var mockHandler = LmiHelpers.GetMockMessageHandler(string.Empty, HttpStatusCode.BadRequest);
                 _restClient = new RestClient(mockHandler.Object);
@@ -106,7 +103,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
             }
             [Test]
-            public async Task IfSuccessfulCall_ReturnMatchesWithGrowth()
+            public void IfSuccessfulCall_ReturnMatchesWithGrowth()
             {
                 var serviceUnderTest = new LmiService(_restClient, _settings);
                 var matches = new List<OccupationMatch>
@@ -124,7 +121,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
             }
             [Test]
-            public async Task IfSuccessfulCall_WithNullContentReturnMatchesWithoutGrowth()
+            public void IfSuccessfulCall_WithNullContentReturnMatchesWithoutGrowth()
             {
                 var wfResult = JsonConvert.SerializeObject(new WfPredictionResult());
                 var mockHandler = LmiHelpers.GetMockMessageHandler(wfResult, HttpStatusCode.OK);
