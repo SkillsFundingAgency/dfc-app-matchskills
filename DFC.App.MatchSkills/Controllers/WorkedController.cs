@@ -63,7 +63,7 @@ namespace DFC.App.MatchSkills.Controllers
                 case WorkedBefore.Yes:
                     return RedirectTo(CompositeViewModel.PageId.Route.Value);
                 case WorkedBefore.No:
-                    return RedirectTo(CompositeViewModel.PageId.Worked.Value);
+                    return RedirectTo(CompositeViewModel.PageId.Worked.Value);   // go to DYSAC question 1 (call new assessment)
                 default:
                     return RedirectWithError(ViewModel.Id.Value);
             }
