@@ -6,6 +6,6 @@ namespace DFC.App.MatchSkills.Application.LMI.Interfaces
 {
     public interface ILmiService
     {
-        Task<IList<OccupationMatch>> GetPredictionsForGetOccupationMatches(IList<OccupationMatch> matches);
+        IList<OccupationMatch> GetPredictionsForGetOccupationMatches(IList<OccupationMatch> matches);
     }
 }

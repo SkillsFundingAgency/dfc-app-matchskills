@@ -2,13 +2,18 @@
 using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
-using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
+using DFC.Personalisation.Common.Extensions;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {
@@ -29,7 +34,7 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
             Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
             _settings = settings;
         }
-        public async Task<IList<OccupationMatch>> GetPredictionsForGetOccupationMatches(IList<OccupationMatch> matches)
+        public IList<OccupationMatch> GetPredictionsForGetOccupationMatches(IList<OccupationMatch> matches)
         {
             if(matches == null || matches.Count == 0)
                 return matches;
@@ -49,7 +54,6 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
 
             var t = Task.WhenAll(tasks);
             t.Wait();
-
             return matches;
         }
 

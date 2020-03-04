@@ -60,7 +60,7 @@ namespace DFC.App.MatchSkills.Controllers
                 var skillIds = userSession.Skills.Select(skill => skill.Id).ToArray();
                 userSession.OccupationMatches = await _serviceTaxonomy.FindOccupationsForSkills(_apiUrl, _apiKey, skillIds, minimumMatch);
                 userSession.OccupationMatches =
-                    await _lmiService.GetPredictionsForGetOccupationMatches(userSession.OccupationMatches);
+                    _lmiService.GetPredictionsForGetOccupationMatches(userSession.OccupationMatches);
             }
             await _sessionService.UpdateUserSessionAsync(userSession);
 

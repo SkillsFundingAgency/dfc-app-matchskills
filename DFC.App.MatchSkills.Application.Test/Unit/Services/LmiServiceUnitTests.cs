@@ -41,7 +41,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var serviceUnderTest = new LmiService(_settings);
 
-                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(null);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(null);
 
                 result.Should().BeNull();
             }
@@ -51,7 +51,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new LmiService(_restClient, _settings);
                 var matches = new List<OccupationMatch>();
 
-                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
 
                 result.Should().Equal(matches);
             }
@@ -67,7 +67,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     }
                 };
 
-                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
 
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
             }
@@ -83,7 +83,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     }
                 };
 
-                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
 
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
             }
@@ -101,7 +101,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     }
                 };
 
-                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
 
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
             }
@@ -117,7 +117,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     }
                 };
 
-                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
 
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Increasing);
 
@@ -138,7 +138,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     }
                 };
 
-                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
 
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
 
