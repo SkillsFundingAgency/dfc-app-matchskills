@@ -40,7 +40,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-         public async Task WhenBodyCalled_ReturnHtml()
+        public async Task WhenBodyCalled_ReturnHtml()
         {
             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
             controller.ControllerContext = new ControllerContext
@@ -51,7 +51,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 {"page","0" }
             });
-            
+
             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
@@ -60,165 +60,211 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.ViewName.Should().BeNull();
         }
 
-         [Test]
-         public async Task WhenBodyCalledWithOutPage_ReturnCurrentPageAs1()
-         {
-             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
-             controller.ControllerContext = new ControllerContext
-             {
-                 HttpContext = new DefaultHttpContext()
-             };
-             controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
-             {
-             });
+        [Test]
+        public async Task WhenBodyCalledWithOutPage_ReturnCurrentPageAs1()
+        {
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+            {
+            });
 
-             _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
-             var result = await controller.Body() as ViewResult;
-             result.Should().NotBeNull();
-             result.Should().BeOfType<ViewResult>();
-             result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
-         }
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
+        }
 
 
-         [Test]
-         public async Task WhenTotalResultsIsGreaterThanPage_Then_CorrectTotalPagesNumberReturned()
-         {
-             var userSession = MockHelpers.GetUserSession(true, true, true);
-             userSession.OccupationMatches.Add(new OccupationMatch()
-                 {
-                     JobProfileTitle = "Mock Title3",
-                     JobProfileUri = "http://mockjoburl",
-                     LastModified = DateTime.UtcNow,
-                     TotalOccupationEssentialSkills = 12,
-                     MatchingEssentialSkills = 6,
-                     TotalOccupationOptionalSkills = 4,
-                     MatchingOptionalSkills = 2,
-                     Uri = "MatchUri",
-                 }
-             );
+        [Test]
+        public async Task WhenTotalResultsIsGreaterThanPage_Then_CorrectTotalPagesNumberReturned()
+        {
+            var userSession = MockHelpers.GetUserSession(true, true, true);
+            userSession.OccupationMatches.Add(new OccupationMatch()
+            {
+                JobProfileTitle = "Mock Title3",
+                JobProfileUri = "http://mockjoburl",
+                LastModified = DateTime.UtcNow,
+                TotalOccupationEssentialSkills = 12,
+                MatchingEssentialSkills = 6,
+                TotalOccupationOptionalSkills = 4,
+                MatchingOptionalSkills = 2,
+                Uri = "MatchUri",
+            }
+            );
 
-             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
-             controller.ControllerContext = new ControllerContext
-             {
-                 HttpContext = new DefaultHttpContext()
-             };
-             controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+            var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
              {
                  {"page","1" }
              });
 
-             _sessionService.GetUserSession(Arg.Any<string>())
-                 .ReturnsForAnyArgs(userSession);
+            _sessionService.GetUserSession(Arg.Any<string>())
+                .ReturnsForAnyArgs(userSession);
 
-             var result = await controller.Body() as ViewResult;
-             result.Should().NotBeNull();
-             result.Should().BeOfType<ViewResult>();
-             result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
             result.ViewData.Model.As<MatchesCompositeViewModel>().TotalPages.Should().Be(3);
         }
 
 
         [Test]
-         public async Task WhenTotalResultsMatchesPageSize_Then_CorrectTotalPagesNumberReturned()
-         {
-             var pageSettings = Options.Create(new PageSettings() { PageSize = 2 });
-             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
-             controller.ControllerContext = new ControllerContext
-             {
-                 HttpContext = new DefaultHttpContext()
-             };
-             controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+        public async Task WhenTotalResultsMatchesPageSize_Then_CorrectTotalPagesNumberReturned()
+        {
+            var pageSettings = Options.Create(new PageSettings() { PageSize = 2 });
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
              {
                  {"page","2" }
              });
 
-             _sessionService.GetUserSession(Arg.Any<string>())
-                 .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession(Arg.Any<string>())
+                .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
-             var result = await controller.Body() as ViewResult;
-             result.Should().NotBeNull();
-             result.Should().BeOfType<ViewResult>();
-             result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
-         }
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
+        }
 
 
         [Test]
-         public async Task WhenBodyCalledWithPageNumber_ReturnCorrectPage()
-         {
-            var pageSettings = Options.Create(new PageSettings(){PageSize = 1});
+        public async Task WhenBodyCalledWithPageNumber_ReturnCorrectPage()
+        {
+            var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
-             controller.ControllerContext = new ControllerContext
-             {
-                 HttpContext = new DefaultHttpContext()
-             };
-             controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
              {
                  {"page","2" }
              });
 
-             _sessionService.GetUserSession(Arg.Any<string>())
-                 .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession(Arg.Any<string>())
+                .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
-             var result = await controller.Body() as ViewResult;
-             result.Should().NotBeNull();
-             result.Should().BeOfType<ViewResult>();
-             result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(2);
-         }
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(2);
+        }
 
-         [Test]
-         public async Task WhenBodyCalledWithPageNumberGreaterThanTheNumberOfPages__Then_ReturnLastPage()
-         {
-             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-             var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
-             controller.ControllerContext = new ControllerContext
-             {
-                 HttpContext = new DefaultHttpContext()
-             };
-             controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+        [Test]
+        public async Task WhenBodyCalledWithPageNumberGreaterThanTheNumberOfPages__Then_ReturnLastPage()
+        {
+            var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
              {
                  {"page","10" }
              });
 
-             _sessionService.GetUserSession(Arg.Any<string>())
-                 .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession(Arg.Any<string>())
+                .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
-             var result = await controller.Body() as ViewResult;
-             result.Should().NotBeNull();
-             result.Should().BeOfType<ViewResult>();
-             result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(2);
-         }
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(2);
+        }
 
-         [Test]
-         public void When_SkillsExist_Then_MatchPercentageShouldBeCalculated()
-         { // Arrange.
-            
-             var cm = new OccupationMatch();
-             cm.MatchingEssentialSkills = 1;
-             cm.MatchingOptionalSkills = 2;
-             cm.TotalOccupationEssentialSkills = 10;
-             cm.TotalOccupationOptionalSkills = 3;
+        [Test]
+        public void When_SkillsExist_Then_MatchPercentageShouldBeCalculated()
+        { // Arrange.
 
-             // Act.
-             var result = cm.MatchStrengthPercentage;
+            var cm = new OccupationMatch();
+            cm.MatchingEssentialSkills = 1;
+            cm.MatchingOptionalSkills = 2;
+            cm.TotalOccupationEssentialSkills = 10;
+            cm.TotalOccupationOptionalSkills = 3;
 
-             // Assert.
-             result.Should().Be(10, because: "we matched one skill out of ten essential skills");
-         }
+            // Act.
+            var result = cm.MatchStrengthPercentage;
 
-         [Test]
-         public void WhenPaginationModelCalled_ResultReturned()
-         {
-             var paginationViewModel = new PaginationViewModel()
+            // Assert.
+            result.Should().Be(10, because: "we matched one skill out of ten essential skills");
+        }
+
+        [Test]
+        public void WhenPaginationModelCalled_ResultReturned()
+        {
+            var paginationViewModel = new PaginationViewModel()
+            {
+                NextPage = 1,
+                TotalPages = 1,
+                NextPageLink = "",
+                PreviousPage = 2,
+                PreviousPageLink = "",
+                ShowResultsString = ""
+            };
+        }
+
+        [Test]
+        public async Task WhenTotalResultsIsGreaterThanPageAndModuleOfResultByPagesISLessThan5_Then_CorrectTotalPagesNumberReturned()
+        {
+            var userSession = MockHelpers.GetUserSession(true, true, true);
+
+            var x = 1;
+
+            while (x < 11)
+            {
+
+
+                userSession.OccupationMatches.Add(new OccupationMatch()
+                {
+                    JobProfileTitle = $"Mock Title{x}",
+                    JobProfileUri = "http://mockjoburl",
+                    LastModified = DateTime.UtcNow,
+                    TotalOccupationEssentialSkills = 12,
+                    MatchingEssentialSkills = 6,
+                    TotalOccupationOptionalSkills = 4,
+                    MatchingOptionalSkills = 2,
+                    Uri = "MatchUri",
+                }
+                );
+                x++;
+            }
+            var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
              {
-                 NextPage = 1,
-                 TotalPages = 1,
-                 NextPageLink = "",
-                 PreviousPage = 2,
-                 PreviousPageLink = "",
-                 ShowResultsString = ""
-             };
+                 {"page","1" }
+             });
+
+            _sessionService.GetUserSession(Arg.Any<string>())
+                .ReturnsForAnyArgs(userSession);
+
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
+            result.ViewData.Model.As<MatchesCompositeViewModel>().TotalPages.Should().Be(2);
         }
     }
 }
