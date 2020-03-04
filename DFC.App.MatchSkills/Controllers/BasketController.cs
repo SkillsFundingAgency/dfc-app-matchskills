@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
