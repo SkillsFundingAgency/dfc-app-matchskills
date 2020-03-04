@@ -101,8 +101,9 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     }
                 };
 
-                await serviceUnderTest.Invoking(x => x.GetPredictionsForGetOccupationMatches(matches)).Should()
-                    .ThrowAsync<Exception>();
+                var result = await serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+
+                result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
             }
             [Test]
             public async Task IfSuccessfulCall_ReturnMatchesWithGrowth()
