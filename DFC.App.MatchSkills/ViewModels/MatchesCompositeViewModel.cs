@@ -1,5 +1,6 @@
 ﻿using DFC.App.MatchSkills.Models;
 using System.Collections.Generic;
+using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.ViewModels
 {
@@ -10,11 +11,20 @@ namespace DFC.App.MatchSkills.ViewModels
         public int CurrentPage { get; set; }
         public string ResultsString { get; set; }
         public int TotalMatches { get; set; }
+        public SortBy CurrentSortBy { get; set; }
+        public SortDirection CurrentDirection { get; set; }
 
         public MatchesCompositeViewModel()
             : base(PageId.Matches, "Your career matches")
         {
             CareerMatches = new List<CareerMatch>();
+        }
+
+        public SortDirection GetSortDirection(SortBy sortBy)
+        {
+            if (CurrentSortBy != sortBy) return sortBy == SortBy.Alphabetically ? SortDirection.Ascending : SortDirection.Descending;
+
+            return CurrentDirection == SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending;
         }
     }
 }
