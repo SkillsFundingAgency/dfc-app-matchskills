@@ -46,5 +46,19 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
                 return matchStrength;
             }
         }
+
+        [JsonIgnore]
+        public int JobGrowthSort
+        {
+            get
+            {
+                return JobGrowth switch
+                {
+                    JobGrowth.Increasing => 1,
+                    JobGrowth.Decreasing => 2,
+                    _ => 3
+                };
+            }
+        }
     }
 }

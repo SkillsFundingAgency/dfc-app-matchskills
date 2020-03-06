@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
@@ -265,6 +268,92 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<ViewResult>();
             result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
             result.ViewData.Model.As<MatchesCompositeViewModel>().TotalPages.Should().Be(2);
+        }
+
+        [TestCase("MatchPercentage", "ascending", "Mock Title2")]
+        [TestCase("MatchPercentage", "descending", "Mock Title1")]
+        [TestCase("Alphabetically", "ascending", "Mock Title1")]
+        [TestCase("Alphabetically", "descending", "Mock Title2")]
+        [TestCase("JobSectorGrowth", "ascending", "Mock Title2")]
+        [TestCase("JobSectorGrowth", "descending", "Mock Title1")]
+        public async Task WhenOrdering_Then_ReturnResultsInCorrectOrder(string sortBy, string direction, string expected)
+        {
+            var userSession = MockHelpers.GetUserSession(true, false, true);
+            var match1 = "Mock Title1";
+            var match2 = "Mock Title2";
+
+            userSession.OccupationMatches.Add(new OccupationMatch()
+            {
+                JobProfileTitle = match1,
+                JobProfileUri = "http://mockjoburl",
+                LastModified = DateTime.UtcNow,
+                JobGrowth = JobGrowth.Decreasing,
+                TotalOccupationEssentialSkills = 12,
+                MatchingEssentialSkills = 8,
+                TotalOccupationOptionalSkills = 4,
+                MatchingOptionalSkills = 2,
+                Uri = "MatchUri",
+            }
+            );
+            userSession.OccupationMatches.Add(new OccupationMatch()
+            {
+                JobProfileTitle = match2,
+                JobProfileUri = "http://mockjoburl",
+                LastModified = DateTime.UtcNow,
+                JobGrowth = JobGrowth.Increasing,
+                TotalOccupationEssentialSkills = 12,
+                MatchingEssentialSkills = 6,
+                TotalOccupationOptionalSkills = 4,
+                MatchingOptionalSkills = 2,
+                Uri = "MatchUri",
+            }
+            );
+
+
+            var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+            {
+                {"page","1" },
+                {"sortBy",sortBy },
+                {"direction", direction }
+            });
+
+            _sessionService.GetUserSession(Arg.Any<string>())
+                .ReturnsForAnyArgs(userSession);
+
+            var result = await controller.Body() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CareerMatches.First().JobProfile.Title.Should()
+                .Be(expected);
+        }
+
+        [Test]
+        public async Task When_ChangingOrderType_Then_UpdateTheChoiceInSession()
+        {
+            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+            {
+                {"page","0" },
+                {"sortBy","Alphabetically" },
+                {"direction", "ascending" }
+            });
+
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+
+            var result = await controller.Body() as ViewResult;
+
+            await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
+               x.MatchesSortBy == SortBy.Alphabetically && x.MatchesSortDirection == SortDirection.Ascending));
         }
     }
 }

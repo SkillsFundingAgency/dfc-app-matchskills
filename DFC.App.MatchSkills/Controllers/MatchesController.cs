@@ -1,93 +1,168 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.LMI.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
     public class MatchesController : CompositeSessionController<MatchesCompositeViewModel>
     {
-        private readonly int pageSize;
+        private readonly int _pageSize;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService, ICookieService cookieService, IOptions<PageSettings> pageSettings)
             : base(compositeSettings, sessionService, cookieService)
         {
-            pageSize = pageSettings.Value.PageSize;
+            _pageSize = pageSettings.Value.PageSize;
         }
 
+        [SessionRequired]
         public override async Task<IActionResult> Body()
         {
+            
+            var userSession = await GetUserSession();
+            if (null == userSession) return await base.Body();
+
+            
+            await SetViewModel( userSession);
+            
+            return await base.Body();
+        }
+
+        private int GetTotalPages(int totalResults)
+        {
+            if (totalResults < 1 || totalResults <= _pageSize)
+            {
+                return 1;
+            }
+
+            if (totalResults % _pageSize > 1 && totalResults % _pageSize < 5)
+            {
+                return (totalResults / _pageSize) + 1;
+            }
+
+            return totalResults / _pageSize;
+        }
+
+        private async Task SetViewModel(UserSession userSession)
+        {
+            var filters = GetFilters(userSession);
+            await TrackPageInUserSession(userSession);
+
+            var totalMatches = userSession.OccupationMatches.Count(m => m.MatchingEssentialSkills > 0);
+
+            ViewModel.TotalPages = GetTotalPages(totalMatches);
+
+            if (filters.Page > ViewModel.TotalPages)
+            {
+                filters.Page = ViewModel.TotalPages;
+            }
+            var skip = filters.Page > 1 ? (filters.Page - 1) * _pageSize : 0;
+
+            var showLmiData = userSession.OccupationMatches.All(x => x.JobGrowth != JobGrowth.Undefined);
+
+            foreach (var match in (GetOccupationMatches(userSession, filters)).Skip(skip).Take(_pageSize))
+            {
+                var cm = new CareerMatch
+                {
+                    JobProfile =
+                    {
+                        Title = match.JobProfileTitle,
+                        Description = match.JobProfileDescription,
+                        Url = match.JobProfileUri
+                    },
+                    JobSectorGrowthDescription = match.JobGrowth,
+                    MatchingEssentialSkills = match.MatchingEssentialSkills,
+                    MatchingOptionalSkills = match.MatchingOptionalSkills,
+                    TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills,
+                    TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills,
+                    SourceSkillCount = userSession.Skills.Count,
+                    MatchStrengthPercentage = match.MatchStrengthPercentage,
+                    ShowLmiData = showLmiData
+                };
+                ViewModel.CareerMatches.Add(cm);
+            }
+
+            ViewModel.CurrentPage = filters.Page;
+            var startValue = filters.Page > 1 ? _pageSize * (filters.Page - 1) + 1 : 1;
+            var endValue = totalMatches < startValue + _pageSize
+                ? totalMatches
+                : startValue + _pageSize - 1;
+            ViewModel.ResultsString = $"Showing {startValue}-{endValue} of {totalMatches} results";
+            ViewModel.TotalMatches = totalMatches;
+            ViewModel.CurrentSortBy = filters.SortBy;
+            ViewModel.CurrentDirection = filters.SortDirection;
+
+        }
+
+        private MatchesFilterModel GetFilters(UserSession userSession)
+        {
             var pageString = Request.Query["page"];
+            var sortByString = Request.Query["sortBy"];
+            var sortDirectionString = Request.Query["direction"];
+
             if (!int.TryParse(pageString, out var page) || page == 0)
             {
                 page = 1;
             }
 
-
-            var totalMatches = 0;
-
-            var userSession = await GetUserSession();
-            if (null != userSession)
+            if (string.IsNullOrEmpty(sortByString) ||
+                !Enum.TryParse(typeof(SortBy), sortByString, true, out var sortBy))
             {
-                totalMatches = userSession.OccupationMatches.Count(m => m.MatchingEssentialSkills > 0);
-                
-                ViewModel.TotalPages = GetTotalPages(pageSize, totalMatches);
-
-                if (page > ViewModel.TotalPages)
-                {
-                    page = ViewModel.TotalPages;
-                }
-                var showLmiData = userSession.OccupationMatches.All(x => x.JobGrowth != JobGrowth.Undefined);
-                var skip = page > 1 ? (page -1) * pageSize : 0;
-
-                foreach (var match in userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0)
-                    .OrderByDescending(x => x.MatchStrengthPercentage).Skip(skip).Take(pageSize))
-                {
-                    var cm = new CareerMatch();
-                    cm.JobProfile.Title = match.JobProfileTitle;
-                    cm.JobProfile.Description = match.JobProfileDescription;
-                    cm.JobProfile.Url = match.JobProfileUri;
-                    cm.JobSectorGrowthDescription = match.JobGrowth;
-                    cm.MatchingEssentialSkills = match.MatchingEssentialSkills;
-                    cm.MatchingOptionalSkills = match.MatchingOptionalSkills;
-                    cm.TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills;
-                    cm.TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills;
-                    cm.SourceSkillCount = userSession.Skills.Count;
-                    cm.MatchStrengthPercentage = match.MatchStrengthPercentage;
-                    cm.ShowLmiData = showLmiData;
-                    ViewModel.CareerMatches.Add(cm);
-                }
+                sortBy = userSession.MatchesSortBy;
             }
-            
-            ViewModel.CurrentPage = page;
-            var startValue = page > 1 ? pageSize * (page-1) + 1 : 1;
-            var endValue = totalMatches < startValue + pageSize
-                ? totalMatches
-                : startValue + pageSize - 1;
-            ViewModel.ResultsString = $"Showing {startValue}-{endValue} of {totalMatches} results";
-            ViewModel.TotalMatches = totalMatches;
-            return await base.Body();
+
+            if (string.IsNullOrEmpty(sortDirectionString) || !Enum.TryParse(typeof(SortDirection), sortDirectionString,
+                true, out var sortDirection))
+            {
+                sortDirection = userSession.MatchesSortDirection;
+            }
+
+            userSession.MatchesSortBy = (SortBy)sortBy;
+            userSession.MatchesSortDirection = (SortDirection)sortDirection;
+
+            return new MatchesFilterModel
+            {
+                Page = page,
+                SortDirection = (SortDirection)sortDirection,
+                SortBy = (SortBy)sortBy
+            };
         }
 
-        private int GetTotalPages(int pageSize, int totalResults)
+        private IEnumerable<OccupationMatch> GetOccupationMatches(UserSession userSession, MatchesFilterModel filters)
         {
-            if (totalResults < 1 || totalResults <= pageSize)
+            var matchQuery= userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0);
+            
+            if (filters.SortDirection != SortDirection.Descending)
             {
-                return 1;
+                return filters.SortBy switch
+                {
+                    SortBy.Alphabetically => matchQuery.OrderBy(x => x.JobProfileTitle),
+                    SortBy.JobSectorGrowth => matchQuery.OrderBy(x => x.JobGrowthSort)
+                        .ThenBy(x => x.MatchStrengthPercentage)
+                        .ThenBy(x => x.JobProfileTitle),
+                    _ => matchQuery.OrderBy(x => x.MatchStrengthPercentage).ThenBy(x => x.JobProfileTitle)
+                };
             }
 
-            if (totalResults % pageSize > 1 && totalResults % pageSize < 5)
+            return filters.SortBy switch
             {
-                return (totalResults / pageSize) + 1;
-            }
+                SortBy.Alphabetically => matchQuery.OrderByDescending(x => x.JobProfileTitle),
+                SortBy.JobSectorGrowth => matchQuery.OrderByDescending(x => x.JobGrowthSort)
+                    .ThenBy(x => x.MatchStrengthPercentage)
+                    .ThenBy(x => x.JobProfileTitle),
+                _ => matchQuery.OrderByDescending(x => x.MatchStrengthPercentage).ThenBy(x => x.JobProfileTitle)
+            };
 
-            return totalResults / pageSize;
         }
     }
 }
