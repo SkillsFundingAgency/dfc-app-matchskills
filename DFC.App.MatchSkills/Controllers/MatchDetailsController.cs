@@ -79,6 +79,7 @@ namespace DFC.App.MatchSkills.Controllers
 
                 var skillsGap =  await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
                     _settings.ApiKey, occupation, skillsList);
+                skillsGap.CareerTitle = occupationMatch.JobProfileTitle;
                 skillsGap.CareerDescription = occupationMatch.JobProfileDescription;
                 skillsGap.JobGrowth = occupationMatch.JobGrowth;
                 return skillsGap;
