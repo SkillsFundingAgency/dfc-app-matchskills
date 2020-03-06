@@ -1,3 +1,4 @@
+using AutoMapper;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
@@ -13,6 +14,9 @@ using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using Dfc.ProviderPortal.Packages;
+using Dfc.Session;
+using Dfc.Session.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +34,7 @@ namespace DFC.App.MatchSkills
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -57,7 +62,14 @@ namespace DFC.App.MatchSkills
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ILmiService, LmiService>();
-            
+            var sessionSettings = Configuration.GetSection(nameof(SessionSettings)).Get<SessionSettings>();
+            Throw.IfNull(sessionSettings, nameof(sessionSettings));
+            var sessionConfig = new SessionConfig
+            {
+                ApplicationName = sessionSettings.ApplicationName,
+                Salt = sessionSettings.Salt,
+            };
+            services.AddSessionServices(sessionConfig);
 
             services.AddCors(options =>
             {

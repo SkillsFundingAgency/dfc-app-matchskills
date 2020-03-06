@@ -7,7 +7,7 @@ namespace DFC.App.MatchSkills.Service
 {
     public class CookieService : ICookieService
     {
-        public const string CookieName = ".matchSkills-session";
+        public const string CookieName = ".dfc-session";
         private readonly IDataProtector _dataProtector;
 
         public CookieService(IDataProtectionProvider dataProtector)

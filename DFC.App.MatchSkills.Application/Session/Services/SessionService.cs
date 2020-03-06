@@ -6,8 +6,12 @@ using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Dfc.Session;
+using Dfc.Session.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {
@@ -15,19 +19,21 @@ namespace DFC.App.MatchSkills.Application.Session.Services
     {
         private readonly ICosmosService _cosmosService;
         private readonly IOptions<SessionSettings> _sessionSettings;
+        private readonly ISessionClient _sessionClient;
 
         public enum ExtractMode
         {
             PartitionKey = 0,
             SessionId = 1
         }
-        public SessionService(ICosmosService cosmosService, IOptions<SessionSettings> sessionSettings)
+        public SessionService(ICosmosService cosmosService, IOptions<SessionSettings> sessionSettings,ISessionClient sessionClient )
         {
             Throw.IfNull(cosmosService, nameof(cosmosService));
             Throw.IfNull(sessionSettings, nameof(sessionSettings));
             Throw.IfNullOrWhiteSpace(sessionSettings.Value.Salt, nameof(sessionSettings.Value.Salt));
             _cosmosService = cosmosService;
             _sessionSettings = sessionSettings;
+            _sessionClient = sessionClient;
         }
 
         public async Task<string> CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie = null)
@@ -37,18 +43,13 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             if (request == null)
                 request = new CreateSessionRequest();
 
-            
+            //Create new Session here
+            var dfcUserSession = _sessionClient.NewSession();
+             _sessionClient.CreateCookie(dfcUserSession,true);
 
-            if (string.IsNullOrWhiteSpace(sessionIdFromCookie))
-            {
-                sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
-                partitionKey = PartitionKeyHelper.UserSession(sessionId);
-            }
-            else
-            {
-                sessionId = ExtractInfoFromPrimaryKey(sessionIdFromCookie, ExtractMode.SessionId);
-                partitionKey = ExtractInfoFromPrimaryKey(sessionIdFromCookie, ExtractMode.PartitionKey);
-            }
+             sessionId = dfcUserSession.SessionId;
+             partitionKey = dfcUserSession.PartitionKey;
+
 
             var userSession = new UserSession()
             {
@@ -62,10 +63,6 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 LastUpdatedUtc = DateTime.UtcNow,
             };
 
-            var isExist = await CheckForExistingUserSession(userSession.PrimaryKey);
-            if (isExist)
-                return userSession.PrimaryKey;
-
             var result = await _cosmosService.CreateItemAsync(userSession);
             return result.IsSuccessStatusCode ? userSession.PrimaryKey : null;
         }
@@ -78,6 +75,8 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
         public async Task<UserSession> GetUserSession(string primaryKey)
         {
+            var sesionCode = _sessionClient.TryFindSessionCode();
+
             Throw.IfNullOrWhiteSpace(primaryKey, nameof(primaryKey));
 
             var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
@@ -87,6 +86,22 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return result.IsSuccessStatusCode ? 
                 JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
                 : null;
+        }
+
+        public async Task<UserSession> GetUserSession()
+        {
+            var sesionCode = _sessionClient.TryFindSessionCode();
+
+            
+
+           // var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
+           // var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
+
+            //var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
+            //return result.IsSuccessStatusCode ? 
+             //   JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
+              //  : null;
+              return null;
         }
 
         public async Task<bool> CheckForExistingUserSession(string primaryKey)

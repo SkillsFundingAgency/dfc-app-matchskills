@@ -3,5 +3,6 @@
     public class SessionSettings
     {
         public string Salt { get; set; }
+        public string ApplicationName { get; set; }
     }
 }

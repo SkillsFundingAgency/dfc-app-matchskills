@@ -16,6 +16,7 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly ISessionService _sessionService;
         private readonly ICookieService _cookieService;
+        
 
         protected SessionController(ISessionService sessionService, ICookieService cookieService)
         {
@@ -25,15 +26,9 @@ namespace DFC.App.MatchSkills.Controllers
 
         protected async Task CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie)
         {
-            var primaryKey = await _sessionService.CreateUserSession(request, sessionIdFromCookie);
-
-            AppendCookie(primaryKey);
+            await _sessionService.CreateUserSession(request, sessionIdFromCookie);
         }
 
-        protected void AppendCookie(string sessionId)
-        {
-            _cookieService.AppendCookie(sessionId, Response);
-        }
 
         protected string TryGetPrimaryKey(HttpRequest request)
         {
@@ -56,8 +51,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         protected async Task<UserSession> GetUserSession()
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            return await _sessionService.GetUserSession(primaryKeyFromCookie);
+            return await _sessionService.GetUserSession();
         }
     }
 }
