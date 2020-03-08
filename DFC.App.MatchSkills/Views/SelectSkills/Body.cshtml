@@ -20,7 +20,7 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            <form action="@CompositeViewModel.PageId.SelectSkills" method="post">
+            <form action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.SelectSkills" method="post">
 
                 <div class="results  @(Model.HasError ? "govuk-form-group--error": "") ">
                     <div class="govuk-form-group">
