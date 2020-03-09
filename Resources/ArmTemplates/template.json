@@ -14,6 +14,9 @@
         "environment": {
             "type": "string"
         },
+        "lmiSettingsApiUrl": {
+            "type": "string"
+        },
         "sharedResourceGroup": {
             "type": "string",
             "defaultValue": ""
@@ -242,7 +245,7 @@
                             },
                             {
                                 "name": "LmiSettings__ApiUrl",
-                                "value": "http://api.lmiforall.org.uk/api/v1/"
+                                "value": "[parameters('lmiSettingsApiUrl')]"
                             }
                         ]
                     }
