@@ -39,7 +39,7 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
             _apiUrl = settings.Value.ApiUrl;
             _apiKey = settings.Value.ApiKey;
-
+            ViewModel.CDN = compositeSettings.Value.CDN ?? "";
         }
 
         [SessionRequired]
@@ -92,6 +92,20 @@ namespace DFC.App.MatchSkills.Controllers
 
         public async Task GetRelatedSkills(string searchTerm)
         {
+            await LoadSkills(searchTerm);
+        }
+
+        [Route("/body/[controller]/SkillSelectToggle")]
+        [SessionRequired]
+        public async Task<IActionResult> SkillSelectToggle(bool toggle,string searchTerm)
+        {
+            await LoadSkills(searchTerm);
+            ViewModel.AllSkillsSelected = !toggle;
+            return View("body",ViewModel);
+        }
+
+        public async Task LoadSkills(string searchTerm)
+        {
             ViewModel.SearchTerm = searchTerm;
             await TrackPageInUserSession();
             var userSession = await GetUserSession();
@@ -104,7 +118,6 @@ namespace DFC.App.MatchSkills.Controllers
                 List<Skill> filteredSkills = skills.Where(x => x.RelationshipType == RelationshipType.Essential).ToList();
                 ViewModel.RelatedSkills.LoadFrom(filteredSkills);
             }
-
         }
 
     }
