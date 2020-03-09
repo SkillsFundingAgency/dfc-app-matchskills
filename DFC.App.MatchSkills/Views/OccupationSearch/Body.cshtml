@@ -32,7 +32,7 @@
 
                     <govukAutoComplete Id="@autoCompleteElementName"
                                        Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
-                                       autoselect="true" confirmOnBlur="true" cssNameSpace="autocomplete"
+                                       autoselect="true" confirmOnBlur="true" cssNameSpace="autocomplete" show-no-options-found="false"
                                        minLength="2" name="EnterJobInputAutocomplete">
                         <govukAutoCompleteError id="@autoCompleteError" text="Enter a job title" hidden="@(!Model.HasError)"></govukAutoCompleteError>
                         <govukAutocompleteLabel Text="Enter your job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="@autoCompleteElementName"></govukAutocompleteLabel>
