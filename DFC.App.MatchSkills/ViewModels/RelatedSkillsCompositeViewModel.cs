@@ -9,6 +9,8 @@ namespace DFC.App.MatchSkills.ViewModels
             Skills = new SkillSet();
             RelatedSkills = new SkillSet();
         }
+        public bool AllSkillsSelected { get; set; }
+        public string CDN { get; set; }
         public bool HasError { get; set; }
         public string SearchTerm { get; set; }
         public SkillSet Skills { get; private set; }

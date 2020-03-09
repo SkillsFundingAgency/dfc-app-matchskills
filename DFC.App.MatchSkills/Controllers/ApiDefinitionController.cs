@@ -1,9 +1,5 @@
 ﻿using DFC.App.MatchSkills.Interfaces;
-using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
-using Dfc.ProviderPortal.Packages;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Controllers
 {
