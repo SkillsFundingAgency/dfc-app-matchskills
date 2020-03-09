@@ -30,7 +30,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
         private IOptions<ServiceTaxonomySettings> _settings;
-        private ICookieService _cookieService;
+         
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private ILmiService _lmiService;
 
@@ -49,10 +49,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var restClient = new RestClient(handlerMock.Object);
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService = Substitute.For<ICookieService>();
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("This is My Value");
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
             _lmiService = Substitute.For<ILmiService>();
         }
@@ -60,7 +57,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository, _lmiService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService);
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
 
             var result = controller.Head() as ViewResult;
@@ -74,7 +71,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository, _lmiService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -92,17 +89,17 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenSubmitCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository, _lmiService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService);
             {
                 controller.ControllerContext = new ControllerContext
                 {
                     HttpContext = new DefaultHttpContext()
                 };
             };
-            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
+            
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Submit();
 
@@ -117,7 +114,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _CookieService);
+            var controller = new BasketController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -132,7 +129,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenSessionIdIsNotNamedCorrectlySet_NoCookieIsSaved()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _CookieService);
+            var controller = new BasketController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -150,7 +147,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository, _lmiService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService);
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -160,7 +157,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService, _cookieService, _settings, _serviceTaxonomyRepository, _lmiService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService);
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

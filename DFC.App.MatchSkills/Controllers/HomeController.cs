@@ -11,8 +11,8 @@ namespace DFC.App.MatchSkills.Controllers
     public class HomeController : CompositeSessionController<HomeCompositeViewModel>
     {
         public HomeController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService )
+            : base(compositeSettings, sessionService)
         {
         }
 

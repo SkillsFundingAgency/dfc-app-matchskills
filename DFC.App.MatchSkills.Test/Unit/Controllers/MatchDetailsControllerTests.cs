@@ -28,7 +28,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         private IServiceTaxonomySearcher _serviceTaxonomy;
         private IOptions<ServiceTaxonomySettings> _serviceTaxonomySettings;
         private MatchDetailsController _controller;
@@ -40,11 +40,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _cookieService = Substitute.For<ICookieService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+             
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
             _serviceTaxonomy = new ServiceTaxonomyRepository();
             _serviceTaxonomySettings = Options.Create(new ServiceTaxonomySettings());
-            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService, _cookieService);
+            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService );
             _controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
         [Test]
@@ -79,11 +79,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 }
             };
 
-            _sessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            _sessionService.GetUserSession().Returns(userSession);
             _serviceTaxonomy = Substitute.For<IServiceTaxonomySearcher>();
             _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(Arg.Any<string>(), Arg.Any<string>(),
                 Arg.Any<string>(), Arg.Any<string[]>()).Returns(new SkillsGap());
-            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService, _cookieService);
+            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService );
 
             var result = await _controller.Body("id") as ViewResult;
             result.Should().NotBeNull();
@@ -112,7 +112,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         private IServiceTaxonomySearcher _serviceTaxonomy;
         private IOptions<ServiceTaxonomySettings> _serviceTaxonomySettings;
         private MatchDetailsController _controller;
@@ -123,10 +123,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+             
             _serviceTaxonomy = new ServiceTaxonomyRepository();
             _serviceTaxonomySettings = Options.Create(new ServiceTaxonomySettings());
-            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService, _cookieService);
+            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService );
             _controller.ControllerContext.HttpContext = new DefaultHttpContext();
 
         }
@@ -147,7 +147,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                     new UsOccupation("id", "id")
                 }
             };
-            _sessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            _sessionService.GetUserSession().Returns(userSession);
             var skillsGap = await _controller.GetSkillsGap("id");
             skillsGap.Should().BeNull();
         }

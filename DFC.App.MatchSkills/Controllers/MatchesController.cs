@@ -15,8 +15,8 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly int pageSize;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService, IOptions<PageSettings> pageSettings)
-            : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService,   IOptions<PageSettings> pageSettings)
+            : base(compositeSettings, sessionService)
         {
             pageSize = pageSettings.Value.PageSize;
         }

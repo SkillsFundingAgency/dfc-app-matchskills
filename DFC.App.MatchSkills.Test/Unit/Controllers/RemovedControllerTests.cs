@@ -21,16 +21,16 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
         {
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
 
-            _cookieService = Substitute.For<ICookieService>();
+             
 
         }
 
@@ -38,7 +38,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ConfirmRemoveCalled_ReturnView()
         {
-            var controller = new RemovedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemovedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -54,7 +54,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemovedCalled_TrackTrackPageInUserSession()
         {
-            var controller = new RemovedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemovedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -69,7 +69,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemovedCalledAndUserStillHasSkillsInTheBasket_ThenReturnViewWithHasMoreSkills()
         {
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession
             {
                 SkillsToRemove = new HashSet<UsSkill>
                 {
@@ -82,7 +82,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             });
 
 
-            var controller = new RemovedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemovedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -96,7 +96,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemovedPostedTo_ReturnRedirect()
         {
-            var controller = new RemovedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemovedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -119,7 +119,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemovedPostedTo_Then_SkillsRemoved()
         {
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession
             {
                 SkillsToRemove = new HashSet<UsSkill>
                 {
@@ -132,7 +132,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             });
 
 
-            var controller = new RemovedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemovedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -156,7 +156,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemovedPostedToAndFormIsEmpty_Then_RedirectToSkillsBasket()
         {
-            var controller = new RemovedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemovedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

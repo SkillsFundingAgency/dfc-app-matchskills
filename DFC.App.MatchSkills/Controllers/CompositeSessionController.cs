@@ -17,8 +17,8 @@ namespace DFC.App.MatchSkills.Controllers
     {
         protected TViewModel ViewModel { get; }
         protected CompositeSessionController(IOptions<CompositeSettings> compositeSettings, 
-            ISessionService sessionService, ICookieService cookieService)
-            : base(sessionService, cookieService)
+            ISessionService sessionService )
+            : base(sessionService)
         {
             ViewModel = new TViewModel()
             {
@@ -68,8 +68,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         protected async Task<HttpResponseMessage> TrackPageInUserSession(UserSession session = null)
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            return await UpdateUserSession(primaryKeyFromCookie, ViewModel.Id.Value, session);
+            return await UpdateUserSession( ViewModel.Id.Value, session);
         }
 
         protected bool HasErrors()

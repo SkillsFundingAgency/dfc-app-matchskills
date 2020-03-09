@@ -36,7 +36,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             _sessionClient = sessionClient;
         }
 
-        public async Task<string> CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie = null)
+        public async Task<string> CreateUserSession(CreateSessionRequest request)
         {
             
             if (request == null)
@@ -68,21 +68,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return await _cosmosService.UpsertItemAsync(updatedSession);
         }
 
-        public async Task<UserSession> GetUserSession(string primaryKey)
-        {
-            var sesionCode = _sessionClient.TryFindSessionCode();
-
-            Throw.IfNullOrWhiteSpace(primaryKey, nameof(primaryKey));
-
-            var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
-            var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
-
-            var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
-            return result.IsSuccessStatusCode ? 
-                JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
-                : null;
-        }
-
+       
         public async Task<UserSession> GetUserSession()
         { 
             var sesionCode = _sessionClient.TryFindSessionCode().Result;
@@ -95,34 +81,23 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
         public async Task<bool> CheckForExistingUserSession(string primaryKey)
         {
-            if (string.IsNullOrWhiteSpace(primaryKey))
+            if (String.IsNullOrWhiteSpace(primaryKey))
                 return false;
 
-            var result = await GetUserSession(primaryKey);
+            var result = await GetUserSession();
 
             if (result == null)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(result.UserSessionId) || string.IsNullOrWhiteSpace(result.PartitionKey))
+            if (String.IsNullOrWhiteSpace(result.UserSessionId) || String.IsNullOrWhiteSpace(result.PartitionKey))
                 return false;
             
             return primaryKey == result.PrimaryKey;
         }
-        public string GeneratePrimaryKey()
-        {
-            var sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
-            var partitionKey = PartitionKeyHelper.UserSession(sessionId);
-            var userSession = new UserSession()
-            {
-                UserSessionId = sessionId,
-                PartitionKey =  partitionKey
-            };
-            return userSession.PrimaryKey;
-        }
-
+        
         public string ExtractInfoFromPrimaryKey(string primaryKey, ExtractMode mode)
         {
-            if (string.IsNullOrWhiteSpace(primaryKey))
+            if (String.IsNullOrWhiteSpace(primaryKey))
                 return null;
             if (!primaryKey.Contains('-'))
                 return null;

@@ -27,9 +27,9 @@ namespace DFC.App.MatchSkills.Controllers
         public OccupationSearchController(IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings,
             IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService) 
+            ISessionService sessionService ) 
             : base(compositeSettings,
-                sessionService, cookieService)
+                sessionService )
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
@@ -76,8 +76,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/matchskills/occupationSearch/GetSkillsForOccupation")]
         public async Task<IActionResult> GetSkillsForOccupation(string enterJobInputAutocomplete)
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
+            var resultGet = await _sessionService.GetUserSession();
             var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
 
             if (resultGet.Occupations == null)

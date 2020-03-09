@@ -29,7 +29,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         private IServiceTaxonomySearcher _serviceTaxonomySearcher;
         private IOptions<ServiceTaxonomySettings> _settings;
         const string _skillsJson = "{  " +
@@ -52,16 +52,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var handlerMock = MockHelpers.GetMockMessageHandler(_skillsJson);
             var restClient = new RestClient(handlerMock.Object);
             _serviceTaxonomySearcher = new ServiceTaxonomyRepository(restClient);
-            _cookieService = Substitute.For<ICookieService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("This is My Value");
+             
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
         }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -76,7 +74,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenGetBodyWithBlankInputCalled_ReturnHtml()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -91,7 +89,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenGetBodyWithInputCalled_ReturnDataAndHtml()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -108,7 +106,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyHasNoValues_FlagError_ReturnHtml()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -125,7 +123,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyHasNoValues_FlagError_ReturnHtmlWithSearchTerm()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -142,7 +140,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyHasOneValue_FlagError_ReturnHtml()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -159,13 +157,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_AddSkillsWithSearchTerm_Then_ShouldAddSelectedSkills()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
 
             var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
@@ -175,7 +172,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
 
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
 
             var result = await controller.Body(collection, "SearchTerm") as RedirectResult;
@@ -187,13 +184,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_AddSkillsWithoutSearchTerm_Then_ShouldAddSelectedSkills()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
 
             var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
@@ -202,7 +198,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
 
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
 
             var result = await controller.Body(collection, "") as RedirectResult;

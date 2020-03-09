@@ -24,22 +24,22 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private const string CookieName = ".matchSkills-session";
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
         {
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
 
-            _cookieService = Substitute.For<ICookieService>();
+             
 
         }
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
             var vm = result.ViewData.Model as HeadViewModel;
@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -67,7 +67,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithYes_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -82,7 +82,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithNo_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -98,7 +98,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -113,7 +113,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -123,7 +123,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -156,15 +156,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_VisitingTheWorkedPageWithACookie_Then_CookieIsUpdatedAndCurrentPageIsSetToWorked()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
             controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
 
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("test");
             await controller.Body();
             await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x=>
                 x.CurrentPage == CompositeViewModel.PageId.Worked.Value));
@@ -174,32 +172,27 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_VisitingTheWorkedPageWithoutACookie_Then_CreateCookie()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
             controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
 
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsNullForAnyArgs();
             await controller.Body();
-            await _sessionService.Received(1).CreateUserSession(Arg.Any<CreateSessionRequest>(),
-                Arg.Any<string>());
+            await _sessionService.Received(1).CreateUserSession(Arg.Any<CreateSessionRequest>());
         }
 
         [Test]
         public async Task When_PostingBackToTheWorkedPage_Then_UpdateSessionWithWorkedPageChoice()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new WorkedController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
             controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
 
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("test");
             await controller.Body(WorkedBefore.Yes);
             await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
                 x.UserHasWorkedBefore == true));

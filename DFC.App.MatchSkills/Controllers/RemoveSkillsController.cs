@@ -13,8 +13,8 @@ namespace DFC.App.MatchSkills.Controllers
     public class RemoveSkillsController : CompositeSessionController<RemoveSkillsCompositeViewModel>
     {
         public RemoveSkillsController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService )
+            : base(compositeSettings, sessionService )
         {
         }
 

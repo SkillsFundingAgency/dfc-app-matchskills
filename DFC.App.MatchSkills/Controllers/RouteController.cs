@@ -12,8 +12,8 @@ namespace DFC.App.MatchSkills.Controllers
     public class RouteController : CompositeSessionController<RouteCompositeViewModel>
     {
         public RouteController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService) 
-            : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService ) 
+            : base(compositeSettings, sessionService )
         {
         }
 

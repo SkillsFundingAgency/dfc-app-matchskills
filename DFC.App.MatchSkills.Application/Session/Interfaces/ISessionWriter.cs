@@ -6,8 +6,7 @@ namespace DFC.App.MatchSkills.Application.Session.Interfaces
 {
     public interface ISessionWriter
     {
-        Task<string> CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie = null);
+        Task<string> CreateUserSession(CreateSessionRequest request);
         Task<HttpResponseMessage> UpdateUserSessionAsync(UserSession updatedSession);
-        string GeneratePrimaryKey();
     }
 }

@@ -44,7 +44,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<CosmosSettings> _cosmosSettings;
         private Mock<CosmosClient> _client;
         private ICosmosService _cosmosService;
-        private ICookieService _cookieService;
+         
         
         [SetUp]
         public void Init()
@@ -77,8 +77,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             //Session Settings
             _sessionService = Substitute.For<ISessionService>();
             _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
-
+            
         }
         
         [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
@@ -118,7 +117,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_Body_Then_LoadBodyAndGetSessionData()
         {
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService, _cookieService)
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService )
             {
                 ControllerContext = new ControllerContext
                 {
@@ -126,7 +125,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             }
         }; 
             
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             
             await controller.Body();
 
@@ -137,7 +136,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_Toggle_Then_ViewModelAllSkillsSelectedToggled()
         {
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService, _cookieService)
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -145,7 +144,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 }
             }; 
             
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
 
     
             var result = await controller.SkillSelectToggle(false) as ViewResult;
@@ -159,7 +158,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService );
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
            
@@ -182,7 +181,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<ServiceTaxonomySettings> _settings;
 
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
@@ -199,8 +198,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
+            
 
         }
          [Test]
@@ -208,13 +207,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
         {
             
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService );
             
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
             
             var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
@@ -223,7 +221,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
            
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
 
             var result = await controller.Body(collection) as RedirectResult;
@@ -238,13 +236,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
         {
             
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService );
             
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-            controller.HttpContext.Request.QueryString = QueryString.Create(CookieService.CookieName, "Abc123");
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
             
             var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
@@ -252,7 +249,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
            
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
             _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
 
             var result = await controller.Body(collection) as RedirectResult;

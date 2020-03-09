@@ -24,11 +24,11 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly ILmiService _lmiService;
 
         public BasketController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService,
+            ISessionService sessionService,  
             IOptions<ServiceTaxonomySettings> settings,
             IServiceTaxonomySearcher serviceTaxonomy,
             ILmiService lmiService)
-            : base( compositeSettings, sessionService, cookieService)
+            : base( compositeSettings, sessionService)
         {
             _serviceTaxonomy = serviceTaxonomy;
             _apiUrl = settings.Value.ApiUrl;

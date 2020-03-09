@@ -10,8 +10,8 @@ namespace DFC.App.MatchSkills.Controllers
 {
     public class EnterSkillsController : CompositeSessionController<EnterSkillsCompositeViewModel>
     {
-        public EnterSkillsController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
+        public EnterSkillsController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService )
+            : base(compositeSettings, sessionService)
         {
         }
         public override async Task<IActionResult> Body()

@@ -13,9 +13,9 @@ namespace DFC.App.MatchSkills.Controllers
     {
         
         public OccupationSearchResultsController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService) 
+            ISessionService sessionService ) 
             : base(compositeSettings,
-                sessionService, cookieService)
+                sessionService )
         {
             
         }

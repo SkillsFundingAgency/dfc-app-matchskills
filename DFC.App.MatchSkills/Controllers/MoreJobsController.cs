@@ -16,9 +16,9 @@ namespace DFC.App.MatchSkills.Controllers
 
         public MoreJobsController(IOptions<ServiceTaxonomySettings> settings,
             IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService)
+            ISessionService sessionService )
             : base( compositeSettings,
-                sessionService, cookieService)
+                sessionService )
         {
             Throw.IfNull(settings, nameof(settings));
             _settings = settings.Value;

@@ -28,7 +28,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         public SelectSkillsController(IServiceTaxonomySearcher serviceTaxonomy, 
                 IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, 
-                ISessionService sessionService, ICookieService cookieService)  : base(compositeSettings, sessionService, cookieService)
+                ISessionService sessionService )  : base(compositeSettings, sessionService )
         {
             
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));

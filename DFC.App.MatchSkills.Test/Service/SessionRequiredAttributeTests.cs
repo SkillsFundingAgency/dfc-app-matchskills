@@ -21,23 +21,20 @@ namespace DFC.App.MatchSkills.Test.Service
     public class SessionRequiredAttributeTests
     {
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         private Mock<IServiceProvider> _serviceProvider;
         
         [SetUp]
         public void Setup()
         {
             _sessionService = Substitute.For<ISessionService>();
-            _cookieService = Substitute.For<ICookieService>();
+             
 
             _serviceProvider  = new Mock<IServiceProvider>();
             _serviceProvider
                 .Setup(x => x.GetService(typeof(ISessionService)))
                 .Returns(_sessionService);
-            _serviceProvider
-                .Setup(x => x.GetService(typeof(ICookieService)))
-                .Returns(_cookieService);
-
+         
             var serviceScope = new Mock<IServiceScope>();
             serviceScope.Setup(x => x.ServiceProvider).Returns(_serviceProvider.Object);
 
@@ -59,8 +56,7 @@ namespace DFC.App.MatchSkills.Test.Service
                 , Substitute.For<RouteData>(), Substitute.For<ActionDescriptor>());
             var context = new ActionExecutingContext(actionContext, new List<IFilterMetadata>(),
                 new Dictionary<string, object>(), Substitute.For<Controller>());
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>()).Returns("test");
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
             httpContext.RequestServices = _serviceProvider.Object;
 
             var filter = new SessionRequiredAttribute();

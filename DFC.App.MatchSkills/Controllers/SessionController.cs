@@ -15,31 +15,23 @@ namespace DFC.App.MatchSkills.Controllers
     public abstract class SessionController : Controller
     {
         private readonly ISessionService _sessionService;
-        private readonly ICookieService _cookieService;
-        
+       
 
-        protected SessionController(ISessionService sessionService, ICookieService cookieService)
+        protected SessionController(ISessionService sessionService)
         {
             _sessionService = sessionService;
-            _cookieService = cookieService;
         }
 
-        protected async Task CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie)
+        protected async Task CreateUserSession(CreateSessionRequest request)
         {
-            await _sessionService.CreateUserSession(request, sessionIdFromCookie);
+            await _sessionService.CreateUserSession(request);
         }
 
-
-        protected string TryGetPrimaryKey(HttpRequest request)
-        {
-            return _cookieService.TryGetPrimaryKey(request, Response);
-        }
-
-        protected async Task<HttpResponseMessage> UpdateUserSession(string sessionId, string currentPage, UserSession session = null)
+        protected async Task<HttpResponseMessage> UpdateUserSession(string currentPage, UserSession session = null)
         {
             if (session == null)
             {
-                 session = await _sessionService.GetUserSession(sessionId);
+                 session = await _sessionService.GetUserSession();
             }
             
             session.PreviousPage = session.CurrentPage;

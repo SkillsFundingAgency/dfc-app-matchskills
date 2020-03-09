@@ -26,8 +26,8 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly string _apiKey;
 
         public RelatedSkillsController(IServiceTaxonomySearcher serviceTaxonomy, 
-            IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
+            IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings, ISessionService sessionService )
+            : base(compositeSettings, sessionService )
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));

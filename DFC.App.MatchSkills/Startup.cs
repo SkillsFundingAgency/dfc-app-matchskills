@@ -58,7 +58,6 @@ namespace DFC.App.MatchSkills
                 accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
                 authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
             services.AddScoped<ICosmosService, CosmosService>();
-            services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ILmiService, LmiService>();

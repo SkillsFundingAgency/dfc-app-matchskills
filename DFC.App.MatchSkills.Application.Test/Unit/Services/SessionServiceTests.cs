@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings,_sessionClient.Object);
                 
-                var sessionId= await serviceUnderTest.CreateUserSession(null, null);
+                var sessionId= await serviceUnderTest.CreateUserSession(null);
                 sessionId.Should().NotBeNullOrWhiteSpace();
 
             }
@@ -76,7 +76,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings,_sessionClient.Object);
                 
-                var sessionId= await serviceUnderTest.CreateUserSession(new CreateSessionRequest(), existingSessionId);
+                var sessionId= await serviceUnderTest.CreateUserSession(new CreateSessionRequest());
                 sessionId.Should().Be(existingSessionId);
 
             }
@@ -119,7 +119,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 var serviceUnderTest = new SessionService(
                     cosmosSub, _sessionSettings,_sessionClient.Object);
-                var sessionId = await serviceUnderTest.CreateUserSession(new CreateSessionRequest(), "session5-gn84ygzmm4893m");
+                var sessionId = await serviceUnderTest.CreateUserSession(new CreateSessionRequest());
                 sessionId.Should().BeNull();
 
             }
@@ -149,19 +149,14 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
             }
 
-            [Test]
-            public void IfSessionIdIsNull_ThrowArgumentException()
-            {
-                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings,_sessionClient);
-                serviceUnderTest.Invoking(x => x.GetUserSession(null)).Should().Throw<ArgumentException>();
-            }
+            
             [Test]
             public async Task IfResultIsNotSuccess_ReturnNull()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings,_sessionClient);
                 _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)));
-                var result = await serviceUnderTest.GetUserSession("primaryKey");
+                var result = await serviceUnderTest.GetUserSession();
 
                 result.Should().BeNull();
             }
@@ -175,7 +170,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                         Content = new StringContent
                         (JsonConvert.SerializeObject(new UserSession()))
                     }));
-                var result = await serviceUnderTest.GetUserSession("primaryKey");
+                var result = await serviceUnderTest.GetUserSession();
 
                 result.Should().NotBeNull();
             }
@@ -250,16 +245,6 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 _cosmosService = Substitute.For<ICosmosService>();
                 _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
                 _sessionClient = Substitute.For<ISessionClient>();
-            }
-
-            [Test]
-            public void KeyShouldBeGeneratedInCorrectFormat()
-            {
-                var serviceUnderTest = new SessionService(_cosmosService, _sessionSettings,_sessionClient);
-                var primaryKey = serviceUnderTest.GeneratePrimaryKey();
-                primaryKey.Should().NotBeNullOrWhiteSpace();
-                primaryKey.Should().StartWith("session");
-                primaryKey.Should().Contain("-");
             }
         }
 

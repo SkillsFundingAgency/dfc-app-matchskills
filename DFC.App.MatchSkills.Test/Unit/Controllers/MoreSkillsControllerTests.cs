@@ -19,23 +19,21 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _cookieService = Substitute.For<ICookieService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("This is My Value");
+             
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
         }
 
         [Test]
         public async Task WhenBodyCalledWithJobs_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -50,7 +48,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobs_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -65,7 +63,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -80,7 +78,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -105,7 +103,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenMoreSkillsVisited_Then_SetCurrentPageToMoreSkills()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
