@@ -247,7 +247,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
     
             var result = await controller.SkillSelectToggle(false,"admin") as ViewResult;
-            var vm = result.ViewData.Model as SelectSkillsCompositeViewModel;
+            var vm = result.ViewData.Model as RelatedSkillsCompositeViewModel;
             vm.AllSkillsSelected.Should().BeTrue();
             
         }
