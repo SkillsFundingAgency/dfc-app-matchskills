@@ -104,7 +104,7 @@ namespace DFC.App.MatchSkills.Controllers
             return View("body",ViewModel);
         }
 
-        public async Task LoadSkills(string searchTerm)
+        private async Task LoadSkills(string searchTerm)
         {
             ViewModel.SearchTerm = searchTerm;
             await TrackPageInUserSession();
