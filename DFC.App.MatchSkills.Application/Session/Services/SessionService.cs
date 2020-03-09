@@ -38,8 +38,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
         public async Task<string> CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie = null)
         {
-            var sessionId = string.Empty;
-            var partitionKey = string.Empty;
+            
             if (request == null)
                 request = new CreateSessionRequest();
 
@@ -47,14 +46,10 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             var dfcUserSession = _sessionClient.NewSession();
              _sessionClient.CreateCookie(dfcUserSession,true);
 
-             sessionId = dfcUserSession.SessionId;
-             partitionKey = dfcUserSession.PartitionKey;
-
-
             var userSession = new UserSession()
             {
-                UserSessionId = sessionId,
-                PartitionKey = partitionKey,
+                UserSessionId = dfcUserSession.SessionId,
+                PartitionKey = dfcUserSession.PartitionKey,
                 Salt = _sessionSettings.Value.Salt,
                 CurrentPage = request.CurrentPage,
                 PreviousPage = request.PreviousPage,
@@ -89,19 +84,13 @@ namespace DFC.App.MatchSkills.Application.Session.Services
         }
 
         public async Task<UserSession> GetUserSession()
-        {
-            var sesionCode = _sessionClient.TryFindSessionCode();
+        { 
+            var sesionCode = _sessionClient.TryFindSessionCode().Result;
 
-            
-
-           // var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
-           // var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
-
-            //var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
-            //return result.IsSuccessStatusCode ? 
-             //   JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
-              //  : null;
-              return null;
+           var sessionId = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.SessionId);
+           var partitionKey = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.PartitionKey);
+           var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
+           return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
         }
 
         public async Task<bool> CheckForExistingUserSession(string primaryKey)
