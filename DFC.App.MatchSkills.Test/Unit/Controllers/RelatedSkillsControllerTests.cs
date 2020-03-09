@@ -220,6 +220,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 CompositeSettings = _compositeSettings.Value,
                 Skills = { new Skill("id", "name") },
                 SearchTerm = "SearchTerm",
+                CDN="cdn",
                 RelatedSkills = { new Skill("id", "secondName")}
             };
             var hasError = model.HasError;
@@ -227,6 +228,29 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var skills = model.Skills;
             var searchTerm = model.SearchTerm;
             var relatedSkills = model.RelatedSkills;
+            var cnd = model.CDN;
         }
+
+
+        [Test]
+        public async Task When_Toggle_Then_ViewModelAllSkillsSelectedToggled()
+        {
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            }; 
+            
+            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+
+    
+            var result = await controller.SkillSelectToggle(false,"admin") as ViewResult;
+            var vm = result.ViewData.Model as RelatedSkillsCompositeViewModel;
+            vm.AllSkillsSelected.Should().BeTrue();
+            
+        }
+
     }
 }
