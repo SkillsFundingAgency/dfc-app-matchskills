@@ -246,6 +246,10 @@
                             {
                                 "name": "LmiSettings__ApiUrl",
                                 "value": "[parameters('lmiSettingsApiUrl')]"
+                            },
+                            {
+                                "name": "SessionConfig__ApplicationName",
+                                "value": "matchskills"
                             }
                         ]
                     }
