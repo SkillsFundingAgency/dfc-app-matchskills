@@ -51,7 +51,7 @@ namespace DFC.App.MatchSkills
             services.Configure<ServiceTaxonomySettings>(Configuration.GetSection(nameof(ServiceTaxonomySettings)));
             services.Configure<CompositeSettings>(Configuration.GetSection(nameof(CompositeSettings)));
             services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
-            services.Configure<SessionSettings>(Configuration.GetSection(nameof(SessionSettings)));
+            services.Configure<SessionConfig>(Configuration.GetSection(nameof(SessionConfig)));
             services.Configure<PageSettings>(Configuration.GetSection(nameof(PageSettings)));
             services.Configure<LmiSettings>(Configuration.GetSection(nameof(LmiSettings)));
             services.AddScoped((x) => new CosmosClient(
@@ -61,13 +61,9 @@ namespace DFC.App.MatchSkills
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ILmiService, LmiService>();
-            var sessionSettings = Configuration.GetSection(nameof(SessionSettings)).Get<SessionSettings>();
-            Throw.IfNull(sessionSettings, nameof(sessionSettings));
-            var sessionConfig = new SessionConfig
-            {
-                ApplicationName = sessionSettings.ApplicationName,
-                Salt = sessionSettings.Salt,
-            };
+            var sessionConfig = Configuration.GetSection(nameof(SessionConfig)).Get<SessionConfig>();
+            Throw.IfNull(sessionConfig, nameof(sessionConfig));
+            
             services.AddSessionServices(sessionConfig);
 
             services.AddCors(options =>

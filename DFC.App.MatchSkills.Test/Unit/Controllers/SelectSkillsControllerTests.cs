@@ -28,6 +28,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Dfc.Session.Models;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -40,7 +41,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private IOptions<SessionSettings> _sessionSettings;
+        private IOptions<SessionConfig> _sessionConfig;
         private IOptions<CosmosSettings> _cosmosSettings;
         private Mock<CosmosClient> _client;
         private ICosmosService _cosmosService;
@@ -76,7 +77,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             //Session Settings
             _sessionService = Substitute.For<ISessionService>();
-            _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
+            _sessionConfig = Options.Create(new SessionConfig(){Salt = "ThisIsASalt"});
             
         }
         

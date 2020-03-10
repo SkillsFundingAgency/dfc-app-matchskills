@@ -18,7 +18,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
     public class SessionService : ISessionService
     {
         private readonly ICosmosService _cosmosService;
-        private readonly IOptions<SessionSettings> _sessionSettings;
+        private readonly IOptions<SessionConfig> _sessionConfig;
         private readonly ISessionClient _sessionClient;
 
         public enum ExtractMode
@@ -26,13 +26,13 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             PartitionKey = 0,
             SessionId = 1
         }
-        public SessionService(ICosmosService cosmosService, IOptions<SessionSettings> sessionSettings,ISessionClient sessionClient )
+        public SessionService(ICosmosService cosmosService, IOptions<SessionConfig> sessionConfig,ISessionClient sessionClient )
         {
             Throw.IfNull(cosmosService, nameof(cosmosService));
-            Throw.IfNull(sessionSettings, nameof(sessionSettings));
-            Throw.IfNullOrWhiteSpace(sessionSettings.Value.Salt, nameof(sessionSettings.Value.Salt));
+            Throw.IfNull(sessionConfig, nameof(sessionConfig));
+            Throw.IfNullOrWhiteSpace(sessionConfig.Value.Salt, nameof(sessionConfig.Value.Salt));
             _cosmosService = cosmosService;
-            _sessionSettings = sessionSettings;
+            _sessionConfig = sessionConfig;
             _sessionClient = sessionClient;
         }
 
@@ -50,7 +50,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             {
                 UserSessionId = dfcUserSession.SessionId,
                 PartitionKey = dfcUserSession.PartitionKey,
-                Salt = _sessionSettings.Value.Salt,
+                Salt = _sessionConfig.Value.Salt,
                 CurrentPage = request.CurrentPage,
                 PreviousPage = request.PreviousPage,
                 UserHasWorkedBefore = request.UserHasWorkedBefore,
