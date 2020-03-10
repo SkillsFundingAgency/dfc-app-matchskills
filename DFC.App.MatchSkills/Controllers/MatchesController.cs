@@ -69,7 +69,7 @@ namespace DFC.App.MatchSkills.Controllers
             var skip = filters.Page > 1 ? (filters.Page - 1) * _pageSize : 0;
 
             var showLmiData = userSession.OccupationMatches.All(x => x.JobGrowth != JobGrowth.Undefined);
-
+            ViewModel.CareerMatches = new List<CareerMatch>();
             foreach (var match in (GetOccupationMatches(userSession, filters)).Skip(skip).Take(_pageSize))
             {
                 var cm = new CareerMatch
