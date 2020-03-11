@@ -3,6 +3,7 @@ using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.Personalisation.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Models
 {
@@ -28,11 +29,13 @@ namespace DFC.App.MatchSkills.Models
         public int SourceSkillCount { get; set; }
 
         public bool ShowLmiData { get; set; }
-        public CareerMatch()
+        private IOptions<CompositeSettings> _compositeSettings;
+        public CareerMatch(IOptions<CompositeSettings> compositeSettings)
         {
             JobProfile = new JobProfile();
             MatchedSkills = new List<Skill>();
             UnMatchedSkills = new List<Skill>();
+            _compositeSettings = compositeSettings;
         }
 
         public int MatchStrengthPercentage { get; set; }
@@ -41,7 +44,8 @@ namespace DFC.App.MatchSkills.Models
         {
             Throw.IfNullOrEmpty(jobProfileUrl, nameof(jobProfileUrl));
             var jobProfileGuid = jobProfileUrl.Split('/').Last();
-            string url = $"/matchskills/MatchDetails?id={jobProfileGuid}";
+            
+            string url = $"{_compositeSettings.Value.Path}/MatchDetails?id={jobProfileGuid}";
 
             return url;
         }

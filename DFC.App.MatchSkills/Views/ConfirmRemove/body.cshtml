@@ -23,7 +23,7 @@
                 </div>
             </fieldset>
         </div>
-        <form method="post" action="/matchskills/@CompositeViewModel.PageId.Removed.Value">
+        <form method="post" action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.Removed.Value">
             @foreach (var skill in Model.Skills)
             {
                 <input id="@skill.Id" name="@skill.Id--@skill.Name" value="@skill.Name" type="hidden" />

@@ -49,7 +49,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [HttpPost]
-        [Route("/MatchSkills/[controller]")]
+        [DynamicRoute("{apppath}/[controller]")]
         public async Task<IActionResult> Submit()
         {
             var userSession = await GetUserSession();

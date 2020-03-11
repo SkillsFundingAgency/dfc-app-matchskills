@@ -21,7 +21,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            <form id="@form" action="/matchskills/@CompositeViewModel.PageId.RelatedSkills/addskills" method="post">
+            <form id="@form" action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RelatedSkills/addskills" method="post">
                 @Html.HiddenFor(x => x.SearchTerm)
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset" id="selectSkills">
@@ -41,7 +41,7 @@
                             }
                             else
                             {
-                                <govukLink id="selectSkillsGovukLinkSkillSelectToggle" link-href="/matchskills/@CompositeViewModel.PageId.RelatedSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected&searchterm=@Model.SearchTerm" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
+                                <govukLink id="selectSkillsGovukLinkSkillSelectToggle" link-href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RelatedSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected&searchterm=@Model.SearchTerm" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
                                 @await Component.InvokeAsync("SkillsList", slm)
                             }
 
@@ -53,7 +53,7 @@
                 {
                     <govukButton id="@Model.GetElementId("govukButton", "Add")" text="Add to skills list" />
                 }
-                <govukButtonLink id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkText="Cancel" AdditionalClass="govuk-button--secondary" LinkHref="/Matchskills/Basket/" />
+                <govukButtonLink id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkText="Cancel" AdditionalClass="govuk-button--secondary" LinkHref="@Model.CompositeSettings.Path/Basket/" />
             </form>
         </div>
 
