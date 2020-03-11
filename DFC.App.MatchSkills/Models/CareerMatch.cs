@@ -29,7 +29,7 @@ namespace DFC.App.MatchSkills.Models
         public int SourceSkillCount { get; set; }
 
         public bool ShowLmiData { get; set; }
-        private IOptions<CompositeSettings> _compositeSettings;
+        private readonly IOptions<CompositeSettings> _compositeSettings;
         public CareerMatch(IOptions<CompositeSettings> compositeSettings)
         {
             JobProfile = new JobProfile();

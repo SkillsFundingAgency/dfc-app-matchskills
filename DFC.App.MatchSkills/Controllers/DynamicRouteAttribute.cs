@@ -1,9 +1,6 @@
-﻿using System.Configuration;
-using System.IO;
-using DFC.App.MatchSkills.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using System.IO;
 
 
 namespace DFC.App.MatchSkills.Controllers

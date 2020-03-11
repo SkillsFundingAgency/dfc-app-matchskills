@@ -17,7 +17,7 @@ namespace DFC.App.MatchSkills.Controllers
     public class MatchesController : CompositeSessionController<MatchesCompositeViewModel>
     {
         private readonly int _pageSize;
-        private IOptions<CompositeSettings> _compositeSettings;
+        private readonly IOptions<CompositeSettings> _compositeSettings;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService, ICookieService cookieService, IOptions<PageSettings> pageSettings)
