@@ -28,7 +28,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             private IOptions<SessionConfig> _sessionConfig;
             private IOptions<CosmosSettings> _cosmosSettings;
             private Mock<CosmosClient> _client;
-            private Mock<ISessionClient> _sessionClient;
+            private ISessionClient _sessionClient=Substitute.For<ISessionClient>();
             [OneTimeSetUp]
             public void Init()
             {
@@ -39,8 +39,14 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     DatabaseName = "DatabaseName",
                     UserSessionsCollection = "UserSessions"
                 });
+                var dummySession = new DfcUserSession()
+                {
+                    SessionId = "partitionkey-sessionid"
+                };
+                
+                _sessionClient.NewSession().Returns(dummySession);
+                _sessionClient.CreateCookie(Arg.Any<DfcUserSession>(),true);
                 _client = new Mock<CosmosClient>();
-
                 _sessionConfig = Options.Create(new SessionConfig(){Salt = "ThisIsASalt",ApplicationName = "matchskills"});
             }
             [Test]
@@ -52,7 +58,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 
                 var serviceUnderTest = new SessionService(
-                    cosmosSub, _sessionConfig,_sessionClient.Object);
+                    cosmosSub, _sessionConfig,_sessionClient);
                 
                 var sessionId= await serviceUnderTest.CreateUserSession(null);
                 sessionId.Should().NotBeNullOrWhiteSpace();
@@ -90,12 +96,8 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var route = userSession.RouteIncludesDysac;
                 var skills = userSession.Skills;
                 var userHas = userSession.UserHasWorkedBefore;
-                var dummySession = new DfcUserSession()
-                {
-                    SessionId = "partitionkey-sessionid"
-                };
-                var sessionClient = Substitute.For<ISessionClient>();
-                sessionClient.NewSession().Returns(dummySession);
+                
+                
                 var cosmosSub = Substitute.For<ICosmosService>();
                 cosmosSub.CreateItemAsync(default)
                     .ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.BadRequest));
@@ -104,7 +106,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 
                 var serviceUnderTest = new SessionService(
-                    cosmosSub, _sessionConfig,_sessionClient.Object);
+                    cosmosSub, _sessionConfig,_sessionClient);
                 var sessionId = await serviceUnderTest.CreateUserSession(new CreateSessionRequest());
                 sessionId.Should().BeNull();
 
@@ -129,10 +131,20 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     DatabaseName = "DatabaseName",
                     UserSessionsCollection = "UserSessions"
                 });
+                var dummySession = new DfcUserSession()
+                {
+                    SessionId = "partitionkey-sessionid"
+                };
                 _client = Substitute.For<CosmosClient>();
                 _cosmosService = Substitute.For<ICosmosService>();
                 _sessionClient = Substitute.For<ISessionClient>();
-                _sessionConfig = Options.Create(new SessionConfig(){Salt = "ThisIsASalt"});
+                _sessionConfig = Options.Create(new SessionConfig()
+                {
+                    Salt = "ThisIsASalt",
+                    ApplicationName = "matchskills"
+                });
+                
+                _sessionClient.NewSession().Returns(dummySession);
             }
 
             
@@ -219,21 +231,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             }
         }
 
-        public class GeneratePrimaryKeyTests
-        {
-            private IOptions<SessionConfig> _sessionConfig;
-            private ICosmosService _cosmosService;
-            private ISessionClient _sessionClient;
-
-            [OneTimeSetUp]
-            public void Init()
-            {
-                _cosmosService = Substitute.For<ICosmosService>();
-                _sessionConfig = Options.Create(new SessionConfig(){Salt = "ThisIsASalt"});
-                _sessionClient = Substitute.For<ISessionClient>();
-            }
-        }
-
+      
         public class ExtractInfoFromPrimaryKeyTests
         {
             private IOptions<SessionConfig> _sessionConfig;
