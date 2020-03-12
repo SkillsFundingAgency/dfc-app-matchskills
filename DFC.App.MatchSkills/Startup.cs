@@ -129,9 +129,17 @@ namespace DFC.App.MatchSkills
 
             app.UseRouting();
             app.UseCors(_corsPolicy);
+            var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute("worked", appPath + "/worked", new {controller="worked", action="body" });
+                endpoints.MapControllerRoute("selectskills",appPath + "/selectskills", new { controller = "selectskills", action = "body" });
+                endpoints.MapControllerRoute("basket", appPath + "/basket", new { controller = "basket", action = "submit" });
+                endpoints.MapControllerRoute("confirmremove",appPath + "/confirmremove", new { controller = "confirmremove", action = "body" });
+                endpoints.MapControllerRoute("occupationSearch", appPath + "/occupationSsearch/GetSkillsForOccupation", new { controller = "occupationSearch", action = "GetSkillsForOccupation" });
+                endpoints.MapControllerRoute("OccupationSearchAuto",appPath + "/OccupationSearchAuto", new { controller = "occupationSearch", action = "OccupationSearchAuto" });
+                endpoints.MapControllerRoute("removed",appPath + "/removed", new { controller = "removed", action = "body" });
             });
 
         }

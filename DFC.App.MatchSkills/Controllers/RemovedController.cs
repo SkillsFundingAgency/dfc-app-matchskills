@@ -38,7 +38,6 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [HttpPost]
-        [Route("/MatchSkills/[controller]")]
         [SessionRequired]
         public async Task<IActionResult> Body(IFormCollection formCollection)
         {

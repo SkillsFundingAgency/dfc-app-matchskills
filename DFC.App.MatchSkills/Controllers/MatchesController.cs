@@ -17,12 +17,14 @@ namespace DFC.App.MatchSkills.Controllers
     public class MatchesController : CompositeSessionController<MatchesCompositeViewModel>
     {
         private readonly int _pageSize;
+        private readonly IOptions<CompositeSettings> _compositeSettings;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService, ICookieService cookieService, IOptions<PageSettings> pageSettings)
             : base(compositeSettings, sessionService, cookieService)
         {
             _pageSize = pageSettings.Value.PageSize;
+            _compositeSettings = compositeSettings;
         }
 
         [SessionRequired]
@@ -72,7 +74,7 @@ namespace DFC.App.MatchSkills.Controllers
             ViewModel.CareerMatches = new List<CareerMatch>();
             foreach (var match in (GetOccupationMatches(userSession, filters)).Skip(skip).Take(_pageSize))
             {
-                var cm = new CareerMatch
+                var cm = new CareerMatch(_compositeSettings)
                 {
                     JobProfile =
                     {

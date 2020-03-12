@@ -47,7 +47,6 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost]
         [SessionRequired]
-        [Route("MatchSkills/[controller]")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
