@@ -48,12 +48,10 @@ namespace DFC.App.MatchSkills.Test.Helpers
             var httpResponse = new Mock<HttpResponse>();
             var requestCookie = new Mock<IRequestCookieCollection>();
             var _dataProtectionProvider = new EphemeralDataProtectionProvider();
-            var _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
+            
 
-            string data = _dataProtector.Protect("This is my value");
-            requestCookie.Setup(x =>
-                x.TryGetValue(It.IsAny<string>(), out data)).Returns(true);
-
+            
+            
             httpResponse.Setup(x => x.Cookies).Returns(new Mock<IResponseCookies>().Object);
             httpRequest.Setup(x => x.Cookies).Returns(requestCookie.Object);
             httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
