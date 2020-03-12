@@ -34,7 +34,7 @@
 
                     <govukLabel for="@textInputElementName" text="Search for a skill" additional-class="govuk-!-font-weight-bold"></govukLabel>
 
-                    <govukTextInput id="@textInputElementName" additional-class="govuk-input--width-20">
+                    <govukTextInput id="@textInputElementName" additional-class="">
                         <govukHint HintText="You can search for a specific skill (like measuring spirit level) or a skill group (like bricklaying)"></govukHint>
                         <govukTextInputError Id="@textInputError" Text="Enter a skill" hidden="@(!Model.HasError)"></govukTextInputError>
                     </govukTextInput>
