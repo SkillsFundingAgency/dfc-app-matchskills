@@ -133,39 +133,13 @@ namespace DFC.App.MatchSkills
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapControllerRoute(
-                    name: "worked",
-                    pattern: appPath + "/worked",
-                    new { controller = "Worked", action = "Body" });
-                endpoints.MapControllerRoute(
-                    name: "worked",
-                    pattern: appPath + "/worked",
-                    new { controller = "Worked", action = "Body" });
-                endpoints.MapControllerRoute(
-                    name: "selectskills",
-                    pattern: appPath + "/selectskills",
-                    new { controller = "selectskills", action = "Body" });
-                endpoints.MapControllerRoute(
-                    name: "basket",
-                    pattern: appPath + "/basket",
-                    new { controller = "basket", action = "submit" });
-                endpoints.MapControllerRoute(
-                    name: "confirmremove",
-                    pattern: appPath + "/confirmremove",
-                    new { controller = "confirmremove", action = "body" });
-                endpoints.MapControllerRoute(
-                        name: "occupationSearch",
-                        pattern: appPath + "/occupationSearch/GetSkillsForOccupation",
-                        new { controller = "occupationSearch", action = "GetSkillsForOccupation" });
-                endpoints.MapControllerRoute(
-                    name: "OccupationSearchAuto",
-                    pattern: appPath + "/OccupationSearchAuto",
-                    new { controller = "occupationSearch", action = "OccupationSearchAuto" });
-                    
-                endpoints.MapControllerRoute(
-                    name: "removed",
-                    pattern: appPath + "/removed",
-                    new { controller = "removed", action = "body" });
+                endpoints.MapControllerRoute("worked", appPath + "/worked", new {controller="Worked", action="Body" });
+                endpoints.MapControllerRoute("selectskills",appPath + "/selectskills", new { controller = "selectskills", action = "Body" });
+                endpoints.MapControllerRoute("basket", appPath + "/basket", new { controller = "basket", action = "submit" });
+                endpoints.MapControllerRoute("confirmremove",appPath + "/confirmremove", new { controller = "confirmremove", action = "body" });
+                endpoints.MapControllerRoute("occupationSearch", appPath + "/occupationSearch/GetSkillsForOccupation", new { controller = "occupationSearch", action = "GetSkillsForOccupation" });
+                endpoints.MapControllerRoute("OccupationSearchAuto",appPath + "/OccupationSearchAuto", new { controller = "occupationSearch", action = "OccupationSearchAuto" });
+                endpoints.MapControllerRoute("removed",appPath + "/removed", new { controller = "removed", action = "body" });
             });
 
         }
