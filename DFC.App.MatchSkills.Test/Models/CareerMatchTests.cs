@@ -2,6 +2,7 @@
 using DFC.App.MatchSkills.Models;
 using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
 namespace DFC.App.MatchSkills.Test.Models
@@ -13,9 +14,10 @@ namespace DFC.App.MatchSkills.Test.Models
         public void When_Constructed_Then_AllMembersShouldBeInitialized()
         {
             // Arrange.
-
+            var _compositeSettings = Options.Create(new CompositeSettings());
+            _compositeSettings.Value.Path = "/matchskills";
             // Act.
-            var sut = new CareerMatch();
+            var sut = new CareerMatch(_compositeSettings);
 
             // Assert.
             sut.Should().NotBeNull();
@@ -37,7 +39,9 @@ namespace DFC.App.MatchSkills.Test.Models
         public void When_JobProfileUriProvided_Then_MatchSkillDetailUrlGenerated()
         {
             // Arrange
-            var cm = new CareerMatch();
+            var _compositeSettings = Options.Create(new CompositeSettings());
+            _compositeSettings.Value.Path = "/matchskills";
+            var cm = new CareerMatch(_compositeSettings);
 
             // Act.
             var url = cm.GetDetailsUrl("http://nationalcareers.service.gov.uk/jobprofile/4ade6bd5-9180-49cf-8270-6ff4730b3b2e");

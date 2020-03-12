@@ -123,8 +123,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
            sut.ControllerContext=MockHelpers.GetControllerContext();
            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(false));
 
-            sut.GetSkillsForOccupation("Renewable energy consultant") ;
-            
+           sut.GetSkillsForOccupation("Renewable energy consultant") ;
         }
 
 

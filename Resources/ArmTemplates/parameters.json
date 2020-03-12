@@ -14,6 +14,9 @@
         "Environment": {
             "value": "__ReleaseEnvironmentName__"
         },
+        "lmiSettingsApiUrl": {
+            "value": "__LmiSettingsApiUrl__"
+        },
         "SharedAppServicePlanName": {
             "value": "__SharedAppServicePlanName__"
         },

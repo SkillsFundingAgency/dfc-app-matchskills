@@ -1,6 +1,15 @@
-﻿<span><strong>Sort by:</strong></span>
-<ul class="sort-list">
-    <li class="sort-list-item"><a href="">Match %</a></li>
-    <li class="sort-list-item"><a href="">A - Z</a></li>
-    <li class="sort-list-item"><a href="">Job sector growth</a></li>
-</ul>
+﻿@using DFC.App.MatchSkills.Application.Session.Models
+@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.MatchesCompositeViewModel
+@{
+    var alphabeticallyText = Model.CurrentSortBy == SortBy.Alphabetically && Model.CurrentDirection == SortDirection.Ascending ? "Z - A": "A - Z";
+}
+
+<p class="govuk-body-s govuk-!-margin-bottom-6">
+        <strong>Sort by:</strong> <govukLink link-href="@CompositeViewModel.PageId.Matches?sortby=@SortBy.MatchPercentage&direction=@Model.GetSortDirection(SortBy.MatchPercentage)"
+                           link-text="Match %" id="@Model.GetElementId("govUkLink","Match")"></govukLink>,
+        <govukLink link-href="@CompositeViewModel.PageId.Matches?sortby=@SortBy.Alphabetically&direction=@Model.GetSortDirection(SortBy.Alphabetically)" 
+                   link-text="@alphabeticallyText" id="@Model.GetElementId("govUkLink","Alphabetically")"></govukLink>,
+        <govukLink link-href="@CompositeViewModel.PageId.Matches?sortby=@SortBy.JobSectorGrowth&direction=@Model.GetSortDirection(SortBy.JobSectorGrowth)" 
+                   link-text="Job sector growth" id="@Model.GetElementId("govUkLink","JobSector")"></govukLink>
+    </p>

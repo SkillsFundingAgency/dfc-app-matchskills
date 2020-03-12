@@ -20,7 +20,7 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            <form action="@CompositeViewModel.PageId.SelectSkills" method="post">
+            <form action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.SelectSkills" method="post">
 
                 <div class="results  @(Model.HasError ? "govuk-form-group--error": "") ">
                     <div class="govuk-form-group">
@@ -42,8 +42,7 @@
                             <div class="govuk-inset-text">
                                 <p>
                                     If you want to add a skill that does not appear on the list below, try
-                                    <govukLink id="@Model.GetElementId("govukLink","EnterSkills")" link-href="@CompositeViewModel.PageId.EnterSkills" link-text="searching"></govukLink>
-                                    for it.
+                                    <a id="@Model.GetElementId("govukLink","EnterSkills")" href="@CompositeViewModel.PageId.EnterSkills">searching</a> for it.
                                 </p>
                             </div>
 
@@ -53,7 +52,7 @@
                                     <span class="govuk-visually-hidden">Error:</span> Choose skills to add to your skills list
                                 </span>
                             }
-                            <govukLink id="@Model.GetElementId("govukLink","SkillSelectToggle")" link-href="/matchskills/@CompositeViewModel.PageId.SelectSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
+                            <govukLink id="@Model.GetElementId("govukLink","SkillSelectToggle")" link-href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.SelectSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
 
 
                             @await Component.InvokeAsync("SkillsList", slm)

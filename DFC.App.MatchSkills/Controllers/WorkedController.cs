@@ -34,7 +34,6 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost]
         [SessionRequired]
-        [Route("MatchSkills/[controller]")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
