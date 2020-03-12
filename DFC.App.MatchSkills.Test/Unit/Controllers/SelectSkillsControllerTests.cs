@@ -50,8 +50,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public void Init()
         {
             
-            _dataProtectionProvider = new EphemeralDataProtectionProvider();
-            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
             _settings = Options.Create(new ServiceTaxonomySettings());
             _compositeSettings = Options.Create(new CompositeSettings());
             _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
