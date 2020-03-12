@@ -1,18 +1,17 @@
-﻿using System;
+﻿using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.Application.Session.Models;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Moq.Protected;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.LMI.Models;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
-using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Controllers;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
-using Moq;
-using Moq.Protected;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Test.Helpers
 {
