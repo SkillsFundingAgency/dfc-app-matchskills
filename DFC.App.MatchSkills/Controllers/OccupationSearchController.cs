@@ -61,7 +61,6 @@ namespace DFC.App.MatchSkills.Controllers
 
         
         [HttpGet,HttpPost]
-        [Route("Matchskills/OccupationSearchAuto")]
         [Route("OccupationSearchAuto")]
         public async Task<IActionResult> OccupationSearchAuto(string occupation)
         {
@@ -73,7 +72,6 @@ namespace DFC.App.MatchSkills.Controllers
             return this.Ok(occupations.Select(x => x.Name).ToList());
         }
         [HttpPost]
-        [Route("/matchskills/occupationSearch/GetSkillsForOccupation")]
         public async Task<IActionResult> GetSkillsForOccupation(string enterJobInputAutocomplete)
         {
             var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);

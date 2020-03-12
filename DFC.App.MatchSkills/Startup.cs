@@ -149,6 +149,23 @@ namespace DFC.App.MatchSkills
                     name: "basket",
                     pattern: appPath + "/basket",
                     new { controller = "basket", action = "submit" });
+                endpoints.MapControllerRoute(
+                    name: "confirmremove",
+                    pattern: appPath + "/confirmremove",
+                    new { controller = "confirmremove", action = "body" });
+                endpoints.MapControllerRoute(
+                        name: "occupationSearch",
+                        pattern: appPath + "/occupationSearch/GetSkillsForOccupation",
+                        new { controller = "occupationSearch", action = "GetSkillsForOccupation" });
+                endpoints.MapControllerRoute(
+                    name: "OccupationSearchAuto",
+                    pattern: appPath + "/OccupationSearchAuto",
+                    new { controller = "occupationSearch", action = "OccupationSearchAuto" });
+                    
+                endpoints.MapControllerRoute(
+                    name: "removed",
+                    pattern: appPath + "/removed",
+                    new { controller = "removed", action = "body" });
             });
 
         }
