@@ -1,18 +1,17 @@
-﻿using System;
+﻿using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.Application.Session.Models;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Moq.Protected;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.LMI.Models;
-using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
-using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Controllers;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
-using Moq;
-using Moq.Protected;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DFC.App.MatchSkills.Test.Helpers
 {
@@ -49,12 +48,10 @@ namespace DFC.App.MatchSkills.Test.Helpers
             var httpResponse = new Mock<HttpResponse>();
             var requestCookie = new Mock<IRequestCookieCollection>();
             var _dataProtectionProvider = new EphemeralDataProtectionProvider();
-            var _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
+            
 
-            string data = _dataProtector.Protect("This is my value");
-            requestCookie.Setup(x =>
-                x.TryGetValue(It.IsAny<string>(), out data)).Returns(true);
-
+            
+            
             httpResponse.Setup(x => x.Cookies).Returns(new Mock<IResponseCookies>().Object);
             httpRequest.Setup(x => x.Cookies).Returns(requestCookie.Object);
             httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
