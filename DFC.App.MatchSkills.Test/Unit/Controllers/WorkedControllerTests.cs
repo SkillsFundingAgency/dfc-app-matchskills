@@ -161,11 +161,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 HttpContext = new DefaultHttpContext()
             };
-            controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
+            controller.HttpContext.Request.QueryString = QueryString.Create(".dfc-session", "Abc123");
 
             await controller.Body();
-            await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x=>
-                x.CurrentPage == CompositeViewModel.PageId.Worked.Value));
+
+            await _sessionService.Received().CreateUserSession(Arg.Is<CreateSessionRequest>(x=> x.CurrentPage == CompositeViewModel.PageId.Worked.Value));
         }
 
 

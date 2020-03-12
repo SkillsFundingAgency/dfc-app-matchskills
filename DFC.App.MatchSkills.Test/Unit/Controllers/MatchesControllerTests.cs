@@ -311,7 +311,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
 
             var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService, pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -323,7 +323,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 {"direction", direction }
             });
 
-            _sessionService.GetUserSession(Arg.Any<string>())
+            _sessionService.GetUserSession()
                 .ReturnsForAnyArgs(userSession);
 
             var result = await controller.Body() as ViewResult;
@@ -336,7 +336,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ChangingOrderType_Then_UpdateTheChoiceInSession()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService, _pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -348,7 +348,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 {"direction", "ascending" }
             });
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
 

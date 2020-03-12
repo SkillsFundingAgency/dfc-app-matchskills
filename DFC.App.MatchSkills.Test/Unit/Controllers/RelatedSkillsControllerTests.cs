@@ -231,7 +231,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_Toggle_Then_ViewModelAllSkillsSelectedToggled()
         {
-            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService, _cookieService)
+            var controller = new RelatedSkillsController(_serviceTaxonomySearcher, _settings, _compositeSettings, _sessionService)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -239,7 +239,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 }
             }; 
             
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
 
     
             var result = await controller.SkillSelectToggle(false,"admin") as ViewResult;

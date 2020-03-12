@@ -61,6 +61,7 @@ namespace DFC.App.MatchSkills
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ILmiService, LmiService>();
+
             var sessionConfig = Configuration.GetSection(nameof(SessionConfig)).Get<SessionConfig>();
             Throw.IfNull(sessionConfig, nameof(sessionConfig));
             
