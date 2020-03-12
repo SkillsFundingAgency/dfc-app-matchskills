@@ -71,7 +71,6 @@ namespace DFC.App.MatchSkills.Controllers
         }
         
         [HttpPost]
-        [DynamicRoute("{apppath}/[controller]")]
         public async Task<IActionResult> Body(IFormCollection formCollection)
         {
             await GetSessionData();

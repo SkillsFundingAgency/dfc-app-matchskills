@@ -8,6 +8,7 @@ using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Application.Session.Services;
+using DFC.App.MatchSkills.Helpers;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
@@ -129,9 +130,26 @@ namespace DFC.App.MatchSkills
 
             app.UseRouting();
             app.UseCors(_corsPolicy);
+            var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "worked",
+                    pattern: appPath + "/worked",
+                    new { controller = "Worked", action = "Body" });
+                endpoints.MapControllerRoute(
+                    name: "worked",
+                    pattern: appPath + "/worked",
+                    new { controller = "Worked", action = "Body" });
+                endpoints.MapControllerRoute(
+                    name: "selectskills",
+                    pattern: appPath + "/selectskills",
+                    new { controller = "selectskills", action = "Body" });
+                endpoints.MapControllerRoute(
+                    name: "basket",
+                    pattern: appPath + "/basket",
+                    new { controller = "basket", action = "submit" });
             });
 
         }
