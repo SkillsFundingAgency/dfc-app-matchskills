@@ -1,6 +1,10 @@
 ﻿@using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.CompositeViewModel
 
+@{
+    var cdnLink = $"{@Model.CompositeSettings.CDN}nationalcareers_toolkit/css/dysac.min.css";
+}
+
 @if (null == Model)
 {
     <title>@CompositeViewModel.AppTitle</title>
@@ -9,4 +13,4 @@ else
 {
     <title>@Model.PageTitle</title>
 }
-<link href="https://dev-cdn.nationalcareersservice.org.uk/nationalcareers_toolkit/css/dysac.min.css" rel="stylesheet" type="text/css" />
+<link href="@cdnLink" rel="stylesheet" type="text/css" />
