@@ -22,7 +22,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
 
         [SetUp]
@@ -30,16 +30,16 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
+             
         }
 
         [Test]
         public async Task When_BodyCalledWithoutCookie_Then_ThowError()
         {
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsNullForAnyArgs();
-            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
+            _sessionService.GetUserSession().ReturnsNullForAnyArgs();
+            var controller = new RouteController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -55,7 +55,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ThenSessionIsLoaded()
         {
-            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RouteController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -70,7 +70,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobs_ReturnHtml()
         {
-            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RouteController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -85,7 +85,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
-            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RouteController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -100,7 +100,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
-            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RouteController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -124,7 +124,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
         {
-            var controller = new RouteController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RouteController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

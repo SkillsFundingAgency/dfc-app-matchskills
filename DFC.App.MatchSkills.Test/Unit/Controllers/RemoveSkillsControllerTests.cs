@@ -20,23 +20,23 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
         {
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
 
-            _cookieService = Substitute.For<ICookieService>();
+             
 
         }
 
         [Test]
         public async Task When_RemoveMoveSkillsCalled_ReturnView()
         {
-            var controller = new RemoveSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemoveSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -51,7 +51,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemoveMoveSkillsCalled_Then_InstantiateSkillsToRemove()
         {
-            var controller = new RemoveSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemoveSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -66,7 +66,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemoveMoveSkillsCalled_TrackTrackPageInUserSession()
         {
-            var controller = new RemoveSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new RemoveSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

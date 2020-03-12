@@ -29,7 +29,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         private IOptions<PageSettings> _pageSettings;
 
 
@@ -38,14 +38,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+             
             _pageSettings = Options.Create(new PageSettings());
         }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -55,7 +55,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 {"page","0" }
             });
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
@@ -66,7 +66,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledWithOutPage_ReturnCurrentPageAs1()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -75,7 +75,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
             });
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
@@ -102,7 +102,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             );
 
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -112,7 +112,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                  {"page","1" }
              });
 
-            _sessionService.GetUserSession(Arg.Any<string>())
+            _sessionService.GetUserSession()
                 .ReturnsForAnyArgs(userSession);
 
             var result = await controller.Body() as ViewResult;
@@ -127,7 +127,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenTotalResultsMatchesPageSize_Then_CorrectTotalPagesNumberReturned()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 2 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -137,7 +137,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                  {"page","2" }
              });
 
-            _sessionService.GetUserSession(Arg.Any<string>())
+            _sessionService.GetUserSession()
                 .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
@@ -151,7 +151,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBodyCalledWithPageNumber_ReturnCorrectPage()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -161,7 +161,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                  {"page","2" }
              });
 
-            _sessionService.GetUserSession(Arg.Any<string>())
+            _sessionService.GetUserSession()
                 .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
@@ -174,7 +174,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBodyCalledWithPageNumberGreaterThanTheNumberOfPages__Then_ReturnLastPage()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -184,7 +184,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                  {"page","10" }
              });
 
-            _sessionService.GetUserSession(Arg.Any<string>())
+            _sessionService.GetUserSession()
                 .ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
@@ -250,7 +250,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 x++;
             }
             var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -260,7 +260,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                  {"page","1" }
              });
 
-            _sessionService.GetUserSession(Arg.Any<string>())
+            _sessionService.GetUserSession()
                 .ReturnsForAnyArgs(userSession);
 
             var result = await controller.Body() as ViewResult;
@@ -311,7 +311,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
 
             var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService, pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -323,7 +323,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 {"direction", direction }
             });
 
-            _sessionService.GetUserSession(Arg.Any<string>())
+            _sessionService.GetUserSession()
                 .ReturnsForAnyArgs(userSession);
 
             var result = await controller.Body() as ViewResult;
@@ -336,7 +336,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ChangingOrderType_Then_UpdateTheChoiceInSession()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService, _cookieService, _pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService, _pageSettings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -348,7 +348,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 {"direction", "ascending" }
             });
 
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
 
             var result = await controller.Body() as ViewResult;
 

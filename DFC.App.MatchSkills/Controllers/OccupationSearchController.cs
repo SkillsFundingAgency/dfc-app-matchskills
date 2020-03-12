@@ -2,7 +2,6 @@
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -10,7 +9,6 @@ using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,9 +25,9 @@ namespace DFC.App.MatchSkills.Controllers
         public OccupationSearchController(IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings,
             IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService) 
+            ISessionService sessionService ) 
             : base(compositeSettings,
-                sessionService, cookieService)
+                sessionService )
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
@@ -74,8 +72,7 @@ namespace DFC.App.MatchSkills.Controllers
         [HttpPost]
         public async Task<IActionResult> GetSkillsForOccupation(string enterJobInputAutocomplete)
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
-            var resultGet = await _sessionService.GetUserSession(primaryKeyFromCookie);
+            var resultGet = await _sessionService.GetUserSession();
             var occupationId = await GetOccupationIdFromName(enterJobInputAutocomplete);
 
             if (resultGet.Occupations == null)

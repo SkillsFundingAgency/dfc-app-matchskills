@@ -1,13 +1,11 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,8 +14,8 @@ namespace DFC.App.MatchSkills.Controllers
     public class ConfirmRemoveController : CompositeSessionController<ConfirmRemoveCompositeViewModel>
     {
         public ConfirmRemoveController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService )
+            : base(compositeSettings, sessionService)
         {
         }
 
@@ -53,7 +51,7 @@ namespace DFC.App.MatchSkills.Controllers
                 userSession.SkillsToRemove.Add(new UsSkill(skill[0], skill[1]));
             }
 
-            await UpdateUserSession(userSession.UserSessionId, ViewModel.Id.Value, userSession);
+            await UpdateUserSession(ViewModel.Id.Value, userSession);
 
            return RedirectTo(ViewModel.Id.Value);
         }
@@ -66,7 +64,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             userSession.SkillsToRemove = new HashSet<UsSkill>();
 
-            await UpdateUserSession(userSession.UserSessionId, ViewModel.Id.Value, userSession);
+            await UpdateUserSession(ViewModel.Id.Value, userSession);
 
             return RedirectTo(CompositeViewModel.PageId.SkillsBasket.Value);
         }

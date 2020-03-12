@@ -1,7 +1,6 @@
 using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
@@ -24,11 +23,11 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly ILmiService _lmiService;
 
         public BasketController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService,
+            ISessionService sessionService,  
             IOptions<ServiceTaxonomySettings> settings,
             IServiceTaxonomySearcher serviceTaxonomy,
             ILmiService lmiService)
-            : base( compositeSettings, sessionService, cookieService)
+            : base( compositeSettings, sessionService)
         {
             _serviceTaxonomy = serviceTaxonomy;
             _apiUrl = settings.Value.ApiUrl;

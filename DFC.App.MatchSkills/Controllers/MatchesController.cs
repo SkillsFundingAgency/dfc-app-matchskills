@@ -2,7 +2,6 @@
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +19,8 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly IOptions<CompositeSettings> _compositeSettings;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService, IOptions<PageSettings> pageSettings)
-            : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService,   IOptions<PageSettings> pageSettings)
+            : base(compositeSettings, sessionService)
         {
             _pageSize = pageSettings.Value.PageSize;
             _compositeSettings = compositeSettings;

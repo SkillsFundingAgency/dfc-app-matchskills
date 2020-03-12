@@ -20,23 +20,21 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _cookieService = Substitute.For<ICookieService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("This is My Value");
+             
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
         }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new EnterSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new EnterSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -51,7 +49,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenPostBodyWithBlankInputCalled_ReturnHtml()
         {
-            var controller = new EnterSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new EnterSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -65,7 +63,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenPostBodyWithValidInputCalled_ReturnHtml()
         {
-            var controller = new EnterSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new EnterSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

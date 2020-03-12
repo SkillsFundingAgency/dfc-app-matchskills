@@ -1,10 +1,12 @@
-﻿using NUnit.Framework;
+﻿using System.IO;
+using NUnit.Framework;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 
 namespace DFC.App.MatchSkills.Test.Integration
 {
@@ -17,8 +19,16 @@ namespace DFC.App.MatchSkills.Test.Integration
         [OneTimeSetUp]
         public void GivenARequestToTheController()
         {
+            var projectDir = Directory.GetCurrentDirectory();
             _factory = new TestServer(
-                new WebHostBuilder().UseStartup<Startup>());
+                new WebHostBuilder()
+                    .UseStartup<Startup>()
+                    .UseConfiguration(
+                        (new ConfigurationBuilder()
+                            .SetBasePath(projectDir)
+                            .AddJsonFile("appsettings.json")
+                            .Build()
+                        )));
             _client = _factory.CreateClient();
         }
 

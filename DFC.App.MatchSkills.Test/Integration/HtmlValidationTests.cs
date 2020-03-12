@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using DFC.App.MatchSkills;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 
 namespace DFC.App.MatchSkills.Test.Integration
 {
@@ -23,8 +25,16 @@ namespace DFC.App.MatchSkills.Test.Integration
 
         public HtmlValidationTests()
         {
+            var projectDir = Directory.GetCurrentDirectory();
             _factory = new TestServer(
-                new WebHostBuilder().UseStartup<Startup>());
+                new WebHostBuilder()
+                    .UseStartup<Startup>()
+                    .UseConfiguration(
+                        (new ConfigurationBuilder()
+                            .SetBasePath(projectDir)
+                            .AddJsonFile("appsettings.json")
+                            .Build()
+                        )));
             _client = _factory.CreateClient();
         }
 

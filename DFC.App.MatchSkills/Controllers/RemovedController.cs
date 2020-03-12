@@ -1,24 +1,22 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
+using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFC.Personalisation.Domain.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
     public class RemovedController : CompositeSessionController<RemovedCompositeViewModel>
     {
-        public RemovedController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService,
-            ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
+        public RemovedController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService)
+            : base(compositeSettings, sessionService)
         {
         }
 
@@ -33,7 +31,7 @@ namespace DFC.App.MatchSkills.Controllers
             }
             ViewModel.HasRemainingSkills = userSession.Skills.Count > 0;
             userSession.SkillsToRemove = new HashSet<UsSkill>();
-            await UpdateUserSession(userSession.UserSessionId, ViewModel.Id.Value, userSession);
+            await UpdateUserSession(ViewModel.Id.Value, userSession);
             return await base.Body();
         }
 
@@ -57,7 +55,7 @@ namespace DFC.App.MatchSkills.Controllers
                 userSession.Skills.Remove(userSession.Skills.FirstOrDefault(x=>x.Id == skill[0]));
             }
 
-            await UpdateUserSession(userSession.UserSessionId, ViewModel.Id.Value, userSession);
+            await UpdateUserSession(ViewModel.Id.Value, userSession);
             
             return RedirectTo(ViewModel.Id.Value);
         }
