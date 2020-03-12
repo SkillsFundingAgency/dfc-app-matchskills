@@ -231,7 +231,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             var x = 1;
 
-            while (x < 11)
+            while (x < 10)
             {
 
 

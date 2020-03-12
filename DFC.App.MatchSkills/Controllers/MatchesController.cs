@@ -45,12 +45,12 @@ namespace DFC.App.MatchSkills.Controllers
                 return 1;
             }
 
-            if (totalResults % _pageSize > 1 && totalResults % _pageSize < 5)
+            if (totalResults % _pageSize > 0 && totalResults % _pageSize < 5)
             {
                 return (totalResults / _pageSize) + 1;
             }
 
-            return totalResults / _pageSize;
+            return (int) Math.Round((decimal) totalResults / _pageSize);
         }
 
         private async Task SetViewModel(UserSession userSession)
