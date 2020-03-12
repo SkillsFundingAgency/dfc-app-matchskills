@@ -1,17 +1,14 @@
 ﻿using Dfc.ProviderPortal.Packages;
+using Dfc.Session;
+using Dfc.Session.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
-using DFC.App.MatchSkills.Application.Session.Helpers;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
-using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Dfc.Session;
-using Dfc.Session.Models;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {

@@ -1,7 +1,5 @@
 ﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net.Http;

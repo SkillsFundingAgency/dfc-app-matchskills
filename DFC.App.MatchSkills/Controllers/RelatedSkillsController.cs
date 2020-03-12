@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Interfaces;
-using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
-using Dfc.ProviderPortal.Packages;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {

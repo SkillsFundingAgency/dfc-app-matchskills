@@ -1,13 +1,11 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {

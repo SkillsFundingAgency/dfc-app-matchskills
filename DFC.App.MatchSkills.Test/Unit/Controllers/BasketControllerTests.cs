@@ -1,25 +1,20 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.LMI.Interfaces;
+﻿using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
 using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Moq;
 using NSubstitute;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
