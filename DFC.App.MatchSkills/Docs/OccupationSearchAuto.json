@@ -7,11 +7,11 @@
   },
   "servers": [
     {
-      "url": "https://dev.api.nationalcareersservice.org.uk/matchskills/occupationsearchauto"
+      "url": "https://{serverurl}"
     }
   ],
   "paths": {
-    "/Execute/": {
+    "/OccupationSearchAuto/": {
       "get": {
         "tags": [
           "occupation"

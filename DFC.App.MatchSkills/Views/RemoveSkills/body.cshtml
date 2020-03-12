@@ -17,7 +17,7 @@
 
 <div class="govuk-grid-column-two-thirds">
     <div class="govuk-grid-row">
-        <form action="/matchskills/@CompositeViewModel.PageId.ConfirmRemove.Value" method="post">
+        <form action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.ConfirmRemove.Value" method="post">
             <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">
 
                 <fieldset class="govuk-fieldset" id="@Model.GetElementId("fieldset", "radio")">

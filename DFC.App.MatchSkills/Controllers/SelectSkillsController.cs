@@ -2,7 +2,6 @@
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -11,7 +10,6 @@ using DFC.Personalisation.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,10 +21,12 @@ namespace DFC.App.MatchSkills.Controllers
         
         private readonly string _apiUrl;
         private readonly string _apiKey;
+        
         private readonly ISessionService _sessionService;
+
         public SelectSkillsController(IServiceTaxonomySearcher serviceTaxonomy, 
                 IOptions<ServiceTaxonomySettings> settings,IOptions<CompositeSettings> compositeSettings, 
-                ISessionService sessionService, ICookieService cookieService)  : base(compositeSettings, sessionService, cookieService)
+                ISessionService sessionService )  : base(compositeSettings, sessionService )
         {
             
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
@@ -40,6 +40,7 @@ namespace DFC.App.MatchSkills.Controllers
             _apiUrl = settings.Value.ApiUrl;
             _apiKey = settings.Value.ApiKey;
             _sessionService = sessionService;
+            ViewModel.CDN = compositeSettings.Value.CDN ?? "";
 
         }
 
@@ -57,7 +58,7 @@ namespace DFC.App.MatchSkills.Controllers
             var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
                 _apiKey, occupation.Id);
 
-            ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList(); 
+            ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList();
         }
          public override async Task<IActionResult> Body()
          {
@@ -68,7 +69,6 @@ namespace DFC.App.MatchSkills.Controllers
         }
         
         [HttpPost]
-        [Route("/MatchSkills/[controller]")]
         public async Task<IActionResult> Body(IFormCollection formCollection)
         {
             await GetSessionData();

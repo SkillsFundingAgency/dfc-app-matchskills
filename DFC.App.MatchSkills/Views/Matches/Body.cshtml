@@ -1,4 +1,7 @@
-﻿@model DFC.App.MatchSkills.ViewModels.MatchesCompositeViewModel
+﻿@using DFC.App.MatchSkills.Application.Session.Models
+@using DFC.App.MatchSkills.ViewComponents.Pagination
+@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.MatchesCompositeViewModel
 
 <div class="govuk-width-container">
     <govukHeadingH1 text="@Model.PageHeading"></govukHeadingH1>
@@ -87,43 +90,35 @@
                 </div>
             </div>
         </div>*@
+
+
         <div class="govuk-grid-column-two-thirds app-intro">
             <div class="app-results ">
                 <div class="app-results__item">
                     <hr>
-                    @*<div class="sort-container govuk-!-margin-bottom-6">
-                        <span><strong>Sort by:</strong></span>
-                        <ul class="sort-list">
-                            <li class="sort-list-item"><a href="#">Match %</a></li>
-                            <li class="sort-list-item"><a href="#">A - Z</a></li>
-                            <li class="sort-list-item"><a href="#">Job sector growth</a></li>
-                        </ul>
-                    </div>*@
+                    <partial name="_SortOptions" model="Model"/>
+                    
                     <div class="app-long-results list govuk-list govuk-grid-row" id="app-results-list--long">
-                        @foreach (var careerMatch in Model.CareerMatches.OrderByDescending(cm => cm.MatchStrengthPercentage))
+                        @foreach (var careerMatch in Model.CareerMatches)
                         {
                             <partial name="_MatchResult" model="careerMatch" />
                         }
-                        
+
                     </div>
                 </div>
             </div>
-            @*<nav role="navigation" aria-label="Pagination">
-                <div class="pagination__summary">Showing 1 - 5 of 25 results</div>
-                <ul class="previous-next-navigation govuk-!-margin-top-3">
-
-                    <li class="next">
-                        <a href="#">
-                            <span class="pagination-label">Next</span>
-                            <span class="govuk-visually-hidden">page</span>
-                            <span class="page-numbers">2 of 5</span>
-                        </a>
-                    </li>
-                </ul>
-
-
-
-            </nav>*@
+            @{
+                var pagination = new PaginationViewModel()
+                {
+                    NextPage = Model.CurrentPage < Model.TotalPages ? Model.CurrentPage + 1 : (int?)null,
+                    NextPageLink = $"matches?page={Model.CurrentPage + 1}",
+                    PreviousPage = Model.CurrentPage > 1 ? Model.CurrentPage - 1 : (int?)null,
+                    PreviousPageLink = $"matches?page={Model.CurrentPage - 1}",
+                    ShowResultsString = Model.ResultsString,
+                    TotalPages = Model.TotalPages
+                };
+            }
+            <partial name="~/ViewComponents/Pagination/Pagination.cshtml" model="pagination" />
         </div>
     </div>
 </div>
@@ -148,3 +143,4 @@
         </div>
     </div>
 </div>*@
+

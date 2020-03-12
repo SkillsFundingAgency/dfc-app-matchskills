@@ -2,11 +2,20 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appServiceDomain": {
-            "value": "azurewebsites.net"
+        "apimProxyAddress": {
+            "value": "https://foo.api.nationalcareersservice.org.uk"
+        },
+        "apimServiceName": {
+            "value": "dfc-foo-shared-apim"
+        },
+        "dfcSharedResourceGroup": {
+            "value": "dfc-test-template-rg"
         },
         "Environment": {
             "value": "FOO"
+        },
+        "lmiSettingsApiUrl": {
+            "value": "http://api.lmiforall.org.uk/api/v1/"
         },
         "SharedAppServicePlanName": {
             "value": "dfc-dev-pers-shared-asp"
@@ -31,6 +40,9 @@
         },
         "performSearchSkillInAltLabels": {
             "value": "false"
+        },
+        "CompositeUiCdnUrl": {
+            "value": "https://cdn.composite.test.org/"
         }
     }
 }

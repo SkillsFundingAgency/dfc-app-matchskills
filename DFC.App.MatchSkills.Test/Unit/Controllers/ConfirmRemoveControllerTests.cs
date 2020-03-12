@@ -21,16 +21,16 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
         {
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
 
-            _cookieService = Substitute.For<ICookieService>();
+             
 
         }
 
@@ -38,7 +38,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ConfirmRemoveCalled_ReturnView()
         {
-            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -54,7 +54,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ConfirmRemoveCalled_Then_InstantiateSkillsToRemove()
         {
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession
             {
                 SkillsToRemove = new HashSet<UsSkill>
                 {
@@ -62,7 +62,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 }
             });
 
-            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -77,7 +77,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ConfirmRemoveCalled_TrackTrackPageInUserSession()
         {
-            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -93,7 +93,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ConfirmRemovePostedTo_ReturnRedirect()
         {
-            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -116,7 +116,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ConfirmRemovePostedTo_Then_SkillsToRemoveIsUpdated()
         {
-            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -140,7 +140,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ConfirmRemovePostedToAndFormIsEmpty_Then_RedirectToSkillsBasket()
         {
-            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -164,7 +164,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_RemoveSkillsSessionClear_Then_SkillsToRemoveIsUpdated()
         {
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession
             {
                 SkillsToRemove = new HashSet<UsSkill>
                 {
@@ -173,7 +173,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             });
 
 
-            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new ConfirmRemoveController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

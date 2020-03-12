@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
@@ -85,8 +86,20 @@ namespace DFC.App.MatchSkills.Test.Helpers
             if (withMatches)
             {
                 userSession.OccupationMatches.Add(new OccupationMatch()
+                {
+                    JobProfileTitle = "Mock Title",
+                    JobProfileUri = "http://mockjoburl",
+                    LastModified = DateTime.UtcNow,
+                    TotalOccupationEssentialSkills = 12,
+                    MatchingEssentialSkills = 6,
+                    TotalOccupationOptionalSkills = 4,
+                    MatchingOptionalSkills = 2,
+                    Uri = "MatchUri",
+                    JobGrowth = JobGrowth.Increasing
+                });
+                userSession.OccupationMatches.Add(new OccupationMatch()
                     {
-                        JobProfileTitle = "Mock Title",
+                        JobProfileTitle = "Mock Title2",
                         JobProfileUri = "http://mockjoburl",
                         LastModified = DateTime.UtcNow,
                         TotalOccupationEssentialSkills = 12,
@@ -94,6 +107,7 @@ namespace DFC.App.MatchSkills.Test.Helpers
                         TotalOccupationOptionalSkills = 4,
                         MatchingOptionalSkills = 2,
                         Uri = "MatchUri",
+                        JobGrowth = JobGrowth.Increasing
                     }
                 );
             }

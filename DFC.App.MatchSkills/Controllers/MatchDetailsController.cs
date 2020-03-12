@@ -2,7 +2,6 @@
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
@@ -21,7 +20,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         public MatchDetailsController(IServiceTaxonomySearcher serviceTaxonomy, 
             IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService) : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService ) : base(compositeSettings, sessionService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
@@ -52,9 +51,8 @@ namespace DFC.App.MatchSkills.Controllers
             ViewModel.MissingSkills = skillsGap.MissingSkills;
             ViewModel.MatchingSkills = skillsGap.MatchingSkills;
             ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
-            //TODO: Use correct function when ST integrates CareerDescription
-            ViewModel.CareerDescription = $"This is a description about {ViewModel.CareerTitle}.";
-
+            ViewModel.CareerDescription = skillsGap.CareerDescription;
+            ViewModel.JobGrowth = skillsGap.JobGrowth;
             return await base.Body();
         }
 
@@ -65,16 +63,28 @@ namespace DFC.App.MatchSkills.Controllers
 
             var userSession = await GetUserSession();
 
-            var occupation = userSession.OccupationMatches.Where(x => x.JobProfileUri.Contains(id)).Select(x => x.Uri).FirstOrDefault();
+            var occupationMatch =
+                userSession.OccupationMatches.FirstOrDefault(x => x.JobProfileUri.Contains(id));
 
-            var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
+            if (occupationMatch != null)
+            {
+                var occupation = occupationMatch.Uri;
 
-            if (userSession.Skills == null || userSession.Skills.Count == 0)
-                return null;
+                var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
+
+                if (userSession.Skills == null || userSession.Skills.Count == 0)
+                    return null;
             
 
-            return await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
-                _settings.ApiKey, occupation, skillsList);
+                var skillsGap =  await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
+                    _settings.ApiKey, occupation, skillsList);
+                skillsGap.CareerTitle = occupationMatch.JobProfileTitle;
+                skillsGap.CareerDescription = occupationMatch.JobProfileDescription;
+                skillsGap.JobGrowth = occupationMatch.JobGrowth;
+                return skillsGap;
+            }
+
+            return null;
         }
 
         public string UpperCaseFirstLetter(string str)

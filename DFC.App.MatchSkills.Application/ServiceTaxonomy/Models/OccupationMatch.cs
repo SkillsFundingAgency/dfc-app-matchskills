@@ -1,4 +1,6 @@
 ﻿using System;
+using Newtonsoft.Json;
+using DFC.App.MatchSkills.Application.LMI.Models;
 
 namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
 {
@@ -6,6 +8,7 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
     {
         public string JobProfileTitle { get; set; }
 
+        public string JobProfileDescription { get; set; }
         public string JobProfileUri { get; set; }
 
         public DateTime LastModified { get; set; }
@@ -20,6 +23,42 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
         public int TotalOccupationOptionalSkills { get; set; }
 
         public string Uri { get; set; }
+        public int SocCode { get; set; }
+        public JobGrowth JobGrowth { get; set; }
 
+        [JsonIgnore]
+        public int MatchStrengthPercentage
+        {
+            get
+            {
+                int matchStrength = 0;
+
+                //   percentage match calculation = total number of skills matched in ST / total number of skills added to the skills list = % match  (eg. 8 skills matched in ST / 10 skills in skills list = 80% skills match)
+                if (TotalOccupationEssentialSkills > 0)
+                {
+                    double matched = MatchingEssentialSkills;
+                    double total = TotalOccupationEssentialSkills;
+
+                    var pct = (matched / total) * 100;
+                    matchStrength = Convert.ToInt32(Math.Round(pct, 0, MidpointRounding.AwayFromZero));
+                }
+
+                return matchStrength;
+            }
+        }
+
+        [JsonIgnore]
+        public int JobGrowthSort
+        {
+            get
+            {
+                return JobGrowth switch
+                {
+                    JobGrowth.Increasing => 1,
+                    JobGrowth.Decreasing => 2,
+                    _ => 3
+                };
+            }
+        }
     }
 }

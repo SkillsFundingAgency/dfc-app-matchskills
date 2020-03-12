@@ -23,7 +23,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private const string Path = "OccupationSearch";
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         const string SkillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
         
         [SetUp]
@@ -40,8 +40,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var handlerMock = MockHelpers.GetMockMessageHandler(SkillsJson);
             var restClient = new RestClient(handlerMock.Object);
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
+             
 
         }
         [Test]
@@ -49,7 +49,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             
             // Arrange
-            var controller = new OccupationSearchResultsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new OccupationSearchResultsController(_compositeSettings, _sessionService );
 
             // Assert
             controller.Should().NotBeNull();

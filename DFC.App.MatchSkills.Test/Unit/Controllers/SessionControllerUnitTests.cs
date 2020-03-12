@@ -23,7 +23,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IDataProtector _dataProtector;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         [SetUp]
         public void Init()
         {
@@ -32,14 +32,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
             _compositeSettings = Options.Create(new CompositeSettings());
 
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+             
         }
 
         [Test]
         public async Task When_SessionIdProvided_Then_CookieIsAppended()
         {
             // Arrange.
-            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new HomeController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -65,7 +65,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 return true;
             });
 
-            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService)
+            var controller = new HomeController(_compositeSettings, _sessionService )
             {
                 TempData = Substitute.For<ITempDataDictionary>()
             };

@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Interfaces;
-using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Session.Models;
+using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.App.MatchSkills.ViewModels;
 using DFC.Personalisation.Domain.Models;
-using Dfc.ProviderPortal.Packages;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -26,8 +25,8 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly string _apiKey;
 
         public RelatedSkillsController(IServiceTaxonomySearcher serviceTaxonomy, 
-            IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
+            IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings, ISessionService sessionService )
+            : base(compositeSettings, sessionService )
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
@@ -39,7 +38,7 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
             _apiUrl = settings.Value.ApiUrl;
             _apiKey = settings.Value.ApiKey;
-
+            ViewModel.CDN = compositeSettings.Value.CDN ?? "";
         }
 
         [SessionRequired]
@@ -92,6 +91,20 @@ namespace DFC.App.MatchSkills.Controllers
 
         public async Task GetRelatedSkills(string searchTerm)
         {
+            await LoadSkills(searchTerm);
+        }
+
+        [Route("/body/[controller]/SkillSelectToggle")]
+        [SessionRequired]
+        public async Task<IActionResult> SkillSelectToggle(bool toggle,string searchTerm)
+        {
+            await LoadSkills(searchTerm);
+            ViewModel.AllSkillsSelected = !toggle;
+            return View("body",ViewModel);
+        }
+
+        private async Task LoadSkills(string searchTerm)
+        {
             ViewModel.SearchTerm = searchTerm;
             await TrackPageInUserSession();
             var userSession = await GetUserSession();
@@ -104,7 +117,6 @@ namespace DFC.App.MatchSkills.Controllers
                 List<Skill> filteredSkills = skills.Where(x => x.RelationshipType == RelationshipType.Essential).ToList();
                 ViewModel.RelatedSkills.LoadFrom(filteredSkills);
             }
-
         }
 
     }

@@ -2,10 +2,19 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appServiceDomain": {
+        "apimProxyAddress": {
+            "type": "string"
+        },
+        "apimServiceName": {
+            "type": "string"
+        },
+        "dfcSharedResourceGroup": {
             "type": "string"
         },
         "environment": {
+            "type": "string"
+        },
+        "lmiSettingsApiUrl": {
             "type": "string"
         },
         "sharedResourceGroup": {
@@ -32,16 +41,65 @@
         },
         "performSearchSkillInAltLabels": {
             "type": "string"
+        },
+        "CompositeUiCdnUrl": {
+            "type": "string"
         }
     },
     "variables": {
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-pers-matchskills'))]",
+        "apimProductDisplayName": "Personalisation Match Skills",
+        "cosmosDbCollectionName": "UserSessions",
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
-        "cosmosDbCollectionName": "UserSessions"
+        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]"
     },
     "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "MatchSkillsApiLogger",
+            "resourceGroup": "[parameters('dfcSharedResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-logger.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apimServiceName": {
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "productDisplayName": {
+                        "value": "[variables('apimProductDisplayName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "MatchSkillsApiProduct",
+            "resourceGroup": "[parameters('dfcSharedResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-product.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apimServiceName": {
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "productDisplayName": {
+                        "value": "[variables('apimProductDisplayName')]"
+                    },
+                    "allowAnonymousAccess": {
+                        "value": true
+                    }
+                }
+            }
+        },
         {
             "apiVersion": "2017-05-10",
             "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollectionName'))]",
@@ -122,6 +180,14 @@
                                 "value": "1"
                             },
                             {
+                                "name": "WEBSITE_RUN_FROM_PACKAGE",
+                                "value": "1"
+                            },
+                            {
+                                "name": "FUNCTIONS_WORKER_RUNTIME",
+                                "value": "dotnet"
+                            },
+                            {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                 "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
                             },
@@ -147,7 +213,7 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchService",
-                                "value": "[concat('https://', variables('webAppName'), '.', parameters('appServiceDomain'))]"
+                                "value": "[concat(parameters('apimProxyAddress'), '/matchskills/OccupationSearchAuto')]"
                             },
                             {
                                 "name": "CompositeSettings__Path",
@@ -172,6 +238,18 @@
                             {
                                 "name": "SessionSettings__Salt",
                                 "value": "ncs"
+                            },
+                            {
+                                "name": "CompositeSettings__CDN",
+                                "value": "[parameters('CompositeUiCdnUrl')]"
+                            },
+                            {
+                                "name": "LmiSettings__ApiUrl",
+                                "value": "[parameters('lmiSettingsApiUrl')]"
+                            },
+                            {
+                                "name": "SessionConfig__ApplicationName",
+                                "value": "matchskills"
                             }
                         ]
                     }
@@ -182,5 +260,6 @@
             ]
         }
     ],
-        "outputs": {}
+    "outputs": {
     }
+}

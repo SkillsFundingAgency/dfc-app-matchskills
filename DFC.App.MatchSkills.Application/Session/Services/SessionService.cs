@@ -1,6 +1,7 @@
 ﻿using Dfc.ProviderPortal.Packages;
+using Dfc.Session;
+using Dfc.Session.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
-using DFC.App.MatchSkills.Application.Session.Helpers;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
@@ -14,57 +15,45 @@ namespace DFC.App.MatchSkills.Application.Session.Services
     public class SessionService : ISessionService
     {
         private readonly ICosmosService _cosmosService;
-        private readonly IOptions<SessionSettings> _sessionSettings;
+        private readonly IOptions<SessionConfig> _sessionConfig;
+        private readonly ISessionClient _sessionClient;
 
         public enum ExtractMode
         {
             PartitionKey = 0,
             SessionId = 1
         }
-        public SessionService(ICosmosService cosmosService, IOptions<SessionSettings> sessionSettings)
+        public SessionService(ICosmosService cosmosService, IOptions<SessionConfig> sessionConfig,ISessionClient sessionClient )
         {
             Throw.IfNull(cosmosService, nameof(cosmosService));
-            Throw.IfNull(sessionSettings, nameof(sessionSettings));
-            Throw.IfNullOrWhiteSpace(sessionSettings.Value.Salt, nameof(sessionSettings.Value.Salt));
+            Throw.IfNull(sessionConfig, nameof(sessionConfig));
+            Throw.IfNullOrWhiteSpace(sessionConfig.Value.Salt, nameof(sessionConfig.Value.Salt));
             _cosmosService = cosmosService;
-            _sessionSettings = sessionSettings;
+            _sessionConfig = sessionConfig;
+            _sessionClient = sessionClient;
         }
 
-        public async Task<string> CreateUserSession(CreateSessionRequest request, string sessionIdFromCookie = null)
+        public async Task<string> CreateUserSession(CreateSessionRequest request)
         {
-            var sessionId = string.Empty;
-            var partitionKey = string.Empty;
+            
             if (request == null)
                 request = new CreateSessionRequest();
 
-            
-
-            if (string.IsNullOrWhiteSpace(sessionIdFromCookie))
-            {
-                sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
-                partitionKey = PartitionKeyHelper.UserSession(sessionId);
-            }
-            else
-            {
-                sessionId = ExtractInfoFromPrimaryKey(sessionIdFromCookie, ExtractMode.SessionId);
-                partitionKey = ExtractInfoFromPrimaryKey(sessionIdFromCookie, ExtractMode.PartitionKey);
-            }
+            //Create new Session here
+            var dfcUserSession = _sessionClient.NewSession();
+             _sessionClient.CreateCookie(dfcUserSession,true);
 
             var userSession = new UserSession()
             {
-                UserSessionId = sessionId,
-                PartitionKey = partitionKey,
-                Salt = _sessionSettings.Value.Salt,
+                UserSessionId = dfcUserSession.SessionId,
+                PartitionKey = dfcUserSession.PartitionKey,
+                Salt = _sessionConfig.Value.Salt,
                 CurrentPage = request.CurrentPage,
                 PreviousPage = request.PreviousPage,
                 UserHasWorkedBefore = request.UserHasWorkedBefore,
                 RouteIncludesDysac = request.RouteIncludesDysac,
                 LastUpdatedUtc = DateTime.UtcNow,
             };
-
-            var isExist = await CheckForExistingUserSession(userSession.PrimaryKey);
-            if (isExist)
-                return userSession.PrimaryKey;
 
             var result = await _cosmosService.CreateItemAsync(userSession);
             return result.IsSuccessStatusCode ? userSession.PrimaryKey : null;
@@ -76,49 +65,36 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return await _cosmosService.UpsertItemAsync(updatedSession);
         }
 
-        public async Task<UserSession> GetUserSession(string primaryKey)
-        {
-            Throw.IfNullOrWhiteSpace(primaryKey, nameof(primaryKey));
+       
+        public async Task<UserSession> GetUserSession()
+        { 
+            var sesionCode = _sessionClient.TryFindSessionCode().Result;
 
-            var sessionId = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.SessionId);
-            var partitionKey = ExtractInfoFromPrimaryKey(primaryKey, ExtractMode.PartitionKey);
-
-            var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
-            return result.IsSuccessStatusCode ? 
-                JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) 
-                : null;
+           var sessionId = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.SessionId);
+           var partitionKey = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.PartitionKey);
+           var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
+           return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
         }
 
         public async Task<bool> CheckForExistingUserSession(string primaryKey)
         {
-            if (string.IsNullOrWhiteSpace(primaryKey))
+            if (String.IsNullOrWhiteSpace(primaryKey))
                 return false;
 
-            var result = await GetUserSession(primaryKey);
+            var result = await GetUserSession();
 
             if (result == null)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(result.UserSessionId) || string.IsNullOrWhiteSpace(result.PartitionKey))
+            if (String.IsNullOrWhiteSpace(result.UserSessionId) || String.IsNullOrWhiteSpace(result.PartitionKey))
                 return false;
             
             return primaryKey == result.PrimaryKey;
         }
-        public string GeneratePrimaryKey()
-        {
-            var sessionId = SessionIdHelper.GenerateSessionId(_sessionSettings.Value.Salt, DateTime.UtcNow);
-            var partitionKey = PartitionKeyHelper.UserSession(sessionId);
-            var userSession = new UserSession()
-            {
-                UserSessionId = sessionId,
-                PartitionKey =  partitionKey
-            };
-            return userSession.PrimaryKey;
-        }
-
+        
         public string ExtractInfoFromPrimaryKey(string primaryKey, ExtractMode mode)
         {
-            if (string.IsNullOrWhiteSpace(primaryKey))
+            if (String.IsNullOrWhiteSpace(primaryKey))
                 return null;
             if (!primaryKey.Contains('-'))
                 return null;

@@ -1,4 +1,6 @@
-﻿namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers
+﻿using System.Text.RegularExpressions;
+
+namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Helpers
 {
     public static class MappingHelper
     {
@@ -12,6 +14,10 @@
                 return "";
             
             return url.Substring(pos, url.Length - pos);
+        }
+        public static string StripHTML(string input)
+        {
+            return Regex.Replace(input, "<.*?>", string.Empty);
         }
     }
 }

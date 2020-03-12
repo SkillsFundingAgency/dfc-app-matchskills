@@ -2,11 +2,20 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appServiceDomain": {
-            "value": "__FunctionAppDomain__"
+        "apimProxyAddress": {
+            "value": "__ApimProxyAddress__"
+        },
+        "apimServiceName": {
+            "value": "__ApimServiceName__"
+        },
+        "dfcSharedResourceGroup": {
+            "value": "__SharedResourceGroupName__"
         },
         "Environment": {
             "value": "__ReleaseEnvironmentName__"
+        },
+        "lmiSettingsApiUrl": {
+            "value": "__LmiSettingsApiUrl__"
         },
         "SharedAppServicePlanName": {
             "value": "__SharedAppServicePlanName__"
@@ -31,6 +40,9 @@
         },
         "performSearchSkillInAltLabels": {
             "value": "__performSearchSkillInAltLabels__"
+        },
+        "CompositeUiCdnUrl": {
+            "value": "__CompositeUiCdnUrl__"
         }
     }
 }
