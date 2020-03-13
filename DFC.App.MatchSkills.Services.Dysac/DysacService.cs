@@ -1,65 +1,41 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Dysac;
+﻿using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
-using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+using Dfc.ProviderPortal.Packages;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
-    
+
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
         private readonly ILogger<DysacService> _log;
-        private readonly Uri _getCreateDysacSessionUri;
-        private readonly RestClient _client;
-        public DysacService(ILogger<DysacService> log, RestClient client, DysacServiceSettings dysacApiSettings)
+        private IOptions<DysacSettings> _DysacSettings;
+        private readonly IRestClient _client;
+        public DysacService(ILogger<DysacService> log, IRestClient client, IOptions<DysacSettings> DysacSettings)
         {
+            Throw.IfNull(DysacSettings, nameof(DysacSettings));
             _log = log;
             _client = client;
-            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
-        }
-        // Edit to assessment type
-        public async Task<NewSessionResponse> CreateNewSession(AssessmentTypes assessmentType)
-        {
-
-            try
-            {
-                var stubbedContent = new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Application.Json);
-                SetDssCorrelationId();
-
-                return await _client.PostAsync<NewSessionResponse>(_getCreateDysacSessionUri.AbsoluteUri + assessmentType.ToLower(), stubbedContent);
-            }
-            catch (HttpRequestException hre)
-            {
-                _log.LogError(hre.Message, hre);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _log.LogError(ex.Message, ex);
-                throw;
-            }
+            _DysacSettings = DysacSettings;
 
         }
 
-        internal void SetDssCorrelationId()
+        public Task<DysacServiceResponse> InitiateDysac(string sessionId = null)
         {
-            _client.DefaultRequestHeaders.Remove(Constants.DssCorrelationIdHeader);
-            var correlationId = Guid.NewGuid();
-            _client.DefaultRequestHeaders.Add(Constants.DssCorrelationIdHeader, correlationId.ToString());
+            var response = new DysacServiceResponse(){ResponseCode=DysacReturnCode.Ok}; //Stub
+            return Task.FromResult(response);
         }
     }
 
 
 
-    internal static class DysacServiceSettingsExtensions
+    internal static class DysacSettingsExtensions
     {
-        internal static Uri GetCreateDysacSessionUri(this DysacServiceSettings extendee)
+        internal static Uri GetCreateDysacSessionUri(this DysacSettings extendee)
         {
             var uri = new Uri(extendee.ApiUrl);
             var trimmed = uri.AbsoluteUri.TrimEnd('/');

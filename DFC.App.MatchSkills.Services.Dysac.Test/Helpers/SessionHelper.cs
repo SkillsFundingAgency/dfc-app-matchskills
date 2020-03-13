@@ -3,6 +3,7 @@ using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Net.Http;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Helpers
 {
@@ -10,31 +11,27 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Helpers
     {
         public static DysacService CreateNewDysacSession(HttpMessageHandler handler = null)
         {
-            var settings = new DysacServiceSettings
-            {
-                ApiUrl = "http://localhost:7074/api/",
-                ApiKey = ""
-            };
+            IOptions<DysacSettings> DysacSettings;
+            DysacSettings = Options.Create(new DysacSettings());
+            DysacSettings.Value.ApiUrl="http://localhost:7074/api/";
+            DysacSettings.Value.ApiKey="ApiKey";
+            DysacSettings.Value.DysacUrl = "DysacUrl";
 
-            //Resolving Sonar tests
-            var apiUrl = settings.ApiUrl;
-            var apiKey = settings.ApiKey;
             return new DysacService(log:Substitute.For<ILogger<DysacService>>(),
-                handler == null ? new RestClient() : new RestClient(handler), settings
+                handler == null ? new RestClient() : new RestClient(handler), DysacSettings
                 );
-            
             
         }
         public static DysacService CreateNewDysacSession_Invalid_RestClient()
         {
-            
+            IOptions<DysacSettings> DysacSettings;
+            DysacSettings = Options.Create(new DysacSettings());
+            DysacSettings.Value.ApiUrl="http://localhost:7074/api/";
+            DysacSettings.Value.ApiKey="ApiKey";
+            DysacSettings.Value.DysacUrl = "DysacUrl";
             return new DysacService(log:Substitute.For<ILogger<DysacService>>(), 
                 null,
-                new DysacServiceSettings
-                {
-                    ApiUrl = "http://localhost:7074/api/", 
-                    ApiKey = ""
-                });
+                DysacSettings);
         }
     }
 }
