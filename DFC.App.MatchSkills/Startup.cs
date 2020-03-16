@@ -150,9 +150,13 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllerRoute("selectskills",appPath + "/selectskills", new { controller = "selectskills", action = "body" });
                 endpoints.MapControllerRoute("basket", appPath + "/basket", new { controller = "basket", action = "submit" });
                 endpoints.MapControllerRoute("confirmremove",appPath + "/confirmremove", new { controller = "confirmremove", action = "body" });
-                endpoints.MapControllerRoute("occupationSearch", appPath + "/occupationSearch/GetSkillsForOccupation", new { controller = "occupationSearch", action = "GetSkillsForOccupation" });
-                endpoints.MapControllerRoute("OccupationSearchAuto",appPath + "/OccupationSearchAuto", new { controller = "occupationSearch", action = "OccupationSearchAuto" });
+                endpoints.MapControllerRoute("occupationsearch", appPath + "/occupationsearch/getskillsforoccupation", new { controller = "occupationsearch", action = "getskillsforoccupation" });
+                endpoints.MapControllerRoute("occupationsearchauto",appPath + "/occupationsearchauto", new { controller = "occupationsearch", action = "occupationsearchauto" });
                 endpoints.MapControllerRoute("removed",appPath + "/removed", new { controller = "removed", action = "body" });
+                endpoints.MapControllerRoute("route",appPath + "/route", new { controller = "route", action = "body" });
+                endpoints.MapControllerRoute("moreskills",appPath + "/moreskills", new { controller = "moreskills", action = "body" });
+                endpoints.MapControllerRoute("relatedskills",appPath + "/relatedskills", new { controller = "relatedskills", action = "body" });
+                endpoints.MapControllerRoute("enterskills",appPath + "/enterskills", new { controller = "enterskills", action = "body" });
             });
 
         }

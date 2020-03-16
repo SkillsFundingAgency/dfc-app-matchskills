@@ -26,8 +26,10 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
         public Task<DysacServiceResponse> InitiateDysac(string sessionId = null)
         {
-            var response = new DysacServiceResponse(){ResponseCode=DysacReturnCode.Ok}; //Stub
-            return Task.FromResult(response);
+            return sessionId == String.Empty
+                ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
+                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error}); //DevOnly; 
+            
         }
     }
 
