@@ -36,9 +36,15 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
             _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
-
-             
-
+            _dysacServiceSetings = Options.Create(new DysacSettings());
+            _dysacServiceSetings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/something";
+            _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
+            _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
+            _dysacService = Substitute.For<IDysacSessionReader>();
+            _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
+                {
+                    ResponseCode = DysacReturnCode.Ok
+                });
         }
         [Test]
         public void WhenHeadCalled_ReturnHtml()
@@ -95,7 +101,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(WorkedBefore.No) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"~/{CompositeViewModel.PageId.Worked}");
+            result.Url.Should().Be("http://dysacurl");
         }
 
 

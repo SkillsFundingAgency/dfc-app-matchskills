@@ -21,6 +21,8 @@ namespace DFC.App.MatchSkills.Controllers
             IOptions<DysacSettings> dysacSettings ) 
             : base(compositeSettings, sessionService )
         {
+            _dysacService = dysacService;
+            _dysacSettings = dysacSettings;
         }
 
         [SessionRequired]
