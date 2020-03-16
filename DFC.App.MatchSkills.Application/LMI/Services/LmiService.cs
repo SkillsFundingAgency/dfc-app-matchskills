@@ -9,25 +9,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {
     public class LmiService : ILmiService
     {
         private readonly IRestClient _restClient;
-        private readonly IOptions<LmiSettings> _settings;
+        private readonly ICosmosService _cosmosService;
+        private readonly IOptions<LmiSettings> _lmiSettings;
 
-        public LmiService(IOptions<LmiSettings> settings)
+        public LmiService(IOptions<LmiSettings> lmiSettings, ICosmosService cosmosService)
         {
             _restClient = new RestClient();
-            Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
-            _settings = settings;
+            _cosmosService = cosmosService;
+            Throw.IfNullOrWhiteSpace(lmiSettings.Value.ApiUrl, nameof(lmiSettings.Value.ApiUrl));
+            _lmiSettings = lmiSettings;
         }
-        public LmiService(IRestClient restClient, IOptions<LmiSettings> settings)
+        public LmiService(IRestClient restClient, IOptions<LmiSettings> settings, ICosmosService cosmosService)
         {
             _restClient = restClient ?? new RestClient();
+            _cosmosService = cosmosService;
             Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
-            _settings = settings;
+            _lmiSettings = settings;
         }
         public IList<OccupationMatch> GetPredictionsForGetOccupationMatches(IList<OccupationMatch> matches)
         {
@@ -39,9 +44,18 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    var prediction = await GetPredictionsForSocCode(match.SocCode, PredictionFilter.Region);
-                    if (prediction != null)
-                        match.JobGrowth = DetermineJobSectorGrowth(prediction);
+                    var cachedResult = CheckCachedLmiData(match.SocCode);
+                    if (cachedResult == JobGrowth.Undefined)
+                    {
+                        var prediction = await GetPredictionsForSocCode(match.SocCode, PredictionFilter.Region);
+                        if (prediction != null)
+                            match.JobGrowth = DetermineJobSectorGrowth(prediction);
+                    }
+                    else
+                    {
+                        match.JobGrowth = cachedResult;
+                    }
+
                 }));
 
 
@@ -60,7 +74,7 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
             try
             {
                 return await _restClient.GetAsync<WfPredictionResult>(
-                    $"{_settings.Value.ApiUrl}/wf/predict/breakdown/{filter.ToLower()}?soc={socCode}");
+                    $"{_lmiSettings.Value.ApiUrl}/wf/predict/breakdown/{filter.ToLower()}?soc={socCode}");
             }
             catch
             {
@@ -69,6 +83,11 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
 
         }
 
+        internal JobGrowth CheckCachedLmiData(int socCode)
+        {
+            
+            return JobGrowth.Undefined;
+        }
         internal JobGrowth DetermineJobSectorGrowth(WfPredictionResult result)
         {
             if (result.PredictedEmployment == null || result.PredictedEmployment.Length == 0) 

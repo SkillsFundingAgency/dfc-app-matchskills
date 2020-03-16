@@ -10,6 +10,8 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using NSubstitute;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
@@ -20,6 +22,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
         {
             private IOptions<LmiSettings> _settings;
             private RestClient _restClient;
+            private ICosmosService _cosmosService;
 
             [OneTimeSetUp]
             public void Init()
@@ -30,13 +33,14 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 });
                 var mockHandler = LmiHelpers.GetMockMessageHandler(LmiHelpers.SuccessfulLmiCall());
                 _restClient = new RestClient(mockHandler.Object);
+                _cosmosService = Substitute.For<ICosmosService>();
             }
 
 
             [Test]
             public void IfMatchesIsNull_ReturnMatches()
             {
-                var serviceUnderTest = new LmiService(_settings);
+                var serviceUnderTest = new LmiService(_settings, _cosmosService);
 
                 var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(null);
 
@@ -45,7 +49,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfMatchesIsEmpty_ReturnMatches()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>();
 
                 var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
@@ -55,7 +59,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfSocCodeIsZero_ReturnMatchesWithoutGrowth()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -71,7 +75,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfSocCodeIsLessThanZero_ReturnMatchesWithoutGrowth()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -89,7 +93,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var mockHandler = LmiHelpers.GetMockMessageHandler(string.Empty, HttpStatusCode.BadRequest);
                 _restClient = new RestClient(mockHandler.Object);
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -105,7 +109,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfSuccessfulCall_ReturnMatchesWithGrowth()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -126,7 +130,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var wfResult = JsonConvert.SerializeObject(new WfPredictionResult());
                 var mockHandler = LmiHelpers.GetMockMessageHandler(wfResult, HttpStatusCode.OK);
                 _restClient = new RestClient(mockHandler.Object);
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
