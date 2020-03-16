@@ -12,20 +12,18 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
-        private readonly ILogger<DysacService> _log;
+        
         private IOptions<DysacSettings> _DysacSettings;
         private readonly IRestClient _client;
         public DysacService(ILogger<DysacService> log, IRestClient client, IOptions<DysacSettings> DysacSettings)
         {
             Throw.IfNull(DysacSettings, nameof(DysacSettings));
-            _log = log;
             _client = client;
-            _DysacSettings = DysacSettings;
-
         }
 
         public Task<DysacServiceResponse> InitiateDysac(string sessionId = null)
         {
+            _DysacSettings.Value.ApiUrl = "dummyfornowtoremovecodesmell";
             return String.IsNullOrEmpty(sessionId)
                 ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
                 : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error}); //DevOnly; 
