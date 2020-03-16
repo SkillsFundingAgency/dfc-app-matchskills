@@ -22,7 +22,7 @@ namespace DFC.App.MatchSkills.ViewModels
 
         public SortDirection GetSortDirection(SortBy sortBy)
         {
-            if (CurrentSortBy != sortBy) return sortBy == SortBy.Alphabetically ? SortDirection.Ascending : SortDirection.Descending;
+            if (CurrentSortBy != sortBy) return sortBy == SortBy.MatchPercentage ? SortDirection.Descending : SortDirection.Ascending;
 
             return CurrentDirection == SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending;
         }
