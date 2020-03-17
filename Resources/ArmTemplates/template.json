@@ -44,6 +44,9 @@
         },
         "CompositeUiCdnUrl": {
             "type": "string"
+        },
+        "apimDysacApiKey": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -236,10 +239,6 @@
                                 "value": "UserSessions"
                             },
                             {
-                                "name": "SessionSettings__Salt",
-                                "value": "ncs"
-                            },
-                            {
                                 "name": "CompositeSettings__CDN",
                                 "value": "[parameters('CompositeUiCdnUrl')]"
                             },
@@ -250,6 +249,18 @@
                             {
                                 "name": "SessionConfig__ApplicationName",
                                 "value": "matchskills"
+                            },
+                            {
+                                "name": "DysacSettings__ApiUrl",
+                                "value": "[concat(parameters('apimProxyAddress'), '/discover-your-skills-careers/')]"
+                            },
+                            {
+                                "name": "DysacSettings__ApiKey",
+                                "value": "[parameters('apimDysacApiKey')]"
+                            },
+                            {
+                                "name": "DysacSettings__DysacUrl",
+                                "value": "/discover-your-skills-careers/assessment/short/"
                             }
                         ]
                     }
