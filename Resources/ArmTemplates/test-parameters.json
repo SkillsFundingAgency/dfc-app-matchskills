@@ -43,6 +43,9 @@
         },
         "CompositeUiCdnUrl": {
             "value": "https://cdn.composite.test.org/"
+        },
+        "apimDysacApiKey": {
+            "value": "not-a-real-apim-key"
         }
     }
 }

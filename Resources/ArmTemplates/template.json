@@ -44,13 +44,25 @@
         },
         "CompositeUiCdnUrl": {
             "type": "string"
+        },
+        "apimDysacApiKey": {
+            "type": "securestring"
         }
     },
     "variables": {
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-pers-matchskills'))]",
         "apimProductDisplayName": "Personalisation Match Skills",
-        "cosmosDbCollectionName": "UserSessions",
+        "cosmosDbCollections": [
+            {
+                "collectionName": "UserSessions",
+                "partitionKey": "/partitionKey"
+            },
+            {
+                "collectionName": "LmiData",
+                "partitionKey": "/socCode"
+            }
+        ],
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
         "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]"
     },
@@ -102,7 +114,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollectionName'))]",
+            "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollections')[copyIndex()].collectionName)]",
             "resourceGroup": "[parameters('sharedResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -119,12 +131,16 @@
                         "value": "[parameters('sharedCosmosDbDatabaseName')]"
                     },
                     "collectionName": {
-                        "value": "[variables('cosmosDbCollectionName')]"
+                        "value": "[variables('cosmosDbCollections')[copyIndex()].collectionName]"
                     },
                     "partitionKey": {
-                        "value": "/partitionKey"
+                        "value": "[variables('cosmosDbCollections')[copyIndex()].partitionKey]"
                     }
                 }
+            },
+            "copy": {
+                "name": "cosmosCollectionsCopy",
+                "count": "[length(variables('cosmosDbCollections'))]"
             }
         },
         {
@@ -236,10 +252,6 @@
                                 "value": "UserSessions"
                             },
                             {
-                                "name": "SessionSettings__Salt",
-                                "value": "ncs"
-                            },
-                            {
                                 "name": "CompositeSettings__CDN",
                                 "value": "[parameters('CompositeUiCdnUrl')]"
                             },
@@ -250,6 +262,26 @@
                             {
                                 "name": "SessionConfig__ApplicationName",
                                 "value": "matchskills"
+                            },
+                            {
+                                "name": "DysacSettings__ApiUrl",
+                                "value": "[concat(parameters('apimProxyAddress'), '/discover-your-skills-careers/')]"
+                            },
+                            {
+                                "name": "DysacSettings__ApiKey",
+                                "value": "[parameters('apimDysacApiKey')]"
+                            },
+                            {
+                                "name": "DysacSettings__DysacUrl",
+                                "value": "/discover-your-skills-careers/assessment/short/"
+                            },
+                            {
+                                "name": "LmiSettings__CacheLifespan",
+                                "value": "365"
+                            },
+                            {
+                                "name": "CosmosSettings__LmiDataCollection",
+                                "value": "LmiData"
                             }
                         ]
                     }
