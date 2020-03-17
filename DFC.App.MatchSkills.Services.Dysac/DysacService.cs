@@ -14,24 +14,21 @@ namespace DFC.App.MatchSkills.Services.Dysac
     {
         
         private readonly IOptions<DysacSettings> _dysacSettings;
-        private readonly IRestClient _client;
+        
         public DysacService(ILogger<DysacService> log, IRestClient client, IOptions<DysacSettings> dysacSettings)
         {
             Throw.IfNull(dysacSettings, nameof(dysacSettings));
-            _client = client;
+            
             _dysacSettings = dysacSettings;
         }
 
         public Task<DysacServiceResponse> InitiateDysac(string sessionId = null)
         {
             var serviceUrl = _dysacSettings.Value.ApiUrl;
-            var response = _client.GetAsync<Task<int>>(serviceUrl);
-            
-            //Handle response here and modify DysacServiceResponseAccordingly. Only returnig test responses for now so we can 
-            //test both OK and error
+
             return String.IsNullOrEmpty(sessionId)
                 ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
-                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error}); //DevOnly; 
+                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error});  
             
         }
 
