@@ -56,11 +56,11 @@
         "cosmosDbCollections": [
             {
                 "collectionName": "UserSessions",
-                "partitionKey": "partitionKey"
+                "partitionKey": "/partitionKey"
             },
             {
                 "collectionName": "LmiData",
-                "partitionKey": "socCode"
+                "partitionKey": "/socCode"
             }
         ],
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
