@@ -8,6 +8,6 @@ namespace DFC.App.MatchSkills.Application.LMI.Models
     {
         public int SocCode { get; set; }
         public JobGrowth JobGrowth { get; set; }
-        public DateTimeOffset LastChecked { get; set; }
+        public DateTimeOffset DateWritten { get; set; }
     }
 }

@@ -6,5 +6,6 @@
         public string ApiKey { get; set; }
         public string DatabaseName { get; set; }
         public string UserSessionsCollection { get; set; }
+        public string LmiDataCollection { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.LMI.Models;
+﻿using System;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.LMI.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Test.Unit.Helpers;
@@ -10,7 +11,11 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
+using Microsoft.Azure.Cosmos;
 using NSubstitute;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
@@ -31,9 +36,27 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 {
                     ApiUrl = "http://thisisarealuri.com"
                 });
+                var cachedLmiDataModel = new CachedLmiData
+                {
+                    SocCode = 2815,
+                    JobGrowth = JobGrowth.Increasing,
+                    DateWritten = DateTimeOffset.Now
+                };
+                var cachedLmiData = new StringContent(JsonConvert.SerializeObject(cachedLmiDataModel));
                 var mockHandler = LmiHelpers.GetMockMessageHandler(LmiHelpers.SuccessfulLmiCall());
                 _restClient = new RestClient(mockHandler.Object);
                 _cosmosService = Substitute.For<ICosmosService>();
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = cachedLmiData
+                    });
+                _cosmosService.CreateItemAsync(Arg.Any<object>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+                _cosmosService.UpsertItemAsync(Arg.Any<object>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+
             }
 
 
@@ -175,7 +198,6 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             var name = breakdownModel.Name;
             var noteBreakdown = breakdownModel.Note;
         }
-
-
     }
+
 }

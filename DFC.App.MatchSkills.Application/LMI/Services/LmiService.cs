@@ -1,16 +1,18 @@
 ﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.LMI.Helpers;
 using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
-using DFC.App.MatchSkills.Application.Cosmos.Models;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {
@@ -25,14 +27,16 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
             _restClient = new RestClient();
             _cosmosService = cosmosService;
             Throw.IfNullOrWhiteSpace(lmiSettings.Value.ApiUrl, nameof(lmiSettings.Value.ApiUrl));
+            Throw.IfLessThan(0, lmiSettings.Value.CacheLifespan, nameof(lmiSettings.Value.CacheLifespan));
             _lmiSettings = lmiSettings;
         }
-        public LmiService(IRestClient restClient, IOptions<LmiSettings> settings, ICosmosService cosmosService)
+        public LmiService(IRestClient restClient, IOptions<LmiSettings> lmiSettings, ICosmosService cosmosService)
         {
             _restClient = restClient ?? new RestClient();
             _cosmosService = cosmosService;
-            Throw.IfNullOrWhiteSpace(settings.Value.ApiUrl, nameof(settings.Value.ApiUrl));
-            _lmiSettings = settings;
+            Throw.IfNullOrWhiteSpace(lmiSettings.Value.ApiUrl, nameof(lmiSettings.Value.ApiUrl));
+            Throw.IfLessThan(0, lmiSettings.Value.CacheLifespan, nameof(lmiSettings.Value.CacheLifespan));
+            _lmiSettings = lmiSettings;
         }
         public IList<OccupationMatch> GetPredictionsForGetOccupationMatches(IList<OccupationMatch> matches)
         {
@@ -44,12 +48,13 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    var cachedResult = CheckCachedLmiData(match.SocCode);
+                    var cachedResult = await CheckCachedLmiData(match.SocCode);
                     if (cachedResult == JobGrowth.Undefined)
                     {
                         var prediction = await GetPredictionsForSocCode(match.SocCode, PredictionFilter.Region);
                         if (prediction != null)
-                            match.JobGrowth = DetermineJobSectorGrowth(prediction);
+                            match.JobGrowth = LmiHelper.DetermineJobSectorGrowth(prediction);
+                        await CacheLmiData(match.SocCode, match.JobGrowth);
                     }
                     else
                     {
@@ -57,8 +62,6 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
                     }
 
                 }));
-
-
             }
 
             var t = Task.WhenAll(tasks);
@@ -82,41 +85,32 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
             }
 
         }
-
-        internal JobGrowth CheckCachedLmiData(int socCode)
+        internal async Task<JobGrowth> CheckCachedLmiData(int socCode)
         {
-            
-            return JobGrowth.Undefined;
-        }
-        internal JobGrowth DetermineJobSectorGrowth(WfPredictionResult result)
-        {
-            if (result.PredictedEmployment == null || result.PredictedEmployment.Length == 0) 
+            if (socCode <= 0)
                 return JobGrowth.Undefined;
 
-            var year = DateTime.UtcNow.Year;
-            var currentYearTotal = CalculateTotal(result, year);
-            var previousYearTotal =
-                CalculateTotal(result, result.PredictedEmployment.Select(x => x.Year).AsEnumerable().First());
-            return currentYearTotal > previousYearTotal ? JobGrowth.Increasing : JobGrowth.Decreasing;
+            var result = await _cosmosService.ReadItemAsync(id:"", partitionKey: socCode.ToString(), CosmosCollection.LmiData);
+            if (result.IsSuccessStatusCode)
+            {
+                var lmiData = JsonConvert.DeserializeObject<CachedLmiData>(await result.Content.ReadAsStringAsync());
+                var isOutOfDate = LmiHelper.IsOutOfDate(lmiData.DateWritten, _lmiSettings.Value.CacheLifespan);
+                if(!isOutOfDate)
+                    return lmiData.JobGrowth;
+            }
+
+            return JobGrowth.Undefined;
         }
 
-        internal Breakdown[] RemoveUnwantedRegions(Breakdown[] predictedEmployment)
+        internal async Task<HttpResponseMessage> CacheLmiData(int socCode, JobGrowth jobGrowth)
         {
-            var alteredList = predictedEmployment.ToList();
-            alteredList.RemoveAll(x => x.Code == Region.Wales || 
-                                       x.Code == Region.Scotland || 
-                                       x.Code == Region.NorthernIreland);
-            return alteredList.ToArray();
+            var cachedLmiData = new CachedLmiData
+            {
+                SocCode = socCode,
+                JobGrowth = jobGrowth,
+                DateWritten = DateTimeOffset.Now
+            };
+            return await _cosmosService.UpsertItemAsync(cachedLmiData, CosmosCollection.LmiData);
         }
-
-        internal int CalculateTotal(WfPredictionResult predictedEmployment, int year)
-        {
-            var yearBreakdown = RemoveUnwantedRegions(predictedEmployment.PredictedEmployment.Where(x => x.Year == year)
-                .Select(x => x.Breakdown).FirstOrDefault());
-            return yearBreakdown.Sum(x => x.Employment);
-        }
-
-
-        
     }
 }

@@ -53,8 +53,8 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public async Task WhenSuccessfulCall_ReturnSessionId()
             {
                 var cosmosSub = Substitute.For<ICosmosService>();
-                cosmosSub.CreateItemAsync(default).ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.OK));
-                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
+                cosmosSub.CreateItemAsync(default, CosmosCollection.Session).ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.OK));
+                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 
                 var serviceUnderTest = new SessionService(
@@ -99,9 +99,9 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 
                 
                 var cosmosSub = Substitute.For<ICosmosService>();
-                cosmosSub.CreateItemAsync(default)
+                cosmosSub.CreateItemAsync(default, CosmosCollection.Session)
                     .ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.BadRequest));
-                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
+                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
 
                 
@@ -152,7 +152,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public async Task IfResultIsNotSuccess_ReturnNull()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig,_sessionClient);
-                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)));
                 var result = await serviceUnderTest.GetUserSession();
 
@@ -162,7 +162,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public async Task IfResultIsSuccess_ReturnSuccess()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig,_sessionClient);
-                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>())
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                     {
                         Content = new StringContent
@@ -209,7 +209,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public async Task IfResultIsNotSuccess_ReturnNull()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig,_sessionClient);
-                _cosmosService.UpsertItemAsync(Arg.Any<UserSession>())
+                _cosmosService.UpsertItemAsync(Arg.Any<UserSession>(), CosmosCollection.Session)
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.InternalServerError)));
                 var result = await serviceUnderTest.UpdateUserSessionAsync(new UserSession());
 
@@ -219,7 +219,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             public async Task IfResultIsSuccess_ReturnSuccess()
             {
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig,_sessionClient);
-                _cosmosService.UpsertItemAsync(Arg.Any<UserSession>())
+                _cosmosService.UpsertItemAsync(Arg.Any<UserSession>(), CosmosCollection.Session)
                     .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                     {
                         Content = new StringContent
@@ -310,7 +310,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public async Task WhenNoUserSessionExists_ReturnFalse()
             {
-                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig,_sessionClient);
                 
                 var sessionId = await serviceUnderTest.CheckForExistingUserSession("session-g2454t4f");
@@ -325,7 +325,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 {
                     PartitionKey = "session2"
                 };
-                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(userSession))
                 }));
@@ -343,7 +343,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 {
                     UserSessionId = "g2454t4f"
                 };
-                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(userSession))
                 }));
@@ -362,7 +362,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     UserSessionId = "g2454t4f",
                     PartitionKey = "session2"
                 };
-                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(userSession))
                 }));
