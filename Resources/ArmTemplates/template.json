@@ -280,7 +280,7 @@
                                 "value": "365"
                             },
                             {
-                                "name": "LmiSettings__LmiDataCollection",
+                                "name": "CosmosSettings__LmiDataCollection",
                                 "value": "LmiData"
                             }
                         ]
