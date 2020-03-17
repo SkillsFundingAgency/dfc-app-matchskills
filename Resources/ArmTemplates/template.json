@@ -274,6 +274,14 @@
                             {
                                 "name": "DysacSettings__DysacUrl",
                                 "value": "/discover-your-skills-careers/assessment/short/"
+                            },
+                            {
+                                "name": "LmiSettings__CacheLifespan",
+                                "value": "365"
+                            },
+                            {
+                                "name": "CosmosSettings__LmiDataCollection",
+                                "value": "LmiData"
                             }
                         ]
                     }
