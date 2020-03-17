@@ -13,22 +13,28 @@ namespace DFC.App.MatchSkills.Services.Dysac
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
         
-        private IOptions<DysacSettings> _DysacSettings;
+        private readonly IOptions<DysacSettings> _dysacSettings;
         private readonly IRestClient _client;
-        public DysacService(ILogger<DysacService> log, IRestClient client, IOptions<DysacSettings> DysacSettings)
+        public DysacService(ILogger<DysacService> log, IRestClient client, IOptions<DysacSettings> dysacSettings)
         {
-            Throw.IfNull(DysacSettings, nameof(DysacSettings));
+            Throw.IfNull(dysacSettings, nameof(dysacSettings));
             _client = client;
+            _dysacSettings = dysacSettings;
         }
 
         public Task<DysacServiceResponse> InitiateDysac(string sessionId = null)
         {
-            _DysacSettings.Value.ApiUrl = "dummyfornowtoremovecodesmell";
+            var serviceUrl = _dysacSettings.Value.ApiUrl;
+            var response = _client.GetAsync<Task<int>>(serviceUrl);
+            
+            //Handle response here and modify DysacServiceResponseAccordingly. Only returnig test responses for now so we can 
+            //test both OK and error
             return String.IsNullOrEmpty(sessionId)
                 ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
                 : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error}); //DevOnly; 
             
         }
+
     }
 
 
