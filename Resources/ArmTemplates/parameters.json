@@ -43,6 +43,9 @@
         },
         "CompositeUiCdnUrl": {
             "value": "__CompositeUiCdnUrl__"
+        },
+        "apimDysacApiKey": {
+            "value": "__ApimDiscoverMySkillsAndCareersKey__"
         }
     }
 }
