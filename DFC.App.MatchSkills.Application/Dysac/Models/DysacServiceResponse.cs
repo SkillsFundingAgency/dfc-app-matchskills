@@ -2,7 +2,8 @@
 {
     public class DysacServiceResponse
     {
-        public DysacReturnCode ResponseCode;
-        public string ResponseMessage;
+        public DysacReturnCode ResponseCode { get; set; }
+        public string ResponseMessage{ get; set; }
+        
     }
 }
