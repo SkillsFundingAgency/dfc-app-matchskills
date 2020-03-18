@@ -102,6 +102,7 @@ namespace DFC.App.MatchSkills.Controllers
             ViewModel.TotalMatches = totalMatches;
             ViewModel.CurrentSortBy = filters.SortBy;
             ViewModel.CurrentDirection = filters.SortDirection;
+            ViewModel.ShowLmiData = showLmiData;
 
         }
 
