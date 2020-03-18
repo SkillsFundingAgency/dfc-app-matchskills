@@ -1,19 +1,28 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
+  
     [SessionRequired]
     public class RouteController : CompositeSessionController<RouteCompositeViewModel>
     {
+        private readonly IOptions<DysacSettings> _dysacSettings;
+        private readonly IDysacSessionReader _dysacService;
         public RouteController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService ) 
+            ISessionService sessionService, IDysacSessionReader dysacService, 
+            IOptions<DysacSettings> dysacSettings ) 
             : base(compositeSettings, sessionService )
         {
+            _dysacService = dysacService;
+            _dysacSettings = dysacSettings;
         }
 
         [SessionRequired]
@@ -27,7 +36,6 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [SessionRequired]
-        [Route("MatchSkills/[controller]")]
         [HttpPost]
         public async Task<IActionResult> Body(Route choice)
         {
@@ -41,7 +49,9 @@ namespace DFC.App.MatchSkills.Controllers
                 case Route.Jobs:
                     return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
                 case Route.JobsAndSkills:
-                    return RedirectTo(CompositeViewModel.PageId.Route.Value);
+                    var response = _dysacService.InitiateDysac(userSession.UserSessionId).Result;
+                    return response.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.Value.DysacUrl) :  throw new Exception(response.ResponseMessage);
+                    
                 default:
                     return RedirectWithError(ViewModel.Id.Value);
             }

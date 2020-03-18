@@ -14,6 +14,8 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AspNetCore;
+using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
@@ -24,6 +26,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private const string CookieName = ".matchSkills-session";
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
+        private IOptions<DysacSettings> _dysacServiceSetings;
+        private IDysacSessionReader _dysacService;
          
 
         [SetUp]
@@ -32,14 +36,20 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
             _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
-
-             
-
+            _dysacServiceSetings = Options.Create(new DysacSettings());
+            _dysacServiceSetings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/something";
+            _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
+            _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
+            _dysacService = Substitute.For<IDysacSessionReader>();
+            _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
+                {
+                    ResponseCode = DysacReturnCode.Ok
+                });
         }
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
             var vm = result.ViewData.Model as HeadViewModel;
@@ -53,7 +63,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -67,7 +77,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithYes_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -82,7 +92,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithNo_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -91,14 +101,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body(WorkedBefore.No) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"~/{CompositeViewModel.PageId.Worked}");
+            result.Url.Should().Be("http://dysacurl");
         }
 
 
         [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -113,7 +123,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -123,7 +133,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -156,7 +166,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_VisitingTheWorkedPageWithACookie_Then_CookieIsUpdatedAndCurrentPageIsSetToWorked()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -172,7 +182,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_VisitingTheWorkedPageWithoutACookie_Then_CreateCookie()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -186,7 +196,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_PostingBackToTheWorkedPage_Then_UpdateSessionWithWorkedPageChoice()
         {
-            var controller = new WorkedController(_compositeSettings, _sessionService );
+            var controller = new WorkedController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

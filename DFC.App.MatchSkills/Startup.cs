@@ -4,6 +4,9 @@ using Dfc.Session.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
+using DFC.App.MatchSkills.Services.Dysac;
+using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.LMI.Services;
@@ -15,6 +18,7 @@ using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
+using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -52,6 +56,7 @@ namespace DFC.App.MatchSkills
             services.Configure<SessionConfig>(Configuration.GetSection(nameof(SessionConfig)));
             services.Configure<PageSettings>(Configuration.GetSection(nameof(PageSettings)));
             services.Configure<LmiSettings>(Configuration.GetSection(nameof(LmiSettings)));
+            services.Configure<DysacSettings>(Configuration.GetSection(nameof(DysacSettings)));
             services.AddScoped((x) => new CosmosClient(
                 accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
                 authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
@@ -59,6 +64,8 @@ namespace DFC.App.MatchSkills
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ILmiService, LmiService>();
+            services.AddScoped<IRestClient, RestClient>();
+            services.AddScoped<IDysacSessionReader,DysacService>();
 
             var sessionConfig = Configuration.GetSection(nameof(SessionConfig)).Get<SessionConfig>();
             Throw.IfNull(sessionConfig, nameof(sessionConfig));
@@ -143,9 +150,13 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllerRoute("selectskills",appPath + "/selectskills", new { controller = "selectskills", action = "body" });
                 endpoints.MapControllerRoute("basket", appPath + "/basket", new { controller = "basket", action = "submit" });
                 endpoints.MapControllerRoute("confirmremove",appPath + "/confirmremove", new { controller = "confirmremove", action = "body" });
-                endpoints.MapControllerRoute("occupationSearch", appPath + "/occupationSearch/GetSkillsForOccupation", new { controller = "occupationSearch", action = "GetSkillsForOccupation" });
-                endpoints.MapControllerRoute("OccupationSearchAuto",appPath + "/OccupationSearchAuto", new { controller = "occupationSearch", action = "OccupationSearchAuto" });
+                endpoints.MapControllerRoute("occupationsearch", appPath + "/occupationsearch/getskillsforoccupation", new { controller = "occupationsearch", action = "getskillsforoccupation" });
+                endpoints.MapControllerRoute("occupationsearchauto",appPath + "/occupationsearchauto", new { controller = "occupationsearch", action = "occupationsearchauto" });
                 endpoints.MapControllerRoute("removed",appPath + "/removed", new { controller = "removed", action = "body" });
+                endpoints.MapControllerRoute("route",appPath + "/route", new { controller = "route", action = "body" });
+                endpoints.MapControllerRoute("moreskills",appPath + "/moreskills", new { controller = "moreskills", action = "body" });
+                endpoints.MapControllerRoute("relatedskills",appPath + "/relatedskills", new { controller = "relatedskills", action = "body" });
+                endpoints.MapControllerRoute("enterskills",appPath + "/enterskills", new { controller = "enterskills", action = "body" });
             });
 
         }

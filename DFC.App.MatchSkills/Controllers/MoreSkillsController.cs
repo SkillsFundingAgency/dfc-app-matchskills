@@ -25,7 +25,6 @@ namespace DFC.App.MatchSkills.Controllers
 
         [SessionRequired]
         [HttpPost]
-        [Route("MatchSkills/[controller]")]
         public IActionResult Body(MoreSkills choice)
         {
             switch (choice)

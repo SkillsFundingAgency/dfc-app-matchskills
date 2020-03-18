@@ -1,76 +1,41 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Dysac;
+﻿using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
-using DFC.Personalisation.Common.Extensions;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+using Dfc.ProviderPortal.Packages;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
-    
+
     public class DysacService : IDysacSessionReader, IDysacSessionWriter
     {
-        private readonly ILogger<DysacService> _log;
-        private readonly Uri _getCreateDysacSessionUri;
-        private readonly RestClient _client;
-        public DysacService(ILogger<DysacService> log, RestClient client, DysacServiceSettings dysacApiSettings)
+        
+        private readonly IOptions<DysacSettings> _dysacSettings;
+        private readonly IRestClient _client;
+        public DysacService(ILogger<DysacService> log, IRestClient client, IOptions<DysacSettings> dysacSettings)
         {
-            _log = log;
+            Throw.IfNull(dysacSettings, nameof(dysacSettings));
             _client = client;
-            _getCreateDysacSessionUri = DysacServiceSettingsExtensions.GetCreateDysacSessionUri(dysacApiSettings);
+            _dysacSettings = dysacSettings;
         }
-        // Edit to assessment type
-        public async Task<NewSessionResponse> CreateNewSession(AssessmentTypes assessmentType)
+
+        public Task<DysacServiceResponse> InitiateDysac(string sessionId = "")
         {
-
-            try
-            {
-                var stubbedContent = new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Application.Json);
-                SetDssCorrelationId();
-
-                return await _client.PostAsync<NewSessionResponse>(_getCreateDysacSessionUri.AbsoluteUri + assessmentType.ToLower(), stubbedContent);
-            }
-            catch (HttpRequestException hre)
-            {
-                _log.LogError(hre.Message, hre);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _log.LogError(ex.Message, ex);
-                throw;
-            }
-
+            var serviceUrl = _dysacSettings.Value.ApiUrl;
+            var response = _client.GetAsync<Task<int>>(serviceUrl);
+            
+            /* Handle response here and modify Dysac Service Response Accordingly. Only returning test responses for now so we can 
+               test both OK and error conditions*/
+            return String.IsNullOrEmpty(sessionId)
+                ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
+                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error});  
+            
         }
 
-        internal void SetDssCorrelationId()
-        {
-            _client.DefaultRequestHeaders.Remove(Constants.DssCorrelationIdHeader);
-            var correlationId = Guid.NewGuid();
-            _client.DefaultRequestHeaders.Add(Constants.DssCorrelationIdHeader, correlationId.ToString());
-        }
     }
 
-
-
-    internal static class DysacServiceSettingsExtensions
-    {
-        internal static Uri GetCreateDysacSessionUri(this DysacServiceSettings extendee)
-        {
-            var uri = new Uri(extendee.ApiUrl);
-            var trimmed = uri.AbsoluteUri.TrimEnd('/');
-            return new Uri($"{trimmed}{Constants.CreateNewAssessmentPath}{Constants.CreateNewAssessmentQueryString}");
-        }
-    }
-
-    internal static class Constants
-    {
-        internal const string DssCorrelationIdHeader = "DssCorrelationId";
-        internal const string CreateNewAssessmentPath = "/assessments/api/assessment/";
-        internal const string CreateNewAssessmentQueryString = "?assessmentType=";
-    }
+   
 }

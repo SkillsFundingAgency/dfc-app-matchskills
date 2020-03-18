@@ -60,7 +60,6 @@ namespace DFC.App.MatchSkills.Controllers
 
         [SessionRequired]
         [HttpPost]
-        [Route("MatchSkills/[controller]/AddSkills")]
         public async Task<IActionResult> Body(IFormCollection formCollection, string searchTerm)
         {
             var search = searchTerm;
