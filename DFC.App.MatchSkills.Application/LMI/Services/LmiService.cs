@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
+using Microsoft.Azure.Cosmos;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {
@@ -90,13 +91,14 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
             if (socCode <= 0)
                 return JobGrowth.Undefined;
 
-            var result = await _cosmosService.ReadItemAsync(id:"", partitionKey: socCode.ToString(), CosmosCollection.LmiData);
+            var result = await _cosmosService.ReadItemAsync(id:socCode.ToString(), String.Empty, CosmosCollection.LmiData);
             if (result.IsSuccessStatusCode)
             {
                 var lmiData = JsonConvert.DeserializeObject<CachedLmiData>(await result.Content.ReadAsStringAsync());
                 var isOutOfDate = LmiHelper.IsOutOfDate(lmiData.DateWritten, _lmiSettings.Value.CacheLifespan);
                 if(!isOutOfDate)
                     return lmiData.JobGrowth;
+
             }
 
             return JobGrowth.Undefined;
@@ -106,7 +108,7 @@ namespace DFC.App.MatchSkills.Application.LMI.Services
         {
             var cachedLmiData = new CachedLmiData
             {
-                SocCode = socCode,
+                SocCode = socCode.ToString(),
                 JobGrowth = jobGrowth,
                 DateWritten = DateTimeOffset.Now
             };

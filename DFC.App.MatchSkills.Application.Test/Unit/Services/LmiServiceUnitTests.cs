@@ -15,6 +15,7 @@ using System.Net.Http;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
+using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using Microsoft.Azure.Cosmos;
 using NSubstitute;
 
@@ -38,7 +39,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 });
                 var cachedLmiDataModel = new CachedLmiData
                 {
-                    SocCode = 2815,
+                    SocCode = 2815.ToString(),
                     JobGrowth = JobGrowth.Increasing,
                     DateWritten = DateTimeOffset.Now
                 };
@@ -199,5 +200,4 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             var noteBreakdown = breakdownModel.Note;
         }
     }
-
 }

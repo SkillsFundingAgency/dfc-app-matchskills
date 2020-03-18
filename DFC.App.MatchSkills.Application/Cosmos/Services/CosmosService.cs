@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Castle.Core.Internal;
 
 namespace DFC.App.MatchSkills.Application.Cosmos.Services
 {
@@ -52,7 +53,7 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
             Throw.IfNull(container, nameof(container));
             try
             {
-                var result = await container.ReadItemAsync<object>(id, new PartitionKey(partitionKey));
+                var result = await container.ReadItemAsync<object>(id, partitionKey.IsNullOrEmpty() ? PartitionKey.None : new PartitionKey(partitionKey));
 
                 if (result.StatusCode == HttpStatusCode.OK)
                 {

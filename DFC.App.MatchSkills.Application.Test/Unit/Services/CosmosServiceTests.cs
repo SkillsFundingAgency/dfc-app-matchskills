@@ -110,7 +110,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 });
                 var cachedLmiDataModel = new CachedLmiData
                 {
-                    SocCode = 2815,
+                    SocCode = 2815.ToString(),
                     JobGrowth = JobGrowth.Increasing,
                     DateWritten = DateTimeOffset.Now
                 };
