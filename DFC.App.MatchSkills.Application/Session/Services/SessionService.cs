@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {
@@ -56,14 +57,14 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 LastUpdatedUtc = DateTime.UtcNow,
             };
 
-            var result = await _cosmosService.CreateItemAsync(userSession);
+            var result = await _cosmosService.CreateItemAsync(userSession, CosmosCollection.Session);
             return result.IsSuccessStatusCode ? userSession.PrimaryKey : null;
         }
 
         public async Task<HttpResponseMessage> UpdateUserSessionAsync(UserSession updatedSession)
         {
             Throw.IfNull(updatedSession, nameof(updatedSession));
-            return await _cosmosService.UpsertItemAsync(updatedSession);
+            return await _cosmosService.UpsertItemAsync(updatedSession, CosmosCollection.Session);
         }
 
        
@@ -72,7 +73,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             var sesionCode = _sessionClient.TryFindSessionCode().Result;
             var sessionId = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.SessionId);
             var partitionKey = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.PartitionKey);
-            var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey);
+            var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey, CosmosCollection.Session);
            return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
         }
 

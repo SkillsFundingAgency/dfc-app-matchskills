@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.LMI.Models;
+﻿using System;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.LMI.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Test.Unit.Helpers;
@@ -10,6 +11,13 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Models;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
+using DFC.App.MatchSkills.Application.LMI.Interfaces;
+using Microsoft.Azure.Cosmos;
+using NSubstitute;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
@@ -20,6 +28,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
         {
             private IOptions<LmiSettings> _settings;
             private RestClient _restClient;
+            private ICosmosService _cosmosService;
 
             [OneTimeSetUp]
             public void Init()
@@ -28,15 +37,34 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 {
                     ApiUrl = "http://thisisarealuri.com"
                 });
+                var cachedLmiDataModel = new CachedLmiData
+                {
+                    SocCode = 2815.ToString(),
+                    JobGrowth = JobGrowth.Increasing,
+                    DateWritten = DateTimeOffset.Now
+                };
+                var cachedLmiData = new StringContent(JsonConvert.SerializeObject(cachedLmiDataModel));
                 var mockHandler = LmiHelpers.GetMockMessageHandler(LmiHelpers.SuccessfulLmiCall());
                 _restClient = new RestClient(mockHandler.Object);
+                _cosmosService = Substitute.For<ICosmosService>();
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = cachedLmiData
+                    });
+                _cosmosService.CreateItemAsync(Arg.Any<object>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+                _cosmosService.UpsertItemAsync(Arg.Any<object>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+
             }
 
 
             [Test]
             public void IfMatchesIsNull_ReturnMatches()
             {
-                var serviceUnderTest = new LmiService(_settings);
+                var serviceUnderTest = new LmiService(_settings, _cosmosService);
 
                 var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(null);
 
@@ -45,7 +73,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfMatchesIsEmpty_ReturnMatches()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>();
 
                 var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
@@ -55,7 +83,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfSocCodeIsZero_ReturnMatchesWithoutGrowth()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -71,7 +99,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfSocCodeIsLessThanZero_ReturnMatchesWithoutGrowth()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -89,7 +117,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var mockHandler = LmiHelpers.GetMockMessageHandler(string.Empty, HttpStatusCode.BadRequest);
                 _restClient = new RestClient(mockHandler.Object);
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -105,7 +133,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             [Test]
             public void IfSuccessfulCall_ReturnMatchesWithGrowth()
             {
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -126,7 +154,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var wfResult = JsonConvert.SerializeObject(new WfPredictionResult());
                 var mockHandler = LmiHelpers.GetMockMessageHandler(wfResult, HttpStatusCode.OK);
                 _restClient = new RestClient(mockHandler.Object);
-                var serviceUnderTest = new LmiService(_restClient, _settings);
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
                 var matches = new List<OccupationMatch>
                 {
                     new OccupationMatch
@@ -140,6 +168,37 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 result.FirstOrDefault().JobGrowth.Should().Be(JobGrowth.Undefined);
 
 
+            }
+
+            [Test]
+            public void WhenLmiDataCached_ReturnCachedData()
+            {
+                _restClient = new RestClient();
+                
+                var matches = new List<OccupationMatch>
+                {
+                    new OccupationMatch
+                    {
+                        SocCode = 2815
+                    }
+                };
+                var date = DateTimeOffset.Now.Subtract(new TimeSpan(-1,-1,-1));
+                var cachedLmiDataModel = new CachedLmiData
+                {
+                    SocCode = 2815.ToString(),
+                    JobGrowth = JobGrowth.Increasing,
+                    DateWritten = date,
+                };
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(cachedLmiDataModel))
+                    });
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                result[0].SocCode.Should().Be(2815);
+                result[0].JobGrowth.Should().Be(JobGrowth.Increasing);
             }
         }
 
@@ -170,8 +229,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             var employment = breakdownModel.Note;
             var name = breakdownModel.Name;
             var noteBreakdown = breakdownModel.Note;
+
         }
-
-
     }
 }

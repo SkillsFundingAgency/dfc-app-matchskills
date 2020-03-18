@@ -7,9 +7,16 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Castle.Core.Internal;
 
 namespace DFC.App.MatchSkills.Application.Cosmos.Services
 {
+    public enum CosmosCollection
+    {
+        Session = 1,
+        LmiData = 2
+    }
+
     public class CosmosService : ICosmosService
     {
         private readonly CosmosSettings _settings;
@@ -19,14 +26,15 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
             Throw.IfNull(settings, nameof(settings));
             Throw.IfNullOrWhiteSpace(settings.Value.DatabaseName, nameof(settings.Value.DatabaseName));
             Throw.IfNullOrWhiteSpace(settings.Value.UserSessionsCollection, nameof(settings.Value.UserSessionsCollection));
+            Throw.IfNullOrWhiteSpace(settings.Value.LmiDataCollection, nameof(settings.Value.LmiDataCollection));
             _settings = settings.Value;
             _client = client;
         }
-        public async Task<HttpResponseMessage> CreateItemAsync(object item)
+        public async Task<HttpResponseMessage> CreateItemAsync(object item, CosmosCollection collection)
         {
             Throw.IfNull(item, nameof(item));
 
-            var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
+            var container = _client.GetContainer(_settings.DatabaseName, GetContainerName(collection));
             Throw.IfNull(container, nameof(container));
 
             var result =  await container.CreateItemAsync(item);
@@ -37,15 +45,15 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
             return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
 
-        public async Task<HttpResponseMessage> ReadItemAsync(string id, string partitionKey)
+        public async Task<HttpResponseMessage> ReadItemAsync(string id, string partitionKey, CosmosCollection collection)
         {
             Throw.IfNullOrWhiteSpace(id, nameof(id));
 
-            var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
+            var container = _client.GetContainer(_settings.DatabaseName, GetContainerName(collection));
             Throw.IfNull(container, nameof(container));
             try
             {
-                var result = await container.ReadItemAsync<object>(id, new PartitionKey(partitionKey));
+                var result = await container.ReadItemAsync<object>(id, partitionKey.IsNullOrEmpty() ? PartitionKey.None : new PartitionKey(partitionKey));
 
                 if (result.StatusCode == HttpStatusCode.OK)
                 {
@@ -65,11 +73,11 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
 
             return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
-        public async Task<HttpResponseMessage> UpsertItemAsync(object item)
+        public async Task<HttpResponseMessage> UpsertItemAsync(object item, CosmosCollection collection)
         {
             Throw.IfNull(item, nameof(item));
 
-            var container = _client.GetContainer(_settings.DatabaseName, _settings.UserSessionsCollection);
+            var container = _client.GetContainer(_settings.DatabaseName, GetContainerName(collection));
             Throw.IfNull(container, nameof(container));
 
             var result = await container.UpsertItemAsync(item);
@@ -82,6 +90,19 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
                 return new HttpResponseMessage(HttpStatusCode.Created);
             }
             return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        }
+
+        internal string GetContainerName(CosmosCollection collection)
+        {
+            switch (collection)
+            {
+                case CosmosCollection.Session:
+                default:
+                    return _settings.UserSessionsCollection;
+                
+                case CosmosCollection.LmiData:
+                    return _settings.LmiDataCollection;
+            }
         }
     }
 }

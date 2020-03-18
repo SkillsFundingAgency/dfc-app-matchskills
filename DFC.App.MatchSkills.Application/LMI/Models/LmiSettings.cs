@@ -3,5 +3,6 @@
     public class LmiSettings
     {
         public string ApiUrl { get; set; }
+        public int CacheLifespan { get; set; }
     }
 }
