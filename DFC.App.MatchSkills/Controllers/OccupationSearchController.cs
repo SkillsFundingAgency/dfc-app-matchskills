@@ -40,14 +40,14 @@ namespace DFC.App.MatchSkills.Controllers
         public override async Task<IActionResult> Body()
         {
             ViewModel.SearchService = _settings.SearchService;
-
+            ViewModel.HasError = false;
             await TrackPageInUserSession();
 
             return await base.Body();
         }
 
         [SessionRequired]
-        [HttpGet,HttpPost]
+        [HttpPost,HttpGet]
         [Route("/OccupationSearch")]
         public async Task<IEnumerable<Occupation>> OccupationSearch(string occupation)
         {

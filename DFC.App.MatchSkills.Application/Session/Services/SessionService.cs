@@ -42,7 +42,8 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
             //Create new Session here
             var dfcUserSession = _sessionClient.NewSession();
-             _sessionClient.CreateCookie(dfcUserSession,true);
+
+            _sessionClient.CreateCookie(dfcUserSession,true);
 
             var userSession = new UserSession()
             {
@@ -70,10 +71,9 @@ namespace DFC.App.MatchSkills.Application.Session.Services
         public async Task<UserSession> GetUserSession()
         { 
             var sesionCode = _sessionClient.TryFindSessionCode().Result;
-
-           var sessionId = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.SessionId);
-           var partitionKey = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.PartitionKey);
-           var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey, CosmosCollection.Session);
+            var sessionId = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.SessionId);
+            var partitionKey = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.PartitionKey);
+            var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey, CosmosCollection.Session);
            return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
         }
 

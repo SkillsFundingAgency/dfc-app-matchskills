@@ -35,8 +35,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
     public class SelectSkillsControllerTests
     {
-        private IDataProtectionProvider _dataProtectionProvider;
-        private IDataProtector _dataProtector;
+       
         private IOptions<ServiceTaxonomySettings> _settings;
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<CompositeSettings> _compositeSettings;
