@@ -1,5 +1,6 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.LMI.Helpers;
 using DFC.App.MatchSkills.Application.LMI.Interfaces;
 using DFC.App.MatchSkills.Application.LMI.Models;
@@ -12,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Services;
-using Microsoft.Azure.Cosmos;
 
 namespace DFC.App.MatchSkills.Application.LMI.Services
 {

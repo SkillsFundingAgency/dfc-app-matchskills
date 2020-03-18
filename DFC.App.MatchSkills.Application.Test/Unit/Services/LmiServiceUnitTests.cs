@@ -169,6 +169,37 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
 
             }
+
+            [Test]
+            public void WhenLmiDataCached_ReturnCachedData()
+            {
+                _restClient = new RestClient();
+                
+                var matches = new List<OccupationMatch>
+                {
+                    new OccupationMatch
+                    {
+                        SocCode = 2815
+                    }
+                };
+                var date = DateTimeOffset.Now.Subtract(new TimeSpan(-1,-1,-1));
+                var cachedLmiDataModel = new CachedLmiData
+                {
+                    SocCode = 2815.ToString(),
+                    JobGrowth = JobGrowth.Increasing,
+                    DateWritten = date,
+                };
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(cachedLmiDataModel))
+                    });
+                var serviceUnderTest = new LmiService(_restClient, _settings, _cosmosService);
+                var result = serviceUnderTest.GetPredictionsForGetOccupationMatches(matches);
+                result[0].SocCode.Should().Be(2815);
+                result[0].JobGrowth.Should().Be(JobGrowth.Increasing);
+            }
         }
 
         [Test]

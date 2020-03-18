@@ -97,12 +97,11 @@ namespace DFC.App.MatchSkills.Application.Cosmos.Services
             switch (collection)
             {
                 case CosmosCollection.Session:
+                default:
                     return _settings.UserSessionsCollection;
                 
                 case CosmosCollection.LmiData:
                     return _settings.LmiDataCollection;
-                default:
-                    return _settings.UserSessionsCollection;
             }
         }
     }

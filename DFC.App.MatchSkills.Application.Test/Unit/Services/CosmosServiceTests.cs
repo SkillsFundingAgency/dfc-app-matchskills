@@ -166,7 +166,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var container = Substitute.For<Container>();
                 container.ReadItemAsync<object>(Arg.Any<string>(), Arg.Any<PartitionKey>())
                     .Returns(Task.FromException<ItemResponse<object>>(new Exception("404 Not found")));
-                client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
+                client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.LmiDataCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
                 var result = await _service.ReadItemAsync("id", "partitionKey", CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.NotFound);
