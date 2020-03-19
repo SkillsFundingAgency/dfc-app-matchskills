@@ -8,6 +8,8 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
 
@@ -24,7 +26,9 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             PartitionKey = 0,
             SessionId = 1
         }
-        public SessionService(ICosmosService cosmosService, IOptions<SessionConfig> sessionConfig,ISessionClient sessionClient )
+
+        public SessionService(ICosmosService cosmosService, IOptions<SessionConfig> sessionConfig,
+            ISessionClient sessionClient)
         {
             Throw.IfNull(cosmosService, nameof(cosmosService));
             Throw.IfNull(sessionConfig, nameof(sessionConfig));
@@ -36,20 +40,19 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
         public async Task<string> CreateUserSession(CreateSessionRequest request)
         {
-            
+
             if (request == null)
                 request = new CreateSessionRequest();
 
             //Create new Session here
             var dfcUserSession = _sessionClient.NewSession();
-
-            _sessionClient.CreateCookie(dfcUserSession,true);
+            _sessionClient.CreateCookie(dfcUserSession, true);
 
             var userSession = new UserSession()
             {
                 UserSessionId = dfcUserSession.SessionId,
                 PartitionKey = dfcUserSession.PartitionKey,
-                Salt = _sessionConfig.Value.Salt,
+                Salt = dfcUserSession.Salt,
                 CurrentPage = request.CurrentPage,
                 PreviousPage = request.PreviousPage,
                 UserHasWorkedBefore = request.UserHasWorkedBefore,
@@ -67,14 +70,30 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return await _cosmosService.UpsertItemAsync(updatedSession, CosmosCollection.Session);
         }
 
-       
+
         public async Task<UserSession> GetUserSession()
-        { 
+        {
             var sesionCode = _sessionClient.TryFindSessionCode().Result;
             var sessionId = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.SessionId);
             var partitionKey = ExtractInfoFromPrimaryKey(sesionCode, ExtractMode.PartitionKey);
             var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey, CosmosCollection.Session);
-           return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
+            return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
+        }
+
+        public async Task<UserSession> Reload(string code)
+        {
+            var sessionId = GetSessionId(code);
+            var partitionKey = _sessionClient.GeneratePartitionKey(sessionId);
+                var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey,CosmosCollection.Session);
+
+                if (!result.IsSuccessStatusCode) return null;
+
+                var userSession =
+                    JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync());
+                var dfcUserSession = new DfcUserSession() { Salt = userSession.Salt, 
+                    PartitionKey = userSession.PartitionKey, SessionId = userSession.UserSessionId };
+                _sessionClient.CreateCookie(dfcUserSession, false);
+                return userSession;
         }
 
         public async Task<bool> CheckForExistingUserSession(string primaryKey)
@@ -89,10 +108,10 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
             if (String.IsNullOrWhiteSpace(result.UserSessionId) || String.IsNullOrWhiteSpace(result.PartitionKey))
                 return false;
-            
+
             return primaryKey == result.PrimaryKey;
         }
-        
+
         public string ExtractInfoFromPrimaryKey(string primaryKey, ExtractMode mode)
         {
             if (String.IsNullOrWhiteSpace(primaryKey))
@@ -100,7 +119,26 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             if (!primaryKey.Contains('-'))
                 return null;
 
-            return primaryKey.Split('-')[(int)mode];
+            return primaryKey.Split('-')[(int) mode];
+        }
+
+        private string GetSessionId(string code)
+        {
+            var result = new StringBuilder();
+
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                code = code.ToLower();
+                foreach (var c in code)
+                {
+                    if (c != ' ')
+                    {
+                        result.Append(c.ToString());
+                    }
+                }
+            }
+
+            return result.ToString();
         }
     }
 }

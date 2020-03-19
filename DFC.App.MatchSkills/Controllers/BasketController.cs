@@ -40,6 +40,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         public override async Task<IActionResult> Body()
         {
+            var x = Request.QueryString;
             await TrackPageInUserSession();
             var userSession = await GetUserSession();
             ViewModel.Skills.LoadFrom(userSession);

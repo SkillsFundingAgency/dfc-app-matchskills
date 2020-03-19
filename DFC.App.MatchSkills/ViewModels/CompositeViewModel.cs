@@ -38,8 +38,8 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId ConfirmRemove { get; } = new PageId("confirmRemove");
             public static PageId Removed { get; } = new PageId("removed");
             public static PageId RemoveSession { get; } = new PageId("removeSession");
-
             public static  PageId RelatedSkills { get; } = new PageId("relatedSkills");
+            public static PageId Reload { get; } = new PageId("Reload");
             
         }
 
