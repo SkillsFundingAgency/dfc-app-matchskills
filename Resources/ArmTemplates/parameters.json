@@ -17,7 +17,7 @@
         "lmiSettingsApiUrl": {
             "value": "__LmiSettingsApiUrl__"
         },
-        "lmiSettingsCacheLifeSpan":{
+        "lmiSettingsCacheLifeSpan": {
             "value": "__LmiSettingsCacheLifeSpan__"
         },
         "SharedAppServicePlanName": {

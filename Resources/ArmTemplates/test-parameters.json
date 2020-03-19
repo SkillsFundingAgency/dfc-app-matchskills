@@ -17,7 +17,7 @@
         "lmiSettingsApiUrl": {
             "value": "http://api.lmiforall.org.uk/api/v1/"
         },
-        "lmiSettingsCacheLifeSpan":{
+        "lmiSettingsCacheLifeSpan": {
             "value": "365"
         },
         "SharedAppServicePlanName": {

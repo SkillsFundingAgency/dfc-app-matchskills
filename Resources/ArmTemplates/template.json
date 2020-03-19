@@ -17,7 +17,7 @@
         "lmiSettingsApiUrl": {
             "type": "string"
         },
-        "lmiSettingsCacheLifeSpan":{
+        "lmiSettingsCacheLifeSpan": {
             "type":"string",
             "defaultValue":"365"
         },
