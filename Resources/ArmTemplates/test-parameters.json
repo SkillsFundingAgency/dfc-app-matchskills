@@ -17,6 +17,9 @@
         "lmiSettingsApiUrl": {
             "value": "http://api.lmiforall.org.uk/api/v1/"
         },
+        "lmiSettingsCacheLifeSpan": {
+            "value": "365"
+        },
         "SharedAppServicePlanName": {
             "value": "dfc-dev-pers-shared-asp"
         },
