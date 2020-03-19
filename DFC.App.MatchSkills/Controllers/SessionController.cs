@@ -43,5 +43,10 @@ namespace DFC.App.MatchSkills.Controllers
         {
             return await _sessionService.GetUserSession();
         }
+
+        protected async Task<UserSession> GetUserSession(string code)
+        {
+            return await _sessionService.Reload(code);
+        }
     }
 }
