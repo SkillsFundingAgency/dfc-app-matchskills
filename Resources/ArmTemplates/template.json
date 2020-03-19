@@ -17,6 +17,10 @@
         "lmiSettingsApiUrl": {
             "type": "string"
         },
+        "lmiSettingsCacheLifeSpan":{
+            "type":"string",
+            "defaultValue":"365"
+        },
         "sharedResourceGroup": {
             "type": "string",
             "defaultValue": ""
@@ -277,7 +281,7 @@
                             },
                             {
                                 "name": "LmiSettings__CacheLifespan",
-                                "value": "365"
+                                "value": "[parameters('lmiSettingsCacheLifeSpan')]"
                             },
                             {
                                 "name": "CosmosSettings__LmiDataCollection",
