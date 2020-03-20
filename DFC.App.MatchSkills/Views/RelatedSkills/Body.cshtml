@@ -13,6 +13,7 @@
     };
     slm.Skills.LoadFrom(Model.RelatedSkills);
 }
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
 <govukErrorSummary hidden="@(!Model.HasError)">
     <govukErrorSummaryItem href="#selectSkills" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
 </govukErrorSummary>
@@ -41,7 +42,7 @@
                             }
                             else
                             {
-                                <govukLink id="selectSkillsGovukLinkSkillSelectToggle" link-href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RelatedSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected&searchterm=@Model.SearchTerm" link-text="@(Model.AllSkillsSelected?"Clear all":"Select all")"></govukLink>
+                                <govukLink id="selectSkillsGovukLinkSkillSelectToggle" link-href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RelatedSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected&searchterm=@Model.SearchTerm" link-text="@(Model.AllSkillsSelected ? "Clear all" : "Select all")"></govukLink>
                                 @await Component.InvokeAsync("SkillsList", slm)
                             }
 

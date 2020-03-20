@@ -22,8 +22,10 @@
     };
 
 }
-<div class="govuk-grid-column-two-thirds">
-    <div class="govuk-grid-row">
-        <partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+    <div class="govuk-grid-column-two-thirds">
+        
+        <div class="govuk-grid-row">
+            <partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
+        </div>
     </div>
-</div>
