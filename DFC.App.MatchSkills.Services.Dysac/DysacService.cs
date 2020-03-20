@@ -3,6 +3,8 @@ using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Castle.Core.Internal;
 using Dfc.ProviderPortal.Packages;
@@ -38,17 +40,21 @@ namespace DFC.App.MatchSkills.Services.Dysac
             
         }
 
-        public async Task<DysacResults> GetResults(string sessionId)
+        public DysacJobCategory[] GetDysacJobCategories(string sessionId)
         {
             if (sessionId.IsNullOrEmpty())
             {
                 return null;
             }
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}{ResultsEndpoint}/{sessionId}/short";
-            return TestDysacResults();
+            return Mapping.Mapper.Map<DysacJobCategory[]>(TestDysacResults().JobCategories);
             //TODO: Uncomment when DYSAC integration allows
             //var response = await _client.GetAsync<DysacResults>(serviceUrl);
-            //return response;
+            //if (response != null && response.JobCategories.Any())
+            //{
+            //    return Mapping.Mapper.Map<DysacJobCategory[]>(response.JobCategories);
+            //}
+            //return null;
 
 
 

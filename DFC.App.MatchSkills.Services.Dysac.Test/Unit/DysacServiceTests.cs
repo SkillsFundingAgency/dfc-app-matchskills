@@ -1,17 +1,11 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Dysac.Models;
-using DFC.App.MatchSkills.Services.Dysac.Test.Helpers;
+﻿using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using NSubstitute;
-using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 {
@@ -36,16 +30,16 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         }
 
         [Test]
-        public async Task WhenBlankSessionId_ReturnNull()
+        public void WhenBlankSessionId_ReturnNull()
         {
-            var result = await _service.GetResults("");
+            var result = _service.GetDysacJobCategories("");
             result.Should().BeNull();
 
         }
         [Test]
-        public async Task WhenNullSessionId_ReturnNull()
+        public void WhenNullSessionId_ReturnNull()
         {
-            var result = await _service.GetResults(null);
+            var result = _service.GetDysacJobCategories(null);
             result.Should().BeNull();
         }
 
@@ -56,18 +50,20 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         //    _client = Substitute.For<IRestClient>();
         //    _client.GetAsync<DysacResults>(Arg.Any<string>(), Arg.Any<string>()).ReturnsNullForAnyArgs();
         //    _service = new DysacService(_logger, _client, _settings);
-        //    var result = await _service.GetResults("SessionId");
+        //    var result = await _service.GetDysacJobCategories("SessionId");
         //    result.Should().BeNull();
         //}
         [Test]
-        public async Task WhenApiSuccess_ReturnDysacResults()
+        public void WhenApiSuccess_ReturnDysacResults()
         {
-            var returnObject = DysacService.TestDysacResults();
+            var returnObject = Mapping.Mapper.Map<DysacJobCategory[]>(DysacService.TestDysacResults().JobCategories);
             _client = Substitute.For<IRestClient>();
-            _client.GetAsync<DysacResults>(Arg.Any<string>()).Returns(returnObject);
+            _client.GetAsync<DysacResults>(Arg.Any<string>()).Returns(DysacService.TestDysacResults());
             _service = new DysacService(_logger, _client, _settings);
-            var result = await _service.GetResults("SessionId");
-            result.Should().Be(returnObject);
+            var result = _service.GetDysacJobCategories("SessionId");
+            result[0].JobFamilyCode.Should().Be("CAM");
+            result[0].JobFamilyName.Should().Be("Creative and media");
+            result[0].JobFamilyUrl.Should().Be("creative-and-media");
         }
     }
 }

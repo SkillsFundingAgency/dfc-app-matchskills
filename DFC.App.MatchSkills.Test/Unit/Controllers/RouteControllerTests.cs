@@ -49,7 +49,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 UserSessionId = "sd",
                 PartitionKey = "Key",
                 CurrentPage = "string",
-                DysacJobCategories = new string[1],
+                DysacJobCategories = new DysacJobCategory[1],
                 LastUpdatedUtc = DateTime.UtcNow,
                 Occupations = new HashSet<UsOccupation>(){ new UsOccupation("1","Occupation 1"), new UsOccupation("2","Occupation 1") },
                 PreviousPage = "previous",
