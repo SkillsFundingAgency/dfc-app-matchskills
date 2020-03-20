@@ -4,7 +4,6 @@ using Dfc.Session.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
 using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
-using DFC.App.MatchSkills.Services.Dysac;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.LMI.Interfaces;
@@ -16,12 +15,12 @@ using DFC.App.MatchSkills.Application.Session.Services;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
+using DFC.App.MatchSkills.Services.Dysac;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -94,54 +93,17 @@ namespace DFC.App.MatchSkills
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             
-            
-
-
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
-                context.Response.Headers["X-Content-Type-Options"] ="nosniff";
-                context.Response.Headers["X-Xss-Protection"] = "1; mode=block";
-                context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-                context.Response.Headers["Feature-Policy"] = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
-
-                //CSP
-                context.Response.Headers["Content-Security-Policy"] =
-                                                "default-src    'self' " +
-                                                " https://www.google-analytics.com/" +
-                                                    ";" +
-                                                "style-src      'self' 'unsafe-inline' " +
-                                                    
-                                                    " https://www.googletagmanager.com/" +
-                                                    " https://tagmanager.google.com/" +
-                                                    " https://fonts.googleapis.com/" +
-                                                ";" +
-                                                "font-src       'self' data:" +
-                                                   " https://fonts.googleapis.com/" +
-                                                   " https://fonts.gstatic.com/" +
-                                                ";" +
-                                                "script-src     'self' 'unsafe-eval' 'unsafe-inline'  " +
-                                                    " https://cdnjs.cloudflare.com/" +
-                                                    " https://www.googletagmanager.com/" +
-                                                    " https://tagmanager.google.com/" +
-                                                    " https://www.google-analytics.com/" +
-                                                ";";
-
-                context.Response.GetTypedHeaders().CacheControl =
-                  new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-                  {
-                      NoCache = true,
-                      NoStore = true,
-                      MustRevalidate = true,
-                  };
-                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-                    new string[] { "Pragma: no-cache" };
-
-                await next();
-            });
-
             app.UseRouting();
-            app.UseCors(_corsPolicy);
+
+            app.UseCsp(options => options
+                .DefaultSources(s => s.Self())
+                .ScriptSources(s => s
+                    .StrictDynamic()
+                    .Self()
+                    .UnsafeEval()
+                    .CustomSources("https://localhost:44383/","dev-cdn.nationalcareersservice.org.uk")));
+            
+          
             var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
             app.UseEndpoints(endpoints =>
             {
