@@ -13,6 +13,7 @@ namespace DFC.App.MatchSkills.ViewModels
         public int TotalMatches { get; set; }
         public SortBy CurrentSortBy { get; set; }
         public SortDirection CurrentDirection { get; set; }
+        public bool ShowLmiData { get; set; }
 
         public MatchesCompositeViewModel()
             : base(PageId.Matches, "Your career matches")

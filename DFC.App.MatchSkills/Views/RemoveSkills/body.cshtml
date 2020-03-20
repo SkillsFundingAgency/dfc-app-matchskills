@@ -10,12 +10,13 @@
     };
     slm.Skills.LoadFrom(Model.Skills);
 }
-
-    <govukErrorSummary id="@Model.GetElementId("govukErrorSummary", "ErrorSummary")" hidden="@(!Model.HasError)">
-        <govukErrorSummaryItem href="#@Model.GetElementId("fieldset","radio")" text="Choose skills to remove from your skills list"></govukErrorSummaryItem>
-    </govukErrorSummary>
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+<govukErrorSummary id="@Model.GetElementId("govukErrorSummary", "ErrorSummary")" hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#@Model.GetElementId("fieldset","radio")" text="Choose skills to remove from your skills list"></govukErrorSummaryItem>
+</govukErrorSummary>
 
 <div class="govuk-grid-column-two-thirds">
+
     <div class="govuk-grid-row">
         <form action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.ConfirmRemove.Value" method="post">
             <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">

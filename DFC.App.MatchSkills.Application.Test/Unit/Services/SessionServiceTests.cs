@@ -18,6 +18,7 @@ using DFC.App.MatchSkills.Application.Cosmos.Services;
 using Dfc.Session;
 using Dfc.Session.Models;
 using Newtonsoft.Json;
+using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 {
@@ -362,7 +363,8 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     UserSessionId = "g2454t4f",
                     PartitionKey = "session2"
                 };
-                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session).Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
+                    .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(userSession))
                 }));
@@ -373,6 +375,55 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
             }
 
+        }
+
+        public class ReloadTests
+        {
+            private IOptions<SessionConfig> _sessionConfig;
+            private ICosmosService _cosmosService;
+            private ISessionClient _sessionClient;
+
+            [OneTimeSetUp]
+            public void Init()
+            {
+                _cosmosService = Substitute.For<ICosmosService>();
+                _sessionConfig = Options.Create(new SessionConfig() { Salt = "ThisIsASalt" });
+                _sessionClient = Substitute.For<ISessionClient>();
+            }
+            [Test]
+            public async Task WhenUserSessionNotFound_ThenReturnNull()
+            {
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
+                    .ReturnsForAnyArgs(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig, _sessionClient);
+                var result = await serviceUnderTest.Reload("123");
+
+                result.Should().BeNull();
+
+            }
+
+            [Test]
+            public async Task WhenUserSessionFound_ThenCreateCookieAndReturnSession()
+            {
+                var userSession = new UserSession
+                {
+                    UserSessionId = "123",
+                    PartitionKey = "123",
+                    Salt = "123"
+                };
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
+                    .ReturnsForAnyArgs(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(JsonConvert.SerializeObject(userSession))
+                    }));
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig, _sessionClient);
+                var result = await serviceUnderTest.Reload("123");
+
+                _sessionClient.Received(1).CreateCookie(Arg.Any<DfcUserSession>(), false);
+
+                result.Should().NotBeNull();
+
+            }
         }
     }
 }

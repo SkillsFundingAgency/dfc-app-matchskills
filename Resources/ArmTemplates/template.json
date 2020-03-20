@@ -17,6 +17,10 @@
         "lmiSettingsApiUrl": {
             "type": "string"
         },
+        "lmiSettingsCacheLifeSpan": {
+            "type":"string",
+            "defaultValue":"365"
+        },
         "sharedResourceGroup": {
             "type": "string",
             "defaultValue": ""
@@ -273,11 +277,11 @@
                             },
                             {
                                 "name": "DysacSettings__DysacUrl",
-                                "value": "/discover-your-skills-careers/assessment/short/"
+                                "value": "/discover-your-skills-careers/assessment/short/1"
                             },
                             {
                                 "name": "LmiSettings__CacheLifespan",
-                                "value": "365"
+                                "value": "[parameters('lmiSettingsCacheLifeSpan')]"
                             },
                             {
                                 "name": "CosmosSettings__LmiDataCollection",

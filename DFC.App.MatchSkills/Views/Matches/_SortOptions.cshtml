@@ -8,8 +8,13 @@
 <p class="govuk-body-s govuk-!-margin-bottom-6">
         <strong>Sort by:</strong> <govukLink link-href="@CompositeViewModel.PageId.Matches?sortby=@SortBy.MatchPercentage&direction=@Model.GetSortDirection(SortBy.MatchPercentage)"
                            link-text="Match %" id="@Model.GetElementId("govUkLink","Match")"></govukLink>,
-        <govukLink link-href="@CompositeViewModel.PageId.Matches?sortby=@SortBy.Alphabetically&direction=@Model.GetSortDirection(SortBy.Alphabetically)" 
-                   link-text="@alphabeticallyText" id="@Model.GetElementId("govUkLink","Alphabetically")"></govukLink>,
+    <govukLink link-href="@CompositeViewModel.PageId.Matches?sortby=@SortBy.Alphabetically&direction=@Model.GetSortDirection(SortBy.Alphabetically)" 
+               link-text="@alphabeticallyText" id="@Model.GetElementId("govUkLink","Alphabetically")"></govukLink>
+    @if (Model.ShowLmiData)
+    {
+        <span>,</span>
         <govukLink link-href="@CompositeViewModel.PageId.Matches?sortby=@SortBy.JobSectorGrowth&direction=@Model.GetSortDirection(SortBy.JobSectorGrowth)" 
-                   link-text="Job sector growth" id="@Model.GetElementId("govUkLink","JobSector")"></govukLink>
+        link-text="Job sector growth" id="@Model.GetElementId("govUkLink","JobSector")"></govukLink>
+    }
+    
     </p>

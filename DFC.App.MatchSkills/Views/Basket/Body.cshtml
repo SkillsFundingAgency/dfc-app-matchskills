@@ -2,35 +2,36 @@
 @using DFC.App.MatchSkills.ViewModels
 @model DFC.App.MatchSkills.ViewModels.SkillsBasketCompositeViewModel
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form id="@Model.GetElementId("Form", "Continue")" action="@Model.Id" method="post">
+    <div class="govuk-grid-row">
+        <govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+        <div class="govuk-grid-column-two-thirds">
+            <form id="@Model.GetElementId("Form", "Continue")" action="@Model.Id" method="post">
 
-            <govukHeadingH1 text="@Model.PageHeading"></govukHeadingH1>
-            <p>
-                These are the skills that you’ve developed so far.
-            </p>
-            <p>Skills you have added:</p>
-            @{
-                var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
-                slm.Skills.LoadFrom(Model.Skills);
-                slm.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
-                slm.EndSkillsListHTML = "</ul>";
-            }
-            @await Component.InvokeAsync("SkillsList", slm)
-            <p><a class="govuk-link" href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.MoreSkills">Add more skills to this list</a></p>
-            <br>
-            <p>
-                <govukButton id="@Model.GetElementId("govukButtonLink", "Continue")" text="Continue to your career matches"></govukButton>
-            </p>
-        </form>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <div role="note" aria-label="Information" class="govuk-inset-text">
-            <p>
-                If there are any of your skills that you do not want to match to careers, you can
-                <a href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RemoveSkills.Value">remove</a> them from this list
-            </p>
+                <govukHeadingH1 text="@Model.PageHeading"></govukHeadingH1>
+                <p>
+                    These are the skills that you’ve developed so far.
+                </p>
+                <p>Skills you have added:</p>
+                @{
+                    var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
+                    slm.Skills.LoadFrom(Model.Skills);
+                    slm.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
+                    slm.EndSkillsListHTML = "</ul>";
+                }
+                @await Component.InvokeAsync("SkillsList", slm)
+                <p><a class="govuk-link" href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.MoreSkills">Add more skills to this list</a></p>
+                <br>
+                <p>
+                    <govukButton id="@Model.GetElementId("govukButtonLink", "Continue")" text="Continue to your career matches"></govukButton>
+                </p>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div role="note" aria-label="Information" class="govuk-inset-text">
+                <p>
+                    If there are any of your skills that you do not want to match to careers, you can
+                    <a href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RemoveSkills.Value">remove</a> them from this list
+                </p>
+            </div>
         </div>
     </div>
-</div>
