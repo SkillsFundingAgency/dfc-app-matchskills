@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using DFC.App.MatchSkills.Application.Dysac.Models;
-using DFC.Personalisation.Domain.Models;
+using System;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {

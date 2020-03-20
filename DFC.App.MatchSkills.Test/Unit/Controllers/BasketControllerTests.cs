@@ -16,6 +16,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -89,6 +90,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenSubmitCalled_ReturnHtml()
         {
+            _dysacService.GetDysacJobCategories(Arg.Any<string>()).Returns(new DysacJobCategory[1]);
             var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService);
             {
                 controller.ControllerContext = new ControllerContext
@@ -99,7 +101,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             
             controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
 
-            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true, true));
 
             var result = await controller.Submit();
 
