@@ -70,7 +70,7 @@ namespace DFC.App.MatchSkills.Test.Helpers
             return controllerContext;
         }
 
-        public static UserSession GetUserSession(bool withOccupations=true, bool withMatches = true, bool withSkills = true)
+        public static UserSession GetUserSession(bool withOccupations=true, bool withMatches = true, bool withSkills = true, bool hasUsedDysac = false)
         {
             var userSession = new UserSession();
             if (withOccupations)
@@ -117,6 +117,8 @@ namespace DFC.App.MatchSkills.Test.Helpers
                 userSession.Skills.Add(new UsSkill("http://data.europa.eu/esco/skill/28cb374e-6261-4133-8371-f9a5470145da", "operate forklift"));
             }
 
+            if (hasUsedDysac)
+                userSession.RouteIncludesDysac = true;
 
             return userSession;
         }

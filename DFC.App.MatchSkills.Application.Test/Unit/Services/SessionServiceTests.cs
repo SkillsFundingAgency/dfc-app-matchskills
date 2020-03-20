@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Cosmos.Services;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using Dfc.Session;
 using Dfc.Session.Models;
 using Newtonsoft.Json;
@@ -77,7 +78,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     UserSessionId = "sd",
                     PartitionKey = "Key",
                     CurrentPage = "string",
-                    DysacJobCategories = new string[1],
+                    DysacJobCategories = new DysacJobCategory[1],
                     LastUpdatedUtc = DateTime.UtcNow,
                     Occupations = new HashSet<UsOccupation>(){ new UsOccupation("1","Occupation 1"), new UsOccupation("2","Occupation 1") },
                     PreviousPage = "previous",
