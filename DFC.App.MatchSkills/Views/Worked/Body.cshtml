@@ -16,16 +16,16 @@
 {
             {new RadioButtonModel
             {
-                Text = "Yes", Order = 1, 
-                Name = "Choice", 
+                Text = "Yes", Order = 1,
+                Name = "Choice",
                 Value = "Yes",
                 Checked = Model.HasWorkedBefore.HasValue && Model.HasWorkedBefore.Value
             }},
             {new RadioButtonModel
             {
-                Text = "No", 
-                Order = 2, 
-                Name = "Choice", 
+                Text = "No",
+                Order = 2,
+                Name = "Choice",
                 Value = "No",
                 Checked = Model.HasWorkedBefore.HasValue && !Model.HasWorkedBefore.Value
             }}
@@ -34,7 +34,9 @@
     };
 
 }
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
 <div class="govuk-grid-column-two-thirds">
+
     <div class="govuk-grid-row">
         <partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
     </div>

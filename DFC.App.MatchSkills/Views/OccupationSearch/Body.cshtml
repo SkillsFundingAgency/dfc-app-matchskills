@@ -13,12 +13,14 @@
 
 }
 
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
 <govukErrorSummary hidden="@(!Model.HasError)">
     <govukErrorSummaryItem href="#@autoCompleteElementName" text="Enter a job title"></govukErrorSummaryItem>
 </govukErrorSummary>
 
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form id="@formElementName" action="@CompositeViewModel.PageId.OccupationSearch/GetSkillsForOccupation" method="post">
@@ -32,7 +34,7 @@
 
                     <govukAutoComplete Id="@autoCompleteElementName"
                                        Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
-                                       autoselect="true" confirmOnBlur="true" cssNameSpace="autocomplete" 
+                                       autoselect="true" confirmOnBlur="true" cssNameSpace="autocomplete"
                                        minLength="2" name="EnterJobInputAutocomplete">
                         <govukAutoCompleteError id="@autoCompleteError" text="Enter a job title" hidden="@(!Model.HasError)"></govukAutoCompleteError>
                         <govukAutocompleteLabel Text="Enter your job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="@autoCompleteElementName"></govukAutocompleteLabel>
