@@ -8,18 +8,22 @@
 </div>
 
 <div class="govuk-main-wrapper govuk-width-container">
-    @*<div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body">
-                    Based on the skills in your skills list these are the roles your skills matched to.
-                </p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">
+                Based on the skills in your skills list these are the roles your skills matched to.
+            </p>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="app-sendresults__text app-save-panel--alt-mobile govuk-!-margin-bottom-6 ">
+                <span class="govuk-heading-m">Return to this later</span><govukLink link-href='@Model.DysacSaveUrl' link-text="save my progress"></govukLink>
             </div>
-            <div class="govuk-grid-column-one-third">
-                <div class="grey border-bottom app-save-panel--alt p-right">
-                    <span class="govuk-heading-m">Return to this later</span><a href="#">Save my progress</a>
-                </div>
+            <div class="app-sendresults__text app-save-panel--alt">
+                <span class="govuk-heading-m">Return to this later</span><govukLink link-href='@Model.DysacSaveUrl' link-text="save my progress"></govukLink>
             </div>
-        </div>*@
+        </div>
+    </div>
+
     <govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
@@ -124,24 +128,24 @@
     </div>
 </div>
 @*<div class="govuk-grid-row">
-   
-    <div class="govuk-grid-column-two-thirds app-intro">
-        <p><partial name="_MatchesCount" /></p>
-        <hr>
-        <div id="results">
-            <div class="results-block">
-                <div class="inner-block">
-                    <ol class="results-list">
-                        @foreach (var careerMatch in Model.CareerMatches.OrderByDescending(cm => cm.MatchStrengthPercentage))
-                        {
-                            <li>
-                                <partial name="_MatchResult" model="careerMatch" />
-                            </li>
-                        }
-                    </ol>
+
+        <div class="govuk-grid-column-two-thirds app-intro">
+            <p><partial name="_MatchesCount" /></p>
+            <hr>
+            <div id="results">
+                <div class="results-block">
+                    <div class="inner-block">
+                        <ol class="results-list">
+                            @foreach (var careerMatch in Model.CareerMatches.OrderByDescending(cm => cm.MatchStrengthPercentage))
+                            {
+                                <li>
+                                    <partial name="_MatchResult" model="careerMatch" />
+                                </li>
+                            }
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>*@
+    </div>*@
 

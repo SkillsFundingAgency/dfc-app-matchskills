@@ -14,6 +14,7 @@ namespace DFC.App.MatchSkills.ViewModels
         public SortBy CurrentSortBy { get; set; }
         public SortDirection CurrentDirection { get; set; }
         public bool ShowLmiData { get; set; }
+        public string DysacSaveUrl { get; set; }
 
         public MatchesCompositeViewModel()
             : base(PageId.Matches, "Your career matches")
