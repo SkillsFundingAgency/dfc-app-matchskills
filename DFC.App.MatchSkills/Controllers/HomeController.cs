@@ -52,7 +52,7 @@ namespace DFC.App.MatchSkills.Controllers
         public override Task<IActionResult> BodyFooter()
         {
             ViewModel.HasErrors = HasErrors();
-            return base.Body();
+            return base.BodyFooter();
         }
         #endregion Default Routes
     }
