@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -19,11 +20,12 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly IOptions<CompositeSettings> _compositeSettings;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService,   IOptions<PageSettings> pageSettings)
+            ISessionService sessionService,   IOptions<PageSettings> pageSettings, IOptions<DysacSettings> dysacSettings)
             : base(compositeSettings, sessionService)
         {
             _pageSize = pageSettings.Value.PageSize;
             _compositeSettings = compositeSettings;
+            ViewModel.DysacSaveUrl = dysacSettings.Value.DysacSaveUrl;
         }
 
         [SessionRequired]

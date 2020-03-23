@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -29,7 +30,8 @@ namespace DFC.App.MatchSkills.Controllers
             IOptions<ServiceTaxonomySettings> settings,
             IServiceTaxonomySearcher serviceTaxonomy,
             ILmiService lmiService,
-            IDysacSessionReader dysacService)
+            IDysacSessionReader dysacService,
+            IOptions<DysacSettings> dysacSettings)
             : base( compositeSettings, sessionService)
         {
             _serviceTaxonomy = serviceTaxonomy;
@@ -39,6 +41,7 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
             _skillUrlBase = $"{settings.Value.EscoUrl}/skill/";
             _lmiService = lmiService;
+            ViewModel.DysacSaveUrl = dysacSettings.Value.DysacSaveUrl;
             _dysacService = dysacService;
         }
 
