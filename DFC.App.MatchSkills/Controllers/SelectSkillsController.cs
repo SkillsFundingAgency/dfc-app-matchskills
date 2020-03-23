@@ -40,7 +40,6 @@ namespace DFC.App.MatchSkills.Controllers
             _apiUrl = settings.Value.ApiUrl;
             _apiKey = settings.Value.ApiKey;
             _sessionService = sessionService;
-            ViewModel.CDN = compositeSettings.Value.CDN ?? "";
 
         }
 
