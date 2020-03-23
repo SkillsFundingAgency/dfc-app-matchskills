@@ -57,6 +57,15 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             result.Should().BeNull();
         }
         [Test]
+        public async Task WhenNullResponse_ReturnEmpty()
+        {
+            _client = Substitute.For<IRestClient>();
+            _client.GetAsync<DysacResults>(Arg.Any<string>()).ReturnsNullForAnyArgs();
+            _service = new DysacService(_logger, _client, _settings);
+            var result = await _service.GetDysacJobCategories("SessionId");
+            result.Should().BeEmpty();
+        }
+        [Test]
         public async Task WhenApiSuccess_ReturnDysacResults()
         {
             var returnObject = Mapping.Mapper.Map<DysacJobCategory[]>(DysacTestData.SuccessfulApiCall().JobCategories);
