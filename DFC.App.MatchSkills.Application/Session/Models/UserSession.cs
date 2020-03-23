@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 
 namespace DFC.App.MatchSkills.Application.Session.Models
 {
@@ -24,7 +25,7 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public bool? RouteIncludesDysac { get; set; }
         public ISet<UsOccupation> Occupations { get; set; }
         public ISet<UsSkill> Skills { get; set; }
-        public string[] DysacJobCategories { get; set; }
+        public DysacJobCategory[] DysacJobCategories { get; set; }
         public IList<OccupationMatch> OccupationMatches { get; set; }
         public SortBy MatchesSortBy { get; set; } = SortBy.MatchPercentage;
         public SortDirection MatchesSortDirection { get; set; } = SortDirection.Descending;

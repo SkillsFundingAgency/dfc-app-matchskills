@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Dysac;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -21,12 +22,14 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly ISessionService _sessionService;
         private readonly string _skillUrlBase;
         private readonly ILmiService _lmiService;
+        private readonly IDysacSessionReader _dysacService;
 
         public BasketController(IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService,  
             IOptions<ServiceTaxonomySettings> settings,
             IServiceTaxonomySearcher serviceTaxonomy,
-            ILmiService lmiService)
+            ILmiService lmiService,
+            IDysacSessionReader dysacService)
             : base( compositeSettings, sessionService)
         {
             _serviceTaxonomy = serviceTaxonomy;
@@ -36,6 +39,7 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
             _skillUrlBase = $"{settings.Value.EscoUrl}/skill/";
             _lmiService = lmiService;
+            _dysacService = dysacService;
         }
 
         public override async Task<IActionResult> Body()
@@ -60,6 +64,11 @@ namespace DFC.App.MatchSkills.Controllers
                 userSession.OccupationMatches = await _serviceTaxonomy.FindOccupationsForSkills(_apiUrl, _apiKey, skillIds, minimumMatch);
                 userSession.OccupationMatches =
                     _lmiService.GetPredictionsForGetOccupationMatches(userSession.OccupationMatches);
+                if (userSession.RouteIncludesDysac.HasValue && userSession.RouteIncludesDysac.Value)
+                {
+                    userSession.DysacJobCategories = _dysacService.GetDysacJobCategories(userSession.UserSessionId);
+                }
+                
             }
             await _sessionService.UpdateUserSessionAsync(userSession);
 
