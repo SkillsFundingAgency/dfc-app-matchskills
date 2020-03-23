@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Dysac.Models;
+﻿using System;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Services.Dysac.Test.Helper;
 using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
@@ -8,6 +9,7 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using NSubstitute.ExceptionExtensions;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 {
@@ -49,10 +51,10 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         public async Task WhenApiError_ReturnEmpty()
         {
             _client = Substitute.For<IRestClient>();
-            _client.GetAsync<DysacResults>(Arg.Any<string>()).ReturnsNullForAnyArgs();
+            _client.GetAsync<DysacResults>(Arg.Any<string>()).Throws(new Exception("Exception"));
             _service = new DysacService(_logger, _client, _settings);
             var result = await _service.GetDysacJobCategories("SessionId");
-            result.Should().BeEmpty();
+            result.Should().BeNull();
         }
         [Test]
         public async Task WhenApiSuccess_ReturnDysacResults()
