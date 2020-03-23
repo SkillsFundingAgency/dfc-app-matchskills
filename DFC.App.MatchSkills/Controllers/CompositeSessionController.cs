@@ -53,6 +53,12 @@ namespace DFC.App.MatchSkills.Controllers
             return Task.FromResult<IActionResult>(View(ViewModel));
         }
 
+        [HttpGet]
+        [Route("/bodyfooter/[controller]/{id?}")]
+        public virtual Task<IActionResult> BodyFooter()
+        {
+            return Task.FromResult<IActionResult>(View(ViewModel));
+        }
         protected virtual IActionResult RedirectWithError(string controller, string parameters = "")
         {
             

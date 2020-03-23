@@ -46,6 +46,14 @@ namespace DFC.App.MatchSkills.Controllers
             return base.Body();
         }
 
+        [Route("/bodyfooter/{controller}")]
+        [Route("/bodyfooter")]
+
+        public override Task<IActionResult> BodyFooter()
+        {
+            ViewModel.HasErrors = HasErrors();
+            return base.BodyFooter();
+        }
         #endregion Default Routes
     }
 }

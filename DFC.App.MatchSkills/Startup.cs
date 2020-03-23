@@ -95,15 +95,6 @@ namespace DFC.App.MatchSkills
             
             app.UseRouting();
 
-            app.UseCsp(options => options
-                .DefaultSources(s => s.Self())
-                .ScriptSources(s => s
-                    .StrictDynamic()
-                    .Self()
-                    .UnsafeEval()
-                    .CustomSources("https://localhost:44383/","dev-cdn.nationalcareersservice.org.uk")));
-            
-          
             var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
             app.UseEndpoints(endpoints =>
             {
