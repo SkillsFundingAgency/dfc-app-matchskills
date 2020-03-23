@@ -66,7 +66,7 @@ namespace DFC.App.MatchSkills.Controllers
                     _lmiService.GetPredictionsForGetOccupationMatches(userSession.OccupationMatches);
                 if (userSession.RouteIncludesDysac.HasValue && userSession.RouteIncludesDysac.Value)
                 {
-                    userSession.DysacJobCategories = _dysacService.GetDysacJobCategories(userSession.UserSessionId);
+                    userSession.DysacJobCategories = await _dysacService.GetDysacJobCategories(userSession.UserSessionId);
                 }
                 
             }
