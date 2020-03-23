@@ -31,7 +31,7 @@
             "HealthCheckRequired": true,
             "OfflineHtml": "<H3>Service Unavailable</H3>"
           
-          }
+          },
 		  {
             "PageRegion": 5,
             "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/bodyfooter/{0}",
