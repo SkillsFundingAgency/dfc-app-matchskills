@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
@@ -31,6 +32,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ISessionService _sessionService;
          
         private IOptions<PageSettings> _pageSettings;
+        private IOptions<DysacSettings> _dysacSettigs;
 
 
         [SetUp]
@@ -38,14 +40,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-             
+            _dysacSettigs = Options.Create(new DysacSettings());
             _pageSettings = Options.Create(new PageSettings());
         }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -66,7 +68,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledWithOutPage_ReturnCurrentPageAs1()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -102,7 +104,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             );
 
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -127,7 +129,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenTotalResultsMatchesPageSize_Then_CorrectTotalPagesNumberReturned()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 2 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -151,7 +153,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBodyCalledWithPageNumber_ReturnCorrectPage()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -174,7 +176,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBodyCalledWithPageNumberGreaterThanTheNumberOfPages__Then_ReturnLastPage()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -250,7 +252,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 x++;
             }
             var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -311,7 +313,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
 
             var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService, pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -336,7 +338,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ChangingOrderType_Then_UpdateTheChoiceInSession()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService, _pageSettings);
+            var controller = new MatchesController(_compositeSettings, _sessionService, _pageSettings, _dysacSettigs);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()

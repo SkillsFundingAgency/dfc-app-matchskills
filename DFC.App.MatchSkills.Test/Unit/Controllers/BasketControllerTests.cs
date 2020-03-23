@@ -31,6 +31,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private ILmiService _lmiService;
         private IDysacSessionReader _dysacService;
+        private IOptions<DysacSettings> _dysacSettigs;
 
         const string SkillsJson = "{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";
 
@@ -51,14 +52,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
             _lmiService = Substitute.For<ILmiService>();
             _dysacService = Substitute.For<IDysacSessionReader>();
-
+            _dysacSettigs = Options.Create(new DysacSettings());
 
         }
 
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService, _dysacSettigs);
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
 
             var result = controller.Head() as ViewResult;
@@ -72,7 +73,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService, _dysacSettigs);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -91,7 +92,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenSubmitCalled_ReturnHtml()
         {
             _dysacService.GetDysacJobCategories(Arg.Any<string>()).Returns(new DysacJobCategory[1]);
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService, _dysacSettigs);
             {
                 controller.ControllerContext = new ControllerContext
                 {
@@ -149,7 +150,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService, _dysacSettigs);
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -159,7 +160,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService);
+            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, _lmiService, _dysacService, _dysacSettigs);
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

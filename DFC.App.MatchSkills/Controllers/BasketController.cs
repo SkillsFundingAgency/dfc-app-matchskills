@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
