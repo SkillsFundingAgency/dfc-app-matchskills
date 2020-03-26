@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Services.Dysac
@@ -27,16 +29,27 @@ namespace DFC.App.MatchSkills.Services.Dysac
             _dysacSettings = dysacSettings;
         }
 
-        public Task<DysacServiceResponse> InitiateDysac(string sessionId = "")
+
+        public Task<DysacServiceResponse> InitiateDysac()
         {
-            var serviceUrl = _dysacSettings.Value.ApiUrl;
+            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/short";
+            var response = _client.PostAsync<Task<int>>(serviceUrl,new StringContent(""));
+            
+            return response.Result.Result.Equals(DysacReturnCode.Ok) 
+                ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
+                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
+        }
+
+        public Task<DysacServiceResponse> InitiateDysac(string sessionId)
+        {
+            Throw.IfNull(sessionId, nameof(sessionId));
+            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/session/{sessionId}";
+
             var response = _client.GetAsync<Task<int>>(serviceUrl);
             
-            /* Handle response here and modify Dysac Service Response Accordingly. Only returning test responses for now so we can 
-               test both OK and error conditions*/
-            return String.IsNullOrEmpty(sessionId)
+            return response.Result.Result.Equals(DysacReturnCode.Ok) 
                 ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
-                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error});  
+                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
             
         }
 

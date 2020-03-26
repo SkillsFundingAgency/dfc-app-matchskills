@@ -5,7 +5,8 @@ namespace DFC.App.MatchSkills.Application.Dysac
 {
     public interface IDysacSessionReader
     {
-        Task<DysacServiceResponse> InitiateDysac(string sessionId="");
+        Task<DysacServiceResponse> InitiateDysac();
+        Task<DysacServiceResponse> InitiateDysac(string sessionId);
         Task<DysacJobCategory[]> GetDysacJobCategories(string sessionId);
     }
 }
