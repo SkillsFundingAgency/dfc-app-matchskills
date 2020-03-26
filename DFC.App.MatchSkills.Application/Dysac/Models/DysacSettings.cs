@@ -6,5 +6,6 @@
         public string ApiKey { get; set; }
         public string DysacUrl { get; set; }
         public string DysacSaveUrl { get; set; }
+        public string DysacReturnUrl { get; set; }
     }
 }
