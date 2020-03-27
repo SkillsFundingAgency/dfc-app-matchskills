@@ -21,7 +21,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/head/{controller}")]
         [Route("/head")]
         public override IActionResult Head()
-        {
+        { 
             return base.Head();
         }
         [Route("/bodytop/{controller}")]
