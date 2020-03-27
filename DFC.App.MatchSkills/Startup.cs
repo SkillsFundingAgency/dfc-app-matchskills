@@ -20,11 +20,13 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 
 namespace DFC.App.MatchSkills
@@ -35,7 +37,6 @@ namespace DFC.App.MatchSkills
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
         }
 
         public IConfiguration Configuration { get; }
@@ -44,7 +45,7 @@ namespace DFC.App.MatchSkills
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddApplicationInsightsTelemetry();
+            services.AddApplicationInsightsTelemetry(Configuration.GetSection("ApplicationInsights:InstrumentationKey").Value);
 
             services.AddControllersWithViews();
             services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
@@ -83,13 +84,25 @@ namespace DFC.App.MatchSkills
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISessionService sessionService, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async context =>
+                {
+                    var session = await sessionService.GetUserSession();
+                    var exception =
+                        context.Features.Get<IExceptionHandlerPathFeature>();
+                    logger.Log(LogLevel.Error, $"MatchSkills Error: {exception.Error} \r\n" +
+                                                $"Path: {exception.Path} \r\n" +
+                                                $"SessionId: {session.UserSessionId}");
+                });
+            });
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             
