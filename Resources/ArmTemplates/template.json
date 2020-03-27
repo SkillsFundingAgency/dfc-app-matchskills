@@ -265,7 +265,7 @@
                             },
                             {
                                 "name": "SessionConfig__ApplicationName",
-                                "value": "matchskills"
+                                "value": "session"
                             },
                             {
                                 "name": "DysacSettings__ApiUrl",
