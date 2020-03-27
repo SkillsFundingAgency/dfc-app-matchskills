@@ -12,6 +12,7 @@ using DFC.App.MatchSkills.Application.LMI.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Services;
+using DFC.App.MatchSkills.Extensions.ApplicationBuilderExtensions;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
@@ -27,6 +28,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NSubstitute.Extensions;
 
 
 namespace DFC.App.MatchSkills
@@ -91,21 +93,11 @@ namespace DFC.App.MatchSkills
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseExceptionHandler(errorApp =>
-            {
-                errorApp.Run(async context =>
-                {
-                    var session = await sessionService.GetUserSession();
-                    var exception =
-                        context.Features.Get<IExceptionHandlerPathFeature>();
-                    logger.Log(LogLevel.Error, $"MatchSkills Error: {exception.Error.Message} \r\n" +
-                                                $"Path: {exception.Path} \r\n" +
-                                                $"SessionId: {(session != null ? session.UserSessionId : "Unable to get sessionId")}");
-                });
-            });
+
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-            
+            app.ErrorHandlingMiddleware(logger, sessionService);
+
             app.UseRouting();
 
             var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
