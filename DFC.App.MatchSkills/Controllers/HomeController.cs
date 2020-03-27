@@ -1,4 +1,5 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using System;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/head/{controller}")]
         [Route("/head")]
         public override IActionResult Head()
-        {
+        { 
             return base.Head();
         }
         [Route("/bodytop/{controller}")]

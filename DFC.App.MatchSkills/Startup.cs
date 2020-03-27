@@ -12,7 +12,6 @@ using DFC.App.MatchSkills.Application.LMI.Services;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Services;
-using DFC.App.MatchSkills.Extensions.ApplicationBuilderExtensions;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Service;
@@ -96,7 +95,8 @@ namespace DFC.App.MatchSkills
 
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-            app.ErrorHandlingMiddleware(logger, sessionService);
+            app.UseExceptionHandler(errorApp => errorApp.Run(async context => ErrorService.LogException(context, sessionService, logger)));
+   
 
             app.UseRouting();
 
