@@ -1,6 +1,9 @@
 ﻿@using DFC.App.MatchSkills.Application.LMI.Models
 @model DFC.App.MatchSkills.ViewModels.MatchDetailsCompositeViewModel
 <div class="govuk-grid-row">
+    <govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+</div>
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <govukHeadingH1 text="@Model.CareerTitle" additional-class="margin-bottom-reset govuk-!-margin-top-6"></govukHeadingH1>
         <p>@Model.CareerDescription</p>
@@ -43,4 +46,4 @@
     </div>
 </div>
 
-            
+
