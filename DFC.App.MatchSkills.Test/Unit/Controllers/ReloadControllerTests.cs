@@ -32,7 +32,10 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
             _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
-            _dysacServiceSetings = Options.Create(new DysacSettings());
+            _dysacServiceSetings = Options.Create(new DysacSettings
+            {
+                DysacReturnUrl = "DysacRoute"
+            });
             _dysacServiceSetings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/something";
             _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _dysacServiceSetings.Value.DysacUrl = "http://dysacurl";
@@ -46,7 +49,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledWithEmptyString_RedirectToHome()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -60,7 +63,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledAndSessionIdIsValid_RedirectToUsersLastPage()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -80,7 +83,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledAndSessionIdIsInvalid_RedirectToHome()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -99,7 +102,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostCalledAndSessionIdIsInvalid_RedirectToHomeWithErrors()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -118,7 +121,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostCalledAndSessionIdIsValid_RedirectToUsersLastPage()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -138,7 +141,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostCalledAndSessionIdIsDysacSessionOnly_RedirectToDysac()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -162,7 +165,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledAndSessionIdIsDysacSessionOnly_RedirectToDysac()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -186,7 +189,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostCalledAndSessionIdIsDysacAndSkillsSessionAndLastPageIsRouteWithOption2Selected_RedirectToDysac()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -211,7 +214,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledAndSessionIdIsDysacAndSkillsSessionAndLastPageIsRouteWithOption2Selected_RedirectToDysac()
         {
-            var controller = new ReloadController(_compositeSettings, _sessionService);
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
