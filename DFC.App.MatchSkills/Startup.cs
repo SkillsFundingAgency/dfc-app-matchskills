@@ -98,9 +98,9 @@ namespace DFC.App.MatchSkills
                     var session = await sessionService.GetUserSession();
                     var exception =
                         context.Features.Get<IExceptionHandlerPathFeature>();
-                    logger.Log(LogLevel.Error, $"MatchSkills Error: {exception.Error} \r\n" +
+                    logger.Log(LogLevel.Error, $"MatchSkills Error: {exception.Error.Message} \r\n" +
                                                 $"Path: {exception.Path} \r\n" +
-                                                $"SessionId: {session.UserSessionId}");
+                                                $"SessionId: {(session != null ? session.UserSessionId : "Unable to get sessionId")}");
                 });
             });
             app.UseStaticFiles();

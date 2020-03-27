@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DFC.App.MatchSkills
 {
@@ -15,6 +17,10 @@ namespace DFC.App.MatchSkills
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                }).ConfigureLogging((hostingContext, builder) =>
+                {
+                    builder.AddApplicationInsights(hostingContext.Configuration.GetSection("ApplicationInsights:InstrumentationKey").Value);
                 });
     }
 }
