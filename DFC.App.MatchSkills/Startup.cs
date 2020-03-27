@@ -20,7 +20,6 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
@@ -95,7 +94,7 @@ namespace DFC.App.MatchSkills
 
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-            app.UseExceptionHandler(errorApp => errorApp.Run(async context => ErrorService.LogException(context, sessionService, logger)));
+            app.UseExceptionHandler(errorApp => errorApp.Run(async context => await ErrorService.LogException(context, sessionService, logger)));
    
 
             app.UseRouting();
