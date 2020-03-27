@@ -54,8 +54,7 @@ namespace DFC.App.MatchSkills.Controllers
                 case WorkedBefore.Yes:
                     return RedirectTo(CompositeViewModel.PageId.Route.Value);
                 case WorkedBefore.No:
-                    var response = _dysacService.InitiateDysac().Result;
-                    return response.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.Value.DysacUrl) :  throw new Exception(response.ResponseMessage);
+                    return Redirect(_dysacSettings.Value.DysacUrl);
                 default:
                     return RedirectWithError(ViewModel.Id.Value);
             }

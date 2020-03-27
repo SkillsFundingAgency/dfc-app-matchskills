@@ -18,24 +18,24 @@ namespace DFC.App.MatchSkills.Services.Dysac
     {
         
         private readonly IOptions<DysacSettings> _dysacSettings;
-        private readonly IRestClient _client;
+        private readonly IRestClient _restClient;
         private readonly ILogger _logger;
         private const string ResultsEndpoint = "/result/";
-        public DysacService(ILogger<DysacService> log, IRestClient client, IOptions<DysacSettings> dysacSettings)
+        public DysacService(ILogger<DysacService> log, IRestClient restClient, IOptions<DysacSettings> dysacSettings)
         {
             Throw.IfNull(dysacSettings, nameof(dysacSettings));
             _logger = log;
-            _client = client;
             _dysacSettings = dysacSettings;
+            _restClient = restClient ?? new RestClient();
         }
 
 
         public Task<DysacServiceResponse> InitiateDysac()
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/short";
-            var response = _client.PostAsync<Task<int>>(serviceUrl,new StringContent(""));
+            var response = _restClient.PostAsync<AssessmentShortResponse>(serviceUrl,new StringContent(""),_dysacSettings.Value.ApiKey);
             
-            return response.Result.Result.Equals(DysacReturnCode.Ok) 
+            return response.Result.SessionId !="" 
                 ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
                 : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
         }
@@ -45,7 +45,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
             Throw.IfNull(sessionId, nameof(sessionId));
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/session/{sessionId}";
 
-            var response = _client.GetAsync<Task<int>>(serviceUrl);
+            var response = _restClient.GetAsync<Task<int>>(serviceUrl);
             
             return response.Result.Result.Equals(DysacReturnCode.Ok) 
                 ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
@@ -62,7 +62,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}{ResultsEndpoint}/{sessionId}/short";
             try
             {
-                var response = await _client.GetAsync<DysacResults>(serviceUrl);
+                var response = await _restClient.GetAsync<DysacResults>(serviceUrl);
                 if (response != null && response.JobCategories.Any())
                 {
                     return Mapping.Mapper.Map<DysacJobCategory[]>(response.JobCategories);

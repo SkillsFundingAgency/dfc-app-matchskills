@@ -49,8 +49,7 @@ namespace DFC.App.MatchSkills.Controllers
                 case Route.Jobs:
                     return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
                 case Route.JobsAndSkills:
-                    var response = _dysacService.InitiateDysac(userSession.UserSessionId).Result;
-                    return response.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.Value.DysacUrl) :  throw new Exception(response.ResponseMessage);
+                    return Redirect(_dysacSettings.Value.DysacUrl);
                     
                 default:
                     return RedirectWithError(ViewModel.Id.Value);
