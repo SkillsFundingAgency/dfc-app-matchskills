@@ -30,6 +30,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 _dysacServiceSetings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/something";
                 _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
                 _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
+                _dysacServiceSetings.Value.ApiVersion="v1";
                 _dysacService = Substitute.For<IDysacSessionReader>();
                 _sessionClient = Substitute.For<ISessionClient>();
             }
@@ -46,6 +47,13 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             [Test]
             public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
+                var responseObject = new AssessmentShortResponse()
+                {
+                    CreatedDate = DateTime.Now,
+                    PartitionKey = "partitionkey",
+                    SessionId = "session",
+                    Salt = "salt"
+                };
                 _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
                 {
                     ResponseCode = DysacReturnCode.Ok

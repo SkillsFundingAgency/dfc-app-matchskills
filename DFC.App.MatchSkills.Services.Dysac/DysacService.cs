@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using Castle.Core.Internal;
-using DFC.App.MatchSkills.Application.Dysac;
-using DFC.App.MatchSkills.Application.Dysac.Models;
-using DFC.Personalisation.Common.Net.RestClient;
+﻿using Castle.Core.Internal;
 using Dfc.ProviderPortal.Packages;
 using Dfc.Session;
 using Dfc.Session.Models;
+using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
+using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
