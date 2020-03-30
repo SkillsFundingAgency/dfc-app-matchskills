@@ -1,6 +1,9 @@
-﻿using DFC.App.MatchSkills.Application.Dysac;
+﻿using System;
+using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
+using Dfc.Session;
+using Dfc.Session.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,6 +20,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         {
             private IOptions<DysacSettings> _dysacServiceSetings;
             private IDysacSessionReader _dysacService;
+            private ISessionClient _sessionClient;
             
             [SetUp]
             public void Init()
@@ -27,6 +31,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
                 _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
                 _dysacService = Substitute.For<IDysacSessionReader>();
+                _sessionClient = Substitute.For<ISessionClient>();
             }
 
             [Test]
@@ -35,11 +40,11 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 
                 var logger = Substitute.For<ILogger<DysacService>>();
                 var restClient = Substitute.For<IRestClient>();
-                var dysacService = new DysacService(logger,restClient,_dysacServiceSetings);
+                var dysacService = new DysacService(logger,restClient,_dysacServiceSetings,_sessionClient);
             }
 
             [Test]
-            public void When_InitiateDysacWithNoErrors_ReturnOK()
+            public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
                 _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
                 {
@@ -62,6 +67,25 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 var results = _dysacService.InitiateDysac().Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Error);
                 results.ResponseMessage.Should().Be("Error");
+            }
+            [Test]
+            public void When_InitiateDysacWithSessionAndNoErrors_ReturnOK()
+            {
+                 _dysacService.InitiateDysac(new DfcUserSession()
+                 {
+                     CreatedDate = DateTime.UtcNow,
+                     PartitionKey = "partitionkey",
+                     Salt = "salt",
+                     SessionId = "sessionid"
+                 }).ReturnsForAnyArgs(new DysacServiceResponse(){ResponseCode = DysacReturnCode.Ok});
+                var results = _dysacService.InitiateDysac(new DfcUserSession()
+                {
+                    CreatedDate = DateTime.UtcNow,
+                    PartitionKey = "partitionkey",
+                    Salt = "salt",
+                    SessionId = "sessionid"
+                }).Result;
+                results. ResponseCode.Should().Be(DysacReturnCode.Ok);
             }
         }
 

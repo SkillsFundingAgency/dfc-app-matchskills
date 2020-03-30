@@ -1,15 +1,20 @@
-﻿using Castle.Core.Internal;
-using Dfc.ProviderPortal.Packages;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
+using System.Threading.Tasks;
+using Castle.Core.Internal;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
+using Dfc.ProviderPortal.Packages;
+using Dfc.Session;
+using Dfc.Session.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
@@ -21,35 +26,68 @@ namespace DFC.App.MatchSkills.Services.Dysac
         private readonly IRestClient _restClient;
         private readonly ILogger _logger;
         private const string ResultsEndpoint = "/result/";
-        public DysacService(ILogger<DysacService> log, IRestClient restClient, IOptions<DysacSettings> dysacSettings)
+        private readonly ISessionClient _sessionClient;
+
+        public DysacService(ILogger<DysacService> log, IRestClient restClient, IOptions<DysacSettings> dysacSettings, ISessionClient sessionClient)
         {
             Throw.IfNull(dysacSettings, nameof(dysacSettings));
             _logger = log;
             _dysacSettings = dysacSettings;
             _restClient = restClient ?? new RestClient();
+            _sessionClient = sessionClient;
         }
 
 
-        public Task<DysacServiceResponse> InitiateDysac()
+        public async Task<DysacServiceResponse> InitiateDysac()
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/short";
-            var response = _restClient.PostAsync<AssessmentShortResponse>(serviceUrl,new StringContent(""),_dysacSettings.Value.ApiKey);
-            
-            return response.Result.SessionId !="" 
-                ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
-                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Ocp-Apim-Subscription-Key", _dysacSettings.Value.ApiKey);
+            request.Headers.Add("version", _dysacSettings.Value.ApiVersion);
+
+           var response = await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
+
+           var dysacServiceResponse = new DysacServiceResponse();
+           if (response.SessionId != "")
+           {
+               dysacServiceResponse.ResponseCode = DysacReturnCode.Ok;
+               var userSession = new DfcUserSession()
+               {
+                   CreatedDate = DateTime.Now,
+                   PartitionKey = response.PartitionKey,
+                   Salt =response.Salt,
+                   SessionId = response.SessionId
+               };
+               _sessionClient.CreateCookie(userSession,false);
+           }
+           else
+           {
+               dysacServiceResponse.ResponseCode = DysacReturnCode.Error;
+               dysacServiceResponse.ResponseMessage = response.ToString();
+           }
+
+           return dysacServiceResponse;
+
         }
 
-        public Task<DysacServiceResponse> InitiateDysac(string sessionId)
+        public async Task<DysacServiceResponse> InitiateDysac(DfcUserSession userSession)
         {
-            Throw.IfNull(sessionId, nameof(sessionId));
-            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/session/{sessionId}";
-
-            var response = _restClient.GetAsync<Task<int>>(serviceUrl);
+            Throw.IfNull(userSession, nameof(userSession));
+            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/skills";
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Ocp-Apim-Subscription-Key", _dysacSettings.Value.ApiKey);
+            request.Headers.Add("version", _dysacSettings.Value.ApiVersion);
             
-            return response.Result.Result.Equals(DysacReturnCode.Ok) 
-                ? Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
-                : Task.FromResult(new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
+            request.Content = new StringContent($"{{\"PartitionKey\":\"{userSession.PartitionKey}\"," +
+                                                $"\"SessionId\":\"{userSession.SessionId}\"," +
+                                                $"\"Salt\":\"{userSession.Salt}\"," +
+                                                $"\"CreatedDate\":\"{JsonConvert.SerializeObject(userSession.CreatedDate)}\"}}", Encoding.UTF8, "application/json");
+            
+            var response =await  _restClient.PostAsync<AssessmentShortResponse>(serviceUrl,request);
+            
+            return response.SessionId !="" 
+                ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
+                : (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
             
         }
 

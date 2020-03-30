@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
+using Dfc.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -49,7 +50,14 @@ namespace DFC.App.MatchSkills.Controllers
                 case Route.Jobs:
                     return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
                 case Route.JobsAndSkills:
-                    return Redirect(_dysacSettings.Value.DysacUrl);
+                    var response = _dysacService.InitiateDysac(  new DfcUserSession()
+                    {
+                        CreatedDate = DateTime.UtcNow,
+                        PartitionKey = userSession.PartitionKey,
+                        Salt = userSession.Salt,
+                        SessionId = userSession.UserSessionId
+                    }).Result;
+                    return response.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.Value.DysacUrl) :  throw new Exception(response.ResponseMessage);
                     
                 default:
                     return RedirectWithError(ViewModel.Id.Value);
