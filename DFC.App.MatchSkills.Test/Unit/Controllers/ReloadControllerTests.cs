@@ -40,10 +40,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _dysacServiceSetings.Value.DysacUrl = "http://dysacurl";
             _dysacService = Substitute.For<IDysacSessionReader>();
-            _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
-            {
-                ResponseCode = DysacReturnCode.Ok
-            });
+            
         }
 
         [Test]
