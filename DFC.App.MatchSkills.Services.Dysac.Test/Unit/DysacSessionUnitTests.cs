@@ -62,11 +62,6 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     Salt = "salt"
                 });
                 var dysacService = new DysacService(_log,_restClient,_dysacServiceSetings,_sessionClient);
-                
-               
-
-                
-                
                
                 var results = dysacService.InitiateDysac().Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
@@ -88,21 +83,27 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             [Test]
             public void When_InitiateDysacWithSessionAndNoErrors_ReturnOK()
             {
-                 _dysacService.InitiateDysac(new DfcUserSession()
-                 {
-                     CreatedDate = DateTime.UtcNow,
-                     PartitionKey = "partitionkey",
-                     Salt = "salt",
-                     SessionId = "sessionid"
-                 }).ReturnsForAnyArgs(new DysacServiceResponse(){ResponseCode = DysacReturnCode.Ok});
-                var results = _dysacService.InitiateDysac(new DfcUserSession()
+
+                var request = new HttpRequestMessage();
+                request.Headers.Add("Ocp-Apim-Subscription-Key", "");
+                request.Headers.Add("version", "");
+                _restClient.PostAsync<AssessmentShortResponse>("",request).ReturnsForAnyArgs(new AssessmentShortResponse()
+                {
+                    CreatedDate = DateTime.Now,
+                    PartitionKey = "partitionkey",
+                    SessionId = "session",
+                    Salt = "salt"
+                });
+                var dysacService = new DysacService(_log,_restClient,_dysacServiceSetings,_sessionClient);
+               
+                var results = dysacService.InitiateDysac(new DfcUserSession()
                 {
                     CreatedDate = DateTime.UtcNow,
                     PartitionKey = "partitionkey",
                     Salt = "salt",
                     SessionId = "sessionid"
                 }).Result;
-                results. ResponseCode.Should().Be(DysacReturnCode.Ok);
+                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
             }
 
         }
