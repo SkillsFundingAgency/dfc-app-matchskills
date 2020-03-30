@@ -1,5 +1,6 @@
 ﻿
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Models;
@@ -11,9 +12,12 @@ namespace DFC.App.MatchSkills.Controllers
 {
     public class ReloadController : CompositeSessionController<ReloadCompositeViewModel>
     {
-        public ReloadController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService) : base(
+        private readonly DysacSettings _dysacSettings;
+
+        public ReloadController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, IOptions<DysacSettings> dysacSettings) : base(
             compositeSettings, sessionService)
         {
+            _dysacSettings = dysacSettings.Value;
         }
 
         public override async Task<IActionResult> Body()
@@ -38,7 +42,7 @@ namespace DFC.App.MatchSkills.Controllers
             return userSession == null ? RedirectWithError("home"): RedirectTo(GetRoute(userSession));
         }
 
-        private static string GetRoute(UserSession session)
+        private string GetRoute(UserSession session)
         {
             if (session == null)
             {
@@ -47,11 +51,11 @@ namespace DFC.App.MatchSkills.Controllers
 
             if (session.UserHasWorkedBefore.HasValue && !session.UserHasWorkedBefore.Value)
             {
-                return "DysacRoute";
+                return _dysacSettings.DysacReturnUrl;
             }
             else if (session.RouteIncludesDysac.HasValue && session.RouteIncludesDysac.Value)
             {
-                return session.CurrentPage != CompositeViewModel.PageId.Route.Value ? session.CurrentPage : "DysacRoute";
+                return session.CurrentPage != CompositeViewModel.PageId.Route.Value ? session.CurrentPage : _dysacSettings.DysacReturnUrl; ;
             }
 
             return session.CurrentPage;
