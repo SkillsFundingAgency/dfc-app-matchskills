@@ -21,6 +21,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             private IOptions<DysacSettings> _dysacServiceSetings;
             private IDysacSessionReader _dysacService;
             private ISessionClient _sessionClient;
+            private IRestClient _restClient;
             
             [SetUp]
             public void Init()
@@ -33,6 +34,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 _dysacServiceSetings.Value.ApiVersion="v1";
                 _dysacService = Substitute.For<IDysacSessionReader>();
                 _sessionClient = Substitute.For<ISessionClient>();
+                _restClient = Substitute.For<IRestClient>();
             }
 
             [Test]
@@ -47,13 +49,18 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             [Test]
             public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
-                var responseObject = new AssessmentShortResponse()
+                
+                _restClient.PostAsync<AssessmentShortResponse>("",null,"").ReturnsForAnyArgs(new AssessmentShortResponse()
                 {
                     CreatedDate = DateTime.Now,
                     PartitionKey = "partitionkey",
                     SessionId = "session",
                     Salt = "salt"
-                };
+                });
+
+                var restClient = _restClient.PostAsync<AssessmentShortResponse>("",null,"").Result;
+                
+                
                 _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
                 {
                     ResponseCode = DysacReturnCode.Ok
