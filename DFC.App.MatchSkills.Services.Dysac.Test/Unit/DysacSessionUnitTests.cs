@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
-using ILogger = Castle.Core.Logging.ILogger;
+
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 {
@@ -22,7 +23,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             private IDysacSessionReader _dysacService;
             private ISessionClient _sessionClient;
             private IRestClient _restClient;
-            
+            private ILogger<DysacService> _log;
             [SetUp]
             public void Init()
             {
@@ -33,6 +34,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
                 _dysacServiceSetings.Value.ApiVersion="v1";
                 _dysacService = Substitute.For<IDysacSessionReader>();
+                _log = Substitute.For<ILogger<DysacService>>();
                 _sessionClient = Substitute.For<ISessionClient>();
                 _restClient = Substitute.For<IRestClient>();
             }
@@ -49,24 +51,24 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             [Test]
             public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
-                
-                _restClient.PostAsync<AssessmentShortResponse>("",null,"").ReturnsForAnyArgs(new AssessmentShortResponse()
+                var request = new HttpRequestMessage();
+                request.Headers.Add("Ocp-Apim-Subscription-Key", "");
+                request.Headers.Add("version", "");
+                _restClient.PostAsync<AssessmentShortResponse>("",request).ReturnsForAnyArgs(new AssessmentShortResponse()
                 {
                     CreatedDate = DateTime.Now,
                     PartitionKey = "partitionkey",
                     SessionId = "session",
                     Salt = "salt"
                 });
+                var dysacService = new DysacService(_log,_restClient,_dysacServiceSetings,_sessionClient);
+                
+               
 
-                var restClient = _restClient.PostAsync<AssessmentShortResponse>("",null,"").Result;
                 
                 
-                _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
-                {
-                    ResponseCode = DysacReturnCode.Ok
-                });
-                
-                var results = _dysacService.InitiateDysac().Result;
+               
+                var results = dysacService.InitiateDysac().Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
             }
 
@@ -102,6 +104,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 }).Result;
                 results. ResponseCode.Should().Be(DysacReturnCode.Ok);
             }
+
         }
 
 
