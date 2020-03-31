@@ -273,11 +273,15 @@
                             },
                             {
                                 "name": "DysacSettings__ApiUrl",
-                                "value": "[concat(parameters('apimProxyAddress'), '/discover-your-skills-careers/')]"
+                                "value": "[concat(parameters('apimProxyAddress'), '/discover-skills-and-careers/')]"
                             },
                             {
                                 "name": "DysacSettings__ApiKey",
                                 "value": "[parameters('apimDysacApiKey')]"
+                            },
+                            {
+                                "name": "DysacSettings__ApiVersion",
+                                "value": "v1"
                             },
                             {
                                 "name": "DysacSettings__DysacUrl",
