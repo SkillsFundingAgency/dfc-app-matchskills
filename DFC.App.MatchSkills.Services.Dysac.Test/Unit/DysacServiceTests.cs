@@ -9,6 +9,7 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Dfc.Session;
 using NSubstitute.ExceptionExtensions;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
@@ -19,18 +20,21 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         private ILogger<DysacService> _logger;
         private IRestClient _client;
         private IOptions<DysacSettings> _settings;
+        private ISessionClient _sessionClient;
 
         [OneTimeSetUp]
         public void Init()
         {
             _logger = Substitute.For<ILogger<DysacService>>();
             _client = Substitute.For<IRestClient>();
+            _sessionClient = Substitute.For<ISessionClient>();
             _settings = Options.Create(new DysacSettings()
             {
                 ApiKey = "9238dfjsjdsidfs83fds",
                 ApiUrl = "https://this.is.anApi.org.uk"
             });
-            _service = new DysacService(_logger, _client, _settings);
+            _service = new DysacService(_logger, _client, _settings,_sessionClient);
+
         }
 
         [Test]
@@ -52,7 +56,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         {
             _client = Substitute.For<IRestClient>();
             _client.GetAsync<DysacResults>(Arg.Any<string>()).Throws(new Exception("Exception"));
-            _service = new DysacService(_logger, _client, _settings);
+            _service = new DysacService(_logger, _client, _settings,_sessionClient);
             var result = await _service.GetDysacJobCategories("SessionId");
             result.Should().BeNull();
         }
@@ -61,17 +65,20 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         {
             _client = Substitute.For<IRestClient>();
             _client.GetAsync<DysacResults>(Arg.Any<string>()).ReturnsNullForAnyArgs();
-            _service = new DysacService(_logger, _client, _settings);
+            _service = new DysacService(_logger, _client, _settings,_sessionClient);
             var result = await _service.GetDysacJobCategories("SessionId");
             result.Should().BeEmpty();
         }
         [Test]
         public async Task WhenApiSuccess_ReturnDysacResults()
         {
+            var response = new DysacServiceResponse();
+            response.ResponseMessage = "message";
+            response.ResponseMessage = "message";
             var returnObject = Mapping.Mapper.Map<DysacJobCategory[]>(DysacTestData.SuccessfulApiCall().JobCategories);
             _client = Substitute.For<IRestClient>();
             _client.GetAsync<DysacResults>(Arg.Any<string>()).Returns(DysacTestData.SuccessfulApiCall());
-            _service = new DysacService(_logger, _client, _settings);
+            _service = new DysacService(_logger, _client, _settings,_sessionClient);
             var result = await _service.GetDysacJobCategories("SessionId");
             result[0].JobFamilyCode.Should().Be("CAM");
             result[0].JobFamilyName.Should().Be("Creative and media");

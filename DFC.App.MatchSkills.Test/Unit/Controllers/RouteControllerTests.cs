@@ -17,6 +17,7 @@ using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Service;
+using Dfc.Session.Models;
 using NSubstitute.ReturnsExtensions;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
@@ -111,6 +112,20 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
+            _dysacService.InitiateDysac(new DfcUserSession()
+            {
+                CreatedDate = DateTime.UtcNow,
+                PartitionKey = "partitionkey",
+                Salt = "salt",
+                SessionId = "sessionid"
+            }).ReturnsForAnyArgs(new DysacServiceResponse(){ResponseCode = DysacReturnCode.Ok});
+            var results = _dysacService.InitiateDysac(new DfcUserSession()
+            {
+                CreatedDate = DateTime.UtcNow,
+                PartitionKey = "partitionkey",
+                Salt = "salt",
+                SessionId = "sessionid"
+            }).Result;
             var controller = new RouteController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
