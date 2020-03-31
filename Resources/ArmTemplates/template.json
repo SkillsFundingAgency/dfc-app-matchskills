@@ -212,6 +212,10 @@
                                 "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
                             },
                             {
+                                "name": "ApplicationInsights__InstrumentationKey",
+                                "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
+                            },
+                            {
                                 "name": "ServiceTaxonomySettings__ApiUrl",
                                 "value": "[parameters('serviceTaxonomyApiUrl')]"
                             },
