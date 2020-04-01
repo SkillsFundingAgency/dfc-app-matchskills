@@ -21,6 +21,7 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,6 +78,7 @@ namespace DFC.App.MatchSkills
                     builder => builder
                         .AllowAnyMethod()
                         .AllowCredentials()
+                        .AllowAnyOrigin()
                         .SetIsOriginAllowed((host) => true)
                         .AllowAnyHeader());
             });
@@ -95,10 +97,30 @@ namespace DFC.App.MatchSkills
             app.UseHttpsRedirection();
             app.UseExceptionHandler(errorApp => errorApp.Run(async context => await ErrorService.LogException(context, sessionService, logger)));
    
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
+                context.Response.Headers["X-Content-Type-Options"] ="nosniff";
+                context.Response.Headers["X-Xss-Protection"] = "1; mode=block";
+                context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+                context.Response.Headers["Feature-Policy"] = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
 
+                
+                context.Response.GetTypedHeaders().CacheControl =
+                  new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                  {
+                      NoCache = true,
+                      NoStore = true,
+                      MustRevalidate = true,
+                  };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+                    new string[] { "Pragma: no-cache" };
+
+                await next();
+            });
             app.UseRouting();
-
             var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
+            app.UseCors(_corsPolicy);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
