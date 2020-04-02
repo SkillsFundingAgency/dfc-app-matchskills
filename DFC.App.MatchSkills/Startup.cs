@@ -76,10 +76,8 @@ namespace DFC.App.MatchSkills
             {
                 options.AddPolicy(_corsPolicy,
                     builder => builder
-                        .AllowAnyMethod()
-                        .AllowCredentials()
                         .AllowAnyOrigin()
-                        .SetIsOriginAllowed((host) => true)
+                        .AllowAnyMethod()
                         .AllowAnyHeader());
             });
         }
@@ -96,28 +94,7 @@ namespace DFC.App.MatchSkills
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseExceptionHandler(errorApp => errorApp.Run(async context => await ErrorService.LogException(context, sessionService, logger)));
-   
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
-                context.Response.Headers["X-Content-Type-Options"] ="nosniff";
-                context.Response.Headers["X-Xss-Protection"] = "1; mode=block";
-                context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-                context.Response.Headers["Feature-Policy"] = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
-
-                
-                context.Response.GetTypedHeaders().CacheControl =
-                  new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-                  {
-                      NoCache = true,
-                      NoStore = true,
-                      MustRevalidate = true,
-                  };
-                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-                    new string[] { "Pragma: no-cache" };
-
-                await next();
-            });
+           
             app.UseRouting();
             var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
             app.UseCors(_corsPolicy);
