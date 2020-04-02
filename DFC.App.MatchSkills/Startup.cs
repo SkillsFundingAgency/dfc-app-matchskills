@@ -75,9 +75,8 @@ namespace DFC.App.MatchSkills
             {
                 options.AddPolicy(_corsPolicy,
                     builder => builder
+                        .AllowAnyOrigin()
                         .AllowAnyMethod()
-                        .AllowCredentials()
-                        .SetIsOriginAllowed((host) => true)
                         .AllowAnyHeader());
             });
         }
@@ -94,11 +93,10 @@ namespace DFC.App.MatchSkills
             app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseExceptionHandler(errorApp => errorApp.Run(async context => await ErrorService.LogException(context, sessionService, logger)));
-   
-
+           
             app.UseRouting();
-
             var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
+            app.UseCors(_corsPolicy);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
