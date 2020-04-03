@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
@@ -37,6 +38,10 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 _log = Substitute.For<ILogger<DysacService>>();
                 _sessionClient = Substitute.For<ISessionClient>();
                 _restClient = Substitute.For<IRestClient>();
+                RestClient.APIResponse apiResponse =  _restClient.LastResponse;
+                _restClient.LastResponse.Returns(Substitute.For<RestClient.APIResponse>());
+                _restClient.LastResponse.StatusCode.Returns(HttpStatusCode.Created);
+
             }
 
             [Test]
@@ -80,31 +85,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 results.ResponseCode.Should().Be(DysacReturnCode.Error);
                 results.ResponseMessage.Should().Be("Error");
             }
-            [Test]
-            public void When_InitiateDysacWithSessionAndNoErrors_ReturnOK()
-            {
-
-                var request = new HttpRequestMessage();
-                request.Headers.Add("Ocp-Apim-Subscription-Key", "");
-                request.Headers.Add("version", "");
-                _restClient.PostAsync<AssessmentShortResponse>("",request).ReturnsForAnyArgs(new AssessmentShortResponse()
-                {
-                    CreatedDate = DateTime.Now,
-                    PartitionKey = "partitionkey",
-                    SessionId = "session",
-                    Salt = "salt"
-                });
-                var dysacService = new DysacService(_log,_restClient,_dysacServiceSetings,_sessionClient);
-               
-                var results = dysacService.InitiateDysac(new DfcUserSession()
-                {
-                    CreatedDate = DateTime.UtcNow,
-                    PartitionKey = "partitionkey",
-                    Salt = "salt",
-                    SessionId = "sessionid"
-                }).Result;
-                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
-            }
+           
 
         }
 
