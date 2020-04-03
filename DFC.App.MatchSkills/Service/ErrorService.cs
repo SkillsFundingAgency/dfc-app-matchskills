@@ -12,6 +12,9 @@ namespace DFC.App.MatchSkills.Service
     {
         public static async Task LogException(HttpContext context, ISessionService sessionService, ILogger logger)
         {
+            var exception =
+                context.Features.Get<IExceptionHandlerPathFeature>();
+
             UserSession session = null;
             try
             {
@@ -21,8 +24,7 @@ namespace DFC.App.MatchSkills.Service
             {
                 logger.Log(LogLevel.Error, $"Could not get SessionId. {ex.Message}");
             }
-            var exception =
-                context.Features.Get<IExceptionHandlerPathFeature>();
+
             logger.Log(LogLevel.Error, $"MatchSkills Error: {exception.Error.Message} \r\n" +
                                        $"Path: {exception.Path} \r\n" +
                                        $"SessionId: {(session != null ? session.UserSessionId : "Unable to get sessionId")}");
