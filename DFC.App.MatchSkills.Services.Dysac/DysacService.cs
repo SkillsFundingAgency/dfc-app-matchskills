@@ -10,7 +10,9 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,12 +53,13 @@ namespace DFC.App.MatchSkills.Services.Dysac
                dysacServiceResponse.ResponseCode = DysacReturnCode.Ok;
                var userSession = new DfcUserSession()
                {
-                   CreatedDate = DateTime.Now,
+                   CreatedDate = response.CreatedDate,
                    PartitionKey = response.PartitionKey,
                    Salt =response.Salt,
                    SessionId = response.SessionId
                };
                _sessionClient.CreateCookie(userSession,false);
+
            }
            else
            {
@@ -75,17 +78,32 @@ namespace DFC.App.MatchSkills.Services.Dysac
             var request = new HttpRequestMessage();
             request.Headers.Add("Ocp-Apim-Subscription-Key", _dysacSettings.Value.ApiKey);
             request.Headers.Add("version", _dysacSettings.Value.ApiVersion);
-            
+
             request.Content = new StringContent($"{{\"PartitionKey\":\"{userSession.PartitionKey}\"," +
                                                 $"\"SessionId\":\"{userSession.SessionId}\"," +
                                                 $"\"Salt\":\"{userSession.Salt}\"," +
-                                                $"\"CreatedDate\":\"{JsonConvert.SerializeObject(userSession.CreatedDate)}\"}}", Encoding.UTF8, "application/json");
+                                                $"\"CreatedDate\":{JsonConvert.SerializeObject(userSession.CreatedDate)}}}",
+                Encoding.UTF8, "application/json");
+
             
-            var response =await  _restClient.PostAsync<AssessmentShortResponse>(serviceUrl,request);
+
+            try
+            {
+                await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
+                return _restClient.LastResponse.StatusCode == HttpStatusCode.Created || _restClient.LastResponse.StatusCode == HttpStatusCode.AlreadyReported
+                    ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
+                    : (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = _restClient.LastResponse.StatusCode.ToString()});
+            }
+            catch 
+            {
+                return new DysacServiceResponse()
+                {
+                    ResponseCode = DysacReturnCode.Error,
+                    ResponseMessage = _restClient.LastResponse.StatusCode.ToString()
+                };
+            }
+
             
-            return response.SessionId !="" 
-                ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
-                : (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
             
         }
 

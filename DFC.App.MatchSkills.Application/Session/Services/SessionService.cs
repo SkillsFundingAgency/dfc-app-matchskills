@@ -58,6 +58,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
                 UserHasWorkedBefore = request.UserHasWorkedBefore,
                 RouteIncludesDysac = request.RouteIncludesDysac,
                 LastUpdatedUtc = DateTime.UtcNow,
+                SessionCreatedDate = dfcUserSession.CreatedDate
             };
 
             var result = await _cosmosService.CreateItemAsync(userSession, CosmosCollection.Session);
