@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Dfc.Session.Models;
+using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Dysac;
-using DFC.App.MatchSkills.Application.Dysac.Models;
-using Dfc.Session;
-using Dfc.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
-  
+
     [SessionRequired]
     public class RouteController : CompositeSessionController<RouteCompositeViewModel>
     {
