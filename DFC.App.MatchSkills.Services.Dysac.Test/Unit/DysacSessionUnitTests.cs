@@ -68,9 +68,14 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     SessionId = "session",
                     Salt = "salt"
                 });
-                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
 
-                var results = dysacService.InitiateDysac().Result;
+                var userSession = new DfcUserSession();
+                userSession.PartitionKey = "key";
+                _dysacService.InitiateDysac(userSession).ReturnsForAnyArgs(new DysacServiceResponse()
+                {
+                    ResponseCode = DysacReturnCode.Ok,
+                });
+                var results = _dysacService.InitiateDysac(userSession).Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
             }
 

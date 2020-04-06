@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Services.Dysac.Test.Helper;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -42,6 +43,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
         }
 
+       
         [Test]
         public async Task WhenBlankSessionId_ReturnNull()
         {
@@ -89,22 +91,8 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             result[0].JobFamilyName.Should().Be("Creative and media");
             result[0].JobFamilyUrl.Should().Be("creative-and-media");
         }
+        
+        
 
-        [Test]
-        public async Task WhenInitiateDysac_ReturnDysacServiceReponse()
-        {
-            var response = new DysacServiceResponse();
-            response.ResponseMessage = "message";
-            
-            _client = Substitute.For<IRestClient>();
-            _client.GetAsync<DysacResults>(Arg.Any<string>()).Returns(DysacTestData.SuccessfulApiCall());
-            _service = new DysacService(_logger, _client, _settings,_sessionClient);
-            var dfcUserSession = new DfcUserSession();
-            dfcUserSession.PartitionKey = "someKey";
-            var result = await _service.InitiateDysac(dfcUserSession);
-
-            result.ResponseCode = DysacReturnCode.Ok;
-
-        }
     }
 }
