@@ -42,8 +42,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 _log = Substitute.For<ILogger<DysacService>>();
                 _sessionClient = Substitute.For<ISessionClient>();
                 _restClient = Substitute.For<IRestClient>();
-                _restClient.LastResponse = Substitute.For<RestClient.APIResponse>();
-                _restClient.LastResponse.StatusCode = HttpStatusCode.Created;
+                
 
             }
 
