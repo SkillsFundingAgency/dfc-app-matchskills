@@ -80,9 +80,8 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
         }
 
-        public async Task<UserSession> Reload(string code)
+        public async Task<UserSession> Reload(string sessionId)
         {
-            var sessionId = GetSessionId(code);
             var partitionKey = _sessionClient.GeneratePartitionKey(sessionId);
                 var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey,CosmosCollection.Session);
 
@@ -122,23 +121,5 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return primaryKey.Split('-')[(int) mode];
         }
 
-        private string GetSessionId(string code)
-        {
-            var result = new StringBuilder();
-
-            if (!string.IsNullOrWhiteSpace(code))
-            {
-                code = code.ToLower();
-                foreach (var c in code)
-                {
-                    if (c != ' ')
-                    {
-                        result.Append(c.ToString());
-                    }
-                }
-            }
-
-            return result.ToString();
-        }
     }
 }

@@ -3,6 +3,7 @@ using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
@@ -46,7 +47,27 @@ namespace DFC.App.MatchSkills.Controllers
 
         protected async Task<UserSession> GetUserSession(string code)
         {
-            return await _sessionService.Reload(code);
+            return await _sessionService.Reload(GetSessionId(code));
+        }
+
+
+        public string GetSessionId(string code)
+        {
+            var result = new StringBuilder();
+
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                code = code.ToLower();
+                foreach (var c in code)
+                {
+                    if (c != ' ')
+                    {
+                        result.Append(c.ToString());
+                    }
+                }
+            }
+
+            return result.ToString();
         }
     }
 }

@@ -39,32 +39,11 @@ namespace DFC.App.MatchSkills.Services.Dysac
         public async Task<DysacServiceResponse> InitiateDysac()
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/short";
-            var request = new HttpRequestMessage();
-            request.Headers.Add("Ocp-Apim-Subscription-Key", _dysacSettings.Value.ApiKey);
-            request.Headers.Add("version", _dysacSettings.Value.ApiVersion);
+            var request = GetDysacRequestMessage();
 
            var response = await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
 
-           var dysacServiceResponse = new DysacServiceResponse();
-           if (response.SessionId != "")
-           {
-               dysacServiceResponse.ResponseCode = DysacReturnCode.Ok;
-               var userSession = new DfcUserSession()
-               {
-                   CreatedDate = DateTime.Now,
-                   PartitionKey = response.PartitionKey,
-                   Salt =response.Salt,
-                   SessionId = response.SessionId
-               };
-               _sessionClient.CreateCookie(userSession,false);
-           }
-           else
-           {
-               dysacServiceResponse.ResponseCode = DysacReturnCode.Error;
-               dysacServiceResponse.ResponseMessage = response.ToString();
-           }
-
-           return dysacServiceResponse;
+           return CreateDysacServiceResponse(response);
 
         }
 
@@ -72,9 +51,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
         {
             Throw.IfNull(userSession, nameof(userSession));
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/skills";
-            var request = new HttpRequestMessage();
-            request.Headers.Add("Ocp-Apim-Subscription-Key", _dysacSettings.Value.ApiKey);
-            request.Headers.Add("version", _dysacSettings.Value.ApiVersion);
+            var request = GetDysacRequestMessage();
             
             request.Content = new StringContent($"{{\"PartitionKey\":\"{userSession.PartitionKey}\"," +
                                                 $"\"SessionId\":\"{userSession.SessionId}\"," +
@@ -114,9 +91,51 @@ namespace DFC.App.MatchSkills.Services.Dysac
             return new DysacJobCategory[0];
 
         }
-        
-        
+
+        public async Task<DysacServiceResponse> LoadExistingDysacOnlyAssessment (string sessionId)
+        {
+            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/session/{sessionId}";
+            var request = GetDysacRequestMessage();
+
+           var response = await _restClient.GetAsync<AssessmentShortResponse>(serviceUrl, request);
+
+            return CreateDysacServiceResponse(response);
+
+        }
+
+        private HttpRequestMessage GetDysacRequestMessage()
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Ocp-Apim-Subscription-Key", _dysacSettings.Value.ApiKey);
+            request.Headers.Add("version", _dysacSettings.Value.ApiVersion);
+            return request;
+        }
+
+        private DysacServiceResponse CreateDysacServiceResponse(AssessmentShortResponse response)
+        {
+            var dysacServiceResponse = new DysacServiceResponse();
+            if (response.SessionId != "")
+            {
+                dysacServiceResponse.ResponseCode = DysacReturnCode.Ok;
+                var userSession = new DfcUserSession()
+                {
+                    CreatedDate = DateTime.Now,
+                    PartitionKey = response.PartitionKey,
+                    Salt = response.Salt,
+                    SessionId = response.SessionId
+                };
+                _sessionClient.CreateCookie(userSession, false);
+            }
+            else
+            {
+                dysacServiceResponse.ResponseCode = DysacReturnCode.Error;
+                dysacServiceResponse.ResponseMessage = response.ToString();
+            }
+
+            return dysacServiceResponse;
+        }
     }
+
 
    
 }
