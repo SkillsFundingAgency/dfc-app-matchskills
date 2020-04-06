@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
@@ -61,6 +62,13 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 var request = new HttpRequestMessage();
                 request.Headers.Add("Ocp-Apim-Subscription-Key", "");
                 request.Headers.Add("version", "");
+                request.Content = new StringContent($"{{\"PartitionKey\":\"key\"," +
+
+                                                                      $"\"SessionId\":\"session\"," +
+                                                                      $"\"Salt\":\"salt\"," +
+                                                                      $"\"CreatedDate\":\"sometext\"}}",
+                                                                      Encoding.UTF8,"application/json");
+
                 _restClient.PostAsync<AssessmentShortResponse>("", request).ReturnsForAnyArgs(new AssessmentShortResponse()
                 {
                     CreatedDate = DateTime.Now,
@@ -71,6 +79,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
                 var userSession = new DfcUserSession();
                 userSession.PartitionKey = "key";
+                
                 _dysacService.InitiateDysac(userSession).ReturnsForAnyArgs(new DysacServiceResponse()
                 {
                     ResponseCode = DysacReturnCode.Ok,

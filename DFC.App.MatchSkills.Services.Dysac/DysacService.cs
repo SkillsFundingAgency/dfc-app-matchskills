@@ -61,24 +61,11 @@ namespace DFC.App.MatchSkills.Services.Dysac
                                                 $"\"CreatedDate\":{JsonConvert.SerializeObject(userSession.CreatedDate)}}}",
                 Encoding.UTF8, "application/json");
 
-            
-
-            try
-            {
+           
                 await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
                 return _restClient.LastResponse.StatusCode == HttpStatusCode.Created || _restClient.LastResponse.StatusCode == HttpStatusCode.AlreadyReported
                     ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
                     : (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = _restClient.LastResponse.StatusCode.ToString()});
-            }
-            catch 
-            {
-                return new DysacServiceResponse()
-                {
-                    ResponseCode = DysacReturnCode.Error,
-                    ResponseMessage = _restClient.LastResponse.StatusCode.ToString()
-                };
-            }
-
             
             
         }

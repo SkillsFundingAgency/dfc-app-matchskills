@@ -92,7 +92,6 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             result[0].JobFamilyUrl.Should().Be("creative-and-media");
         }
         
-        
 
     }
 }
