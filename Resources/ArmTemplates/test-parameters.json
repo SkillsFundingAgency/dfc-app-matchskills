@@ -49,6 +49,9 @@
         },
         "apimDysacApiKey": {
             "value": "not-a-real-apim-key"
+        },
+        "apimoldDysacApiKey": {
+            "value": "not-a-real-apim-key"
         }
     }
 }
