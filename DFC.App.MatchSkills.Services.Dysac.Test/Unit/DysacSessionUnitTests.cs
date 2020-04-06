@@ -43,7 +43,6 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 _log = Substitute.For<ILogger<DysacService>>();
                 _sessionClient = Substitute.For<ISessionClient>();
                 _restClient = Substitute.For<IRestClient>();
-                
 
             }
 
@@ -59,33 +58,14 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             [Test]
             public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
-                var request = new HttpRequestMessage();
-                request.Headers.Add("Ocp-Apim-Subscription-Key", "");
-                request.Headers.Add("version", "");
-                request.Content = new StringContent($"{{\"PartitionKey\":\"key\"," +
-
-                                                                      $"\"SessionId\":\"session\"," +
-                                                                      $"\"Salt\":\"salt\"," +
-                                                                      $"\"CreatedDate\":\"sometext\"}}",
-                                                                      Encoding.UTF8,"application/json");
-
-                _restClient.PostAsync<AssessmentShortResponse>("", request).ReturnsForAnyArgs(new AssessmentShortResponse()
-                {
-                    CreatedDate = DateTime.Now,
-                    PartitionKey = "partitionkey",
-                    SessionId = "session",
-                    Salt = "salt"
-                });
-
                 var userSession = new DfcUserSession();
                 userSession.PartitionKey = "key";
                 
                 _dysacService.InitiateDysac(userSession).ReturnsForAnyArgs(new DysacServiceResponse()
                 {
-                    ResponseCode = DysacReturnCode.Ok,
+                    ResponseCode = DysacReturnCode.Ok
                 });
-                var results = _dysacService.InitiateDysac(userSession).Result;
-                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+
             }
 
             [Test]
