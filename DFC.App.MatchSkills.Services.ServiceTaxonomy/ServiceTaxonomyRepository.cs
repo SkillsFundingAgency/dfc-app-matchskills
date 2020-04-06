@@ -35,8 +35,10 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         }
         
         private async Task<TList> GetJsonListGet<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
-        { 
-            return await _restClient.GetAsync<TList>(apiPath,ocpApimSubscriptionKey);
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.Add("Ocp-Apim-Subscription-Key", ocpApimSubscriptionKey);
+            return await _restClient.GetAsync<TList>(apiPath, request);
         }
 
         private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class

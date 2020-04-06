@@ -2,16 +2,14 @@
 using Dfc.Session;
 using Dfc.Session.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Services;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {
@@ -80,9 +78,8 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return result.IsSuccessStatusCode ? JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync()) : null;
         }
 
-        public async Task<UserSession> Reload(string code)
+        public async Task<UserSession> Reload(string sessionId)
         {
-            var sessionId = GetSessionId(code);
             var partitionKey = _sessionClient.GeneratePartitionKey(sessionId);
                 var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey,CosmosCollection.Session);
 
@@ -122,23 +119,5 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             return primaryKey.Split('-')[(int) mode];
         }
 
-        private string GetSessionId(string code)
-        {
-            var result = new StringBuilder();
-
-            if (!string.IsNullOrWhiteSpace(code))
-            {
-                code = code.ToLower();
-                foreach (var c in code)
-                {
-                    if (c != ' ')
-                    {
-                        result.Append(c.ToString());
-                    }
-                }
-            }
-
-            return result.ToString();
-        }
     }
 }
