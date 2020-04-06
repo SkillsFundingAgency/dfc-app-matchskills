@@ -65,7 +65,9 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 {
                     ResponseCode = DysacReturnCode.Ok
                 });
-
+                var results = _dysacService.InitiateDysac(userSession).Result;
+                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+                
             }
 
             [Test]
