@@ -1,21 +1,17 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dfc.Session;
+using Dfc.Session.Models;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
-using Dfc.Session;
-using Dfc.Session.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-using NSubstitute.Core;
-using NSubstitute.Extensions;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit

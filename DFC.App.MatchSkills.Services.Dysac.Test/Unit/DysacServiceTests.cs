@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using Dfc.Session;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Services.Dysac.Test.Helper;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -7,12 +6,11 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
-using Dfc.Session;
-using Dfc.Session.Models;
-using NSubstitute.ExceptionExtensions;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 {
