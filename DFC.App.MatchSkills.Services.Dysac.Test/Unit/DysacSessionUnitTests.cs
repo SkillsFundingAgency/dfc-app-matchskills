@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -9,6 +11,9 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using NSubstitute.Core;
+using NSubstitute.Extensions;
+using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 
 
@@ -104,6 +109,31 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     SessionId = "sessionid"
                 }).Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+            }
+
+            [Test]
+            public async Task When_LoadExistingDysacOnlyAssessmentReturnsValidResponse_ReturnOK()
+            {
+                _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsForAnyArgs(new AssessmentShortResponse()
+                {
+                    CreatedDate = DateTime.Now,
+                    PartitionKey = "partitionkey",
+                    SessionId = "session",
+                    Salt = "salt"
+                });
+                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+
+                var results = await dysacService.LoadExistingDysacOnlyAssessment("session");
+                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+            }
+
+            [Test]
+            public async Task When_LoadExistingDysacOnlyAssessmentReturnsAnError_ReturnError()
+            {
+                _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsNullForAnyArgs();
+                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+                var results = await dysacService.LoadExistingDysacOnlyAssessment("session");
+                results.ResponseCode.Should().Be(DysacReturnCode.Error);
             }
 
         }

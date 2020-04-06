@@ -2,16 +2,14 @@
 using Dfc.Session;
 using Dfc.Session.Models;
 using DFC.App.MatchSkills.Application.Cosmos.Interfaces;
+using DFC.App.MatchSkills.Application.Cosmos.Services;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Cosmos.Services;
 
 namespace DFC.App.MatchSkills.Application.Session.Services
 {

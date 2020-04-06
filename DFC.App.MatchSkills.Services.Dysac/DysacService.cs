@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using DFC.Personalisation.Common.Extensions;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
@@ -114,7 +115,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
         private DysacServiceResponse CreateDysacServiceResponse(AssessmentShortResponse response)
         {
             var dysacServiceResponse = new DysacServiceResponse();
-            if (response.SessionId != "")
+            if (response != null && !string.IsNullOrEmpty(response.SessionId))
             {
                 dysacServiceResponse.ResponseCode = DysacReturnCode.Ok;
                 var userSession = new DfcUserSession()
@@ -129,7 +130,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
             else
             {
                 dysacServiceResponse.ResponseCode = DysacReturnCode.Error;
-                dysacServiceResponse.ResponseMessage = response.ToString();
+                dysacServiceResponse.ResponseMessage = _restClient.LastResponse?.StatusCode.ToLower();
             }
 
             return dysacServiceResponse;

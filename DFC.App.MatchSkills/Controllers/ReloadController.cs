@@ -1,16 +1,12 @@
-﻿
-using System.Net.Http;
-using System.Threading.Tasks;
-using AutoMapper.Configuration.Annotations;
-using DFC.App.MatchSkills.Application.Dysac;
+﻿using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
