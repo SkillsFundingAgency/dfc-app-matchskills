@@ -28,29 +28,28 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             [SetUp]
             public void Init()
             {
-                
+
                 _dysacServiceSetings = Options.Create(new DysacSettings());
                 _dysacServiceSetings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/something";
                 _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
-                _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
-                _dysacServiceSetings.Value.ApiVersion="v1";
+                _dysacServiceSetings.Value.DysacUrl = "http://dysacurl";
+                _dysacServiceSetings.Value.ApiVersion = "v1";
                 _dysacService = Substitute.For<IDysacSessionReader>();
                 _log = Substitute.For<ILogger<DysacService>>();
                 _sessionClient = Substitute.For<ISessionClient>();
                 _restClient = Substitute.For<IRestClient>();
-                RestClient.APIResponse apiResponse =  _restClient.LastResponse;
-                _restClient.LastResponse.Returns(Substitute.For<RestClient.APIResponse>());
-                _restClient.LastResponse.StatusCode.Returns(HttpStatusCode.Created);
+                _restClient.LastResponse = Substitute.For<RestClient.APIResponse>();
+                _restClient.LastResponse.StatusCode = HttpStatusCode.Created;
 
             }
 
             [Test]
             public void When_DysacService_ObjectCreated()
             {
-                
+
                 var logger = Substitute.For<ILogger<DysacService>>();
                 var restClient = Substitute.For<IRestClient>();
-                var dysacService = new DysacService(logger,restClient,_dysacServiceSetings,_sessionClient);
+                var dysacService = new DysacService(logger, restClient, _dysacServiceSetings, _sessionClient);
             }
 
             [Test]
@@ -59,15 +58,15 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 var request = new HttpRequestMessage();
                 request.Headers.Add("Ocp-Apim-Subscription-Key", "");
                 request.Headers.Add("version", "");
-                _restClient.PostAsync<AssessmentShortResponse>("",request).ReturnsForAnyArgs(new AssessmentShortResponse()
+                _restClient.PostAsync<AssessmentShortResponse>("", request).ReturnsForAnyArgs(new AssessmentShortResponse()
                 {
                     CreatedDate = DateTime.Now,
                     PartitionKey = "partitionkey",
                     SessionId = "session",
                     Salt = "salt"
                 });
-                var dysacService = new DysacService(_log,_restClient,_dysacServiceSetings,_sessionClient);
-               
+                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+
                 var results = dysacService.InitiateDysac().Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
             }
@@ -80,12 +79,12 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     ResponseCode = DysacReturnCode.Error,
                     ResponseMessage = "Error"
                 });
-                
+
                 var results = _dysacService.InitiateDysac().Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Error);
                 results.ResponseMessage.Should().Be("Error");
             }
-           
+
 
         }
 
