@@ -10,6 +10,7 @@ using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using Dfc.Session;
+using Dfc.Session.Models;
 using NSubstitute.ExceptionExtensions;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
@@ -31,7 +32,11 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             _settings = Options.Create(new DysacSettings()
             {
                 ApiKey = "9238dfjsjdsidfs83fds",
-                ApiUrl = "https://this.is.anApi.org.uk"
+                ApiUrl = "https://this.is.anApi.org.uk",
+                ApiVersion = "v1",
+                DysacReturnUrl = "SomeURL",
+                DysacSaveUrl = "SaveURL",
+                DysacUrl = "DysacURL"
             });
             _service = new DysacService(_logger, _client, _settings,_sessionClient);
 
@@ -85,5 +90,21 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             result[0].JobFamilyUrl.Should().Be("creative-and-media");
         }
 
+        [Test]
+        public async Task WhenInitiateDysac_ReturnDysacServiceReponse()
+        {
+            var response = new DysacServiceResponse();
+            response.ResponseMessage = "message";
+            
+            _client = Substitute.For<IRestClient>();
+            _client.GetAsync<DysacResults>(Arg.Any<string>()).Returns(DysacTestData.SuccessfulApiCall());
+            _service = new DysacService(_logger, _client, _settings,_sessionClient);
+            var dfcUserSession = new DfcUserSession();
+            dfcUserSession.PartitionKey = "someKey";
+            var result = await _service.InitiateDysac(dfcUserSession);
+
+            result.ResponseCode = DysacReturnCode.Ok;
+
+        }
     }
 }
