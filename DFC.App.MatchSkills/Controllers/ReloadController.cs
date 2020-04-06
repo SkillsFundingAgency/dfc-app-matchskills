@@ -1,5 +1,4 @@
-﻿
-using System.Threading.Tasks;
+﻿using DFC.App.MatchSkills.Application.Dysac;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
@@ -7,16 +6,19 @@ using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
     public class ReloadController : CompositeSessionController<ReloadCompositeViewModel>
     {
         private readonly DysacSettings _dysacSettings;
+        private readonly IDysacSessionReader _dysacService;
 
-        public ReloadController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, IOptions<DysacSettings> dysacSettings) : base(
+        public ReloadController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, IOptions<DysacSettings> dysacSettings, IDysacSessionReader dysacService) : base(
             compositeSettings, sessionService)
         {
+            _dysacService = dysacService;
             _dysacSettings = dysacSettings.Value;
         }
 
@@ -29,36 +31,41 @@ namespace DFC.App.MatchSkills.Controllers
                 return RedirectTo("");
             }
 
-            var userSession = await GetUserSession(session);
-
-            return userSession == null ? RedirectWithError("home") : RedirectTo(GetRoute(userSession));
+            return await RedirectToAssessmentOrErrorPage(session);
         }
 
         [HttpPost]
         public async Task<IActionResult> Body(string homeGovUkTextInputCode)
         {
-            var userSession = await GetUserSession(homeGovUkTextInputCode);
-
-            return userSession == null ? RedirectWithError("home"): RedirectTo(GetRoute(userSession));
+            return await RedirectToAssessmentOrErrorPage(homeGovUkTextInputCode);
         }
 
-        private string GetRoute(UserSession session)
+        private async Task<IActionResult> RedirectToAssessmentOrErrorPage(string code)
         {
-            if (session == null)
+            var userSession = await GetUserSession(code);
+
+            if (userSession != null)
             {
-                return CompositeViewModel.PageId.Home.Value;
+                return GetRouteForMatchSkillsUser(userSession);
             }
 
+            var result = await _dysacService.LoadExistingDysacOnlyAssessment(GetSessionId(code));
+
+            return result.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.DysacReturnUrl) : RedirectWithError("home");
+        }
+
+        private IActionResult GetRouteForMatchSkillsUser(UserSession session)
+        {
             if (session.UserHasWorkedBefore.HasValue && !session.UserHasWorkedBefore.Value)
             {
-                return _dysacSettings.DysacReturnUrl;
+                return Redirect(_dysacSettings.DysacReturnUrl);
             }
             else if (session.RouteIncludesDysac.HasValue && session.RouteIncludesDysac.Value)
             {
-                return session.CurrentPage != CompositeViewModel.PageId.Route.Value ? session.CurrentPage : _dysacSettings.DysacReturnUrl; ;
+                return session.CurrentPage != CompositeViewModel.PageId.Route.Value ? RedirectTo(session.CurrentPage) : Redirect(_dysacSettings.DysacReturnUrl);
             }
 
-            return session.CurrentPage;
+            return RedirectTo(session.CurrentPage);
         }
     }
 }

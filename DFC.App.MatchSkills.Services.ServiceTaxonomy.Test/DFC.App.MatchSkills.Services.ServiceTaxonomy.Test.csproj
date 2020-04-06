@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.18" />
     <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.11" />
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
@@ -30,9 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DFC.Personalisation.Common">
-      <HintPath>..\..\dfc-personalisation-common-pkg-netcore\DFC.Personalisation.Common\bin\Debug\netcoreapp3.0\DFC.Personalisation.Common.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions">
       <HintPath>..\..\..\..\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\3.0.0\ref\netcoreapp3.0\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
     </Reference>
