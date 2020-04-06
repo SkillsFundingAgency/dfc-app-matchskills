@@ -61,7 +61,6 @@ namespace DFC.App.MatchSkills.Controllers
         }
         protected virtual IActionResult RedirectWithError(string controller, string parameters = "")
         {
-            
 
             if (!string.IsNullOrEmpty(parameters))
             {
@@ -88,6 +87,6 @@ namespace DFC.App.MatchSkills.Controllers
             relativeAddress = $"~{ViewModel.CompositeSettings.Path}/" + relativeAddress;
             
             return Redirect(relativeAddress);
-        }
+       }
     }
 }
