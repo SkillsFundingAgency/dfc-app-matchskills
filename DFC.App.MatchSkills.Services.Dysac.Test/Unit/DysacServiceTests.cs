@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Dfc.Session;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Services.Dysac.Test.Helper;
 using DFC.Personalisation.Common.Net.RestClient;
@@ -6,11 +6,11 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
-using Dfc.Session;
-using NSubstitute.ExceptionExtensions;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 {
@@ -31,12 +31,17 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             _settings = Options.Create(new DysacSettings()
             {
                 ApiKey = "9238dfjsjdsidfs83fds",
-                ApiUrl = "https://this.is.anApi.org.uk"
+                ApiUrl = "https://this.is.anApi.org.uk",
+                ApiVersion = "v1",
+                DysacReturnUrl = "SomeURL",
+                DysacSaveUrl = "SaveURL",
+                DysacUrl = "DysacURL"
             });
             _service = new DysacService(_logger, _client, _settings,_sessionClient);
 
         }
 
+       
         [Test]
         public async Task WhenBlankSessionId_ReturnNull()
         {
@@ -84,6 +89,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             result[0].JobFamilyName.Should().Be("Creative and media");
             result[0].JobFamilyUrl.Should().Be("creative-and-media");
         }
+        
 
     }
 }

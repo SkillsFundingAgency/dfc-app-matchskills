@@ -26,4 +26,10 @@
     <ProjectReference Include="..\DFC.App.MatchSkills.Application\DFC.App.MatchSkills.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="DFC.Personalisation.Common">
+      <HintPath>..\..\dfc-personalisation-common-pkg-netcore\DFC.Personalisation.Common\bin\Debug\netcoreapp3.0\DFC.Personalisation.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

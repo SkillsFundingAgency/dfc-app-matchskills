@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,13 +58,15 @@ namespace DFC.App.MatchSkills.Services.Dysac
             request.Content = new StringContent($"{{\"PartitionKey\":\"{userSession.PartitionKey}\"," +
                                                 $"\"SessionId\":\"{userSession.SessionId}\"," +
                                                 $"\"Salt\":\"{userSession.Salt}\"," +
-                                                $"\"CreatedDate\":\"{JsonConvert.SerializeObject(userSession.CreatedDate)}\"}}", Encoding.UTF8, "application/json");
+                                                $"\"CreatedDate\":{JsonConvert.SerializeObject(userSession.CreatedDate)}}}",
+                Encoding.UTF8, "application/json");
+
+           
+                await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
+                return _restClient.LastResponse.StatusCode == HttpStatusCode.Created || _restClient.LastResponse.StatusCode == HttpStatusCode.AlreadyReported
+                    ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
+                    : (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = _restClient.LastResponse.StatusCode.ToString()});
             
-            var response =await  _restClient.PostAsync<AssessmentShortResponse>(serviceUrl,request);
-            
-            return response.SessionId !="" 
-                ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
-                : (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = response.ToString()});
             
         }
 
