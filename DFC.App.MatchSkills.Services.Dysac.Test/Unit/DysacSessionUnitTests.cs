@@ -10,7 +10,9 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 
@@ -52,15 +54,27 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             }
 
             [Test]
+            
             public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
                 var userSession = new DfcUserSession();
                 userSession.PartitionKey = "key";
                 
+                var restClient = Substitute.For<IRestClient>();
+                restClient.LastResponse = new RestClient.APIResponse(new HttpResponseMessage(){Content = null,StatusCode = HttpStatusCode.Created});
                 _dysacService.InitiateDysac(userSession).ReturnsForAnyArgs(new DysacServiceResponse()
                 {
-                    ResponseCode = DysacReturnCode.Ok
+                    ResponseCode = DysacReturnCode.Ok,
+                    ResponseMessage = ""
                 });
+                restClient.PostAsync<AssessmentShortResponse>(apiPath:"",content:null).ReturnsForAnyArgs(new AssessmentShortResponse()
+                {
+                    CreatedDate = DateTime.Now,
+                    SessionId = "sesionId",
+                    Salt = "salt",
+                    PartitionKey = "p-key"
+                });
+
                 var results = _dysacService.InitiateDysac(userSession).Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
                 
