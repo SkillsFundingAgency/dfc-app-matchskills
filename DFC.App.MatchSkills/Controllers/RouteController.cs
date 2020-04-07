@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Server.HttpSys;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -40,28 +41,41 @@ namespace DFC.App.MatchSkills.Controllers
         [HttpPost]
         public async Task<IActionResult> Body(Route choice)
         {
-            var routeIncludesDysac = choice == Route.Undefined ? (bool?)null : choice == Route.JobsAndSkills;
+            var routeIncludesDysac = choice == Route.Undefined ? (bool?) null : choice == Route.JobsAndSkills;
             var userSession = await GetUserSession();
             userSession.RouteIncludesDysac = routeIncludesDysac;
             await TrackPageInUserSession(userSession);
-
-            switch (choice)
+            try
             {
-                case Route.Jobs:
-                    return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
-                case Route.JobsAndSkills:
-                    var response = _dysacService.InitiateDysac(new DfcUserSession()
-                    {
-                        CreatedDate = userSession.SessionCreatedDate,
-                        PartitionKey = userSession.PartitionKey,
-                        Salt = userSession.Salt,
-                        SessionId = userSession.UserSessionId
-                    }).Result;
-                    return response.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.Value.DysacUrl) :  throw new Exception(response.ResponseMessage);
-                    
-                default:
-                    return RedirectWithError(ViewModel.Id.Value);
+                switch (choice)
+                {
+                    case Route.Jobs:
+                        return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
+                    case Route.JobsAndSkills:
+
+
+                        var response = _dysacService.InitiateDysac(new DfcUserSession()
+                        {
+                            CreatedDate = userSession.SessionCreatedDate,
+                            PartitionKey = userSession.PartitionKey,
+                            Salt = userSession.Salt,
+                            SessionId = userSession.UserSessionId
+                        }).Result;
+
+                        return response.ResponseCode == DysacReturnCode.Ok
+                            ? Redirect(_dysacSettings.Value.DysacUrl)
+                            : Redirect($"{ViewModel.CompositeSettings.Path}/error");
+                }
+
+
             }
+            catch (AggregateException ex)
+            {
+                Redirect($"{ViewModel.CompositeSettings.Path}/error");
+            }
+
+            return RedirectWithError(ViewModel.Id.Value);
         }
+
     }
 }
