@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Server.HttpSys;
 
 namespace DFC.App.MatchSkills.Controllers
 {
