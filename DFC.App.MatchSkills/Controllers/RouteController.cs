@@ -71,7 +71,7 @@ namespace DFC.App.MatchSkills.Controllers
             }
             catch (AggregateException ex)
             {
-                Redirect($"{ViewModel.CompositeSettings.Path}/error");
+               return Redirect($"{ViewModel.CompositeSettings.Path}/error");
             }
 
             return RedirectWithError(ViewModel.Id.Value);
