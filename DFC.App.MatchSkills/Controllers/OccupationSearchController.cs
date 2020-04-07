@@ -36,6 +36,7 @@ namespace DFC.App.MatchSkills.Controllers
             _sessionService = sessionService;
         }
 
+
         [SessionRequired]
         public override async Task<IActionResult> Body()
         {
@@ -90,6 +91,17 @@ namespace DFC.App.MatchSkills.Controllers
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                 _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
             return occupations.Single(x => x.Name == occupation).Id;
+        }
+
+        //[SessionRequired]
+        //[HttpGet]
+        //[Route("/DysacResults")]
+        public async Task<IActionResult> DysacResults()
+        {
+            var session = await GetUserSession();
+            session.DysacCompleted = true;
+            await _sessionService.UpdateUserSessionAsync(session);
+            return RedirectTo("occupationSearch");
         }
     }
 

@@ -59,7 +59,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
                                                 $"\"Salt\":\"{userSession.Salt}\"," +
                                                 $"\"CreatedDate\":\"{JsonConvert.SerializeObject(userSession.CreatedDate)}\"}}", Encoding.UTF8, "application/json");
             
-            var response =await  _restClient.PostAsync<AssessmentShortResponse>(serviceUrl,request);
+            var response = await  _restClient.PostAsync<AssessmentShortResponse>(serviceUrl,request);
             
             return response.SessionId !="" 
                 ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
