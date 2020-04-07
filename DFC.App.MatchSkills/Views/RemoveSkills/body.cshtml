@@ -10,34 +10,34 @@
     };
     slm.Skills.LoadFrom(Model.Skills);
 }
-<div class="govuk-grid-row">
-    <govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
-</div>
-<govukErrorSummary id="@Model.GetElementId("govukErrorSummary", "ErrorSummary")" hidden="@(!Model.HasError)">
-    <govukErrorSummaryItem href="#@Model.GetElementId("fieldset","radio")" text="Choose skills to remove from your skills list"></govukErrorSummaryItem>
-</govukErrorSummary>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+    </div>
+</div>
+<div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-row">
+        <govukErrorSummary id="@Model.GetElementId("govukErrorSummary", "ErrorSummary")" hidden="@(!Model.HasError)">
+            <govukErrorSummaryItem href="#@Model.GetElementId("fieldset","radio")" text="Choose skills to remove from your skills list"></govukErrorSummaryItem>
+        </govukErrorSummary>
 
-        <div class="govuk-grid-row">
-            <form action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.ConfirmRemove.Value" method="post">
-                <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">
+        <form action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.ConfirmRemove.Value" method="post">
+            <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">
 
-                    <fieldset class="govuk-fieldset" id="@Model.GetElementId("fieldset", "radio")">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <govukHeadingH1 Text="Remove skills" />
-                            <span class="govuk-hint">Select the skills you would like to remove.</span>
-                        </legend>
-                        <govukError text="Choose skills to remove from your skills list" id="@Model.GetElementId("govukError", "ErrorMessage")"
-                                    hidden="@(!Model.HasError)"></govukError>
+                <fieldset class="govuk-fieldset" id="@Model.GetElementId("fieldset", "radio")">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <govukHeadingH1 Text="Remove skills" />
+                        <span class="govuk-hint">Select the skills you would like to remove.</span>
+                    </legend>
+                    <govukError text="Choose skills to remove from your skills list" id="@Model.GetElementId("govukError", "ErrorMessage")"
+                                hidden="@(!Model.HasError)"></govukError>
 
-                        @await Component.InvokeAsync("SkillsList", slm)
-
-                    </fieldset>
-                </div>
-                <govukButton id="@Model.GetElementId("govukButton", "RemoveSelectSkills")" text="Remove selected skills" />
-                <govukButtonLink additional-class="govuk-button--secondary" id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkTitle="Cancel Remove Skills" LinkText="Cancel" LinkHref="@CompositeViewModel.PageId.SkillsBasket"></govukButtonLink>
-            </form>
-        </div>
+                    @await Component.InvokeAsync("SkillsList", slm)
+                </fieldset>
+            </div>
+            <govukButton id="@Model.GetElementId("govukButton", "RemoveSelectSkills")" text="Remove selected skills" />
+            <govukButtonLink additional-class="govuk-button--secondary" id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkTitle="Cancel Remove Skills" LinkText="Cancel" LinkHref="@CompositeViewModel.PageId.SkillsBasket"></govukButtonLink>
+        </form>
     </div>
 </div>

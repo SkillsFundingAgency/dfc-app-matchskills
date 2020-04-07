@@ -18,6 +18,8 @@ namespace DFC.App.MatchSkills.Application.Session.Models
 
         [JsonProperty("salt")]
         public string Salt { get; set; }
+
+        public DateTime SessionCreatedDate { get; set; }
         public string CurrentPage { get; set; }
         public string PreviousPage { get; set; }
         public DateTime LastUpdatedUtc { get; set; }

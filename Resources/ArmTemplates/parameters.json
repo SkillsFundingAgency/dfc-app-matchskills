@@ -48,6 +48,9 @@
             "value": "__CompositeUiCdnUrl__"
         },
         "apimDysacApiKey": {
+            "value": "__ApimDiscoverSkillsAndCareersKey__"
+        },
+        "apimoldDysacApiKey": {
             "value": "__ApimDiscoverMySkillsAndCareersKey__"
         }
     }
