@@ -12,7 +12,7 @@ using NUnit.Framework;
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 
 
@@ -57,16 +57,17 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             
             public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
+                
+                           
                 var userSession = new DfcUserSession();
                 userSession.PartitionKey = "key";
                 
                 var restClient = Substitute.For<IRestClient>();
-                restClient.LastResponse = new RestClient.APIResponse(new HttpResponseMessage(){Content = null,StatusCode = HttpStatusCode.Created});
-                _dysacService.InitiateDysac(userSession).ReturnsForAnyArgs(new DysacServiceResponse()
-                {
-                    ResponseCode = DysacReturnCode.Ok,
-                    ResponseMessage = ""
-                });
+
+                var lastResponse = Substitute.For<RestClient.APIResponse>(new HttpResponseMessage(){Content = new StringContent("something",Encoding.UTF8),StatusCode = HttpStatusCode.Created});
+                
+                restClient.LastResponse.Returns(lastResponse);
+                
                 restClient.PostAsync<AssessmentShortResponse>(apiPath:"",content:null).ReturnsForAnyArgs(new AssessmentShortResponse()
                 {
                     CreatedDate = DateTime.Now,
@@ -75,7 +76,9 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     PartitionKey = "p-key"
                 });
 
-                var results = _dysacService.InitiateDysac(userSession).Result;
+                IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_sessionClient); 
+                var results = dysacService.InitiateDysac(userSession).Result;
+                
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
                 
             }
