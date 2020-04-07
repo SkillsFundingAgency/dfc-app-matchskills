@@ -1,0 +1,26 @@
+﻿@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.ErrorCompositeViewModel
+
+@{
+}
+
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <govukHeadingH1 text="Sorry, there is a problem with this service"></govukHeadingH1>
+            <div class="govuk-body">
+                <p>Try again later.</p>
+                @if (!string.IsNullOrWhiteSpace(Model.RTACode))
+                {
+                    <p>We have saved your progress. You can return to your assessment later by entering the code below.</p>
+                    <div class="app-your-reference">
+                        <p>
+                            <span class="app-your-reference__code govuk-heading-xl">@Model.RTACode</span>
+                        </p>
+                    </div>
+                }
+                <p>Return to the <govukLink link-href='/' link-text="homepage"></govukLink> to see other career tools that might be useful.</p>
+            </div>
+        </div>
+    </div>
+</div>
