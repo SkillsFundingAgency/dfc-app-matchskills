@@ -51,6 +51,9 @@
         },
         "apimDysacApiKey": {
             "type": "securestring"
+        },
+        "apimoldDysacApiKey": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -280,12 +283,28 @@
                                 "value": "[parameters('apimDysacApiKey')]"
                             },
                             {
+                                "name": "OldDysacSettings__ApiKey",
+                                "value": "[parameters('apimoldDysacApiKey')]"
+                            },
+                            {
+                                "name": "OldDysacSettings__AssessmentApiUrl",
+                                "value": "[concat(parameters('apimProxyAddress'), '/assessments/api/assessment/')]"
+                            },
+                            {
                                 "name": "DysacSettings__ApiVersion",
                                 "value": "v1"
                             },
                             {
                                 "name": "DysacSettings__DysacUrl",
                                 "value": "/discover-your-skills-careers/assessment/short/1"
+                            },
+                            {
+                                "name": "DysacSettings__DysacSaveUrl",
+                                "value": "/discover-your-skills-careers/Assessment/save"
+                            },
+                            {
+                                "name": "DysacSettings__DysacReturnUrl",
+                                "value": "/discover-your-skills-careers/assessment/return"
                             },
                             {
                                 "name": "LmiSettings__CacheLifespan",
