@@ -50,9 +50,9 @@ namespace DFC.App.MatchSkills.Controllers
                 return GetRouteForMatchSkillsUser(userSession);
             }
 
-            await _dysacService.LoadExistingDysacOnlyAssessment(GetSessionId(code));
+            var result = await _dysacService.LoadExistingDysacOnlyAssessment(GetSessionId(code));
 
-            return Redirect(_dysacSettings.DysacReturnUrl);
+            return result.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.DysacReturnUrl) : RedirectWithError("home");
         }
 
         private IActionResult GetRouteForMatchSkillsUser(UserSession session)

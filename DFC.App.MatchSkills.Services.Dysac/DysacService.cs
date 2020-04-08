@@ -93,14 +93,14 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
         }
 
-        public async Task LoadExistingDysacOnlyAssessment (string sessionId)
+        public async Task<DysacServiceResponse> LoadExistingDysacOnlyAssessment(string sessionId)
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/session/{sessionId}";
             var request = GetDysacRequestMessage();
 
            var response = await _restClient.GetAsync<AssessmentShortResponse>(serviceUrl, request);
 
-           CreateDysacServiceResponse(response, Origin.Dysac,_restClient.LastResponse.StatusCode);
+           return CreateDysacServiceResponse(response, Origin.Dysac,_restClient.LastResponse.StatusCode);
 
         }
 
@@ -112,7 +112,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
             return request;
         }
 
-        private void  CreateDysacServiceResponse(AssessmentShortResponse response, Origin creationOrigin, HttpStatusCode statusCode)
+        private DysacServiceResponse  CreateDysacServiceResponse(AssessmentShortResponse response, Origin creationOrigin, HttpStatusCode statusCode)
         {
             var dysacServiceResponse = new DysacServiceResponse();
             if (response != null && !string.IsNullOrEmpty(response.SessionId))
@@ -132,8 +132,8 @@ namespace DFC.App.MatchSkills.Services.Dysac
             { 
                 throw new DysacException("No session. Error Code " + statusCode);
             }
-
             
+            return dysacServiceResponse;
         }
     }
 

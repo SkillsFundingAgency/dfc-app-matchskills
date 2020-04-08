@@ -9,6 +9,6 @@ namespace DFC.App.MatchSkills.Application.Dysac
         Task InitiateDysacOnly();
         Task InitiateDysac(DfcUserSession userSession);
         Task<DysacJobCategory[]> GetDysacJobCategories(string sessionId);
-        Task LoadExistingDysacOnlyAssessment(string sessionId);
+        Task<DysacServiceResponse> LoadExistingDysacOnlyAssessment(string sessionId);
     }
 }
