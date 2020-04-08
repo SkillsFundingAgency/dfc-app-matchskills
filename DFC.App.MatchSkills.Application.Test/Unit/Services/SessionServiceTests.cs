@@ -458,7 +458,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig, _sessionClient);
                 var result = await serviceUnderTest.Reload("123");
 
-                _sessionClient.Received(1).CreateCookie(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills), false);
+                _sessionClient.Received().CreateCookie(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills), Arg.Any<bool>());
 
                 result.Should().NotBeNull();
 
