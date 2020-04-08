@@ -91,10 +91,29 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             }
 
             [Test]
-            public async Task When_InitiateDysacWithErrors_ReturnErrorAndMessage()
+           
+            public async Task When_InitiateDysacWithErrors_ThrowException()
             {
-                await _dysacService.InitiateDysacOnly();
+                var userSession = new DfcUserSession();
+                userSession.PartitionKey = "key";
                 
+                var restClient = Substitute.For<IRestClient>();
+
+                var lastResponse = Substitute.For<RestClient.APIResponse>(new HttpResponseMessage(){Content = new StringContent("something",Encoding.UTF8),StatusCode = HttpStatusCode.BadRequest});
+                
+                restClient.LastResponse.Returns(lastResponse);
+                
+                restClient.PostAsync<AssessmentShortResponse>(apiPath:"",content:null).ReturnsForAnyArgs(new AssessmentShortResponse()
+                {
+                    CreatedDate = DateTime.Now,
+                    SessionId = "sesionId",
+                    Salt = "salt",
+                    PartitionKey = "p-key"
+                });
+
+                IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_oldDysacServiceSetings, _sessionClient);
+                dysacService.InitiateDysac(userSession);
+
             }
 
 
@@ -147,6 +166,14 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 await dysacService.InitiateDysacOnly();
 
             }
+
+            [Test]
+            public void CreateDysacException()
+            {
+                var exception = new DysacException("Error");
+            }
+
+            
 
         }
     }
