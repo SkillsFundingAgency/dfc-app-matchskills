@@ -113,6 +113,7 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllerRoute("relatedskills",appPath + "/relatedskills", new { controller = "relatedskills", action = "body" });
                 endpoints.MapControllerRoute("enterskills",appPath + "/enterskills", new { controller = "enterskills", action = "body" });
                 endpoints.MapControllerRoute("reload", appPath + "/reload", new { controller = "reload", action = "body" });
+                endpoints.MapControllerRoute("error", appPath + "/error", new { controller = "error", action = "body" });
                 endpoints.MapControllerRoute("dysacResults", appPath + "/dysacResults", new { controller = "dysacResults", action = "body" });
             });
 

@@ -66,7 +66,22 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 sessionId.Should().NotBeNullOrWhiteSpace();
 
             }
-           
+
+            [Test]
+            public async Task WhenCreateUserSession_ThenSetCookieOriginToMatchSkills()
+            {
+                var cosmosSub = Substitute.For<ICosmosService>();
+                cosmosSub.CreateItemAsync(default, CosmosCollection.Session).ReturnsForAnyArgs(new HttpResponseMessage(HttpStatusCode.OK));
+                cosmosSub.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
+                    .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
+
+                var serviceUnderTest = new SessionService(
+                    cosmosSub, _sessionConfig, _sessionClient);
+
+                var sessionId = await serviceUnderTest.CreateUserSession(null);
+                _sessionClient.Received().CreateCookie(Arg.Is<DfcUserSession>(x=>x.Origin == Origin.MatchSkills), Arg.Any<bool>());
+
+            }
 
             [Test]
             public async Task WhenUnsuccessfulCall_ReturnNull()
@@ -421,6 +436,29 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var result = await serviceUnderTest.Reload("123");
 
                 _sessionClient.Received(1).CreateCookie(Arg.Any<DfcUserSession>(), false);
+
+                result.Should().NotBeNull();
+
+            }
+
+            [Test]
+            public async Task WhenUserSessionFound_ThenCreateCookieWithMatchSkillsOrigin()
+            {
+                var userSession = new UserSession
+                {
+                    UserSessionId = "123",
+                    PartitionKey = "123",
+                    Salt = "123"
+                };
+                _cosmosService.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), CosmosCollection.Session)
+                    .ReturnsForAnyArgs(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(JsonConvert.SerializeObject(userSession))
+                    }));
+                var serviceUnderTest = new SessionService(_cosmosService, _sessionConfig, _sessionClient);
+                var result = await serviceUnderTest.Reload("123");
+
+                _sessionClient.Received().CreateCookie(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills), Arg.Any<bool>());
 
                 result.Should().NotBeNull();
 

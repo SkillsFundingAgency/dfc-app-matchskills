@@ -44,6 +44,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
 
             //Create new Session here
             var dfcUserSession = _sessionClient.NewSession();
+            dfcUserSession.Origin = Origin.MatchSkills;
             _sessionClient.CreateCookie(dfcUserSession, true);
 
             var userSession = new UserSession()
@@ -82,16 +83,22 @@ namespace DFC.App.MatchSkills.Application.Session.Services
         public async Task<UserSession> Reload(string sessionId)
         {
             var partitionKey = _sessionClient.GeneratePartitionKey(sessionId);
-                var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey,CosmosCollection.Session);
+            var result = await _cosmosService.ReadItemAsync(sessionId, partitionKey, CosmosCollection.Session);
 
-                if (!result.IsSuccessStatusCode) return null;
+            if (!result.IsSuccessStatusCode) return null;
 
-                var userSession =
-                    JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync());
-                var dfcUserSession = new DfcUserSession() { Salt = userSession.Salt, 
-                    PartitionKey = userSession.PartitionKey, SessionId = userSession.UserSessionId };
-                _sessionClient.CreateCookie(dfcUserSession, false);
-                return userSession;
+            var userSession =
+                JsonConvert.DeserializeObject<UserSession>(await result.Content.ReadAsStringAsync());
+            var dfcUserSession = new DfcUserSession()
+            {
+                Salt = userSession.Salt,
+                PartitionKey = userSession.PartitionKey,
+                SessionId = userSession.UserSessionId,
+                Origin = Origin.MatchSkills,
+                CreatedDate = userSession.SessionCreatedDate
+            };
+            _sessionClient.CreateCookie(dfcUserSession, false);
+            return userSession;
         }
 
         public async Task<bool> CheckForExistingUserSession(string primaryKey)
@@ -117,7 +124,7 @@ namespace DFC.App.MatchSkills.Application.Session.Services
             if (!primaryKey.Contains('-'))
                 return null;
 
-            return primaryKey.Split('-')[(int) mode];
+            return primaryKey.Split('-')[(int)mode];
         }
 
     }

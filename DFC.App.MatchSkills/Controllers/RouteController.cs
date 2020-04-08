@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -30,7 +31,7 @@ namespace DFC.App.MatchSkills.Controllers
         public override async Task<IActionResult> Body()
         {
             var session = await GetUserSession();
-            
+            await TrackPageInUserSession(session);
             ViewModel.RouteIncludesDysac = session.RouteIncludesDysac;
             ViewModel.HasError = HasErrors();
             return await base.Body();
@@ -40,28 +41,52 @@ namespace DFC.App.MatchSkills.Controllers
         [HttpPost]
         public async Task<IActionResult> Body(Route choice)
         {
-            var routeIncludesDysac = choice == Route.Undefined ? (bool?)null : choice == Route.JobsAndSkills;
+            var routeIncludesDysac = choice == Route.Undefined ? (bool?) null : choice == Route.JobsAndSkills;
             var userSession = await GetUserSession();
+            try
+            {
+                switch (choice)
+                {
+                    case Route.Jobs:
+                        await UpdateUserSession(userSession, routeIncludesDysac);
+                        return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
+                    case Route.JobsAndSkills:
+
+
+                        var response = _dysacService.InitiateDysac(new DfcUserSession()
+                        {
+                            CreatedDate = userSession.SessionCreatedDate,
+                            PartitionKey = userSession.PartitionKey,
+                            Salt = userSession.Salt,
+                            SessionId = userSession.UserSessionId,
+                            Origin = Origin.MatchSkills
+                        }).Result;
+
+                        if (response.ResponseCode == DysacReturnCode.Error)
+                        {
+                            return Redirect($"{ViewModel.CompositeSettings.Path}/error");
+                        }
+
+                        await UpdateUserSession(userSession, routeIncludesDysac);
+                        return Redirect(_dysacSettings.Value.DysacUrl);
+                }
+
+
+            }
+            catch (AggregateException ex)
+            {
+               return Redirect($"{ViewModel.CompositeSettings.Path}/error");
+            }
+
+            return RedirectWithError(ViewModel.Id.Value);
+        }
+
+        private async Task<UserSession> UpdateUserSession(UserSession userSession,bool? routeIncludesDysac)
+        {
             userSession.RouteIncludesDysac = routeIncludesDysac;
             await TrackPageInUserSession(userSession);
-
-            switch (choice)
-            {
-                case Route.Jobs:
-                    return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
-                case Route.JobsAndSkills:
-                    var response = _dysacService.InitiateDysac(new DfcUserSession()
-                    {
-                        CreatedDate = userSession.SessionCreatedDate,
-                        PartitionKey = userSession.PartitionKey,
-                        Salt = userSession.Salt,
-                        SessionId = userSession.UserSessionId
-                    }).Result;
-                    return response.ResponseCode == DysacReturnCode.Ok ? Redirect(_dysacSettings.Value.DysacUrl) :  throw new Exception(response.ResponseMessage);
-                    
-                default:
-                    return RedirectWithError(ViewModel.Id.Value);
-            }
+            return userSession;
         }
+
     }
 }

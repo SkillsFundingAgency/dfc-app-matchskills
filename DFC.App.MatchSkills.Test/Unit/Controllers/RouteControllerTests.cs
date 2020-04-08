@@ -40,7 +40,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
             _dysacService = Substitute.For<IDysacSessionReader>();
-            _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
+            _dysacService.InitiateDysacOnly().ReturnsForAnyArgs(new DysacServiceResponse()
             {
                 ResponseCode = DysacReturnCode.Ok
             });
@@ -139,6 +139,33 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
+        public async Task WhenPostBodyCalledWithJobsAndSkills_SetOriginToMatchSkills()
+        {
+            _dysacService.InitiateDysac(new DfcUserSession()
+            {
+                CreatedDate = DateTime.UtcNow,
+                PartitionKey = "partitionkey",
+                Salt = "salt",
+                SessionId = "sessionid"
+            }).ReturnsForAnyArgs(new DysacServiceResponse() { ResponseCode = DysacReturnCode.Ok });
+            var results = _dysacService.InitiateDysac(new DfcUserSession()
+            {
+                CreatedDate = DateTime.UtcNow,
+                PartitionKey = "partitionkey",
+                Salt = "salt",
+                SessionId = "sessionid"
+            }).Result;
+            var controller = new RouteController(_compositeSettings, _sessionService, _dysacService, _dysacServiceSetings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            await controller.Body(Route.JobsAndSkills);
+            await _dysacService.Received().InitiateDysac(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills));
+
+        }
+
+        [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
             var controller = new RouteController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
@@ -163,20 +190,26 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public async Task WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
+        public async Task WhenPostBodyCalledWithIncorrectDysacAPI_RedirectToErrorPage()
         {
-            var controller = new RouteController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
+
+            var dysacService = Substitute.For<IDysacSessionReader>();
+            
+            dysacService.When(_=>_.InitiateDysac(Arg.Any<DfcUserSession>())).Throw(new AggregateException());
+
+            
+            var controller = new RouteController(_compositeSettings, _sessionService,dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            await controller.Body(Route.Undefined);
-            await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x => 
-                string.Equals(x.CurrentPage, CompositeViewModel.PageId.Route.Value, 
-                    StringComparison.InvariantCultureIgnoreCase)));
-
+            var result = await controller.Body(Route.JobsAndSkills) as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be("/error");
         }
+
     }
 
 }

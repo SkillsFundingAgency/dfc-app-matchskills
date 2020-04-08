@@ -45,23 +45,33 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
-
-            var session = await GetUserSession();
-            session.UserHasWorkedBefore = userWorkedBefore;
-            await UpdateUserSession(ViewModel.Id.Value, session);
-
+            
             switch (choice)
             {
                 case WorkedBefore.Yes:
+                    await UpdateUserSession(userWorkedBefore);
                     return RedirectTo(CompositeViewModel.PageId.Route.Value);
                 case WorkedBefore.No:
-                    var response = await _dysacService.InitiateDysac();
-                    return response.ResponseCode != DysacReturnCode.Ok?
-                    throw new Exception(response.ResponseMessage):Redirect(_dysacSettings.Value.DysacUrl); 
+                    var response = await _dysacService.InitiateDysacOnly();
+
+                    if (response.ResponseCode != DysacReturnCode.Ok)
+                    {
+                        throw new Exception(response.ResponseMessage);
+                    }
+
+                    await UpdateUserSession(userWorkedBefore);
+                    return Redirect(_dysacSettings.Value.DysacUrl); 
                     
                 default:
                     return RedirectWithError(ViewModel.Id.Value);
             }
+        }
+
+        private async Task UpdateUserSession(bool? userWorkedBefore)
+        {
+            var session = await GetUserSession();
+            session.UserHasWorkedBefore = userWorkedBefore;
+            await UpdateUserSession(ViewModel.Id.Value, session);
         }
     }
 }

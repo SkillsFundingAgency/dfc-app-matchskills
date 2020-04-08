@@ -41,7 +41,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
             _dysacService = Substitute.For<IDysacSessionReader>();
-            _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
+            _dysacService.InitiateDysacOnly().ReturnsForAnyArgs(new DysacServiceResponse()
                 {
                     ResponseCode = DysacReturnCode.Ok
                 });
@@ -104,6 +104,18 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Url.Should().Be("http://dysacurl");
         }
 
+        [Test]
+        public async Task WhenPostBodyCalledWithNo_SetOriginToDysac()
+        {
+            var controller = new WorkedController(_compositeSettings, _sessionService, _dysacService, _dysacServiceSetings);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            await controller.Body(WorkedBefore.No);
+            await _dysacService.Received().InitiateDysacOnly();
+        }
 
         [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
