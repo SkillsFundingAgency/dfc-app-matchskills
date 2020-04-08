@@ -36,22 +36,17 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_RedirectToOccupationSearch()
         {
-            var oldDysacSettings = new OldDysacSettings()
-            {
-                ApiKey = "key",
-                AssessmentApiUrl = "Url",
-                DysacResultsUrl = "url"
-            };
-            var key = oldDysacSettings.ApiKey;
-            var assessment = oldDysacSettings.AssessmentApiUrl;
-            var dysac = oldDysacSettings.DysacResultsUrl;
 
+            var session = await _sessionService.GetUserSession();
+            var complete = session.DysacCompleted;
             var pageId = CompositeViewModel.PageId.DysacResults;
 
             var result = await _controller.Body() as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
             result.Url.Should().Be($"~/{CompositeViewModel.PageId.OccupationSearch}");
+            complete.Should().Be(true);
+            pageId.Value.Should().Be(CompositeViewModel.PageId.DysacResults.Value);
         }
     }
 }

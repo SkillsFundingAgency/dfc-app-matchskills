@@ -68,11 +68,24 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         [Test]
         public async Task WhenApiError_ReturnEmpty()
         {
+            var oldDysacSettings = new OldDysacSettings()
+            {
+                ApiKey = "key",
+                AssessmentApiUrl = "Url",
+                DysacResultsUrl = "url"
+            };
+            var key = oldDysacSettings.ApiKey;
+            var assessment = oldDysacSettings.AssessmentApiUrl;
+            var dysac = oldDysacSettings.DysacResultsUrl;
+
             _client = Substitute.For<IRestClient>();
             _client.GetAsync<DysacResults>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).Throws(new Exception("Exception"));
-            _service = new DysacService(_logger, _client, _settings, _oldDysacSettings, _sessionClient);
+            _service = new DysacService(_logger, _client, _settings, Options.Create(oldDysacSettings), _sessionClient);
             var result = await _service.GetDysacJobCategories("SessionId");
             result.Should().BeNull();
+            key.Should().Be(oldDysacSettings.ApiKey);
+            assessment.Should().Be(oldDysacSettings.AssessmentApiUrl);
+            dysac.Should().Be(oldDysacSettings.DysacResultsUrl);
         }
         [Test]
         public async Task WhenNullResponse_ReturnEmpty()
