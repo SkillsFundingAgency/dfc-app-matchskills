@@ -67,9 +67,10 @@ namespace DFC.App.MatchSkills.Controllers
                 userSession.OccupationMatches = await _serviceTaxonomy.FindOccupationsForSkills(_apiUrl, _apiKey, skillIds, minimumMatch);
                 userSession.OccupationMatches =
                     _lmiService.GetPredictionsForGetOccupationMatches(userSession.OccupationMatches);
-                if (userSession.RouteIncludesDysac.HasValue && userSession.RouteIncludesDysac.Value)
+                if (userSession.RouteIncludesDysac.HasValue && userSession.RouteIncludesDysac.Value
+                    && userSession.DysacCompleted.HasValue && userSession.DysacCompleted.Value)
                 {
-                    userSession.DysacJobCategories = await _dysacService.GetDysacJobCategories(userSession.UserSessionId);
+                    userSession.DysacJobCategories = await _dysacService.GetDysacJobCategories(userSession.PrimaryKey);
                 }
                 
             }

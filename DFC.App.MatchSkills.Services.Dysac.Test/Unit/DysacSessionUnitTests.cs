@@ -10,10 +10,12 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
@@ -24,6 +26,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         public class CreateNewSessionTests
         {
             private IOptions<DysacSettings> _dysacServiceSetings;
+            private IOptions<OldDysacSettings> _oldDysacServiceSetings;
             private IDysacSessionReader _dysacService;
             private ISessionClient _sessionClient;
             private IRestClient _restClient;
@@ -32,6 +35,12 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             public void Init()
             {
 
+                _oldDysacServiceSetings = Options.Create(new OldDysacSettings()
+                {
+                    ApiKey = "9238dfjsjdsidfs83fds",
+                    AssessmentApiUrl = "https://this.is.anApi.org.uk",
+                    DysacResultsUrl = "https://this.is.anApi.org.uk",
+                });
                 _dysacServiceSetings = Options.Create(new DysacSettings());
                 _dysacServiceSetings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/something";
                 _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
@@ -50,7 +59,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
                 var logger = Substitute.For<ILogger<DysacService>>();
                 var restClient = Substitute.For<IRestClient>();
-                var dysacService = new DysacService(logger, restClient, _dysacServiceSetings, _sessionClient);
+                var dysacService = new DysacService(logger, restClient, _dysacServiceSetings, _oldDysacServiceSetings, _sessionClient);
             }
 
             [Test]
@@ -78,6 +87,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
                 IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_sessionClient); 
                 await dysacService.InitiateDysac(userSession);
+
                 
             }
 
@@ -99,21 +109,48 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     SessionId = "session",
                     Salt = "salt"
                 });
+
                 var lastResponse = Substitute.For<RestClient.APIResponse>(new HttpResponseMessage(){Content = new StringContent("something",Encoding.UTF8),StatusCode = HttpStatusCode.Created});
                 
                 _restClient.LastResponse.Returns(lastResponse);
 
                 var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
 
+
                 await dysacService.LoadExistingDysacOnlyAssessment("session");
                 
             }
 
 
+
+            [Test]
+
+            public async Task When_InitiateDysacOnlySessionWithNoErrors_ReturnOK()
+            {
+                var userSession = new DfcUserSession();
+                userSession.PartitionKey = "key";
+                
+                var lastResponse = Substitute.For<RestClient.APIResponse>(new HttpResponseMessage() { Content = new StringContent("something", Encoding.UTF8), StatusCode = HttpStatusCode.Created });
+
+                _restClient.LastResponse.Returns(lastResponse);
+
+                _restClient.PostAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>())
+                    .ReturnsForAnyArgs(new AssessmentShortResponse
+                        {
+                            CreatedDate = DateTime.Now,
+                            SessionId = "sesionId",
+                            Salt = "salt",
+                            PartitionKey = "p-key"
+                        }
+                    );
+
+                IDysacSessionReader dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _oldDysacServiceSetings, _sessionClient);
+                var results = await dysacService.InitiateDysacOnly();
+
+                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+
+            }
+
         }
-
-
-
-
     }
 }

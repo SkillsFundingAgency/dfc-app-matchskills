@@ -32,6 +32,7 @@ namespace DFC.App.MatchSkills.Application.Session.Models
         public SortBy MatchesSortBy { get; set; } = SortBy.MatchPercentage;
         public SortDirection MatchesSortDirection { get; set; } = SortDirection.Descending;
         public ISet<UsSkill> SkillsToRemove { get; set; }
+        public bool? DysacCompleted { get; set; }
         public UserSession()
         {
             Occupations = new HashSet<UsOccupation>();
