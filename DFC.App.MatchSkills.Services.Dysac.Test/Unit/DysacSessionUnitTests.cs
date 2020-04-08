@@ -26,6 +26,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         public class CreateNewSessionTests
         {
             private IOptions<DysacSettings> _dysacServiceSetings;
+            private IOptions<OldDysacSettings> _oldDysacServiceSetings;
             private IDysacSessionReader _dysacService;
             private ISessionClient _sessionClient;
             private IRestClient _restClient;
@@ -34,6 +35,12 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             public void Init()
             {
 
+                _oldDysacServiceSetings = Options.Create(new OldDysacSettings()
+                {
+                    ApiKey = "9238dfjsjdsidfs83fds",
+                    AssessmentApiUrl = "https://this.is.anApi.org.uk",
+                    DysacResultsUrl = "https://this.is.anApi.org.uk",
+                });
                 _dysacServiceSetings = Options.Create(new DysacSettings());
                 _dysacServiceSetings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/something";
                 _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
@@ -52,7 +59,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
                 var logger = Substitute.For<ILogger<DysacService>>();
                 var restClient = Substitute.For<IRestClient>();
-                var dysacService = new DysacService(logger, restClient, _dysacServiceSetings, _sessionClient);
+                var dysacService = new DysacService(logger, restClient, _dysacServiceSetings, _oldDysacServiceSetings, _sessionClient);
             }
 
             [Test]
@@ -78,7 +85,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     PartitionKey = "p-key"
                 });
 
-                IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_sessionClient); 
+                IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings, _oldDysacServiceSetings, _sessionClient); 
                 var results = dysacService.InitiateDysac(userSession).Result;
                 
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
@@ -110,7 +117,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     SessionId = "session",
                     Salt = "salt"
                 });
-                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _oldDysacServiceSetings, _sessionClient);
 
                 var results = await dysacService.LoadExistingDysacOnlyAssessment("session");
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);
@@ -120,7 +127,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             public async Task When_LoadExistingDysacOnlyAssessmentReturnsAnError_ReturnError()
             {
                 _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsNullForAnyArgs();
-                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _oldDysacServiceSetings, _sessionClient);
                 var results = await dysacService.LoadExistingDysacOnlyAssessment("session");
                 results.ResponseCode.Should().Be(DysacReturnCode.Error);
             }
@@ -146,7 +153,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                         }
                     );
 
-                IDysacSessionReader dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+                IDysacSessionReader dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _oldDysacServiceSetings, _sessionClient);
                 var results = await dysacService.InitiateDysacOnly();
 
                 results.ResponseCode.Should().Be(DysacReturnCode.Ok);

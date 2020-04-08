@@ -23,16 +23,17 @@ namespace DFC.App.MatchSkills.Services.Dysac
     {
         
         private readonly IOptions<DysacSettings> _dysacSettings;
+        private readonly IOptions<OldDysacSettings> _oldDysacSettings;
         private readonly IRestClient _restClient;
         private readonly ILogger _logger;
-        private const string ResultsEndpoint = "/result/";
         private readonly ISessionClient _sessionClient;
 
-        public DysacService(ILogger<DysacService> log, IRestClient restClient, IOptions<DysacSettings> dysacSettings, ISessionClient sessionClient)
+        public DysacService(ILogger<DysacService> log, IRestClient restClient, IOptions<DysacSettings> dysacSettings, IOptions<OldDysacSettings> oldDysacSettings, ISessionClient sessionClient)
         {
             Throw.IfNull(dysacSettings, nameof(dysacSettings));
             _logger = log;
             _dysacSettings = dysacSettings;
+            _oldDysacSettings = oldDysacSettings;
             _restClient = restClient ?? new RestClient();
             _sessionClient = sessionClient;
         }
@@ -76,10 +77,11 @@ namespace DFC.App.MatchSkills.Services.Dysac
             {
                 return null;
             }
-            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}{ResultsEndpoint}/{sessionId}/short";
+            var serviceUrl = $"{_oldDysacSettings.Value.DysacResultsUrl}{sessionId}/short";
+            var request = GetDysacRequestMessage(true);
             try
             {
-                var response = await _restClient.GetAsync<DysacResults>(serviceUrl);
+                var response = await _restClient.GetAsync<DysacResults>(serviceUrl, request);
                 if (response != null && response.JobCategories.Any())
                 {
                     return Mapping.Mapper.Map<DysacJobCategory[]>(response.JobCategories);
@@ -107,10 +109,14 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
         }
 
-        private HttpRequestMessage GetDysacRequestMessage()
+        private HttpRequestMessage GetDysacRequestMessage(bool oldDysac = false)
         {
+            var key = _dysacSettings.Value.ApiKey;
+            if (oldDysac)
+                key = _oldDysacSettings.Value.ApiKey;
+
             var request = new HttpRequestMessage();
-            request.Headers.Add("Ocp-Apim-Subscription-Key", _dysacSettings.Value.ApiKey);
+            request.Headers.Add("Ocp-Apim-Subscription-Key", key);
             request.Headers.Add("version", _dysacSettings.Value.ApiVersion);
             return request;
         }

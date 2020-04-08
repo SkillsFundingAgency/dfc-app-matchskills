@@ -56,6 +56,7 @@ namespace DFC.App.MatchSkills
             services.Configure<PageSettings>(Configuration.GetSection(nameof(PageSettings)));
             services.Configure<LmiSettings>(Configuration.GetSection(nameof(LmiSettings)));
             services.Configure<DysacSettings>(Configuration.GetSection(nameof(DysacSettings)));
+            services.Configure<OldDysacSettings>(Configuration.GetSection(nameof(OldDysacSettings)));
             services.AddScoped((x) => new CosmosClient(
                 accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
                 authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
@@ -113,6 +114,7 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllerRoute("enterskills",appPath + "/enterskills", new { controller = "enterskills", action = "body" });
                 endpoints.MapControllerRoute("reload", appPath + "/reload", new { controller = "reload", action = "body" });
                 endpoints.MapControllerRoute("error", appPath + "/error", new { controller = "error", action = "body" });
+                endpoints.MapControllerRoute("dysacResults", appPath + "/dysacResults", new { controller = "dysacResults", action = "body" });
             });
 
         }

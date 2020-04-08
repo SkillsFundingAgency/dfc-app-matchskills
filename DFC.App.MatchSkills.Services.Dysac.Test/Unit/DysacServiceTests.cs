@@ -10,6 +10,7 @@ using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
@@ -20,6 +21,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         private ILogger<DysacService> _logger;
         private IRestClient _client;
         private IOptions<DysacSettings> _settings;
+        private IOptions<OldDysacSettings> _oldDysacSettings;
         private ISessionClient _sessionClient;
 
         [OneTimeSetUp]
@@ -37,7 +39,14 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 DysacSaveUrl = "SaveURL",
                 DysacUrl = "DysacURL"
             });
-            _service = new DysacService(_logger, _client, _settings,_sessionClient);
+            _oldDysacSettings = Options.Create(new OldDysacSettings()
+            {
+                ApiKey = "9238dfjsjdsidfs83fds",
+                AssessmentApiUrl = "https://this.is.anApi.org.uk",
+                DysacResultsUrl = "https://this.is.anApi.org.uk",
+            });
+
+            _service = new DysacService(_logger, _client, _settings, _oldDysacSettings, _sessionClient);
 
         }
 
@@ -59,18 +68,32 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
         [Test]
         public async Task WhenApiError_ReturnEmpty()
         {
+            var oldDysacSettings = new OldDysacSettings()
+            {
+                ApiKey = "key",
+                AssessmentApiUrl = "Url",
+                DysacResultsUrl = "url"
+            };
+            var key = oldDysacSettings.ApiKey;
+            var assessment = oldDysacSettings.AssessmentApiUrl;
+            var dysac = oldDysacSettings.DysacResultsUrl;
+
             _client = Substitute.For<IRestClient>();
-            _client.GetAsync<DysacResults>(Arg.Any<string>()).Throws(new Exception("Exception"));
-            _service = new DysacService(_logger, _client, _settings,_sessionClient);
+            _client.GetAsync<DysacResults>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).Throws(new Exception("Exception"));
+            _service = new DysacService(_logger, _client, _settings, Options.Create(oldDysacSettings), _sessionClient);
             var result = await _service.GetDysacJobCategories("SessionId");
             result.Should().BeNull();
+            key.Should().Be(oldDysacSettings.ApiKey);
+            assessment.Should().Be(oldDysacSettings.AssessmentApiUrl);
+            dysac.Should().Be(oldDysacSettings.DysacResultsUrl);
+
         }
         [Test]
         public async Task WhenNullResponse_ReturnEmpty()
         {
             _client = Substitute.For<IRestClient>();
             _client.GetAsync<DysacResults>(Arg.Any<string>()).ReturnsNullForAnyArgs();
-            _service = new DysacService(_logger, _client, _settings,_sessionClient);
+            _service = new DysacService(_logger, _client, _settings, _oldDysacSettings, _sessionClient);
             var result = await _service.GetDysacJobCategories("SessionId");
             result.Should().BeEmpty();
         }
@@ -82,8 +105,8 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             response.ResponseMessage = "message";
             var returnObject = Mapping.Mapper.Map<DysacJobCategory[]>(DysacTestData.SuccessfulApiCall().JobCategories);
             _client = Substitute.For<IRestClient>();
-            _client.GetAsync<DysacResults>(Arg.Any<string>()).Returns(DysacTestData.SuccessfulApiCall());
-            _service = new DysacService(_logger, _client, _settings,_sessionClient);
+            _client.GetAsync<DysacResults>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).Returns(DysacTestData.SuccessfulApiCall());
+            _service = new DysacService(_logger, _client, _settings, _oldDysacSettings, _sessionClient);
             var result = await _service.GetDysacJobCategories("SessionId");
             result[0].JobFamilyCode.Should().Be("CAM");
             result[0].JobFamilyName.Should().Be("Creative and media");
