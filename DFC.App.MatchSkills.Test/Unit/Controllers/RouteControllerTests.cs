@@ -177,6 +177,28 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                     StringComparison.InvariantCultureIgnoreCase)));
 
         }
+        
+        [Test]
+        public async Task WhenPostBodyCalledWithIncorrectDysacAPI_RedirectToErrorPage()
+        {
+
+            var dysacService = Substitute.For<IDysacSessionReader>();
+            
+            dysacService.When(_=>_.InitiateDysac(Arg.Any<DfcUserSession>())).Throw(new AggregateException());
+
+            
+            var controller = new RouteController(_compositeSettings, _sessionService,dysacService, _dysacServiceSetings );
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            var result = await controller.Body(Route.JobsAndSkills) as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be("/error");
+        }
+
     }
 
 }
