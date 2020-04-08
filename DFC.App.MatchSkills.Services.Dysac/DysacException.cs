@@ -7,7 +7,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
     public class DysacException : Exception
     {
 
-        private DysacException(SerializationInfo info, StreamingContext context)
+        protected  DysacException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             

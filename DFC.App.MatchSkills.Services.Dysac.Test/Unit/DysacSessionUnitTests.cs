@@ -112,10 +112,33 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 });
 
                 IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_oldDysacServiceSetings, _sessionClient);
-                dysacService.InitiateDysac(userSession);
+                await dysacService.InitiateDysac(userSession);
 
             }
 
+            public async Task When_InitiateDysacOnlyWithErrors_ThrowException()
+            {
+                var userSession = new DfcUserSession();
+                userSession.PartitionKey = "key";
+                
+                var restClient = Substitute.For<IRestClient>();
+
+                var lastResponse = Substitute.For<RestClient.APIResponse>(new HttpResponseMessage(){Content = new StringContent("something",Encoding.UTF8),StatusCode = HttpStatusCode.BadRequest});
+                
+                restClient.LastResponse.Returns(lastResponse);
+                
+                restClient.PostAsync<AssessmentShortResponse>(apiPath:"",content:null).ReturnsForAnyArgs(new AssessmentShortResponse()
+                {
+                    CreatedDate = DateTime.Now,
+                    SessionId = "sesionId",
+                    Salt = "salt",
+                    PartitionKey = "p-key"
+                });
+
+                IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_oldDysacServiceSetings, _sessionClient);
+                await dysacService.InitiateDysacOnly();
+
+            }
 
             [Test]
             public async Task When_LoadExistingDysacOnlyAssessmentReturnsValidResponse_ReturnOK()
