@@ -38,14 +38,14 @@ namespace DFC.App.MatchSkills.Services.Dysac
         }
 
 
-        public async Task<DysacServiceResponse> InitiateDysac()
+        public async Task<DysacServiceResponse> InitiateDysacOnly()
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/short";
             var request = GetDysacRequestMessage();
 
            var response = await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
 
-           return CreateDysacServiceResponse(response);
+           return CreateDysacServiceResponse(response, Origin.Dysac);
 
         }
 
@@ -103,7 +103,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
            var response = await _restClient.GetAsync<AssessmentShortResponse>(serviceUrl, request);
 
-            return CreateDysacServiceResponse(response);
+            return CreateDysacServiceResponse(response, Origin.Dysac);
 
         }
 
@@ -115,7 +115,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
             return request;
         }
 
-        private DysacServiceResponse CreateDysacServiceResponse(AssessmentShortResponse response)
+        private DysacServiceResponse CreateDysacServiceResponse(AssessmentShortResponse response, Origin creationOrigin)
         {
             var dysacServiceResponse = new DysacServiceResponse();
             if (response != null && !string.IsNullOrEmpty(response.SessionId))
@@ -126,7 +126,8 @@ namespace DFC.App.MatchSkills.Services.Dysac
                     CreatedDate = DateTime.Now,
                     PartitionKey = response.PartitionKey,
                     Salt = response.Salt,
-                    SessionId = response.SessionId
+                    SessionId = response.SessionId,
+                    Origin = creationOrigin
                 };
                 _sessionClient.CreateCookie(userSession, false);
             }

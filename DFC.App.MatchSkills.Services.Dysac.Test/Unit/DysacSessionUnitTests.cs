@@ -86,13 +86,13 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             [Test]
             public void When_InitiateDysacWithErrors_ReturnErrorAndMessage()
             {
-                _dysacService.InitiateDysac().ReturnsForAnyArgs(new DysacServiceResponse()
+                _dysacService.InitiateDysacOnly().ReturnsForAnyArgs(new DysacServiceResponse()
                 {
                     ResponseCode = DysacReturnCode.Error,
                     ResponseMessage = "Error"
                 });
 
-                var results = _dysacService.InitiateDysac().Result;
+                var results = _dysacService.InitiateDysacOnly().Result;
                 results.ResponseCode.Should().Be(DysacReturnCode.Error);
                 results.ResponseMessage.Should().Be("Error");
             }
