@@ -12,7 +12,7 @@
     var formGroup = Model.GetElementId("formGroup", "AutoComplete");
 
 }
-
+    <govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
 <govukErrorSummary hidden="@(!Model.HasError)">
     <govukErrorSummaryItem href="#@autoCompleteElementName" text="Enter a job title"></govukErrorSummaryItem>
 </govukErrorSummary>
