@@ -32,10 +32,10 @@
                         </govukErrorSummary>
                     }
                     <form method="post" action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.Reload">
-                        <div class="app-resume-panel__input govuk-form-group ">
+                        <div class="app-resume-panel__input govuk-form-group @(Model.HasErrors ? "govuk-form-group--error" : "")">
                             <govukLabel for="@textInputElementName" text="Enter your reference" additional-class="govuk-!-font-weight-bold"></govukLabel>
 
-                            <govukTextInput id="@textInputElementName">
+                            <govukTextInput id="@textInputElementName"  has-error="@Model.HasErrors">
                                 <govukTextInputError Id="@Model.GetElementId("govUkTextInputError", "code")"
                                                      Text="The reference could not be found."
                                                      hidden="@(!Model.HasErrors)"></govukTextInputError>

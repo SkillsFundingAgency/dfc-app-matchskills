@@ -150,6 +150,17 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
+        public async Task WhenPostCalledWithEmptyString_RedirectToHomeWithError()
+        {
+            var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings, _dysacService);
+            
+            var result = await controller.Body("") as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be("~/home?errors=true");
+        }
+
+        [Test]
         public async Task WhenPostCalledAndSessionIdIsDysacSessionOnly_RedirectToDysac()
         {
             var controller = new ReloadController(_compositeSettings, _sessionService, _dysacServiceSetings, _dysacService);
