@@ -10,10 +10,12 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 
 
 namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
@@ -123,10 +125,34 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 results.ResponseCode.Should().Be(DysacReturnCode.Error);
             }
 
+            [Test]
+
+            public async Task When_InitiateDysacOnlySessionWithNoErrors_ReturnOK()
+            {
+                var userSession = new DfcUserSession();
+                userSession.PartitionKey = "key";
+                
+                var lastResponse = Substitute.For<RestClient.APIResponse>(new HttpResponseMessage() { Content = new StringContent("something", Encoding.UTF8), StatusCode = HttpStatusCode.Created });
+
+                _restClient.LastResponse.Returns(lastResponse);
+
+                _restClient.PostAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>())
+                    .ReturnsForAnyArgs(new AssessmentShortResponse
+                        {
+                            CreatedDate = DateTime.Now,
+                            SessionId = "sesionId",
+                            Salt = "salt",
+                            PartitionKey = "p-key"
+                        }
+                    );
+
+                IDysacSessionReader dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+                var results = await dysacService.InitiateDysacOnly();
+
+                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+
+            }
+
         }
-
-
-
-
     }
 }
