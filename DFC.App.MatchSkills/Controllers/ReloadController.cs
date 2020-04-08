@@ -37,7 +37,8 @@ namespace DFC.App.MatchSkills.Controllers
         [HttpPost]
         public async Task<IActionResult> Body(string homeGovUkTextInputCode)
         {
-            return await RedirectToAssessmentOrErrorPage(homeGovUkTextInputCode);
+            return string.IsNullOrEmpty(homeGovUkTextInputCode) ? RedirectWithError("home") 
+                : await RedirectToAssessmentOrErrorPage(homeGovUkTextInputCode);
         }
 
         private async Task<IActionResult> RedirectToAssessmentOrErrorPage(string code)
