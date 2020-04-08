@@ -43,35 +43,29 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var routeIncludesDysac = choice == Route.Undefined ? (bool?) null : choice == Route.JobsAndSkills;
             var userSession = await GetUserSession();
-            try
+           
+            switch (choice)
             {
-                switch (choice)
-                {
-                    case Route.Jobs:
-                        await UpdateUserSession(userSession, routeIncludesDysac);
-                        return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
-                    case Route.JobsAndSkills:
+                case Route.Jobs:
+                    await UpdateUserSession(userSession, routeIncludesDysac);
+                    return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
+                case Route.JobsAndSkills:
 
 
-                        _dysacService.InitiateDysac(new DfcUserSession()
-                        {
-                            CreatedDate = userSession.SessionCreatedDate,
-                            PartitionKey = userSession.PartitionKey,
-                            Salt = userSession.Salt,
-                            SessionId = userSession.UserSessionId,
-                            Origin = Origin.MatchSkills
-                        });
+                    _dysacService.InitiateDysac(new DfcUserSession()
+                    {
+                        CreatedDate = userSession.SessionCreatedDate,
+                        PartitionKey = userSession.PartitionKey,
+                        Salt = userSession.Salt,
+                        SessionId = userSession.UserSessionId,
+                        Origin = Origin.MatchSkills
+                    });
 
-                        await UpdateUserSession(userSession, routeIncludesDysac);
-                        return Redirect(_dysacSettings.Value.DysacUrl);
-                }
-
-
+                    await UpdateUserSession(userSession, routeIncludesDysac);
+                    return Redirect(_dysacSettings.Value.DysacUrl);
             }
-            catch (AggregateException ex)
-            {
-               return Redirect($"{ViewModel.CompositeSettings.Path}/error");
-            }
+
+
 
             return RedirectWithError(ViewModel.Id.Value);
         }
