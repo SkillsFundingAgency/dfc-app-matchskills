@@ -24,7 +24,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         {
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession(){DysacCompleted = true});
             _controller = new DysacResultsController(_compositeSettings, _sessionService);
             _controller.ControllerContext = new ControllerContext
             {
@@ -36,14 +36,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_RedirectToOccupationSearch()
         {
-            var result = await _controller.Body() as RedirectResult;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"~/{CompositeViewModel.PageId.OccupationSearch}");
-        }
-        [Test]
-        public async Task AssignValues()
-        {
             var oldDysacSettings = new OldDysacSettings()
             {
                 ApiKey = "key",
@@ -53,6 +45,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var key = oldDysacSettings.ApiKey;
             var assessment = oldDysacSettings.AssessmentApiUrl;
             var dysac = oldDysacSettings.DysacResultsUrl;
+
+            var pageId = CompositeViewModel.PageId.DysacResults;
+
+            var result = await _controller.Body() as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.OccupationSearch}");
         }
     }
 }
