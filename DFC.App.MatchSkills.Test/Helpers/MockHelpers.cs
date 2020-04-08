@@ -118,7 +118,11 @@ namespace DFC.App.MatchSkills.Test.Helpers
             }
 
             if (hasUsedDysac)
+            {
                 userSession.RouteIncludesDysac = true;
+                userSession.DysacCompleted = true;
+            }
+
 
             return userSession;
         }

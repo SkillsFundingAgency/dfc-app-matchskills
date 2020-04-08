@@ -41,6 +41,8 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId RelatedSkills { get; } = new PageId("relatedSkills");
             public static PageId Reload { get; } = new PageId("Reload");
             public static PageId Error { get; } = new PageId("error");
+            public static PageId DysacResults { get; } = new PageId("Dysac Results");
+            
         }
 
         public class PageRegion
