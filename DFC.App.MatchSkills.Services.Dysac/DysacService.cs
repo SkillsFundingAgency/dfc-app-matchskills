@@ -76,7 +76,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
             {
                 return null;
             }
-            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}{ResultsEndpoint}/{sessionId}/short";
+            var serviceUrl = $"{_dysacSettings.Value.ApiUrl}{ResultsEndpoint}/api/{sessionId}/short";
             try
             {
                 var response = await _restClient.GetAsync<DysacResults>(serviceUrl);

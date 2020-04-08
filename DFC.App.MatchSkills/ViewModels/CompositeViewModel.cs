@@ -40,6 +40,7 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId RemoveSession { get; } = new PageId("removeSession");
             public static  PageId RelatedSkills { get; } = new PageId("relatedSkills");
             public static PageId Reload { get; } = new PageId("Reload");
+            public static PageId DysacResults { get; } = new PageId("Dysac Results");
             
         }
 

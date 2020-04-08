@@ -92,17 +92,6 @@ namespace DFC.App.MatchSkills.Controllers
                 _settings.ApiKey, occupation, bool.Parse(_settings.SearchOccupationInAltLabels));
             return occupations.Single(x => x.Name == occupation).Id;
         }
-
-        //[SessionRequired]
-        //[HttpGet]
-        //[Route("/DysacResults")]
-        public async Task<IActionResult> DysacResults()
-        {
-            var session = await GetUserSession();
-            session.DysacCompleted = true;
-            await _sessionService.UpdateUserSessionAsync(session);
-            return RedirectTo("occupationSearch");
-        }
     }
 
 }
