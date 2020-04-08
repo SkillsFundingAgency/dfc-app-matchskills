@@ -112,10 +112,13 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 });
 
                 IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_oldDysacServiceSetings, _sessionClient);
-                await dysacService.InitiateDysac(userSession);
+                 Assert.ThrowsAsync<DysacException>(  () =>  dysacService.InitiateDysac(userSession));
+
+                
 
             }
 
+            [Test]
             public async Task When_InitiateDysacOnlyWithErrors_ThrowException()
             {
                 var userSession = new DfcUserSession();
@@ -136,7 +139,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 });
 
                 IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_oldDysacServiceSetings, _sessionClient);
-                await dysacService.InitiateDysacOnly();
+                Assert.ThrowsAsync<DysacException>(  () =>  dysacService.InitiateDysacOnly());
 
             }
 
