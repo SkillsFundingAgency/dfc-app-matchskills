@@ -92,7 +92,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
             [Test]
            
-            public async Task When_InitiateDysacWithErrors_ThrowException()
+            public void When_InitiateDysacWithErrors_ThrowException()
             {
                 var userSession = new DfcUserSession();
                 userSession.PartitionKey = "key";
@@ -119,7 +119,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             }
 
             [Test]
-            public async Task When_InitiateDysacOnlyWithErrors_ThrowException()
+            public void When_InitiateDysacOnlyWithErrors_ThrowException()
             {
                 var userSession = new DfcUserSession();
                 userSession.PartitionKey = "key";
