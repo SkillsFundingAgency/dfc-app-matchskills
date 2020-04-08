@@ -99,19 +99,16 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     SessionId = "session",
                     Salt = "salt"
                 });
+                var lastResponse = Substitute.For<RestClient.APIResponse>(new HttpResponseMessage(){Content = new StringContent("something",Encoding.UTF8),StatusCode = HttpStatusCode.Created});
+                
+                _restClient.LastResponse.Returns(lastResponse);
+
                 var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
 
                 await dysacService.LoadExistingDysacOnlyAssessment("session");
                 
             }
 
-            [Test]
-            public  async Task When_LoadExistingDysacOnlyAssessmentReturnsAnError_ReturnError()
-            {
-                _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsNullForAnyArgs();
-                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
-                await dysacService.LoadExistingDysacOnlyAssessment("session");
-            }
 
         }
 
