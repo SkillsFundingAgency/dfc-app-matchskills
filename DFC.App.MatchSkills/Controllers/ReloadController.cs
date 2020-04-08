@@ -50,7 +50,7 @@ namespace DFC.App.MatchSkills.Controllers
                 return GetRouteForMatchSkillsUser(userSession);
             }
 
-            _dysacService.LoadExistingDysacOnlyAssessment(GetSessionId(code));
+            await _dysacService.LoadExistingDysacOnlyAssessment(GetSessionId(code));
 
             return Redirect(_dysacSettings.DysacReturnUrl);
         }

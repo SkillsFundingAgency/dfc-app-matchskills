@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.Controllers
                     return RedirectTo(CompositeViewModel.PageId.Route.Value);
                 
                 case WorkedBefore.No:
-                    _dysacService.InitiateDysacOnly();
+                    await _dysacService.InitiateDysacOnly();
                     await UpdateUserSession(userWorkedBefore);
                     return Redirect(_dysacSettings.Value.DysacUrl); 
                     

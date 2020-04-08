@@ -111,7 +111,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             };
 
             await controller.Body(WorkedBefore.No);
-            _dysacService.Received().InitiateDysacOnly();
+            await _dysacService.Received().InitiateDysacOnly();
         }
 
         [Test]

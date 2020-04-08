@@ -110,7 +110,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
             
-            _dysacService.InitiateDysac(new DfcUserSession()
+            await _dysacService.InitiateDysac(new DfcUserSession()
             {
                 CreatedDate = DateTime.UtcNow,
                 PartitionKey = "partitionkey",
@@ -132,7 +132,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobsAndSkills_SetOriginToMatchSkills()
         {
-            _dysacService.InitiateDysac(new DfcUserSession()
+            await _dysacService.InitiateDysac(new DfcUserSession()
             {
                 CreatedDate = DateTime.UtcNow,
                 PartitionKey = "partitionkey",
@@ -145,7 +145,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
             await controller.Body(Route.JobsAndSkills);
-            _dysacService.Received().InitiateDysac(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills));
+            await _dysacService.Received().InitiateDysac(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills));
 
         }
 

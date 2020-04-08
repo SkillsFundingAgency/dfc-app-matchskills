@@ -55,7 +55,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
             [Test]
             
-            public void When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
+            public async Task When_InitiateDysacNewSessionWithNoErrors_ReturnOK()
             {
                 
                            
@@ -77,20 +77,20 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 });
 
                 IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_sessionClient); 
-                dysacService.InitiateDysac(userSession);
+                await dysacService.InitiateDysac(userSession);
                 
             }
 
             [Test]
-            public void When_InitiateDysacWithErrors_ReturnErrorAndMessage()
+            public async Task When_InitiateDysacWithErrors_ReturnErrorAndMessage()
             {
-                _dysacService.InitiateDysacOnly();
+                await _dysacService.InitiateDysacOnly();
                 
             }
 
 
             [Test]
-            public void When_LoadExistingDysacOnlyAssessmentReturnsValidResponse_ReturnOK()
+            public async Task When_LoadExistingDysacOnlyAssessmentReturnsValidResponse_ReturnOK()
             {
                 _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsForAnyArgs(new AssessmentShortResponse()
                 {
@@ -101,16 +101,16 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 });
                 var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
 
-                dysacService.LoadExistingDysacOnlyAssessment("session");
+                await dysacService.LoadExistingDysacOnlyAssessment("session");
                 
             }
 
             [Test]
-            public  void When_LoadExistingDysacOnlyAssessmentReturnsAnError_ReturnError()
+            public  async Task When_LoadExistingDysacOnlyAssessmentReturnsAnError_ReturnError()
             {
                 _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsNullForAnyArgs();
                 var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
-                dysacService.LoadExistingDysacOnlyAssessment("session");
+                await dysacService.LoadExistingDysacOnlyAssessment("session");
             }
 
         }

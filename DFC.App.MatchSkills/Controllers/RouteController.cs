@@ -52,7 +52,7 @@ namespace DFC.App.MatchSkills.Controllers
                 case Route.JobsAndSkills:
 
 
-                    _dysacService.InitiateDysac(new DfcUserSession()
+                    await _dysacService.InitiateDysac(new DfcUserSession()
                     {
                         CreatedDate = userSession.SessionCreatedDate,
                         PartitionKey = userSession.PartitionKey,

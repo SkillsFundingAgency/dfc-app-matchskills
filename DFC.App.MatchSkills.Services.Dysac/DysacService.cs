@@ -38,7 +38,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
         }
 
 
-        public async void InitiateDysacOnly()
+        public async Task InitiateDysacOnly()
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/short";
             var request = GetDysacRequestMessage();
@@ -48,7 +48,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
         }
 
-        public async void InitiateDysac(DfcUserSession userSession)
+        public async Task InitiateDysac(DfcUserSession userSession)
         {
             Throw.IfNull(userSession, nameof(userSession));
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/skills";
@@ -93,7 +93,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
         }
 
-        public async void LoadExistingDysacOnlyAssessment (string sessionId)
+        public async Task LoadExistingDysacOnlyAssessment (string sessionId)
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/session/{sessionId}";
             var request = GetDysacRequestMessage();
