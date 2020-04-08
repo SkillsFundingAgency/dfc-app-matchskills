@@ -48,5 +48,21 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             complete.Should().Be(true);
             pageId.Value.Should().Be(CompositeViewModel.PageId.DysacResults.Value);
         }
+        [Test]
+        public void AssignNewValuesBecauseSonar()
+        {
+            var userSession = new UserSession();
+            userSession.DysacCompleted = null;
+            var nullBool = userSession.DysacCompleted;
+            nullBool.Should().Be(null);
+
+            userSession.DysacCompleted = true;
+            var trueBool = userSession.DysacCompleted;
+            trueBool.Should().Be(true);
+
+            userSession.DysacCompleted = false;
+            var falseBool = userSession.DysacCompleted;
+            falseBool.Should().Be(false);
+        }
     }
 }
