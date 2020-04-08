@@ -26,7 +26,6 @@ namespace DFC.App.MatchSkills.Services.Dysac
         private readonly IOptions<OldDysacSettings> _oldDysacSettings;
         private readonly IRestClient _restClient;
         private readonly ILogger _logger;
-        private const string ResultsEndpoint = "/result/";
         private readonly ISessionClient _sessionClient;
 
         public DysacService(ILogger<DysacService> log, IRestClient restClient, IOptions<DysacSettings> dysacSettings, IOptions<OldDysacSettings> oldDysacSettings, ISessionClient sessionClient)
