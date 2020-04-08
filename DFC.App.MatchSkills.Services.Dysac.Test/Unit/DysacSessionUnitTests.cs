@@ -85,10 +85,9 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     PartitionKey = "p-key"
                 });
 
-                IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_sessionClient); 
+                IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_oldDysacServiceSetings, _sessionClient);
                 await dysacService.InitiateDysac(userSession);
 
-                
             }
 
             [Test]
@@ -114,7 +113,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 
                 _restClient.LastResponse.Returns(lastResponse);
 
-                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
+                var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings,_oldDysacServiceSetings,_sessionClient);
 
 
                 await dysacService.LoadExistingDysacOnlyAssessment("session");
@@ -145,9 +144,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                     );
 
                 IDysacSessionReader dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _oldDysacServiceSetings, _sessionClient);
-                var results = await dysacService.InitiateDysacOnly();
-
-                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+                await dysacService.InitiateDysacOnly();
 
             }
 
