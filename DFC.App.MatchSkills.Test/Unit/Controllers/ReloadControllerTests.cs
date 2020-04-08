@@ -91,12 +91,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 {"sessionId","123" }
             });
 
-            _dysacService.LoadExistingDysacOnlyAssessment(Arg.Any<string>()).ReturnsForAnyArgs(
-                new DysacServiceResponse()
-                {
-                    ResponseCode = DysacReturnCode.Error
-                });
-
             _sessionService.Reload(Arg.Any<string>()).ReturnsNullForAnyArgs();
             var result = await controller.Body() as RedirectResult;
             result.Should().NotBeNull();
@@ -116,12 +110,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 {"sessionId","123" }
             });
-            _dysacService.LoadExistingDysacOnlyAssessment(Arg.Any<string>()).ReturnsForAnyArgs(
-                new DysacServiceResponse()
-                {
-                    ResponseCode = DysacReturnCode.Error
-                });
-
+            
             _sessionService.Reload(Arg.Any<string>()).ReturnsNullForAnyArgs();
             var result = await controller.Body("123") as RedirectResult;
             result.Should().NotBeNull();
@@ -174,11 +163,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             });
             _sessionService.Reload(Arg.Any<string>()).ReturnsNullForAnyArgs();
 
-            _dysacService.LoadExistingDysacOnlyAssessment(Arg.Any<string>()).ReturnsForAnyArgs(
-                new DysacServiceResponse()
-                {
-                    ResponseCode = DysacReturnCode.Ok
-                });
             var result = await controller.Body("123") as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();

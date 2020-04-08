@@ -53,19 +53,14 @@ namespace DFC.App.MatchSkills.Controllers
                     case Route.JobsAndSkills:
 
 
-                        var response = _dysacService.InitiateDysac(new DfcUserSession()
+                        _dysacService.InitiateDysac(new DfcUserSession()
                         {
                             CreatedDate = userSession.SessionCreatedDate,
                             PartitionKey = userSession.PartitionKey,
                             Salt = userSession.Salt,
                             SessionId = userSession.UserSessionId,
                             Origin = Origin.MatchSkills
-                        }).Result;
-
-                        if (response.ResponseCode == DysacReturnCode.Error)
-                        {
-                            return Redirect($"{ViewModel.CompositeSettings.Path}/error");
-                        }
+                        });
 
                         await UpdateUserSession(userSession, routeIncludesDysac);
                         return Redirect(_dysacSettings.Value.DysacUrl);

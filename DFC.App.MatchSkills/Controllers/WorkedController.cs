@@ -51,14 +51,9 @@ namespace DFC.App.MatchSkills.Controllers
                 case WorkedBefore.Yes:
                     await UpdateUserSession(userWorkedBefore);
                     return RedirectTo(CompositeViewModel.PageId.Route.Value);
+                
                 case WorkedBefore.No:
-                    var response = await _dysacService.InitiateDysacOnly();
-
-                    if (response.ResponseCode != DysacReturnCode.Ok)
-                    {
-                        throw new Exception(response.ResponseMessage);
-                    }
-
+                    _dysacService.InitiateDysacOnly();
                     await UpdateUserSession(userWorkedBefore);
                     return Redirect(_dysacSettings.Value.DysacUrl); 
                     

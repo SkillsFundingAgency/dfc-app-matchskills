@@ -40,10 +40,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _dysacServiceSetings.Value.ApiKey = "mykeydoesnotmatterasitwillbemocked";
             _dysacServiceSetings.Value.DysacUrl="http://dysacurl";
             _dysacService = Substitute.For<IDysacSessionReader>();
-            _dysacService.InitiateDysacOnly().ReturnsForAnyArgs(new DysacServiceResponse()
-            {
-                ResponseCode = DysacReturnCode.Ok
-            });
+            
             
             var userSession = new UserSession()
             {
@@ -112,20 +109,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
+            
             _dysacService.InitiateDysac(new DfcUserSession()
             {
                 CreatedDate = DateTime.UtcNow,
                 PartitionKey = "partitionkey",
                 Salt = "salt",
                 SessionId = "sessionid"
-            }).ReturnsForAnyArgs(new DysacServiceResponse(){ResponseCode = DysacReturnCode.Ok});
-            var results = _dysacService.InitiateDysac(new DfcUserSession()
-            {
-                CreatedDate = DateTime.UtcNow,
-                PartitionKey = "partitionkey",
-                Salt = "salt",
-                SessionId = "sessionid"
-            }).Result;
+            });
             var controller = new RouteController(_compositeSettings, _sessionService,_dysacService, _dysacServiceSetings );
             controller.ControllerContext = new ControllerContext
             {
@@ -147,21 +138,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 PartitionKey = "partitionkey",
                 Salt = "salt",
                 SessionId = "sessionid"
-            }).ReturnsForAnyArgs(new DysacServiceResponse() { ResponseCode = DysacReturnCode.Ok });
-            var results = _dysacService.InitiateDysac(new DfcUserSession()
-            {
-                CreatedDate = DateTime.UtcNow,
-                PartitionKey = "partitionkey",
-                Salt = "salt",
-                SessionId = "sessionid"
-            }).Result;
+            });
             var controller = new RouteController(_compositeSettings, _sessionService, _dysacService, _dysacServiceSetings);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
             await controller.Body(Route.JobsAndSkills);
-            await _dysacService.Received().InitiateDysac(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills));
+            _dysacService.Received().InitiateDysac(Arg.Is<DfcUserSession>(x => x.Origin == Origin.MatchSkills));
 
         }
 

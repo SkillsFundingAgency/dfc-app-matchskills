@@ -77,24 +77,15 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 });
 
                 IDysacSessionReader dysacService = new DysacService(_log,restClient,_dysacServiceSetings,_sessionClient); 
-                var results = dysacService.InitiateDysac(userSession).Result;
-                
-                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+                dysacService.InitiateDysac(userSession);
                 
             }
 
             [Test]
             public void When_InitiateDysacWithErrors_ReturnErrorAndMessage()
             {
-                _dysacService.InitiateDysacOnly().ReturnsForAnyArgs(new DysacServiceResponse()
-                {
-                    ResponseCode = DysacReturnCode.Error,
-                    ResponseMessage = "Error"
-                });
-
-                var results = _dysacService.InitiateDysacOnly().Result;
-                results.ResponseCode.Should().Be(DysacReturnCode.Error);
-                results.ResponseMessage.Should().Be("Error");
+                _dysacService.InitiateDysacOnly();
+                
             }
 
 
@@ -110,8 +101,8 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
                 });
                 var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
 
-                var results = await dysacService.LoadExistingDysacOnlyAssessment("session");
-                results.ResponseCode.Should().Be(DysacReturnCode.Ok);
+                dysacService.LoadExistingDysacOnlyAssessment("session");
+                
             }
 
             [Test]
@@ -119,8 +110,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             {
                 _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsNullForAnyArgs();
                 var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
-                var results = await dysacService.LoadExistingDysacOnlyAssessment("session");
-                results.ResponseCode.Should().Be(DysacReturnCode.Error);
+                dysacService.LoadExistingDysacOnlyAssessment("session");
             }
 
         }

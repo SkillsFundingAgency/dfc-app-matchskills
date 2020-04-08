@@ -20,6 +20,7 @@ using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.Personalisation.Common.Net.RestClient;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +37,7 @@ namespace DFC.App.MatchSkills
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -89,13 +91,18 @@ namespace DFC.App.MatchSkills
                 app.UseDeveloperExceptionPage();
             }
 
-
+            var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-            app.UseExceptionHandler(errorApp => errorApp.Run(async context => await ErrorService.LogException(context, sessionService, logger)));
-           
+            app.UseExceptionHandler(errorApp =>
+                errorApp.Run(async context =>
+                {
+                    await ErrorService.LogException(context, sessionService, logger);
+                    context.Response.Redirect(appPath + "/Error");
+
+                }));
             app.UseRouting();
-            var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
+            
             app.UseCors(_corsPolicy);
             app.UseEndpoints(endpoints =>
             {
@@ -114,6 +121,8 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllerRoute("reload", appPath + "/reload", new { controller = "reload", action = "body" });
                 endpoints.MapControllerRoute("error", appPath + "/error", new { controller = "error", action = "body" });
             });
+
+           
 
         }
     }
