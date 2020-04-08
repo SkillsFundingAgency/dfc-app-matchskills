@@ -90,7 +90,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
 
 
             [Test]
-            public async Task When_LoadExistingDysacOnlyAssessmentReturnsValidResponse_ReturnOK()
+            public void When_LoadExistingDysacOnlyAssessmentReturnsValidResponse_ReturnOK()
             {
                 _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsForAnyArgs(new AssessmentShortResponse()
                 {
@@ -106,7 +106,7 @@ namespace DFC.App.MatchSkills.Services.Dysac.Test.Unit
             }
 
             [Test]
-            public async Task When_LoadExistingDysacOnlyAssessmentReturnsAnError_ReturnError()
+            public  void When_LoadExistingDysacOnlyAssessmentReturnsAnError_ReturnError()
             {
                 _restClient.GetAsync<AssessmentShortResponse>(Arg.Any<string>(), Arg.Any<HttpRequestMessage>()).ReturnsNullForAnyArgs();
                 var dysacService = new DysacService(_log, _restClient, _dysacServiceSetings, _sessionClient);
