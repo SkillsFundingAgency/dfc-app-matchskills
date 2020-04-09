@@ -17,14 +17,16 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly IOptions<DysacSettings> _dysacSettings;
         private readonly IDysacSessionReader _dysacService;
+        private readonly TestModel _testModel;
         
         public WorkedController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, IDysacSessionReader dysacService, 
-            IOptions<DysacSettings> dysacSettings)
+            IOptions<DysacSettings> dysacSettings, TestModel testModel)
             : base(compositeSettings, sessionService )
         {
             Throw.IfNull(dysacSettings, nameof(dysacSettings));
             _dysacSettings = dysacSettings;
             _dysacService = dysacService;
+            _testModel = testModel;
         }
 
         public override async Task<IActionResult> Body()
@@ -46,6 +48,10 @@ namespace DFC.App.MatchSkills.Controllers
         {
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
             var options = new TestModel();
+
+            options = _testModel;
+            options.TestProperty = _testModel.TestProperty;
+
             options.TestProperty = "string";
             switch (choice)
             {

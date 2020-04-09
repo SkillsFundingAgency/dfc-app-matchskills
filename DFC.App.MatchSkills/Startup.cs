@@ -58,6 +58,7 @@ namespace DFC.App.MatchSkills
             services.Configure<LmiSettings>(Configuration.GetSection(nameof(LmiSettings)));
             services.Configure<DysacSettings>(Configuration.GetSection(nameof(DysacSettings)));
             services.Configure<OldDysacSettings>(Configuration.GetSection(nameof(OldDysacSettings)));
+            services.Configure<TestModel>(Configuration.GetSection(nameof(TestModel)));
             services.AddScoped((x) => new CosmosClient(
                 accountEndpoint: Configuration.GetSection("CosmosSettings:ApiUrl").Value, 
                 authKeyOrResourceToken: Configuration.GetSection("CosmosSettings:ApiKey").Value));
