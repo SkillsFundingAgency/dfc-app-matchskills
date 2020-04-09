@@ -45,7 +45,8 @@ namespace DFC.App.MatchSkills.Controllers
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
-            
+            var options = new TestModel();
+            options.TestProperty = "string";
             switch (choice)
             {
                 case WorkedBefore.Yes:
