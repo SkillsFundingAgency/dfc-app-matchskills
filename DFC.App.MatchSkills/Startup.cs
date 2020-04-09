@@ -36,6 +36,7 @@ namespace DFC.App.MatchSkills
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -90,13 +91,18 @@ namespace DFC.App.MatchSkills
                 app.UseDeveloperExceptionPage();
             }
 
-
+            var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-            app.UseExceptionHandler(errorApp => errorApp.Run(async context => await ErrorService.LogException(context, sessionService, logger)));
-           
+            app.UseExceptionHandler(errorApp =>
+                errorApp.Run(async context =>
+                {
+                    await ErrorService.LogException(context, sessionService, logger);
+                    context.Response.Redirect(appPath + "/Error");
+
+                }));
             app.UseRouting();
-            var appPath = Configuration.GetSection("CompositeSettings:Path").Value;
+            
             app.UseCors(_corsPolicy);
             app.UseEndpoints(endpoints =>
             {
@@ -116,6 +122,8 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllerRoute("error", appPath + "/error", new { controller = "error", action = "body" });
                 endpoints.MapControllerRoute("dysacResults", appPath + "/dysacResults", new { controller = "dysacResults", action = "body" });
             });
+
+           
 
         }
     }

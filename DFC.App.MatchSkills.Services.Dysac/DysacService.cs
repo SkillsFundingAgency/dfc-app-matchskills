@@ -14,7 +14,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using DFC.Personalisation.Common.Extensions;
 
 namespace DFC.App.MatchSkills.Services.Dysac
 {
@@ -39,18 +38,17 @@ namespace DFC.App.MatchSkills.Services.Dysac
         }
 
 
-        public async Task<DysacServiceResponse> InitiateDysacOnly()
+        public async Task InitiateDysacOnly()
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/short";
             var request = GetDysacRequestMessage();
-
-           var response = await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
-
-           return CreateDysacServiceResponse(response, Origin.Dysac);
+            var response = await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
+            
+            CreateDysacServiceResponse(response, Origin.Dysac,_restClient.LastResponse.StatusCode);
 
         }
 
-        public async Task<DysacServiceResponse> InitiateDysac(DfcUserSession userSession)
+        public async Task InitiateDysac(DfcUserSession userSession)
         {
             Throw.IfNull(userSession, nameof(userSession));
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/skills";
@@ -64,10 +62,8 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
            
                 await _restClient.PostAsync<AssessmentShortResponse>(serviceUrl, request);
-                return _restClient.LastResponse.StatusCode == HttpStatusCode.Created || _restClient.LastResponse.StatusCode == HttpStatusCode.AlreadyReported
-                    ? (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Ok})
-                    : (new DysacServiceResponse() {ResponseCode = DysacReturnCode.Error,ResponseMessage = _restClient.LastResponse.StatusCode.ToString()});
-            
+                if (_restClient.LastResponse.StatusCode != HttpStatusCode.Created && _restClient.LastResponse.StatusCode != HttpStatusCode.AlreadyReported )
+                    throw new DysacException("Invalid Dysac API Code " + _restClient.LastResponse.StatusCode??"");
             
         }
 
@@ -98,14 +94,14 @@ namespace DFC.App.MatchSkills.Services.Dysac
 
         }
 
-        public async Task<DysacServiceResponse> LoadExistingDysacOnlyAssessment (string sessionId)
+        public async Task<DysacServiceResponse> LoadExistingDysacOnlyAssessment(string sessionId)
         {
             var serviceUrl = $"{_dysacSettings.Value.ApiUrl}assessment/session/{sessionId}";
             var request = GetDysacRequestMessage();
 
            var response = await _restClient.GetAsync<AssessmentShortResponse>(serviceUrl, request);
 
-            return CreateDysacServiceResponse(response, Origin.Dysac);
+           return CreateDysacServiceResponse(response, Origin.Dysac,_restClient.LastResponse.StatusCode);
 
         }
 
@@ -121,7 +117,7 @@ namespace DFC.App.MatchSkills.Services.Dysac
             return request;
         }
 
-        private DysacServiceResponse CreateDysacServiceResponse(AssessmentShortResponse response, Origin creationOrigin)
+        private DysacServiceResponse  CreateDysacServiceResponse(AssessmentShortResponse response, Origin creationOrigin, HttpStatusCode statusCode)
         {
             var dysacServiceResponse = new DysacServiceResponse();
             if (response != null && !string.IsNullOrEmpty(response.SessionId))
@@ -138,11 +134,10 @@ namespace DFC.App.MatchSkills.Services.Dysac
                 _sessionClient.CreateCookie(userSession, false);
             }
             else
-            {
-                dysacServiceResponse.ResponseCode = DysacReturnCode.Error;
-                dysacServiceResponse.ResponseMessage = _restClient.LastResponse?.StatusCode.ToLower();
+            { 
+                throw new DysacException("No session. Error Code " + statusCode);
             }
-
+            
             return dysacServiceResponse;
         }
     }
