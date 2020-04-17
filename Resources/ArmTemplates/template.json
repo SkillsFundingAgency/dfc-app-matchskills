@@ -291,6 +291,10 @@
                                 "value": "[concat(parameters('apimProxyAddress'), '/assessments/api/assessment/')]"
                             },
                             {
+                                "name": "OldDysacSettings__DysacResultsUrl",
+                                "value": "[concat(parameters('apimProxyAddress'), '/results/api/result/')]"
+                            },
+                            {
                                 "name": "DysacSettings__ApiVersion",
                                 "value": "v1"
                             },
