@@ -35,13 +35,13 @@ stages:
       displayName: Publish apim policies
       inputs:
         targetPath: "$(System.DefaultWorkingDirectory)/Resources/ApimPolicy"
-        artifactName: '${{ variables.SolutionBaseName }.ApimPolicies}'
+        artifactName: '${{ variables.SolutionBaseName }}'
 
     - task: PublishPipelineArtifact@1
       displayName: Publish PageRegistration
       inputs:
           targetPath: "$(System.DefaultWorkingDirectory)/Resources/PageRegistration"
-          artifactName: '${{ variables.SolutionBaseName }.PageRegistration}'
+          artifactName: '${{ variables.SolutionBaseName }}'
 
   - job: BuildDotNetCore
     displayName: Build-DotNetCore
