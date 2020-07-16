@@ -40,7 +40,7 @@ stages:
     - task: PublishPipelineArtifact@1
       displayName: Publish PageRegistration
       inputs:
-          targetPath: "$(System.DefaultWorkingDirectory)/Resources/ApimPolicy"
+          targetPath: "$(System.DefaultWorkingDirectory)/Resources/PageRegistration"
           artifactName: '${{ variables.SolutionBaseName }.PageRegistration}'
 
   - job: BuildDotNetCore
