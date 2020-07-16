@@ -1,8 +1,8 @@
 [
     {
         "Path": "matchskills",
-        "TopNavigationText": "Match Skills",
-        "TopNavigationOrder": 400,
+        "TopNavigationText": null,
+        "TopNavigationOrder": 2010,
         "Layout": "FullWidth",
         "OfflineHtml": "<H2>Match Skills Service Unavailable</H2>",
         "IsOnline": true,
