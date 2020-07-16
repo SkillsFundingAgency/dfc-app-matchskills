@@ -34,7 +34,7 @@ stages:
     - task: PublishPipelineArtifact@1
       displayName: Publish apim policies
       inputs:
-        targetPath: "$(System.DefaultWorkingDirectory)/Resources/ApimPolicy"
+        targetPath: "$(System.DefaultWorkingDirectory)/Resources/ApimPolicies"
         artifactName: '${{ variables.SolutionBaseName }}'
 
     - task: PublishPipelineArtifact@1
