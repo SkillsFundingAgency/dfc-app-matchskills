@@ -68,6 +68,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
         
         [HttpPost]
+        [Route("body/selectskills")]
         public async Task<IActionResult> Body(IFormCollection formCollection)
         {
             await GetSessionData();

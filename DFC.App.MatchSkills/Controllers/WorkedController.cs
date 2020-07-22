@@ -27,6 +27,7 @@ namespace DFC.App.MatchSkills.Controllers
             _dysacService = dysacService;
         }
 
+        
         public override async Task<IActionResult> Body()
         {
             var createSessionRequest = new CreateSessionRequest()
@@ -42,6 +43,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost]
         [SessionRequired]
+        [Route("body/worked")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;

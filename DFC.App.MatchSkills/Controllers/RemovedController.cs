@@ -37,6 +37,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost]
         [SessionRequired]
+        [Route("body/removed")]
         public async Task<IActionResult> Body(IFormCollection formCollection)
         {
 
