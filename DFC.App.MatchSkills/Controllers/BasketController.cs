@@ -56,6 +56,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [HttpPost]
+        [Route("body/basket")]
         public async Task<IActionResult> Submit()
         {
             var userSession = await GetUserSession();

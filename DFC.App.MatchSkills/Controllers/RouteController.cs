@@ -39,6 +39,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         [SessionRequired]
         [HttpPost]
+        [Route("body/route")]
         public async Task<IActionResult> Body(Route choice)
         {
             var routeIncludesDysac = choice == Route.Undefined ? (bool?) null : choice == Route.JobsAndSkills;

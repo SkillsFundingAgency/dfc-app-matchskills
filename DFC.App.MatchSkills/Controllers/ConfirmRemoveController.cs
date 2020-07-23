@@ -33,6 +33,7 @@ namespace DFC.App.MatchSkills.Controllers
 
         [HttpPost]
         [SessionRequired]
+        [Route("body/confirmremove")]
         public async Task<IActionResult> Body(IFormCollection formCollection)
         {
             var userSession = await GetUserSession();

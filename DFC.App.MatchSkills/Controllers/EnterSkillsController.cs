@@ -23,6 +23,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
         [HttpPost]
         [SessionRequired]
+        [Route("body/enterskills")]
         public IActionResult Body(string enterSkillsInputInput)
         {
 

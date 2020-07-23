@@ -35,6 +35,7 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
         [HttpPost]
+        [Route("body/reload")]
         public async Task<IActionResult> Body(string homeGovUkTextInputCode)
         {
             return string.IsNullOrEmpty(homeGovUkTextInputCode) ? RedirectWithError("home") 
