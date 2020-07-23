@@ -319,7 +319,7 @@
                                 "value": "LmiData"
                             },
                             {
-                                "name": "Logging__Level__Default",
+                                "name": "Logging__LogLevel__Default",
                                 "value": "Error"
                             },
                             {
