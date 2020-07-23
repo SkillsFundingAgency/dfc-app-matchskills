@@ -317,6 +317,18 @@
                             {
                                 "name": "CosmosSettings__LmiDataCollection",
                                 "value": "LmiData"
+                            },
+                            {
+                                "name": "Logging__Level__Default",
+                                "value": "Error"
+                            },
+                            {
+                                "name": "Logging__ApplicationInsights__LogLevel__Microsoft",
+                                "value": "Trace"
+                            },
+                            {
+                                "name": "Configuration__ApplicationName",
+                                "value": "DFC.App.MatchSkills"
                             }
                         ]
                     }
