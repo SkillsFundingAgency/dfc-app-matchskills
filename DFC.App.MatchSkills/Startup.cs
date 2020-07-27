@@ -45,8 +45,7 @@ namespace DFC.App.MatchSkills
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddApplicationInsightsTelemetry(Configuration.GetSection("ApplicationInsights:InstrumentationKey").Value);
-
+            services.AddApplicationInsightsTelemetry();
             services.AddControllersWithViews();
             services.AddScoped<IServiceTaxonomySearcher, ServiceTaxonomyRepository>();
             services.AddScoped<IServiceTaxonomyReader, ServiceTaxonomyRepository>();
