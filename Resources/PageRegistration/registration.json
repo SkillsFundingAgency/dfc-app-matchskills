@@ -1,9 +1,9 @@
 [
     {
-        "Path": "matchskills",
+        "Path": "match-skills",
         "TopNavigationText": null,
         "TopNavigationOrder": 2010,
-        "Layout": "FullWidth",
+        "Layout": 1,
         "OfflineHtml": "<H2>Match Skills Service Unavailable</H2>",
         "IsOnline": true,
         "Regions": [
