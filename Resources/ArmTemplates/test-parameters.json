@@ -32,6 +32,12 @@
         "sharedCosmosDbDatabaseName": {
             "value": "a-shared-database"
         },
+        "cosmosCollectionName1": {
+            "value": "a"
+        },
+        "cosmosCollectionName2": {
+            "value": "b"
+        },
         "serviceTaxonomyApiUrl": {
             "value": "https://apimInstance/servicetaxonomy"
         },

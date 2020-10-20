@@ -54,6 +54,12 @@
         },
         "apimoldDysacApiKey": {
             "type": "securestring"
+        },
+        "cosmosCollectionName1": {
+            "type": "string"
+        },
+        "cosmosCollectionName2": {
+            "type": "string"
         }
     },
     "variables": {
@@ -62,11 +68,11 @@
         "apimProductDisplayName": "Personalisation Match Skills",
         "cosmosDbCollections": [
             {
-                "collectionName": "UserSessions",
+                "collectionName": "[parameters('cosmosCollectionName1')]",
                 "partitionKey": "/partitionKey"
             },
             {
-                "collectionName": "LmiData",
+                "collectionName": "[parameters('cosmosCollectionName2')]",
                 "partitionKey": "/socCode"
             }
         ],

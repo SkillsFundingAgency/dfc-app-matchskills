@@ -32,6 +32,12 @@
         "sharedCosmosDbDatabaseName": {
             "value": "__SharedCosmosDbDatabase__"
         },
+        "cosmosCollectionName1": {
+            "value": "__cosmosCollectionName1__"
+        },
+        "cosmosCollectionName2": {
+            "value": "__cosmosCollectionName2__"
+        },
         "serviceTaxonomyApiUrl": {
             "value": "__serviceTaxonomyApiUrl__"
         },
