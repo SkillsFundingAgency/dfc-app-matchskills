@@ -99,7 +99,7 @@
                     <partial name="_SortOptions" model="Model" />
 
                     <div class="app-long-results list govuk-list govuk-grid-row" id="app-results-list--long">
-                        @foreach (var careerMatch in Model.CareerMatches)
+                        @foreach (var careerMatch in Model.CareerMatches.OrderByDescending(z=>z.TotalOccupationEssentialSkills))
                         {
                             <partial name="_MatchResult" model="careerMatch" />
                         }
