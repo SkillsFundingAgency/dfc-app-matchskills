@@ -1,4 +1,5 @@
-﻿using Dfc.ProviderPortal.Packages;
+﻿using System.Collections.Generic;
+using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
@@ -48,8 +49,8 @@ namespace DFC.App.MatchSkills.Controllers
 
             var skillsGap = await GetSkillsGap(id);
             
-            ViewModel.MissingSkills = skillsGap.MissingSkills;
-            ViewModel.MatchingSkills = skillsGap.MatchingSkills;
+            ViewModel.MatchingSkills = GetSkillsCombined(skillsGap.MatchingSkills, skillsGap.MissingSkills);
+            ViewModel.OptionalMatchingSkills = GetSkillsCombined(skillsGap.OptionalMatchingSkills, skillsGap.OptionalMissingSkills);
             ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
             ViewModel.CareerDescription = skillsGap.CareerDescription;
             ViewModel.JobGrowth = skillsGap.JobGrowth;
@@ -93,6 +94,22 @@ namespace DFC.App.MatchSkills.Controllers
                 return string.Empty;
             
             return char.ToUpper(str[0]) + str.Substring(1);
+        }
+
+        private IOrderedEnumerable<KeyValuePair<string, bool>> GetSkillsCombined(string[] matchedSkills, string[] missingSkills)
+        {
+            var dict = new Dictionary<string, bool>();
+
+            foreach (string matchedSkill in matchedSkills)
+            {
+                dict.Add(matchedSkill, true);
+            }
+            foreach (string unmatchedSkill in missingSkills)
+            {
+                dict.Add(unmatchedSkill, false);
+            }
+
+            return dict.OrderByDescending(x=>x.Key);
         }
     }
 }
