@@ -57,7 +57,7 @@ namespace DFC.App.MatchSkills.Controllers
             var Skills = await _serviceTaxonomy.GetAllSkillsForOccupation<Skill[]>($"{_apiUrl}",
                 _apiKey, occupation.Id);
 
-            ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential).ToList();
+            ViewModel.Skills = Skills.Where(s=>s.RelationshipType==RelationshipType.Essential && s.SkillType == SkillType.Competency).ToList();
         }
          public override async Task<IActionResult> Body()
          {

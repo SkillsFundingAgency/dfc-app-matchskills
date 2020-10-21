@@ -16,30 +16,31 @@
                 </div>
             }
             <section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
-                <govukHeadingH3 text="Your matching skills: "></govukHeadingH3>
+                <govukHeadingH3 text="Skills you'll need"></govukHeadingH3>
                 <div class="job-profile-subsection-content">
                     <div class="">
                         <p><strong></strong></p>
-                        <govukBulletedList>
-                            @foreach (var skill in Model.MatchingSkills)
-                            {
-                                <govukListItem text="@skill"></govukListItem>
-                            }
-                        </govukBulletedList>
+                        @foreach (var skill in Model.MatchingSkills)
+                        {
+                            <div>
+                                <govukCheckbox id="@Model.GetElementId($"govukLink_{@skill.Key}","MatchDetails")" AdditionalClass="checkbox-container-item" checked="@skill.Value"></govukCheckbox>
+                            </div>
+                        }
                     </div>
                 </div>
             </section>
             <section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
-                <govukHeadingH3 text="Skills you'll need to gain: "></govukHeadingH3>
+                <govukHeadingH3 text="Skills you may need"></govukHeadingH3>
                 <div class="job-profile-subsection-content">
                     <div class="">
                         <p><strong></strong></p>
-                        <govukBulletedList>
-                            @foreach (var skill in Model.MissingSkills)
-                            {
-                                <govukListItem text="@skill"></govukListItem>
-                            }
-                        </govukBulletedList>
+                        @foreach (var skill in Model.OptionalMatchingSkills)
+                        {
+                    <div>
+                        <govukCheckbox id="@Model.GetElementId($"govukLink_{@skill.Key}","MatchDetails")" label="@skill.Key"  AdditionalClass="checkbox-container-item" checked="@skill.Value"></govukCheckbox>
+                    </div>
+
+                        }
                     </div>
                 </div>
             </section>
