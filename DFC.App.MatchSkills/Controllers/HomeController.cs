@@ -40,10 +40,10 @@ namespace DFC.App.MatchSkills.Controllers
         [Route("/body/{controller}")]
         [Route("/body")]
 
-        public override Task<IActionResult> Body()
+        public async override Task<IActionResult> Body()
         {
             ViewModel.HasErrors = HasErrors();
-            return base.Body();
+            return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
         }
 
         [Route("/bodyfooter/{controller}")]

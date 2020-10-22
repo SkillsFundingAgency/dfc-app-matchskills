@@ -53,10 +53,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body() as ViewResult;
+            var result = await controller.Body() as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
         }
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()

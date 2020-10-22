@@ -14,6 +14,19 @@
             <div class="results">
                 <govukHeadingH1 Text="Select your occupation" />
             </div>
+            
+            <form id="@Model.GetElementId("govUkForm", "Search")" action="@CompositeViewModel.PageId.OccupationSearchDetails" method="post">
+                <div id="@Model.GetElementId("govUkFormgroup", "Search")" class="govuk-form-group">
+
+                    <p>Search for different occupation</p>
+                    <govukLabel for="@Model.GetElementId("govUkInput", "Search")" text="Enter your job title" additional-class="govuk-!-font-weight-bold"></govukLabel>
+
+                    <govukTextInput id="@Model.GetElementId("govUkInput", "Search")">
+                    </govukTextInput>
+
+                </div>
+                <govukSecondaryButton id="@Model.GetElementId("govUkButton", "Search")" text="Search"></govukSecondaryButton>
+            </form>
 
             @foreach (var result in Model.Occupations)
             {<section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
