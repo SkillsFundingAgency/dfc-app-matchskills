@@ -23,7 +23,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form id="@formElementName" action="@CompositeViewModel.PageId.OccupationSearch/GetSkillsForOccupation" method="post">
+            <form id="@formElementName" action="@CompositeViewModel.PageId.OccupationSearchDetails" method="post">
                 <div id="@formGroup" class="govuk-form-group   @(Model.HasError ? "govuk-form-group--error" : "")">
                     <govukHeadingH1 Text="Enter your current or previous job title" />
 
@@ -31,16 +31,11 @@
 
                     <p>You can add skills from more than one job to your skills list.</p>
 
+                    <govukLabel for="@Model.GetElementId("govUkInput", "Search")" text="Enter your job title" additional-class="govuk-!-font-weight-bold"></govukLabel>
 
-                    <govukAutoComplete Id="@autoCompleteElementName"
-                                       Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
-                                       autoselect="true" confirmOnBlur="true" cssNameSpace="autocomplete"
-                                       minLength="2" name="EnterJobInputAutocomplete">
-                        <govukAutoCompleteError id="@autoCompleteError" text="Enter a job title" hidden="@(!Model.HasError)"></govukAutoCompleteError>
-                        <govukAutocompleteLabel Text="Enter your job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="@autoCompleteElementName"></govukAutocompleteLabel>
+                    <govukTextInput id="@Model.GetElementId("govUkInput", "Search")">
+                    </govukTextInput>
 
-
-                    </govukAutoComplete>
                 </div>
                 <br />
                 <br />

@@ -26,6 +26,7 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId Home { get; } = new PageId("home");
             public static PageId Worked { get; } = new PageId("worked");
             public static PageId OccupationSearch { get; } = new PageId("occupationSearch");
+            public static PageId OccupationSearchDetails { get; } = new PageId("occupationSearchDetails");
             public static PageId SkillsBasket { get; } = new PageId("basket");
             public static PageId Route { get; } = new PageId("route");
             public static PageId Matches { get; } = new PageId("matches");

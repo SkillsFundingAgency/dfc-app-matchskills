@@ -70,6 +70,7 @@ namespace DFC.App.MatchSkills.Controllers
             
             return this.Ok(occupations.Select(x => x.Name).ToList());
         }
+
         [HttpPost]
         [Route("body/occupationSearch/GetSkillsForOccupation")]
         public async Task<IActionResult> GetSkillsForOccupation(string enterJobInputAutocomplete)

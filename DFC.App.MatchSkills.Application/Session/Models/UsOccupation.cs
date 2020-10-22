@@ -14,6 +14,7 @@ namespace DFC.App.MatchSkills.Application.Session.Models
             Id = id;
             Name = name;
             DateAdded = DateTime.UtcNow;
+            
         }
     }
 }
