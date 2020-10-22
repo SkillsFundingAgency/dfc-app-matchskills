@@ -23,17 +23,17 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
     public class ServiceTaxonomyRepository : IServiceTaxonomyReader, IServiceTaxonomySearcher
     {
         private readonly RestClient _restClient;
-        
+
         public ServiceTaxonomyRepository()
         {
             _restClient = new RestClient();
         }
-        
+
         public ServiceTaxonomyRepository(RestClient restClient)
-        { 
-            _restClient = restClient??new RestClient();
+        {
+            _restClient = restClient ?? new RestClient();
         }
-        
+
         private async Task<TList> GetJsonListGet<TList>(string apiPath, string ocpApimSubscriptionKey) where TList : class
         {
             var request = new HttpRequestMessage();
@@ -43,50 +43,50 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
         private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
         {
-            return await _restClient.PostAsync<TList>(apiPath, postData,ocpApimSubscriptionKey);
+            return await _restClient.PostAsync<TList>(apiPath, postData, ocpApimSubscriptionKey);
         }
-        
+
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
         {
-            var result = await GetJsonListGet<StSkills>($"{apiPath}/GetAllSkills/Execute/", ocpApimSubscriptionKey); 
+            var result = await GetJsonListGet<StSkills>($"{apiPath}/GetAllSkills/Execute/", ocpApimSubscriptionKey);
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 
         public async Task<Skill[]> GetAllSkillsForOccupation<TSkills>(string apiPath, string ocpApimSubscriptionKey, string occupation)
         {
-            occupation ??= ""; 
+            occupation ??= "";
             var postData = new StringContent($"{{ \"uri\": \"{occupation.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
-            var result = await GetJsonListPost<StOccupationSkills>($"{apiPath}/GetAllSkillsForOccupation/Execute/", ocpApimSubscriptionKey,postData);
+            var result = await GetJsonListPost<StOccupationSkills>($"{apiPath}/GetAllSkillsForOccupation/Execute/", ocpApimSubscriptionKey, postData);
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 
         public async Task<Skill[]> GetSkillsByLabel<TSkills>(string apiPath, string ocpApimSubscriptionKey, string label)
         {
-            label ??= ""; 
+            label ??= "";
             var postData = new StringContent($"{{ \"label\": \"{label.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
-            var result = await GetJsonListPost<StLabelSkills>($"{apiPath}/GetSkillsByLabel/Execute/?matchAltLabels=false", ocpApimSubscriptionKey,postData);
+            var result = await GetJsonListPost<StLabelSkills>($"{apiPath}/GetSkillsByLabel/Execute/?matchAltLabels=false", ocpApimSubscriptionKey, postData);
             return Mapping.Mapper.Map<Skill[]>(result.Skills);
         }
 
         public async Task<SkillsGap> GetSkillsGapForOccupationAndGivenSkills<TOccupations>(string apiPath, string ocpApimSubscriptionKey,
             string occupation, string[] skillList)
         {
-            occupation ??= ""; 
-            skillList ??= new string[0]; 
+            occupation ??= "";
+            skillList ??= new string[0];
             var request = new SkillsGapRequest()
             {
                 Occupation = occupation,
                 SkillList = skillList
             };
             var postData = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, MediaTypeNames.Application.Json);
-            var result = await GetJsonListPost<SkillsGapAnalysis>($"{apiPath}/getskillsgapforoccupationandgivenskills/Execute/", ocpApimSubscriptionKey,postData);
+            var result = await GetJsonListPost<SkillsGapAnalysis>($"{apiPath}/getskillsgapforoccupationandgivenskills/Execute/", ocpApimSubscriptionKey, postData);
             return Mapping.Mapper.Map<SkillsGap>(result);
         }
 
 
-        public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey) 
+        public async Task<Occupation[]> GetAllOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey)
         {
-            var result = await GetJsonListGet<StOccupations>($"{apiPath}/GetAllOccupations/Execute/" , ocpApimSubscriptionKey);
+            var result = await GetJsonListGet<StOccupations>($"{apiPath}/GetAllOccupations/Execute/", ocpApimSubscriptionKey);
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
         }
 
@@ -99,13 +99,13 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
         }
 
 
-        public async Task<Occupation[]> SearchOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey, string occupation,bool matchAltLabels)
+        public async Task<Occupation[]> SearchOccupations<TOccupations>(string apiPath, string ocpApimSubscriptionKey, string occupation, bool matchAltLabels)
         {
 
-            occupation ??= ""; 
+            occupation ??= "";
             var postData = new StringContent($"{{ \"label\": \"{occupation.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
-            var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}/GetOccupationsByLabel/Execute/?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey,postData);
-            
+            var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}/GetOccupationsByLabel/Execute/?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey, postData);
+
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
         }
 
@@ -128,5 +128,5 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
             return result;
         }
     }
-    
+
 }
