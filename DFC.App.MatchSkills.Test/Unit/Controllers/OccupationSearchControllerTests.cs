@@ -150,9 +150,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             };
             var result = await sut.Body() as ViewResult;
 
-            await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
-                string.Equals(x.CurrentPage, CompositeViewModel.PageId.OccupationSearch.Value,
-                    StringComparison.InvariantCultureIgnoreCase)));
+            await _sessionService.Received(1).CreateUserSession(Arg.Any<CreateSessionRequest>());
 
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

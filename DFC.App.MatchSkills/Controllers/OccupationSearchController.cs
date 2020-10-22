@@ -37,12 +37,18 @@ namespace DFC.App.MatchSkills.Controllers
         }
 
 
-        [SessionRequired]
         public override async Task<IActionResult> Body()
         {
+            var createSessionRequest = new CreateSessionRequest()
+            {
+                CurrentPage = CompositeViewModel.PageId.OccupationSearch.Value,
+                UserHasWorkedBefore = true,
+                RouteIncludesDysac = false
+            };
+            await CreateUserSession(createSessionRequest);
+
             ViewModel.SearchService = _settings.SearchService;
             ViewModel.HasError = false;
-            await TrackPageInUserSession();
 
             return await base.Body();
         }
