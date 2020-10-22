@@ -118,7 +118,7 @@ namespace DFC.App.MatchSkills.Controllers
                 }  
             }
 
-            ViewModel.Occupations = occupationsToReturn.ToArray();
+            ViewModel.Occupations = occupationsToReturn.Take(20).ToArray();
 
             return await base.Body();
         }
