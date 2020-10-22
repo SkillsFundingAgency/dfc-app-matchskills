@@ -41,8 +41,6 @@
     <ProjectReference Include="..\DFC.App.MatchSkills.Services.ServiceTaxonomy\DFC.App.MatchSkills.Services.ServiceTaxonomy.csproj" />
   </ItemGroup>
 
-
-
   <ItemGroup>
     <Content Update="appsettings.json">
       <TransformOnBuild>true</TransformOnBuild>
@@ -50,6 +48,10 @@
     </Content>
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties appsettings_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 
 </Project>
