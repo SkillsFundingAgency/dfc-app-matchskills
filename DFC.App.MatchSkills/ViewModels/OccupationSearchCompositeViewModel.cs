@@ -11,5 +11,6 @@
         public bool HasError { get; set; }
         public string AutoCompleteElementName { get;} = "OccupationAutoComplete";
         public string FormElementName { get; } = "OccupationSearch";
+        public bool HasErrors { get; set; }
     }
 }
