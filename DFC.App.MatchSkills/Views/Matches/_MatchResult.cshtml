@@ -9,9 +9,11 @@
         <div class="govuk-grid-row govuk-accordion">
             <div class="@*ncs-progress*@ govuk-clearfix govuk-grid-column-two-thirds" style="@*width: 70%*@">
                 <span class="ncs-progress__count app-results__cta"><b class="govuk-!-font-size-28">@Model.MatchStrengthPercentage%</b> <span class-="govuk-!-font-size-18"><b class="govuk-!-font-size-16 small">Skills match</b></span></span>
-                <div class="ncs-progress__bar">
+                @*<div class="ncs-progress__bar">
                     <span style="width: @Model.MatchStrengthPercentage%"></span>
-                </div>
+                </div>*@
+                <h3>Total Matching Groups: @Model.TotalOccupationEssentialSkills</h3>
+
             </div>
             @if (Model.ShowLmiData)
             {

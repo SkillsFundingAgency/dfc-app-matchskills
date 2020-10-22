@@ -144,7 +144,8 @@ namespace DFC.App.MatchSkills.Controllers
 
         private IEnumerable<OccupationMatch> GetOccupationMatches(UserSession userSession, MatchesFilterModel filters)
         {
-            var matchQuery= userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0);
+            //var matchQuery= userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0);
+            var matchQuery= userSession.OccupationMatches;
             
             if (filters.SortDirection != SortDirection.Descending)
             {
