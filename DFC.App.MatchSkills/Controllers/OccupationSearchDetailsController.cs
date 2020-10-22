@@ -51,6 +51,13 @@ namespace DFC.App.MatchSkills.Controllers
         {
             await TrackPageInUserSession();
 
+            if (string.IsNullOrEmpty(occupationSearchGovUkInputSearch))
+            {
+                ViewModel.Occupations = new List<Occupation>().ToArray();
+
+                return await base.Body();
+            }
+
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                  _settings.ApiKey, occupationSearchGovUkInputSearch, bool.Parse(_settings.SearchOccupationInAltLabels));
 
