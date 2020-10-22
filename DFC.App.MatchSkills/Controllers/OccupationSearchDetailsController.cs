@@ -51,6 +51,13 @@ namespace DFC.App.MatchSkills.Controllers
         {
             await TrackPageInUserSession();
 
+            if (string.IsNullOrEmpty(occupationSearchGovUkInputSearch))
+            {
+                ViewModel.Occupations = new List<Occupation>().ToArray();
+
+                return await base.Body();
+            }
+
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",
                  _settings.ApiKey, occupationSearchGovUkInputSearch, bool.Parse(_settings.SearchOccupationInAltLabels));
 
@@ -90,15 +97,28 @@ namespace DFC.App.MatchSkills.Controllers
 
             foreach (var orderedItem in orderedDictionaryTerms)
             {
-                    var selectedOccupation = occupations.FirstOrDefault(x => x.Name.ToUpperInvariant() == orderedItem.Key.ToUpperInvariant() || x.AlternativeNames.Select(y => y.ToUpperInvariant()).Contains(orderedItem.Key.ToUpperInvariant()));
+                var occupationsFromPrefLabel = occupations.FirstOrDefault(x => x.Name.ToUpperInvariant() == orderedItem.Key.ToUpperInvariant());
 
-                    if (!occupationsToReturn.Any(x => x.Id == selectedOccupation.Id))
+                if(occupationsFromPrefLabel != null)
+                {
+                    if (!occupationsToReturn.Any(x => x.Id == occupationsFromPrefLabel.Id))
                     {
-                        occupationsToReturn.Add(selectedOccupation);
+                        occupationsToReturn.Add(occupationsFromPrefLabel);
                     }
+                }
+
+                var occupationsFromAltLabels = occupations.Where(x => x.AlternativeNames.Select(y => y.ToUpperInvariant()).Contains(orderedItem.Key.ToUpperInvariant()));
+
+                foreach(var occupationFromAlt in occupationsFromAltLabels)
+                {
+                    if (!occupationsToReturn.Any(x => x.Id == occupationFromAlt.Id))
+                    {
+                        occupationsToReturn.Add(occupationFromAlt);
+                    }
+                }  
             }
 
-            ViewModel.Occupations = occupationsToReturn.ToArray();
+            ViewModel.Occupations = occupationsToReturn.Take(20).ToArray();
 
             return await base.Body();
         }
