@@ -18,7 +18,6 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
             public string[] AlternativeLabels { get; set; }
             public string Uri { get; set; }
             public Matches Matches { get; set; }
-            public string Description { get; set; }
         }
 
         public class Matches
