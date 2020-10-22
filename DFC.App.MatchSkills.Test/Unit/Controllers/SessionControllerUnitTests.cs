@@ -47,7 +47,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             //controller.ControllerContext.HttpContext.Session.Set("foo", null);   //  @ToDo: need to start a session for a unit test
 
             // Act.
-            var result = await controller.Body() as ViewResult;
+            var result = await controller.Body() as RedirectResult;
 
             // Assert.
             result.Should().NotBeNull();
