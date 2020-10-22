@@ -108,7 +108,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
             occupation ??= ""; 
             var postData = new StringContent($"{{ \"label\": \"{occupation.ToLower()}\"}}", Encoding.UTF8, MediaTypeNames.Application.Json);
-            var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}/GetOccupationsByLabel/Execute/?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey,postData);
+            var result = await GetJsonListPost<StOccupationSearchResult.OccupationSearchResult>($"{apiPath}?matchAltLabels={matchAltLabels}", ocpApimSubscriptionKey,postData);
             
             return Mapping.Mapper.Map<Occupation[]>(result.Occupations);
         }
@@ -126,7 +126,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
             var jsonPayload = JsonConvert.SerializeObject(request);
             var postData = new StringContent(jsonPayload, Encoding.UTF8, MediaTypeNames.Application.Json);
-            var response = await GetJsonListPost<GetOccupationsWithMatchingSkillsResponse>($"http://localhost:7071/Execute/", ocpApimSubscriptionKey, postData);
+            var response = await GetJsonListPost<GetOccupationsWithMatchingSkillsResponse>($"{apiPath}", ocpApimSubscriptionKey, postData);
 
             var result = Mapping.Mapper.Map<OccupationMatch[]>(response.MatchingOccupations);
             return result;
