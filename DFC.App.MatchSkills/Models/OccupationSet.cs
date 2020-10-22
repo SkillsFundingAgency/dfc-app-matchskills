@@ -16,7 +16,7 @@ namespace DFC.App.MatchSkills.Models
             {
                 foreach (var occupation in userSession.Occupations)
                 {
-                    Add(new Occupation(occupation.Id, occupation.Name, occupation.DateAdded));
+                    Add(new Occupation(occupation.Id, occupation.Name, occupation.DateAdded, string.Empty));
                 }
             }
         }
