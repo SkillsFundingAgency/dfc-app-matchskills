@@ -6,13 +6,13 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
     {
         public string CareerTitle { get; set; }
 
-        public string[] MissingSkills { get; set; }
-        public string[] OptionalMissingSkills { get; set; }
+        public string[] MissingSkills { get; set; } = new string[0];
+        public string[] OptionalMissingSkills { get; set; } = new string[0];
 
         public string CareerDescription { get; set; }
 
-        public string[] MatchingSkills { get; set; }
-        public string[] OptionalMatchingSkills { get; set; }
+        public string[] MatchingSkills { get; set; } = new string[0];
+        public string[] OptionalMatchingSkills { get; set; } = new string[0];
         public JobGrowth JobGrowth { get; set; }
 
     }

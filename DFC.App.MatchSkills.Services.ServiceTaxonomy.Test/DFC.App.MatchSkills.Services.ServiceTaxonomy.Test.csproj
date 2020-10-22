@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.22" />
-    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.11" />
+    <PackageReference Include="DFC.Personalisation.Common" Version="0.1.28" />
+    <PackageReference Include="DFC.Personalisation.Domain" Version="0.1.12" />
     <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.3" />

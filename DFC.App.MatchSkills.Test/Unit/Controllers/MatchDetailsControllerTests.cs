@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
@@ -82,10 +83,52 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _sessionService.GetUserSession().Returns(userSession);
             _serviceTaxonomy = Substitute.For<IServiceTaxonomySearcher>();
             _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(Arg.Any<string>(), Arg.Any<string>(),
-                Arg.Any<string>(), Arg.Any<string[]>()).Returns(new SkillsGap());
+                Arg.Any<string>(), Arg.Any<string[]>()).Returns(new SkillsGap(){});
             _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService );
 
             var result = await _controller.Body("id") as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            result.ViewName.Should().BeNull();
+        }
+
+
+        [Test]
+        public async Task WhenBodyCalled_ReturnHtmlWithSkills()
+        {
+            var userSession = new UserSession
+            {
+                Occupations = new HashSet<UsOccupation>(1)
+                {
+                    new UsOccupation("id", "id")
+                },
+                Skills = new HashSet<UsSkill>(1)
+                {
+                    new UsSkill("id", "id")
+                },
+                OccupationMatches = new List<OccupationMatch>()
+                {
+                    new OccupationMatch()
+                    {
+                        Uri = "id",
+                        JobProfileUri = "id"
+                    }
+                }
+            };
+
+            _sessionService.GetUserSession().Returns(userSession);
+            _serviceTaxonomy = Substitute.For<IServiceTaxonomySearcher>();
+            _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(Arg.Any<string>(), Arg.Any<string>(),
+                Arg.Any<string>(), Arg.Any<string[]>()).Returns(new SkillsGap() { MatchingSkills = new []{"test"}, MissingSkills = new[] { "test2" }, OptionalMatchingSkills = new []{"test"}, OptionalMissingSkills = new[] { "test2" } });
+            _controller = new MatchDetailsController(_serviceTaxonomy, _serviceTaxonomySettings, _compositeSettings, _sessionService);
+
+            var result = await _controller.Body("id") as ViewResult;
+            var model = result.Model as MatchDetailsCompositeViewModel;
+
+            model.MatchingSkills.Count(x => x.Value == false && x.Key == "test2").Should().BeGreaterOrEqualTo(1);
+            model.MatchingSkills.Count(x => x.Value && x.Key == "test").Should().BeGreaterOrEqualTo(1);
+            model.OptionalMatchingSkills.Count(x => x.Value == false && x.Key == "test2").Should().BeGreaterOrEqualTo(1);
+            model.OptionalMatchingSkills.Count(x => x.Value && x.Key == "test").Should().BeGreaterOrEqualTo(1);
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();

@@ -110,7 +110,8 @@ namespace DFC.App.MatchSkills
                 endpoints.MapControllerRoute("selectskills",appPath + "/selectskills", new { controller = "selectskills", action = "body" });
                 endpoints.MapControllerRoute("basket", appPath + "/basket", new { controller = "basket", action = "submit" });
                 endpoints.MapControllerRoute("confirmremove",appPath + "/confirmremove", new { controller = "confirmremove", action = "body" });
-                endpoints.MapControllerRoute("occupationsearch", appPath + "/occupationsearch/getskillsforoccupation", new { controller = "occupationsearch", action = "getskillsforoccupation" });
+                endpoints.MapControllerRoute("occupationsearch", appPath + "/occupationsearch/getskillsforoccupation", new { controller = "occupationsearchde", action = "getskillsforoccupation" });
+                endpoints.MapControllerRoute("occupationsearchdetails", appPath + "/occupationsearchdetails", new { controller = "occupationsearchdetails", action = "body" });
                 endpoints.MapControllerRoute("occupationsearchauto",appPath + "/occupationsearchauto", new { controller = "occupationsearch", action = "occupationsearchauto" });
                 endpoints.MapControllerRoute("removed",appPath + "/removed", new { controller = "removed", action = "body" });
                 endpoints.MapControllerRoute("route",appPath + "/route", new { controller = "route", action = "body" });
