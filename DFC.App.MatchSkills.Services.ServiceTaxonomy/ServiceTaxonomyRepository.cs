@@ -43,11 +43,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
         private async Task<TList> GetJsonListPost<TList>(string apiPath, string ocpApimSubscriptionKey, HttpContent postData) where TList : class
         {
-            var request = new HttpRequestMessage();
-            request.Headers.Add("X-Forwarded-Host", "Www.g.com");
-            request.Headers.Add("Ocp-Apim-Subscription-Key", ocpApimSubscriptionKey);
-            request.Content = postData;
-            return await _restClient.PostAsync<TList>(apiPath, request);
+            return await _restClient.PostAsync<TList>(apiPath, postData, ocpApimSubscriptionKey);
         }
 
         public async Task<Skill[]> GetAllSkills<TSkills>(string apiPath, string ocpApimSubscriptionKey)
@@ -126,7 +122,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
 
             var jsonPayload = JsonConvert.SerializeObject(request);
             var postData = new StringContent(jsonPayload, Encoding.UTF8, MediaTypeNames.Application.Json);
-            var response = await GetJsonListPost<GetOccupationsWithMatchingSkillsResponse>($"http://localhost:7071/Execute/", ocpApimSubscriptionKey, postData);
+            var response = await GetJsonListPost<GetOccupationsWithMatchingSkillsResponse>($"{apiPath}/GetOccupationsWithMatchingSkills/Execute", ocpApimSubscriptionKey, postData);
 
             var result = Mapping.Mapper.Map<OccupationMatch[]>(response.MatchingOccupations);
             return result;
