@@ -23,7 +23,7 @@
                         @foreach (var skill in Model.MatchingSkills)
                         {
                             <div>
-                                <govukCheckbox id="@Model.GetElementId($"govukLink_{@skill.Key}","MatchDetails")" AdditionalClass="checkbox-container-item" checked="@skill.Value"></govukCheckbox>
+                                <govukCheckbox id="@Model.GetElementId($"govukLink_{@skill.Key}","MatchDetails")" label="@skill.Key" AdditionalClass="checkbox-container-item" checked="@skill.Value"></govukCheckbox>
                             </div>
                         }
                     </div>
