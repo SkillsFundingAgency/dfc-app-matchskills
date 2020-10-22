@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class OccupationSearchDetailsController : CompositeSessionController<OccupationSearchDetailsCompositeViewModel>
     {
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;

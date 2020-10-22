@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace DFC.App.MatchSkills.Controllers
 {
+    [ExcludeFromCodeCoverage]
     public class SelectSkillsController : CompositeSessionController<SelectSkillsCompositeViewModel>
     {
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
