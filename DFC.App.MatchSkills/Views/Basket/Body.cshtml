@@ -19,7 +19,7 @@
                 slm.EndSkillsListHTML = "</ul>";
             }
             @await Component.InvokeAsync("SkillsList", slm)
-            <p><a class="govuk-link" href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.MoreSkills">Add more skills to this list</a></p>
+            <p><a class="govuk-link" href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.MoreJobs">Add more skills to this list</a></p>
             <br>
             <p>
                 <govukButton id="@Model.GetElementId("govukButtonLink", "Continue")" text="Continue to your career matches"></govukButton>
