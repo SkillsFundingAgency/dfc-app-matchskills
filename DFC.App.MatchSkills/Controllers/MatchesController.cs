@@ -43,9 +43,6 @@ namespace DFC.App.MatchSkills.Controllers
             if (userSession.Skills.Count == 0) return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
 
             await TrackPageInUserSession(userSession);
-            if (null == userSession) return await base.Body();
-
-
             await SetViewModel(userSession);
 
             return await base.Body();
