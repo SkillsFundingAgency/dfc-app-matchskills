@@ -74,6 +74,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy
                 .ForMember(dest => dest.MissingSkills, opt => opt.MapFrom(src => src.MissingSkills.Where(x => x.RelationshipType == RelationshipType.Essential).Select(x => x.Skill)))
                 .ForMember(dest => dest.MatchingSkills, opt => opt.MapFrom(src => src.MatchingSkills.Where(x => x.RelationshipType == RelationshipType.Essential).Select(x => x.Skill)))
                 .ForMember(dest => dest.OptionalMissingSkills, opt => opt.MapFrom(src => src.MissingSkills.Where(x => x.RelationshipType == RelationshipType.Optional).Select(x => x.Skill)))
+                .ForMember(dest => dest.OptionalMatchingSkills, opt => opt.MapFrom(src => src.MatchingSkills.Where(x => x.RelationshipType == RelationshipType.Optional).Select(x => x.Skill)))
                 .ForMember(dest => dest.CareerDescription, opt => opt.MapFrom(src => src.Description))
                 .ConstructUsing(dest => new SkillsGap());
         }
