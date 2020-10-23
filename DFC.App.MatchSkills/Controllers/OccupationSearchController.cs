@@ -94,6 +94,7 @@ namespace DFC.App.MatchSkills.Controllers
             
             return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SelectSkills}");
         }
+
         public async Task<string> GetOccupationIdFromName(string occupation)
         {
             var occupations = await _serviceTaxonomy.SearchOccupations<Occupation[]>($"{_settings.ApiUrl}",

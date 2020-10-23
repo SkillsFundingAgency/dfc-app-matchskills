@@ -63,7 +63,7 @@ namespace DFC.App.MatchSkills
             services.AddScoped<ICosmosService, CosmosService>();
             services.AddScoped<ISessionService, SessionService>();
             services.AddScoped<IFileService, FileService>();
-            services.AddScoped<ILmiService, LmiService>();
+            //services.AddScoped<ILmiService, LmiService>();
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IDysacSessionReader,DysacService>();
 
