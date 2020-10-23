@@ -22,14 +22,14 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly int _minimumMatchingSkills;
         private readonly ISessionService _sessionService;
         private readonly string _skillUrlBase;
-        private readonly ILmiService _lmiService;
+        //private readonly ILmiService _lmiService;
         private readonly IDysacSessionReader _dysacService;
 
         public BasketController(IOptions<CompositeSettings> compositeSettings,
             ISessionService sessionService,  
             IOptions<ServiceTaxonomySettings> settings,
             IServiceTaxonomySearcher serviceTaxonomy,
-            ILmiService lmiService,
+            //ILmiService lmiService,
             IDysacSessionReader dysacService,
             IOptions<DysacSettings> dysacSettings)
             : base( compositeSettings, sessionService)
@@ -40,7 +40,7 @@ namespace DFC.App.MatchSkills.Controllers
             _minimumMatchingSkills = settings.Value.MinimumMatchingSkills;
             _sessionService = sessionService;
             _skillUrlBase = $"{settings.Value.EscoUrl}/skill/";
-            _lmiService = lmiService;
+            //_lmiService = lmiService;
             ViewModel.DysacSaveUrl = dysacSettings.Value.DysacSaveUrl;
             _dysacService = dysacService;
         }
@@ -66,8 +66,8 @@ namespace DFC.App.MatchSkills.Controllers
                 int minimumMatch = Math.Min(_minimumMatchingSkills, userSession.Skills.Count);
                 var skillIds = userSession.Skills.Select(skill => skill.Id).ToArray();
                 userSession.OccupationMatches = await _serviceTaxonomy.FindOccupationsForSkills(_apiUrl, _apiKey, skillIds, minimumMatch);
-                userSession.OccupationMatches =
-                    _lmiService.GetPredictionsForGetOccupationMatches(userSession.OccupationMatches);
+                //userSession.OccupationMatches =
+                //    _lmiService.GetPredictionsForGetOccupationMatches(userSession.OccupationMatches);
                 if (userSession.RouteIncludesDysac.HasValue && userSession.RouteIncludesDysac.Value
                     && userSession.DysacCompleted.HasValue && userSession.DysacCompleted.Value)
                 {
