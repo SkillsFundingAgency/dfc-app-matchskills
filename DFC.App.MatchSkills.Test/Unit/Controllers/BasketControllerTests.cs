@@ -1,9 +1,7 @@
-﻿using DFC.App.MatchSkills.Application.LMI.Interfaces;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
 using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
 using DFC.App.MatchSkills.ViewModels;
@@ -15,8 +13,6 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Dysac;
-using DFC.App.MatchSkills.Application.Dysac.Models;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -28,11 +24,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private ISessionService _sessionService;
         private IOptions<ServiceTaxonomySettings> _settings;
          
-        private ServiceTaxonomyRepository _serviceTaxonomyRepository;
-        private ILmiService _lmiService;
-        private IDysacSessionReader _dysacService;
-        private IOptions<DysacSettings> _dysacSettigs;
-
         const string SkillsJson = "{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";
 
         [SetUp]
@@ -49,17 +40,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _compositeSettings = Options.Create(new CompositeSettings());
             _sessionService = Substitute.For<ISessionService>();
             _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
-            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            _lmiService = Substitute.For<ILmiService>();
-            _dysacService = Substitute.For<IDysacSessionReader>();
-            _dysacSettigs = Options.Create(new DysacSettings());
 
         }
 
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, /*_lmiService,*/ _dysacService, _dysacSettigs);
+            var controller = new BasketController(_compositeSettings, _sessionService);
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
 
             var result = controller.Head() as ViewResult;
@@ -73,7 +60,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, /*_lmiService,*/ _dysacService, _dysacSettigs);
+            var controller = new BasketController(_compositeSettings, _sessionService);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -89,68 +76,9 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public async Task WhenSubmitCalled_ReturnHtml()
-        {
-            _dysacService.GetDysacJobCategories(Arg.Any<string>()).Returns(new DysacJobCategory[1]);
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, /*_lmiService,*/ _dysacService, _dysacSettigs);
-            {
-                controller.ControllerContext = new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext()
-                };
-            };
-            
-            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
-
-            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true, true));
-
-            var result = await controller.Submit();
-
-            result.Should().NotBeNull();
-            result.Should().BeOfType<RedirectResult>();
-        }
-
-        /*
-         // WIP - refactor the tests which need a session
-        
-
-        [Test]
-        public async Task WhenPostBodyCalled_ReturnHtml()
-        {
-            var controller = new BasketController(_compositeSettings, _sessionService );
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-
-            var result = await controller.Body() as ViewResult;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
-        }
-
-        [Test]
-        public void WhenSessionIdIsNotNamedCorrectlySet_NoCookieIsSaved()
-        {
-            var controller = new BasketController(_compositeSettings, _sessionService );
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-
-            controller.HttpContext.Request.QueryString = QueryString.Create("wrongId", "Abc123");
-            controller.Body();
-            var headers = controller.Response.Headers;
-
-            headers.Should().NotContainKey("set-cookie");
-            headers.Values.Should().NotContain($"{CookieName}*");
-        }
-        */
-
-        [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository, /*_lmiService,*/ _dysacService, _dysacSettigs);
+            var controller = new BasketController(_compositeSettings, _sessionService);
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -160,7 +88,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new BasketController(_compositeSettings, _sessionService , _settings, _serviceTaxonomyRepository,/* _lmiService,*/ _dysacService, _dysacSettigs);
+            var controller = new BasketController(_compositeSettings, _sessionService);
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

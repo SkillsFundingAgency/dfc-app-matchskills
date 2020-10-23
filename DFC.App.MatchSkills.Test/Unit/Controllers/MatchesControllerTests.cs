@@ -4,22 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac.Models;
 using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy;
 using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
-using DFC.App.MatchSkills.Service;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
 using DFC.App.MatchSkills.ViewComponents.Pagination;
 using DFC.App.MatchSkills.ViewModels;
+using DFC.Personalisation.Common.Net.RestClient;
 using FluentAssertions;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -33,21 +36,33 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
          
         private IOptions<PageSettings> _pageSettings;
         private IOptions<DysacSettings> _dysacSettigs;
-
+        private IOptions<ServiceTaxonomySettings> _serviceTaxSettings;
+        private IServiceTaxonomySearcher _serviceTaxonomy;
+        const string SkillsJson = "{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";
 
         [SetUp]
         public void Init()
         {
             _sessionService = Substitute.For<ISessionService>();
+            _serviceTaxonomy = Substitute.For<IServiceTaxonomySearcher>();
             _compositeSettings = Options.Create(new CompositeSettings());
             _dysacSettigs = Options.Create(new DysacSettings());
             _pageSettings = Options.Create(new PageSettings());
+            _serviceTaxSettings = Options.Create(new ServiceTaxonomySettings
+            {
+                ApiKey = "test",
+                ApiUrl = "https://www.api.com"
+            });
+
+            var handlerMock = MockHelpers.GetMockMessageHandler(SkillsJson);
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomy = new ServiceTaxonomyRepository(restClient);
         }
 
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -68,7 +83,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalledWithOutPage_ReturnCurrentPageAs1()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService , _pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -90,21 +105,37 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenTotalResultsIsGreaterThanPage_Then_CorrectTotalPagesNumberReturned()
         {
             var userSession = MockHelpers.GetUserSession(true, true, true);
-            userSession.OccupationMatches.Add(new OccupationMatch()
+
+            var x = 1;
+            var occs = new GetOccupationsWithMatchingSkillsResponse
             {
-                JobProfileTitle = "Mock Title3",
-                JobProfileUri = "http://mockjoburl",
-                LastModified = DateTime.UtcNow,
-                TotalOccupationEssentialSkills = 12,
-                MatchingEssentialSkills = 6,
-                TotalOccupationOptionalSkills = 4,
-                MatchingOptionalSkills = 2,
-                Uri = "MatchUri",
+                MatchingOccupations = new List<GetOccupationsWithMatchingSkillsResponse.MatchedOccupation>()
+            };
+            while (x < 4)
+            {
+
+
+                occs.MatchingOccupations.Add(new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
+                    {
+                        JobProfileTitle = $"Mock Title{x}",
+                        JobProfileUri = "http://mockjoburl",
+                        LastModified = DateTime.UtcNow,
+                        TotalOccupationEssentialSkills = 12,
+                        MatchingEssentialSkills = 6,
+                        TotalOccupationOptionalSkills = 4,
+                        MatchingOptionalSkills = 2,
+                        Uri = "MatchUri",
+                    }
+                );
+                x++;
             }
-            );
+
+            var handlerMock = MockHelpers.GetMockMessageHandler(JsonConvert.SerializeObject(occs));
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomy = new ServiceTaxonomyRepository(restClient);
 
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -129,7 +160,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenTotalResultsMatchesPageSize_Then_CorrectTotalPagesNumberReturned()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 2 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -153,7 +184,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBodyCalledWithPageNumber_ReturnCorrectPage()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -169,14 +200,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(2);
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
         }
 
         [Test]
         public async Task WhenBodyCalledWithPageNumberGreaterThanTheNumberOfPages__Then_ReturnLastPage()
         {
             var pageSettings = Options.Create(new PageSettings() { PageSize = 1 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -192,7 +223,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
-            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(2);
+            result.ViewData.Model.As<MatchesCompositeViewModel>().CurrentPage.Should().Be(1);
         }
 
         [Test]
@@ -232,14 +263,17 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             var userSession = MockHelpers.GetUserSession(true, true, true);
 
             var x = 1;
-
+            var occs = new GetOccupationsWithMatchingSkillsResponse
+            {
+                MatchingOccupations = new List<GetOccupationsWithMatchingSkillsResponse.MatchedOccupation>()
+            };
             while (x < 10)
             {
 
 
-                userSession.OccupationMatches.Add(new OccupationMatch()
+                occs.MatchingOccupations.Add(new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation()
                 {
-                    JobProfileTitle = $"Mock Title{x}",
+                     JobProfileTitle= $"Mock Title{x}",
                     JobProfileUri = "http://mockjoburl",
                     LastModified = DateTime.UtcNow,
                     TotalOccupationEssentialSkills = 12,
@@ -251,8 +285,14 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 );
                 x++;
             }
-            var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
-            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs);
+
+            var handlerMock = MockHelpers.GetMockMessageHandler(JsonConvert.SerializeObject(occs));
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomy = new ServiceTaxonomyRepository(restClient);
+
+
+            var pageSettings = Options.Create(new PageSettings() { PageSize = 5 });
+            var controller = new MatchesController(_compositeSettings, _sessionService , pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -276,20 +316,22 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [TestCase("MatchPercentage", "descending", "Mock Title1")]
         [TestCase("Alphabetically", "ascending", "Mock Title1")]
         [TestCase("Alphabetically", "descending", "Mock Title2")]
-        [TestCase("JobSectorGrowth", "ascending", "Mock Title2")]
-        [TestCase("JobSectorGrowth", "descending", "Mock Title1")]
         public async Task WhenOrdering_Then_ReturnResultsInCorrectOrder(string sortBy, string direction, string expected)
         {
             var userSession = MockHelpers.GetUserSession(true, false, true);
             var match1 = "Mock Title1";
             var match2 = "Mock Title2";
 
-            userSession.OccupationMatches.Add(new OccupationMatch()
+            var occs = new GetOccupationsWithMatchingSkillsResponse
+            {
+                MatchingOccupations = new List<GetOccupationsWithMatchingSkillsResponse.MatchedOccupation>()
+            };
+
+            occs.MatchingOccupations.Add(new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation
             {
                 JobProfileTitle = match1,
                 JobProfileUri = "http://mockjoburl",
                 LastModified = DateTime.UtcNow,
-                JobGrowth = JobGrowth.Decreasing,
                 TotalOccupationEssentialSkills = 12,
                 MatchingEssentialSkills = 8,
                 TotalOccupationOptionalSkills = 4,
@@ -297,12 +339,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
                 Uri = "MatchUri",
             }
             );
-            userSession.OccupationMatches.Add(new OccupationMatch()
+            occs.MatchingOccupations.Add(new GetOccupationsWithMatchingSkillsResponse.MatchedOccupation
             {
                 JobProfileTitle = match2,
                 JobProfileUri = "http://mockjoburl",
                 LastModified = DateTime.UtcNow,
-                JobGrowth = JobGrowth.Increasing,
                 TotalOccupationEssentialSkills = 12,
                 MatchingEssentialSkills = 6,
                 TotalOccupationOptionalSkills = 4,
@@ -312,8 +353,12 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             );
 
 
+            var handlerMock = MockHelpers.GetMockMessageHandler(JsonConvert.SerializeObject(occs));
+            var restClient = new RestClient(handlerMock.Object);
+            _serviceTaxonomy = new ServiceTaxonomyRepository(restClient);
+
             var pageSettings = Options.Create(new PageSettings() { PageSize = 10 });
-            var controller = new MatchesController(_compositeSettings, _sessionService, pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService, pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -338,7 +383,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task When_ChangingOrderType_Then_UpdateTheChoiceInSession()
         {
-            var controller = new MatchesController(_compositeSettings, _sessionService, _pageSettings, _dysacSettigs);
+            var controller = new MatchesController(_compositeSettings, _sessionService, _pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -357,5 +402,26 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
                x.MatchesSortBy == SortBy.Alphabetically && x.MatchesSortDirection == SortDirection.Ascending));
         }
+
+        [Test]
+        public async Task WhenSubmitCalled_ReturnHtml()
+        {
+            var controller = new MatchesController(_compositeSettings, _sessionService, _pageSettings, _dysacSettigs, _serviceTaxSettings, _serviceTaxonomy);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.HttpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>()
+            {
+                {"page","0" }
+            });
+
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true, true, true));
+
+            var result = await controller.Submit() as ViewResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+        }
+
     }
 }

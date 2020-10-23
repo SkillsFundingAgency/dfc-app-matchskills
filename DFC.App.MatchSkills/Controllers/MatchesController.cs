@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFC.App.MatchSkills.Application.Dysac.Models;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy;
+using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -18,27 +20,48 @@ namespace DFC.App.MatchSkills.Controllers
     {
         private readonly int _pageSize;
         private readonly IOptions<CompositeSettings> _compositeSettings;
+        private readonly ServiceTaxonomySettings _serviceTaxonomySettings;
+        private readonly IServiceTaxonomySearcher _serviceTaxonomy;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService,   IOptions<PageSettings> pageSettings, IOptions<DysacSettings> dysacSettings)
+            ISessionService sessionService, IOptions<PageSettings> pageSettings, IOptions<DysacSettings> dysacSettings, IOptions<ServiceTaxonomySettings> serviceTaxonomySettings, IServiceTaxonomySearcher serviceTaxonomy)
             : base(compositeSettings, sessionService)
         {
             _pageSize = pageSettings.Value.PageSize;
             _compositeSettings = compositeSettings;
+            _serviceTaxonomy = serviceTaxonomy;
+            _serviceTaxonomySettings = serviceTaxonomySettings.Value;
             ViewModel.DysacSaveUrl = dysacSettings.Value.DysacSaveUrl;
         }
 
         [SessionRequired]
         public override async Task<IActionResult> Body()
         {
-            
+
             var userSession = await GetUserSession();
+
+            if (userSession.Skills.Count == 0) return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
+
+            await TrackPageInUserSession(userSession);
             if (null == userSession) return await base.Body();
 
-            
-            await SetViewModel( userSession);
-            
+
+            await SetViewModel(userSession);
+
             return await base.Body();
+        }
+
+        [SessionRequired]
+        [HttpPost]
+        [Route("body/Matches")]
+        public async Task<IActionResult> Submit()
+        {
+
+            var userSession = await GetUserSession();
+            if (userSession.Skills.Count == 0) return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
+            await TrackPageInUserSession(userSession);
+            await SetViewModel(userSession);
+            return await Task.FromResult<IActionResult>(View("Body",ViewModel));
         }
 
         private int GetTotalPages(int totalResults)
@@ -53,15 +76,19 @@ namespace DFC.App.MatchSkills.Controllers
                 return (totalResults / _pageSize) + 1;
             }
 
-            return (int) Math.Round((decimal) totalResults / _pageSize);
+            return (int)Math.Round((decimal)totalResults / _pageSize);
         }
 
         private async Task SetViewModel(UserSession userSession)
         {
-            var filters = GetFilters(userSession);
-            await TrackPageInUserSession(userSession);
+            int minimumMatch = Math.Min(_serviceTaxonomySettings.MinimumMatchingSkills, userSession.Skills.Count);
 
-            var totalMatches = userSession.OccupationMatches.Count(m => m.MatchingEssentialSkills > 0);
+            var skillIds = userSession.Skills.Select(skill => skill.Id).ToArray();
+            var matches = await _serviceTaxonomy.FindOccupationsForSkills(_serviceTaxonomySettings.ApiUrl, _serviceTaxonomySettings.ApiKey, skillIds, minimumMatch);
+
+            var filters = GetFilters(userSession);
+
+            var totalMatches = matches.Count();
 
             ViewModel.TotalPages = GetTotalPages(totalMatches);
 
@@ -71,9 +98,8 @@ namespace DFC.App.MatchSkills.Controllers
             }
             var skip = filters.Page > 1 ? (filters.Page - 1) * _pageSize : 0;
 
-            var showLmiData = userSession.OccupationMatches.All(x => x.JobGrowth != JobGrowth.Undefined);
             ViewModel.CareerMatches = new List<CareerMatch>();
-            foreach (var match in (GetOccupationMatches(userSession, filters)).Skip(skip).Take(_pageSize))
+            foreach (var match in (GetOccupationMatches(matches, filters)).Skip(skip).Take(_pageSize))
             {
                 var cm = new CareerMatch(_compositeSettings)
                 {
@@ -89,8 +115,7 @@ namespace DFC.App.MatchSkills.Controllers
                     TotalOccupationEssentialSkills = match.TotalOccupationEssentialSkills,
                     TotalOccupationOptionalSkills = match.TotalOccupationOptionalSkills,
                     SourceSkillCount = userSession.Skills.Count,
-                    MatchStrengthPercentage = match.MatchStrengthPercentage,
-                    ShowLmiData = showLmiData
+                    MatchStrengthPercentage = match.MatchStrengthPercentage
                 };
                 ViewModel.CareerMatches.Add(cm);
             }
@@ -104,7 +129,6 @@ namespace DFC.App.MatchSkills.Controllers
             ViewModel.TotalMatches = totalMatches;
             ViewModel.CurrentSortBy = filters.SortBy;
             ViewModel.CurrentDirection = filters.SortDirection;
-            ViewModel.ShowLmiData = showLmiData;
 
         }
 
@@ -142,11 +166,11 @@ namespace DFC.App.MatchSkills.Controllers
             };
         }
 
-        private IEnumerable<OccupationMatch> GetOccupationMatches(UserSession userSession, MatchesFilterModel filters)
+        private IEnumerable<OccupationMatch> GetOccupationMatches(OccupationMatch[] matches, MatchesFilterModel filters)
         {
             //var matchQuery= userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0);
-            var matchQuery= userSession.OccupationMatches;
-            
+            var matchQuery = matches;
+
             if (filters.SortDirection != SortDirection.Descending)
             {
                 return filters.SortBy switch
