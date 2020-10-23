@@ -48,7 +48,7 @@ namespace DFC.App.MatchSkills.Test.Models
 
             // Assert.
             url.Should().NotBeNullOrWhiteSpace();
-            url.Should().Be("/matchskills/MatchDetails?id=4ade6bd5-9180-49cf-8270-6ff4730b3b2e");
+            url.Should().Be("/matchskills/MatchDetails?id=http://nationalcareers.service.gov.uk/jobprofile/4ade6bd5-9180-49cf-8270-6ff4730b3b2e");
         }
     }
 }

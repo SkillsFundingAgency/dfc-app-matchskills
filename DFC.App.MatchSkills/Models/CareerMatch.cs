@@ -1,9 +1,8 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.Personalisation.Domain.Models;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 
 namespace DFC.App.MatchSkills.Models
 {
@@ -42,9 +41,8 @@ namespace DFC.App.MatchSkills.Models
         public string GetDetailsUrl(string jobProfileUrl)
         {
             Throw.IfNullOrEmpty(jobProfileUrl, nameof(jobProfileUrl));
-            var jobProfileGuid = jobProfileUrl.Split('/').Last();
             
-            string url = $"{_compositeSettings.Value.Path}/MatchDetails?id={jobProfileGuid}";
+            string url = $"{_compositeSettings.Value.Path}/MatchDetails?id={jobProfileUrl}";
 
             return url;
         }
