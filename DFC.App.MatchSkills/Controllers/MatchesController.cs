@@ -20,7 +20,7 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly IOptions<CompositeSettings> _compositeSettings;
 
         public MatchesController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService,   IOptions<PageSettings> pageSettings, IOptions<DysacSettings> dysacSettings)
+            ISessionService sessionService, IOptions<PageSettings> pageSettings, IOptions<DysacSettings> dysacSettings)
             : base(compositeSettings, sessionService)
         {
             _pageSize = pageSettings.Value.PageSize;
@@ -31,13 +31,13 @@ namespace DFC.App.MatchSkills.Controllers
         [SessionRequired]
         public override async Task<IActionResult> Body()
         {
-            
+
             var userSession = await GetUserSession();
             if (null == userSession) return await base.Body();
 
-            
-            await SetViewModel( userSession);
-            
+
+            await SetViewModel(userSession);
+
             return await base.Body();
         }
 
@@ -53,7 +53,7 @@ namespace DFC.App.MatchSkills.Controllers
                 return (totalResults / _pageSize) + 1;
             }
 
-            return (int) Math.Round((decimal) totalResults / _pageSize);
+            return (int)Math.Round((decimal)totalResults / _pageSize);
         }
 
         private async Task SetViewModel(UserSession userSession)
@@ -73,7 +73,7 @@ namespace DFC.App.MatchSkills.Controllers
 
             var showLmiData = userSession.OccupationMatches.All(x => x.JobGrowth != JobGrowth.Undefined);
             ViewModel.CareerMatches = new List<CareerMatch>();
-            foreach (var match in (GetOccupationMatches(userSession, filters)).Skip(skip).Take(_pageSize))
+            foreach (var match in (GetOccupationMatches(userSession, filters).OrderByDescending(z => z.TotalOccupationEssentialSkills).Skip(skip).Take(_pageSize)))
             {
                 var cm = new CareerMatch(_compositeSettings)
                 {
@@ -145,8 +145,8 @@ namespace DFC.App.MatchSkills.Controllers
         private IEnumerable<OccupationMatch> GetOccupationMatches(UserSession userSession, MatchesFilterModel filters)
         {
             //var matchQuery= userSession.OccupationMatches.Where(m => m.MatchingEssentialSkills > 0);
-            var matchQuery= userSession.OccupationMatches;
-            
+            var matchQuery = userSession.OccupationMatches;
+
             if (filters.SortDirection != SortDirection.Descending)
             {
                 return filters.SortBy switch
