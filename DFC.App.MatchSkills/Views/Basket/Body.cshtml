@@ -5,7 +5,7 @@
 <div class="govuk-grid-row">
 
     <div class="govuk-grid-column-two-thirds">
-        <form id="@Model.GetElementId("Form", "Continue")" action="@Model.Id" method="post">
+        <form id="@Model.GetElementId("Form", "Continue")" action="@CompositeViewModel.PageId.Matches" method="post">
 
             <govukHeadingH1 text="@Model.PageHeading"></govukHeadingH1>
             <p>
