@@ -1,9 +1,8 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.Personalisation.Domain.Models;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 
 namespace DFC.App.MatchSkills.Models
 {

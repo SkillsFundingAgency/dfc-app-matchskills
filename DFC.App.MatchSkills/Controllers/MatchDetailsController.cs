@@ -19,9 +19,9 @@ namespace DFC.App.MatchSkills.Controllers
         private readonly IServiceTaxonomySearcher _serviceTaxonomy;
         private readonly ServiceTaxonomySettings _settings;
 
-        public MatchDetailsController(IServiceTaxonomySearcher serviceTaxonomy, 
+        public MatchDetailsController(IServiceTaxonomySearcher serviceTaxonomy,
             IOptions<ServiceTaxonomySettings> settings, IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService ) : base(compositeSettings, sessionService)
+            ISessionService sessionService) : base(compositeSettings, sessionService)
         {
             Throw.IfNull(serviceTaxonomy, nameof(serviceTaxonomy));
             Throw.IfNull(settings, nameof(settings));
@@ -48,7 +48,7 @@ namespace DFC.App.MatchSkills.Controllers
             }
 
             var skillsGap = await GetSkillsGap(id);
-            
+
             ViewModel.MatchingSkills = GetSkillsCombined(skillsGap.MatchingSkills, skillsGap.MissingSkills);
             ViewModel.OptionalMatchingSkills = GetSkillsCombined(skillsGap.OptionalMatchingSkills, skillsGap.OptionalMissingSkills);
             ViewModel.CareerTitle = UpperCaseFirstLetter(skillsGap.CareerTitle);
@@ -63,29 +63,24 @@ namespace DFC.App.MatchSkills.Controllers
                 return null;
 
             var userSession = await GetUserSession();
-            
-            if (!string.IsNullOrEmpty(id))
-            {
 
-                var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
 
-                if (userSession.Skills == null || userSession.Skills.Count == 0)
-                    return null;
-            
+            var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
 
-                var skillsGap =  await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
-                    _settings.ApiKey, id, skillsList);
-                return skillsGap;
-            }
+            if (userSession.Skills == null || userSession.Skills.Count == 0)
+                return null;
 
-            return null;
+
+            var skillsGap = await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
+                _settings.ApiKey, id, skillsList);
+            return skillsGap;
         }
 
         public string UpperCaseFirstLetter(string str)
         {
             if (string.IsNullOrEmpty(str))
                 return string.Empty;
-            
+
             return char.ToUpper(str[0]) + str.Substring(1);
         }
 
@@ -102,7 +97,7 @@ namespace DFC.App.MatchSkills.Controllers
                 dict.Add(unmatchedSkill, false);
             }
 
-            return dict.OrderByDescending(x=>x.Key);
+            return dict.OrderByDescending(x => x.Key);
         }
     }
 }
