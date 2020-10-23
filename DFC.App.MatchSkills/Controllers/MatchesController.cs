@@ -58,7 +58,7 @@ namespace DFC.App.MatchSkills.Controllers
             if (userSession.Skills.Count == 0) return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.SkillsBasket}");
             await TrackPageInUserSession(userSession);
             await SetViewModel(userSession);
-            return await Task.FromResult<IActionResult>(View("Body",ViewModel));
+            return await Task.FromResult<IActionResult>(View("Body", ViewModel));
         }
 
         private int GetTotalPages(int totalResults)
@@ -96,7 +96,7 @@ namespace DFC.App.MatchSkills.Controllers
             var skip = filters.Page > 1 ? (filters.Page - 1) * _pageSize : 0;
 
             ViewModel.CareerMatches = new List<CareerMatch>();
-            foreach (var match in (GetOccupationMatches(matches, filters)).Skip(skip).Take(_pageSize))
+            foreach (var match in (GetOccupationMatches(matches, filters).OrderByDescending(x => x.TotalOccupationEssentialSkills)).Skip(skip).Take(_pageSize))
             {
                 var cm = new CareerMatch(_compositeSettings)
                 {
