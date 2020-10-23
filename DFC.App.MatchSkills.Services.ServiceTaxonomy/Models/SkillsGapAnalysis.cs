@@ -18,6 +18,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
 
         public Uri JobProfileUri { get; set; }
         public Uri Uri { get; set; }
+        public string Description { get; set; }
     }
 
 }

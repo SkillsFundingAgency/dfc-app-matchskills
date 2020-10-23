@@ -42,9 +42,8 @@ namespace DFC.App.MatchSkills.Models
         public string GetDetailsUrl(string jobProfileUrl)
         {
             Throw.IfNullOrEmpty(jobProfileUrl, nameof(jobProfileUrl));
-            var jobProfileGuid = jobProfileUrl.Split('/').Last();
             
-            string url = $"{_compositeSettings.Value.Path}/MatchDetails?id={jobProfileGuid}";
+            string url = $"{_compositeSettings.Value.Path}/MatchDetails?id={jobProfileUrl}";
 
             return url;
         }

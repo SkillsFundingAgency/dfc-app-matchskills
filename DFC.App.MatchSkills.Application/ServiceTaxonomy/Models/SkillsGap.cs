@@ -4,6 +4,7 @@ namespace DFC.App.MatchSkills.Application.ServiceTaxonomy.Models
 {
     public class SkillsGap
     {
+        
         public string CareerTitle { get; set; }
 
         public string[] MissingSkills { get; set; } = new string[0];

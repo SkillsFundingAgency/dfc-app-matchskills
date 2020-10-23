@@ -63,13 +63,9 @@ namespace DFC.App.MatchSkills.Controllers
                 return null;
 
             var userSession = await GetUserSession();
-
-            var occupationMatch =
-                userSession.OccupationMatches.FirstOrDefault(x => x.JobProfileUri.Contains(id));
-
-            if (occupationMatch != null)
+            
+            if (!string.IsNullOrEmpty(id))
             {
-                var occupation = occupationMatch.Uri;
 
                 var skillsList = userSession.Skills.Select(x => x.Id).ToArray();
 
@@ -78,10 +74,7 @@ namespace DFC.App.MatchSkills.Controllers
             
 
                 var skillsGap =  await _serviceTaxonomy.GetSkillsGapForOccupationAndGivenSkills<SkillsGap>(_settings.ApiUrl,
-                    _settings.ApiKey, occupation, skillsList);
-                skillsGap.CareerTitle = occupationMatch.JobProfileTitle;
-                skillsGap.CareerDescription = occupationMatch.JobProfileDescription;
-                skillsGap.JobGrowth = occupationMatch.JobGrowth;
+                    _settings.ApiKey, id, skillsList);
                 return skillsGap;
             }
 
