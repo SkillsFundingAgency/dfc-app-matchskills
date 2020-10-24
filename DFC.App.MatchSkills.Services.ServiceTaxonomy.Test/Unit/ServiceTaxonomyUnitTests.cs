@@ -208,7 +208,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
                         Skill="Skill Name",
                         AlternativeLabels = new [] {"label1","label2"},
                         SkillReusability = "SkillReusability",
-                        LastModified =Convert.ToDateTime("1-Oct-2010"),
+                        //LastModified =Convert.ToDateTime("1-Oct-2010"),
                         SkillType = "SkillType",
                         RelationshipType = "RelationshipType",
                         Matches = new Matches()
@@ -226,7 +226,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Unit
             sut.Skills[0].Skill.Should().Be("Skill Name");
             sut.Skills[0].AlternativeLabels[0].Should().Be("label1");
             sut.Skills[0].SkillReusability.Should().Be("SkillReusability");
-            var lastModified = sut.Skills[0].LastModified;
+            //var lastModified = sut.Skills[0].LastModified;
             sut.Skills[0].SkillType.Should().Be("SkillType");
             sut.Skills[0].RelationshipType.Should().Be("RelationshipType");
             var matchers = sut.Skills[0].Matches;

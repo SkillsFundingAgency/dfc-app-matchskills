@@ -12,7 +12,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
         public string Uri { get; set; }
         public string Skill { get; set; }
         public string[] AlternativeLabels { get; set; }
-        public DateTime LastModified { get; set; }
+        //public DateTime LastModified { get; set; }
         public string SkillType { get; set; }
         public string SkillReusability { get; set; }
         public string RelationshipType { get; set; }
