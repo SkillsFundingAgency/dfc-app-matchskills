@@ -60,6 +60,9 @@
         },
         "cosmosCollectionName2": {
             "type": "string"
+        },
+        "apiSuffix": {
+            "type": "string"
         }
     },
     "variables": {
@@ -335,6 +338,10 @@
                             {
                                 "name": "Configuration__ApplicationName",
                                 "value": "DFC.App.MatchSkills"
+                            },
+                            {
+                                "name": "apiSuffix",
+                                "value": "[parameters('apiSuffix')]"
                             }
                         ]
                     }

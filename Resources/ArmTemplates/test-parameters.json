@@ -58,6 +58,9 @@
         },
         "apimoldDysacApiKey": {
             "value": "not-a-real-apim-key"
+        },
+        "apiSuffix": {
+            "value": "suffix"
         }
     }
 }

@@ -58,6 +58,9 @@
         },
         "apimoldDysacApiKey": {
             "value": "__ApimDiscoverMySkillsAndCareersKey__"
+        },
+        "apiSuffix": {
+            "value": "__apiSuffix__"
         }
     }
 }
