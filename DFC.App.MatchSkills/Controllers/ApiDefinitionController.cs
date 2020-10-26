@@ -1,5 +1,6 @@
 ﻿using DFC.App.MatchSkills.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace DFC.App.MatchSkills.Controllers
 {
@@ -19,8 +20,12 @@ namespace DFC.App.MatchSkills.Controllers
         public IActionResult Index()
         {
             var hostName = Request.Host.HasValue ? Request.Host.Value : string.Empty;
+            string apiSuffix = Environment.GetEnvironmentVariable("ApiSuffix");
+
             var apiDefinition = _fileService.ReadAllText(@"Docs\OccupationSearchAuto.json");
+
             apiDefinition = apiDefinition.Replace("{serverurl}", hostName);
+            apiDefinition = apiDefinition.Replace("{apisuffix}", apiSuffix);
 
             if (string.IsNullOrEmpty(apiDefinition))
                 return NoContent();
