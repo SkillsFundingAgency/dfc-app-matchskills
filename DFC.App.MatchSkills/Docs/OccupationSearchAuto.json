@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Match Skills, Search Occupation",
+    "title": "Match Skills, Search Occupation - {apisuffix}",
     "description": "Get occupation matches based on search term",
     "version": "1.0"
   },
