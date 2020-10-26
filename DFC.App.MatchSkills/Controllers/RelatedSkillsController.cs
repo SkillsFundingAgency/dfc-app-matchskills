@@ -114,8 +114,7 @@ namespace DFC.App.MatchSkills.Controllers
             {
                 var skills = await _serviceTaxonomy.GetSkillsByLabel<Skill[]>($"{_apiUrl}",
                     _apiKey, ViewModel.SearchTerm);
-                List<Skill> filteredSkills = skills.Where(x => x.RelationshipType == RelationshipType.Essential).ToList();
-                ViewModel.RelatedSkills.LoadFrom(filteredSkills);
+                ViewModel.RelatedSkills.LoadFrom(skills.ToList());
             }
         }
 
