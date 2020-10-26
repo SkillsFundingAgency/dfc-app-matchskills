@@ -269,7 +269,7 @@
                             },
                             {
                                 "name": "CosmosSettings__UserSessionsCollection",
-                                "value": "UserSessions"
+                                "value": "[parameters('cosmosCollectionName1')]"
                             },
                             {
                                 "name": "CompositeSettings__CDN",
@@ -325,7 +325,7 @@
                             },
                             {
                                 "name": "CosmosSettings__LmiDataCollection",
-                                "value": "LmiData"
+                                "value": "[parameters('cosmosCollectionName2')]"
                             },
                             {
                                 "name": "Logging__LogLevel__Default",
