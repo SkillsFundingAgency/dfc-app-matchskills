@@ -2,11 +2,23 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appServiceDomain": {
-            "value": "__FunctionAppDomain__"
+        "apimProxyAddress": {
+            "value": "__ApimProxyAddress__"
+        },
+        "apimServiceName": {
+            "value": "__ApimServiceName__"
+        },
+        "dfcSharedResourceGroup": {
+            "value": "__SharedResourceGroupName__"
         },
         "Environment": {
             "value": "__ReleaseEnvironmentName__"
+        },
+        "lmiSettingsApiUrl": {
+            "value": "__LmiSettingsApiUrl__"
+        },
+        "lmiSettingsCacheLifeSpan": {
+            "value": "__LmiSettingsCacheLifeSpan__"
         },
         "SharedAppServicePlanName": {
             "value": "__SharedAppServicePlanName__"
@@ -20,11 +32,35 @@
         "sharedCosmosDbDatabaseName": {
             "value": "__SharedCosmosDbDatabase__"
         },
+        "cosmosCollectionName1": {
+            "value": "__cosmosCollectionName1__"
+        },
+        "cosmosCollectionName2": {
+            "value": "__cosmosCollectionName2__"
+        },
         "serviceTaxonomyApiUrl": {
             "value": "__serviceTaxonomyApiUrl__"
         },
         "serviceTaxonomyApiKey": {
             "value": "__ApimServiceTaxonomyKey__"
+        },
+        "performSearchOccupationInAltLabels": {
+            "value": "__performSearchOccupationInAltLabels__"
+        },
+        "performSearchSkillInAltLabels": {
+            "value": "__performSearchSkillInAltLabels__"
+        },
+        "CompositeUiCdnUrl": {
+            "value": "__CompositeUiCdnUrl__"
+        },
+        "apimDysacApiKey": {
+            "value": "__ApimDiscoverSkillsAndCareersKey__"
+        },
+        "apimoldDysacApiKey": {
+            "value": "__ApimDiscoverMySkillsAndCareersKey__"
+        },
+        "apiSuffix": {
+            "value": "__apiSuffix__"
         }
     }
 }

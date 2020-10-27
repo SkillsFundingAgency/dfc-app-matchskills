@@ -1,6 +1,8 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,41 +14,60 @@ namespace DFC.App.MatchSkills.Controllers
 
     public class WorkedController : CompositeSessionController<WorkedCompositeViewModel>
     {
-
-        public WorkedController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService)
-            : base(compositeSettings, sessionService, cookieService)
-        {
-        }
+        private readonly IOptions<DysacSettings> _dysacSettings;
+        private readonly IDysacSessionReader _dysacService;
         
+        public WorkedController(IOptions<CompositeSettings> compositeSettings, ISessionService sessionService, IDysacSessionReader dysacService, 
+            IOptions<DysacSettings> dysacSettings)
+            : base(compositeSettings, sessionService )
+        {
+            Throw.IfNull(dysacSettings, nameof(dysacSettings));
+            _dysacSettings = dysacSettings;
+            _dysacService = dysacService;
+        }
+
+        
+        public override async Task<IActionResult> Body()
+        {
+            var createSessionRequest = new CreateSessionRequest()
+            {
+                CurrentPage = CompositeViewModel.PageId.Worked.Value
+            };
+            await CreateUserSession(createSessionRequest);
+            
+            ViewModel.HasError = HasErrors();
+
+            return await base.Body();
+        }
+
         [HttpPost]
-        [Route("MatchSkills/[controller]")]
+        [SessionRequired]
+        [Route("body/worked")]
         public async Task<IActionResult> Body(WorkedBefore choice)
         {
-            var primaryKeyFromCookie = TryGetPrimaryKey(this.Request);
             var userWorkedBefore = choice == WorkedBefore.Undefined ? (bool?)null : choice == WorkedBefore.Yes;
-
-
-            if (!string.IsNullOrWhiteSpace(primaryKeyFromCookie))
-            {
-                var createSessionRequest = new CreateSessionRequest()
-                {
-                    CurrentPage = CompositeViewModel.PageId.Worked.Value,
-                    UserHasWorkedBefore = userWorkedBefore
-                };
-                await CreateUserSession( createSessionRequest, primaryKeyFromCookie);
-            }
             
             switch (choice)
             {
                 case WorkedBefore.Yes:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
+                    await UpdateUserSession(userWorkedBefore);
+                    return RedirectTo(CompositeViewModel.PageId.Route.Value);
+                
                 case WorkedBefore.No:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Worked}");
+                    await _dysacService.InitiateDysacOnly();
+                    await UpdateUserSession(userWorkedBefore);
+                    return Redirect(_dysacSettings.Value.DysacUrl); 
+                    
                 default:
-                    ViewModel.HasError = true;
-                    return await base.Body();
+                    return RedirectWithError(ViewModel.Id.Value);
             }
+        }
+
+        private async Task UpdateUserSession(bool? userWorkedBefore)
+        {
+            var session = await GetUserSession();
+            session.UserHasWorkedBefore = userWorkedBefore;
+            await UpdateUserSession(ViewModel.Id.Value, session);
         }
     }
 }

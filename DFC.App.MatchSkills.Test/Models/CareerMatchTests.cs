@@ -1,6 +1,8 @@
-﻿using DFC.App.MatchSkills.Models;
+﻿using DFC.App.MatchSkills.Application.LMI.Models;
+using DFC.App.MatchSkills.Models;
 using DFC.Personalisation.Domain.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
 namespace DFC.App.MatchSkills.Test.Models
@@ -12,38 +14,41 @@ namespace DFC.App.MatchSkills.Test.Models
         public void When_Constructed_Then_AllMembersShouldBeInitialized()
         {
             // Arrange.
-
+            var _compositeSettings = Options.Create(new CompositeSettings());
+            _compositeSettings.Value.Path = "/matchskills";
             // Act.
-            var sut = new CareerMatch();
+            var sut = new CareerMatch(_compositeSettings);
 
             // Assert.
             sut.Should().NotBeNull();
-            sut.JobSectorGrowthDescription.Should().BeEmpty();
+            sut.JobSectorGrowthDescription.Should().Be(JobGrowth.Undefined);
             sut.JobProfile.Should().NotBeNull();
+            sut.JobProfile.Title.Should().BeEmpty();
+            sut.JobProfile.Description.Should().BeEmpty();
+            sut.JobProfile.Url.Should().BeEmpty();
             sut.MatchedSkills.Should().NotBeNull();
             sut.UnMatchedSkills.Should().NotBeNull();
+            sut.MatchingEssentialSkills.Should().Be(0);
+            sut.MatchingOptionalSkills.Should().Be(0);
+            sut.TotalOccupationEssentialSkills.Should().Be(0);
+            sut.TotalOccupationOptionalSkills.Should().Be(0);
+            sut.SourceSkillCount.Should().Be(0);
         }
-
+        
         [Test]
-        public void When_SkillsExist_Then_MatchPercentageShouldBeCalculated()
+        public void When_JobProfileUriProvided_Then_MatchSkillDetailUrlGenerated()
         {
-            // Arrange.
-            var cm = new CareerMatch()
-            {
-                JobSectorGrowthDescription = "Increasing",
-            };
-            cm.JobProfile.Title = "Job Title of First Match";
-            cm.JobProfile.Description = "Here is a description of the job profile.";
-            cm.MatchedSkills.Add(new Skill("fm1", "First matched skill", SkillType.Competency));
-            cm.MatchedSkills.Add(new Skill("fm2", "Second  matched skill", SkillType.Competency));
-            cm.MatchedSkills.Add(new Skill("fm3", "Third matched skill", SkillType.Competency));
-            cm.UnMatchedSkills.Add(new Skill("um1", "First unmatched skill", SkillType.Competency));
+            // Arrange
+            var _compositeSettings = Options.Create(new CompositeSettings());
+            _compositeSettings.Value.Path = "/matchskills";
+            var cm = new CareerMatch(_compositeSettings);
 
             // Act.
-            var result = cm.MatchStrengthPercentage;
+            var url = cm.GetDetailsUrl("http://nationalcareers.service.gov.uk/jobprofile/4ade6bd5-9180-49cf-8270-6ff4730b3b2e");
 
             // Assert.
-            result.Should().Be(75);
+            url.Should().NotBeNullOrWhiteSpace();
+            url.Should().Be("/matchskills/MatchDetails?id=http://nationalcareers.service.gov.uk/jobprofile/4ade6bd5-9180-49cf-8270-6ff4730b3b2e");
         }
     }
 }

@@ -3,6 +3,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, DFC.Personalisation.CommonUI
 
+
 @if (null == Model)
 {
     // @ToDo: Log this as an error?
@@ -27,7 +28,7 @@ else
         {
             case SkillsListViewModel.ListItemType.Checkbox:
                 var itemId = $"{Model.ItemIdPrefix}-GovukCheckbox-{item.Id}";
-                <govukCheckbox id="@itemId" label="@item.Name" name="@item.Id--@item.Name" AdditionalClass="checkbox-container-item"></govukCheckbox>
+                <govukCheckbox id="@itemId" label="@item.Name" name="@item.Id--@item.Name" AdditionalClass="checkbox-container-item" checked="Model.AllSkillsSelected" ></govukCheckbox>
                 break;
 
             default:
@@ -41,3 +42,4 @@ else
         @Html.Raw(Model.EndSkillsListHTML)
     }
 }
+

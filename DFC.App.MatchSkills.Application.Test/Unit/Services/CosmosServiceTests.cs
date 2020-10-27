@@ -13,6 +13,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using NSubstitute.Core.Arguments;
 
 namespace DFC.App.MatchSkills.Application.Test.Unit.Services
@@ -32,7 +33,8 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     ApiUrl = "https://test-account-not-real.documents.azure.com:443/",
                     ApiKey = "VGhpcyBpcyBteSB0ZXN0",
                     DatabaseName = "DatabaseName",
-                    UserSessionsCollection = "UserSessions"
+                    UserSessionsCollection = "UserSessions",
+                    LmiDataCollection = "LmiData"
                 });
                 //Code coverage for Sonar
                 var apiUrl = _cosmosSettings.Value.ApiUrl;
@@ -44,7 +46,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var client = Substitute.For<CosmosClient>();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.CreateItemAsync(null)).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.CreateItemAsync(null, CosmosCollection.Session)).Should().Throw<ArgumentException>();
 
             }
 
@@ -55,7 +57,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection)
                     .ReturnsNullForAnyArgs();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.CreateItemAsync(new UserSession())).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.CreateItemAsync(new UserSession(), CosmosCollection.Session)).Should().Throw<ArgumentException>();
 
             }
             [Test]
@@ -65,7 +67,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var container = Substitute.For<Container>();
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.CreateItemAsync(new UserSession());
+                var result = await _service.CreateItemAsync(new UserSession(), CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.InternalServerError);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -83,7 +85,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.CreateItemAsync(new UserSession());
+                var result = await _service.CreateItemAsync(new UserSession(), CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.Created);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -103,8 +105,28 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     ApiUrl = "https://test-account-not-real.documents.azure.com:443/",
                     ApiKey = "VGhpcyBpcyBteSB0ZXN0",
                     DatabaseName = "DatabaseName",
-                    UserSessionsCollection = "UserSessions"
+                    UserSessionsCollection = "UserSessions",
+                    LmiDataCollection = "LmiData"
                 });
+                var cachedLmiDataModel = new CachedLmiData
+                {
+                    SocCode = 2815.ToString(),
+                    JobGrowth = JobGrowth.Increasing,
+                    DateWritten = DateTimeOffset.Now
+                };
+                var cachedLmiData = new StringContent(JsonConvert.SerializeObject(cachedLmiDataModel));
+                _service = Substitute.For<ICosmosService>();
+                _service.ReadItemAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = cachedLmiData
+                    });
+                _service.CreateItemAsync(Arg.Any<object>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+                _service.UpsertItemAsync(Arg.Any<object>(), Arg.Any<CosmosCollection>())
+                    .Returns(new HttpResponseMessage(HttpStatusCode.OK));
+
             }
 
             [Test]
@@ -112,7 +134,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var client = Substitute.For<CosmosClient>();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.ReadItemAsync(null, null)).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.ReadItemAsync(null, null, CosmosCollection.Session)).Should().Throw<ArgumentException>();
 
             }
 
@@ -123,7 +145,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection)
                     .ReturnsNullForAnyArgs();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.ReadItemAsync("Id", "partitionKey")).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.ReadItemAsync("Id", "partitionKey", CosmosCollection.Session)).Should().Throw<ArgumentException>();
 
             }
             [Test]
@@ -133,7 +155,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var container = Substitute.For<Container>();
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.ReadItemAsync("id", "partitionKey");
+                var result = await _service.ReadItemAsync("id", "partitionKey", CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.NotFound);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -144,9 +166,9 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var container = Substitute.For<Container>();
                 container.ReadItemAsync<object>(Arg.Any<string>(), Arg.Any<PartitionKey>())
                     .Returns(Task.FromException<ItemResponse<object>>(new Exception("404 Not found")));
-                client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
+                client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.LmiDataCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.ReadItemAsync("id", "partitionKey");
+                var result = await _service.ReadItemAsync("id", "partitionKey", CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.NotFound);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -164,7 +186,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.ReadItemAsync("Id", "partitionKey");
+                var result = await _service.ReadItemAsync("Id", "partitionKey", CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.OK);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -181,7 +203,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.ReadItemAsync("Id", "partitionKey");
+                var result = await _service.ReadItemAsync("Id", "partitionKey", CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.NotFound);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -200,7 +222,8 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                     ApiUrl = "https://test-account-not-real.documents.azure.com:443/",
                     ApiKey = "VGhpcyBpcyBteSB0ZXN0",
                     DatabaseName = "DatabaseName",
-                    UserSessionsCollection = "UserSessions"
+                    UserSessionsCollection = "UserSessions",
+                    LmiDataCollection = "LmiData"
                 });
             }
 
@@ -209,7 +232,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
             {
                 var client = Substitute.For<CosmosClient>();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.UpsertItemAsync(null)).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.UpsertItemAsync(null, CosmosCollection.Session)).Should().Throw<ArgumentException>();
 
             }
 
@@ -220,7 +243,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection)
                     .ReturnsNullForAnyArgs();
                 _service = new CosmosService(_cosmosSettings, client);
-                _service.Invoking(x => x.UpsertItemAsync(new UserSession())).Should().Throw<ArgumentException>();
+                _service.Invoking(x => x.UpsertItemAsync(new UserSession(), CosmosCollection.Session)).Should().Throw<ArgumentException>();
 
             }
             [Test]
@@ -230,7 +253,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
                 var container = Substitute.For<Container>();
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.UpsertItemAsync(new UserSession());
+                var result = await _service.UpsertItemAsync(new UserSession(), CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.InternalServerError);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -247,7 +270,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.UpsertItemAsync(new UserSession());
+                var result = await _service.UpsertItemAsync(new UserSession(), CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.OK);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }
@@ -264,7 +287,7 @@ namespace DFC.App.MatchSkills.Application.Test.Unit.Services
 
                 client.GetContainer(_cosmosSettings.Value.DatabaseName, _cosmosSettings.Value.UserSessionsCollection).ReturnsForAnyArgs(container);
                 _service = new CosmosService(_cosmosSettings, client);
-                var result = await _service.UpsertItemAsync(new UserSession());
+                var result = await _service.UpsertItemAsync(new UserSession(), CosmosCollection.Session);
                 var expected = new HttpResponseMessage(HttpStatusCode.Created);
                 result.StatusCode.Should().Be(expected.StatusCode);
             }

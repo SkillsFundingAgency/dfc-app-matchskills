@@ -1,0 +1,58 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.OccupationSearchScript
+@using DFC.App.MatchSkills.ViewModels
+@using Microsoft.Extensions.Options
+@using DFC.App.MatchSkills.Models
+@model DFC.App.MatchSkills.ViewModels.OccupationSearchDetailsCompositeViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, DFC.Personalisation.CommonUI
+@inject IOptions<CompositeSettings> _compositeSettings;
+
+<div class="govuk-main-wrapper " id="main-content" role="main">
+
+    <div class="govuk-grid-row margin-reset">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="results">
+                <govukHeadingH1 Text="Select your occupation" />
+            </div>
+            
+            <form id="@Model.GetElementId("govUkForm", "Search")" action="@CompositeViewModel.PageId.OccupationSearchDetails" method="post">
+                <div id="@Model.GetElementId("govUkFormgroup", "Search")" class="govuk-form-group">
+
+                    <p>Search for different occupation</p>
+                    <govukLabel for="@Model.GetElementId("govUkInput", "Search")" text="Enter your job title" additional-class="govuk-!-font-weight-bold"></govukLabel>
+
+                    <govukTextInput id="occupationSearchGovUkInputSearch">
+                    </govukTextInput>
+
+                </div>
+                <govukSecondaryButton id="@Model.GetElementId("govUkButton", "Search")" text="Search"></govukSecondaryButton>
+            </form>
+
+            @foreach (var result in Model.Occupations)
+            {<section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
+
+                    <div class="govuk-grid-row">
+                        <div class="govuk-!-width-full">
+                            <div class="app-long-results__item">
+                                <div class="result-description">
+                                    <h3 class="govuk-heading-m "><a href="@_compositeSettings.Value.Path/@CompositeViewModel.PageId.SelectSkills?occupation=@result.Name">@result.Name</a></h3>
+                                    <div class="job-profile-subsection-content">
+                                        <p>@result.Description</p>
+                                        <p>Alternative Labels</p>
+                                        <ul>
+                                            @foreach (var item in result.AlternativeNames)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+
+        </div>
+    </div>
+</div>

@@ -1,52 +1,82 @@
-﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Interfaces;
+﻿using Dfc.Session.Models;
+using DFC.App.MatchSkills.Application.Dysac;
+using DFC.App.MatchSkills.Application.Dysac.Models;
+using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Controllers
 {
+
     [SessionRequired]
     public class RouteController : CompositeSessionController<RouteCompositeViewModel>
     {
+        private readonly IOptions<DysacSettings> _dysacSettings;
+        private readonly IDysacSessionReader _dysacService;
         public RouteController(IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService) 
-            : base(compositeSettings, sessionService, cookieService)
+            ISessionService sessionService, IDysacSessionReader dysacService, 
+            IOptions<DysacSettings> dysacSettings ) 
+            : base(compositeSettings, sessionService )
         {
+            _dysacService = dysacService;
+            _dysacSettings = dysacSettings;
         }
 
         [SessionRequired]
         public override async Task<IActionResult> Body()
         {
             var session = await GetUserSession();
-            
+            await TrackPageInUserSession(session);
             ViewModel.RouteIncludesDysac = session.RouteIncludesDysac;
-
+            ViewModel.HasError = HasErrors();
             return await base.Body();
         }
 
         [SessionRequired]
-        [Route("MatchSkills/[controller]")]
         [HttpPost]
+        [Route("body/route")]
         public async Task<IActionResult> Body(Route choice)
         {
-            var routeIncludesDysac = choice == Route.Undefined ? (bool?)null : choice == Route.JobsAndSkills;
+            var routeIncludesDysac = choice == Route.Undefined ? (bool?) null : choice == Route.JobsAndSkills;
             var userSession = await GetUserSession();
-            userSession.RouteIncludesDysac = routeIncludesDysac;
-            await TrackPageInUserSession(userSession);
-
+           
             switch (choice)
             {
                 case Route.Jobs:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.OccupationSearch}");
+                    await UpdateUserSession(userSession, routeIncludesDysac);
+                    return RedirectTo(CompositeViewModel.PageId.OccupationSearch.Value);
                 case Route.JobsAndSkills:
-                    return RedirectPermanent($"{ViewModel.CompositeSettings.Path}/{CompositeViewModel.PageId.Route}");
-                default:
-                    ViewModel.HasError = true;
-                    return await base.Body();
+
+
+                    await _dysacService.InitiateDysac(new DfcUserSession()
+                    {
+                        CreatedDate = userSession.SessionCreatedDate,
+                        PartitionKey = userSession.PartitionKey,
+                        Salt = userSession.Salt,
+                        SessionId = userSession.UserSessionId,
+                        Origin = Origin.MatchSkills
+                    });
+
+                    await UpdateUserSession(userSession, routeIncludesDysac);
+                    return Redirect(_dysacSettings.Value.DysacUrl);
             }
+
+
+
+            return RedirectWithError(ViewModel.Id.Value);
         }
+
+        private async Task<UserSession> UpdateUserSession(UserSession userSession,bool? routeIncludesDysac)
+        {
+            userSession.RouteIncludesDysac = routeIncludesDysac;
+            await TrackPageInUserSession(userSession);
+            return userSession;
+        }
+
     }
 }

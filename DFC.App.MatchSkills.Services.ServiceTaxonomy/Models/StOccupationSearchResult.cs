@@ -12,6 +12,7 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Models
 
         public class StsOccupation
         {
+            public string Description { get; set; }
             public string Occupation { get; set; }
             public DateTime LastModified { get; set; }
             public string[] AlternativeLabels { get; set; }

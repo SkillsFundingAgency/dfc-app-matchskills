@@ -1,0 +1,104 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Match Skills, Search Occupation - {apisuffix}",
+    "description": "Get occupation matches based on search term",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{serverurl}"
+    }
+  ],
+  "paths": {
+    "/OccupationSearchAuto/": {
+      "get": {
+        "tags": [
+          "occupation"
+        ],
+        "summary": "Occupation search",
+        "description": "Get occupation matches based on search term",
+        "operationId": "OccupationSearchAuto",
+        "requestBody": {
+          "description": "Supply occupation search term",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBody"
+              },
+              "example": {
+                "occupation": "renewable"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Occupation"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No content can be found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RequestBody": {
+        "required": [
+          "occupation"
+        ],
+        "type": "object",
+        "properties": {
+          "occupation": {
+            "type": "string",
+            "example": "renewable"
+          }
+        }
+      },
+      "Occupation": {
+        "type": "array",
+        "example": [
+            "Renewable energy consultant",
+            "Energy trader",
+            "Renewable energy sales representative",
+            "Renewable energy engineer"
+          ]
+        }
+      },
+    "securitySchemes": {
+      "apiKeyHeader": {
+        "type": "apiKey",
+        "name": "Ocp-Apim-Subscription-Key",
+        "in": "header"
+      },
+      "apiKeyQuery": {
+        "type": "apiKey",
+        "name": "subscription-key",
+        "in": "query"
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyHeader": []
+    },
+    {
+      "apiKeyQuery": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Match Skills, Search Occupation",
+      "description": "Get occupation matches based on search term"
+    }
+  ]
+}

@@ -3,7 +3,9 @@ using DFC.App.MatchSkills.Application.Cosmos.Models;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
 using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
+using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.Service;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.Test.Helpers;
@@ -19,38 +21,35 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Interfaces;
-using DFC.App.MatchSkills.Service;
+using Dfc.Session.Models;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
 
     public class SelectSkillsControllerTests
     {
-        private IDataProtectionProvider _dataProtectionProvider;
-        private IDataProtector _dataProtector;
+       
         private IOptions<ServiceTaxonomySettings> _settings;
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private IOptions<SessionSettings> _sessionSettings;
+        private IOptions<SessionConfig> _sessionConfig;
         private IOptions<CosmosSettings> _cosmosSettings;
         private Mock<CosmosClient> _client;
         private ICosmosService _cosmosService;
-        private ICookieService _cookieService;
+         
         
         [SetUp]
         public void Init()
         {
             
-            _dataProtectionProvider = new EphemeralDataProtectionProvider();
-            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(BaseController));
             _settings = Options.Create(new ServiceTaxonomySettings());
             _compositeSettings = Options.Create(new CompositeSettings());
             _settings.Value.ApiUrl = "https://dev.api.nationalcareersservice.org.uk/servicetaxonomy";
@@ -75,9 +74,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
             //Session Settings
             _sessionService = Substitute.For<ISessionService>();
-            _sessionSettings = Options.Create(new SessionSettings(){Salt = "ThisIsASalt"});
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
-
+            _sessionConfig = Options.Create(new SessionConfig(){Salt = "ThisIsASalt"});
+            
         }
         
         [TestCase("https://dev.api.nationalcareersservice.org.uk","key")]
@@ -96,7 +94,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             // ACTs
             var result = await subjectUnderTest.GetAllSkillsForOccupation<Skill[]>(url,apiKey,"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197") ;
             vm.Skills = result.ToList();
-            //var skills = vm.Skills.ToList();
+           
             
             // ASSERT
             result.Should().NotBeNull();
@@ -115,27 +113,50 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         }
 
         [Test]
-        public void  When_GetOccupationIdFromName_Then_ShouldReturnOccupationId()
+        public async Task When_Body_Then_LoadBodyAndGetSessionData()
         {
-            const string skillsJson ="{\"occupations\": [{\"uri\": \"http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197\",\"occupation\": \"Renewable energy consultant\",\"alternativeLabels\": [\"alt 1\"],\"lastModified\": \"03-12-2019 00:00:01\"}]}";           
-            var handlerMock = MockHelpers.GetMockMessageHandler(skillsJson);
-            var restClient = new RestClient(handlerMock.Object);
-            _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-            var sut = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService )
+            {
+                ControllerContext = new ControllerContext
+                {
+                HttpContext = new DefaultHttpContext()
+            }
+        }; 
             
-            var result =   sut.GetOccupationIdFromName("Renewable energy consultant");
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            
+            await controller.Body();
 
-            result.Result.Should().Be("http://data.europa.eu/esco/occupation/114e1eff-215e-47df-8e10-45a5b72f8197");
-            
+            await _sessionService.Received().UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
+                x.CurrentPage == CompositeViewModel.PageId.SelectSkills.Value));
         }
-        
+
+        [Test]
+        public async Task When_Toggle_Then_ViewModelAllSkillsSelectedToggled()
+        {
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository, _settings, _compositeSettings, _sessionService)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            }; 
+            
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+
+    
+            var result = await controller.SkillSelectToggle(false) as ViewResult;
+            var vm = result.ViewData.Model as SelectSkillsCompositeViewModel;
+            vm.AllSkillsSelected.Should().BeTrue();
+
+        }
 
         #region CUIScaffoldingTests
 
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService, _cookieService);
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService );
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
            
@@ -143,22 +164,6 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             result.Should().BeOfType<ViewResult>();
             result.ViewName.Should().BeNull();
         }
-
-        
-        [Test]
-        public async Task WhenBodyCalled_ReturnHtml()
-        {
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings, _compositeSettings, _sessionService, _cookieService);
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-            var result = await controller.Body() as ViewResult;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
-        }
-
 
        
         #endregion
@@ -168,15 +173,13 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
     public class TestAddSkills
     {
-        private const string CookieName = ".matchSkills-session";
         private IDataProtectionProvider _dataProtectionProvider;
         private IOptions<CompositeSettings> _compositeSettings;
-        private IDataProtector _dataProtector;
         private ISessionService _sessionService;
         private ServiceTaxonomyRepository _serviceTaxonomyRepository;
         private IOptions<ServiceTaxonomySettings> _settings;
 
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
@@ -188,55 +191,71 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _settings.Value.EscoUrl = "http://data.europa.eu/esco";
             _settings.Value.SearchOccupationInAltLabels ="true";
             var handlerMock = MockHelpers.GetMockMessageHandler();
-            var restClient = new RestClient(handlerMock.Object);
+            var restClient = new RestClient(handlerMock.Object); 
             _serviceTaxonomyRepository = new ServiceTaxonomyRepository(restClient);
-
             _dataProtectionProvider = new EphemeralDataProtectionProvider();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
+            
 
         }
          [Test]
         public async Task When_AddSkillsForOccupation_Then_ShouldAddSelectedSkills()
 
         {
-            var subFormsCollection = Substitute.For<IFormCollection>();
-            var subSessionService = Substitute.For<ISessionService>();
-
-
-            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService, _cookieService);
             
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService );
             
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
-            controller.HttpContext.Request.QueryString = QueryString.Create(".matchSkill-session", "Abc123");
-            var requestCookie = new Mock<IRequestCookieCollection>();
+            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+            
+            var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
+            dic.Add("somekey--somevalue", "key1");
+            dic.Add("somekey1--somevalue1", "key2");
+            var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
+           
 
-            string data = _dataProtector.Protect("This is my value");
-            requestCookie.Setup(x =>
-                x.TryGetValue(It.IsAny<string>(), out data)).Returns(true);
-            var httpContext = new Mock<HttpContext>();
-            var httpRequest = new Mock<HttpRequest>();
-            var httpResponse = new Mock<HttpResponse>();
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
 
-            httpResponse.Setup(x => x.Cookies).Returns(new Mock<IResponseCookies>().Object);
-            httpRequest.Setup(x => x.Cookies).Returns(requestCookie.Object);
-            httpContext.Setup(x => x.Request).Returns(httpRequest.Object);
-            httpContext.Setup(x => x.Response).Returns(httpResponse.Object);
-            controller.ControllerContext.HttpContext = httpContext.Object;
-
-            var result = await controller.AddSkills(subFormsCollection) as RedirectResult;
+            var result = await controller.Body(collection) as RedirectResult;
+            
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.SkillsBasket}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.SkillsBasket}");
         }
        
+        [Test]
+        public async Task When_AddSkillsWithNoSkillsPassed_Then_Error()
+
+        {
+            
+            var controller = new SelectSkillsController(_serviceTaxonomyRepository,_settings,_compositeSettings, _sessionService );
+            
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+            controller.ControllerContext.HttpContext = MockHelpers.SetupControllerHttpContext().Object;
+            
+            var dic = new System.Collections.Generic.Dictionary<string, Microsoft.Extensions.Primitives.StringValues>();
+          
+            var collection = new Microsoft.AspNetCore.Http.FormCollection(dic);
+           
+
+            _sessionService.GetUserSession().ReturnsForAnyArgs(MockHelpers.GetUserSession(true));
+            _sessionService.UpdateUserSessionAsync(Arg.Any<UserSession>()).ReturnsNullForAnyArgs();
+
+            var result = await controller.Body(collection) as RedirectResult;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.SelectSkills}?errors=true");
+
+        }
     }
 
 }

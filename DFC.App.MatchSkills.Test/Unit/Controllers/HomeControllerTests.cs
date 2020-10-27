@@ -19,19 +19,18 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
         
         [SetUp]
         public void Init()
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _cookieService = new CookieService(new EphemeralDataProtectionProvider());
         }
         [Test]
         public void WhenHeadCalled_ReturnHtml()
         {
-            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new HomeController(_compositeSettings, _sessionService );
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
             var result = controller.Head() as ViewResult;
             var vm = new HeadViewModel
@@ -48,21 +47,20 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenBodyCalled_ReturnHtml()
         {
-            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new HomeController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body() as ViewResult;
+            var result = await controller.Body() as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
         }
         [Test]
         public void WhenBreadCrumbCalled_ReturnHtml()
         {
-            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new HomeController(_compositeSettings, _sessionService );
             var result = controller.Breadcrumb() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
@@ -71,7 +69,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public void WhenBodyTopCalled_ReturnHtml()
         {
-            var controller = new HomeController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new HomeController(_compositeSettings, _sessionService );
             var result = controller.BodyTop() as ViewResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();

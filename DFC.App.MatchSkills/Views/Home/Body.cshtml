@@ -1,4 +1,9 @@
-﻿@model DFC.App.MatchSkills.ViewModels.HomeCompositeViewModel
+﻿@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.HomeCompositeViewModel
+
+@{
+    var textInputElementName = @Model.GetElementId("govUkTextInput", "code");
+}
 
 <div class="govuk-main-wrapper ">
 
@@ -14,7 +19,37 @@
                     <govUkListItem text="exploring career options for your future"></govUkListItem>
                     <govUkListItem text="looking to return to work after a break"></govUkListItem>
                 </govukBulletedList>
-                <govukStartButtonLink id="@Model.GetElementId("govukStartButtonLink ","Start")" linkText="Start now" LinkHref="@Model.CompositeSettings.Path/worked"></govukStartButtonLink>
+                <govukStartButtonLink id="@Model.GetElementId("govukStartButtonLink ","Start")" linkText="Start now" LinkHref="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.OccupationSearch"></govukStartButtonLink>
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+                <div class="app-sidebar app-resume-panel">
+                    <govukHeadingH3 text="Return to an assessment"></govukHeadingH3>
+                    @if (Model.HasErrors)
+                    {
+                        <govukErrorSummary id="@Model.GetElementId("govukErrorSummary", "ErrorSummary")">
+                            <govukErrorSummaryItem href="#@textInputElementName" text="The reference could not be found."></govukErrorSummaryItem>
+                        </govukErrorSummary>
+                    }
+                    <form method="post" action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.Reload">
+                        <div class="app-resume-panel__input govuk-form-group @(Model.HasErrors ? "govuk-form-group--error" : "")">
+                            <govukLabel for="@textInputElementName" text="Enter your reference" additional-class="govuk-!-font-weight-bold"></govukLabel>
+
+                            <govukTextInput id="@textInputElementName"  has-error="@Model.HasErrors">
+                                <govukTextInputError Id="@Model.GetElementId("govUkTextInputError", "code")"
+                                                     Text="The reference could not be found."
+                                                     hidden="@(!Model.HasErrors)"></govukTextInputError>
+                            </govukTextInput>
+                        </div>
+                        <govukButton additional-class="" text="Continue" id="@Model.GetElementId("govUkButton", "Reload")"></govukButton>
+                    </form>
+                </div>
+
+                <div class="app-sidebar app-advisor-panel">
+                    <h3 class="govuk-heading-m">Want to speak to an adviser?</h3>
+                    <p class="govuk-body"><b>Call</b> 0800 100 900 or <a href="https://nationalcareers.service.gov.uk/webchat/chat/" class="govuk-link govuk-link--no-visited-state">use webchat</a></p>
+                    <p class="govuk-caption-m app-advisor-hours">8am to 10pm, 7 days a week</p>
+                </div>
             </div>
         </div>
     </div>

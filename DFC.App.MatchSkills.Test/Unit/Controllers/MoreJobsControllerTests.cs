@@ -28,7 +28,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         private IOptions<ServiceTaxonomySettings> _settings;
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
@@ -46,8 +46,8 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             _compositeSettings = Options.Create(new CompositeSettings());
             _dataProtector = _dataProtectionProvider.CreateProtector(nameof(SessionController));
             _sessionService = Substitute.For<ISessionService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService = Substitute.For<ICookieService>();
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
+             
 
         }
 
@@ -55,7 +55,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBody_Called_ReturnHtml()
         {
             var controller =
-                new MoreJobsController(_settings, _compositeSettings, _sessionService, _cookieService);
+                new MoreJobsController(_settings, _compositeSettings, _sessionService );
 
             controller.ControllerContext = new ControllerContext
             {
@@ -97,7 +97,7 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         public async Task WhenBody_Called_WithData_ReturnHtml()
         {
             var controller =
-                new MoreJobsController(_settings, _compositeSettings, _sessionService, _cookieService)
+                new MoreJobsController(_settings, _compositeSettings, _sessionService )
                 {
                     ControllerContext = new ControllerContext {HttpContext = new DefaultHttpContext()}
                 };
@@ -130,11 +130,11 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
             {
                 Occupations = new HashSet<UsOccupation>(2)
                 {
-                    new UsOccupation("1", "FirstOccupation", DateTime.UtcNow),
-                    new UsOccupation("2", "SecondOccupation", DateTime.UtcNow)
+                    new UsOccupation("1", "FirstOccupation"),
+                    new UsOccupation("2", "SecondOccupation")
                 }
             };
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(userSession);
+            _sessionService.GetUserSession().ReturnsForAnyArgs(userSession);
 
             var result = await controller.Body() as ViewResult;
             result.Should().NotBeNull();

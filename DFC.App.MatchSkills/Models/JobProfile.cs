@@ -8,13 +8,14 @@ namespace DFC.App.MatchSkills.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
-
+        public string Url { get; set; }
         public ICollection<Skill> Skills { get; set; }
 
         public JobProfile()
         {
             Title = string.Empty;
             Description = string.Empty;
+            Url = string.Empty;
             Skills = new List<Skill>();
         }
     }

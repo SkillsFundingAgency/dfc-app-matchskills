@@ -1,6 +1,5 @@
 ﻿using Dfc.ProviderPortal.Packages;
 using DFC.App.MatchSkills.Application.Session.Interfaces;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.Services.ServiceTaxonomy.Models;
 using DFC.App.MatchSkills.ViewModels;
@@ -16,23 +15,22 @@ namespace DFC.App.MatchSkills.Controllers
 
         public MoreJobsController(IOptions<ServiceTaxonomySettings> settings,
             IOptions<CompositeSettings> compositeSettings,
-            ISessionService sessionService, ICookieService cookieService)
+            ISessionService sessionService )
             : base( compositeSettings,
-                sessionService, cookieService)
+                sessionService )
         {
             Throw.IfNull(settings, nameof(settings));
             _settings = settings.Value;
         }
 
-
+        [SessionRequired]
         public override async Task<IActionResult> Body()
         {
-            await TrackPageInUserSession();
             var userSession = await GetUserSession();
+            await TrackPageInUserSession(userSession);
             ViewModel.Occupations.LoadFromSession(userSession);
             ViewModel.SearchService = _settings.SearchService;
             return await base.Body();
-
         }
     }
 }

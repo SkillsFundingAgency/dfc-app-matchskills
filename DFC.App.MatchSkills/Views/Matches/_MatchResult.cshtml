@@ -1,0 +1,16 @@
+﻿@model DFC.App.MatchSkills.Models.CareerMatch
+
+<div class="govuk-!-width-full">
+    <div class="app-long-results__item">
+        <div class="result-description">
+            <h3><a href="@Model.GetDetailsUrl(Model.JobProfile.Url)">@Model.JobProfile.Title</a></h3>
+            <p>@Model.JobProfile.Description</p>
+        </div>
+        <div class="govuk-grid-row govuk-accordion">
+            <div class="@*ncs-progress*@ govuk-clearfix govuk-grid-column-two-thirds" style="@*width: 70%*@">
+                <h3>Matching higher level skills: @Model.TotalOccupationEssentialSkills</h3>
+
+            </div>
+        </div>
+    </div>
+</div>

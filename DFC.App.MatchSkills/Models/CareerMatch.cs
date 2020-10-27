@@ -1,6 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dfc.ProviderPortal.Packages;
+using DFC.App.MatchSkills.Application.LMI.Models;
 using DFC.Personalisation.Domain.Models;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 
 namespace DFC.App.MatchSkills.Models
 {
@@ -8,34 +10,41 @@ namespace DFC.App.MatchSkills.Models
     {
         public JobProfile JobProfile { get; set; }
         
-        public string JobSectorGrowthDescription { get; set; }
+        public JobGrowth JobSectorGrowthDescription { get; set; }
 
         public ICollection<Skill> MatchedSkills { get; set; }
 
         public ICollection<Skill> UnMatchedSkills { get; set; }
 
-        public CareerMatch()
+        public int MatchingEssentialSkills { get; set; }
+
+
+        public int MatchingOptionalSkills { get; set; }
+
+        public int TotalOccupationEssentialSkills { get; set; }
+
+        public int TotalOccupationOptionalSkills { get; set; }
+
+        public int SourceSkillCount { get; set; }
+
+        private readonly IOptions<CompositeSettings> _compositeSettings;
+        public CareerMatch(IOptions<CompositeSettings> compositeSettings)
         {
             JobProfile = new JobProfile();
-            JobSectorGrowthDescription = string.Empty;
             MatchedSkills = new List<Skill>();
             UnMatchedSkills = new List<Skill>();
+            _compositeSettings = compositeSettings;
         }
 
-        public int MatchStrengthPercentage
+        public int MatchStrengthPercentage { get; set; }
+
+        public string GetDetailsUrl(string jobProfileUrl)
         {
-            get
-            {
-                int matchStrength = 0;
+            Throw.IfNullOrEmpty(jobProfileUrl, nameof(jobProfileUrl));
+            
+            string url = $"{_compositeSettings.Value.Path}/MatchDetails?id={jobProfileUrl}";
 
-                if (MatchedSkills.Count > 0 && UnMatchedSkills.Count > 0)
-                {
-                    decimal total = MatchedSkills.Count + UnMatchedSkills.Count;
-                    matchStrength = Convert.ToInt32(Math.Round((MatchedSkills.Count / total) * 100, 0, MidpointRounding.AwayFromZero));
-                }
-
-                return matchStrength;
-            }
+            return url;
         }
     }
 }

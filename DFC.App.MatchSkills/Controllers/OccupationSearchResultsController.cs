@@ -1,44 +1,22 @@
-﻿using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Mvc;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Models;
+using DFC.App.MatchSkills.ViewModels;
+using Microsoft.Extensions.Options;
 
 namespace DFC.App.MatchSkills.Controllers
 {
 
-    public class OccupationSearchResultsController : BaseController
+    public class OccupationSearchResultsController : CompositeSessionController<OccupationSearchResultsCompositeViewModel>
     {
-        private const string PathName = "OccupationSearchResults";
-
-        public OccupationSearchResultsController(IDataProtectionProvider dataProtectionProvider) : base()
+        
+        public OccupationSearchResultsController(IOptions<CompositeSettings> compositeSettings,
+            ISessionService sessionService ) 
+            : base(compositeSettings,
+                sessionService )
         {
+            
         }
 
-        [HttpGet]
-        [Route("/head/OccupationSearchResults")]
-        public override IActionResult Head()
-        {
-            return View(ReturnPath("Head", "OccupationSearchResults"));
-        }
-
-        [HttpGet]
-        [Route("/breadcrumb/"+ PathName)]
-        public override IActionResult Breadcrumb()
-        {
-            return View(ReturnPath("Breadcrumb", "OccupationSearchResults"));
-        }
-
-        [HttpGet]
-        [Route("/bodytop/"+ PathName)]
-        public override IActionResult BodyTop()
-        {
-            return View(ReturnPath("bodytop"));
-        }
-
-        [SessionRequired]
-        [HttpGet]
-        [Route("/body/"+ PathName)]
-        public override IActionResult Body()
-        {
-            return View(ReturnPath("body", "OccupationSearchResults"));
-        }
+       
     }
 }

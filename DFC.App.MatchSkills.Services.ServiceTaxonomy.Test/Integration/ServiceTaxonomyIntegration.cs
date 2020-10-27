@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DFC.App.MatchSkills.Application.ServiceTaxonomy.Models;
 
 namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 {
@@ -82,6 +83,25 @@ namespace DFC.App.MatchSkills.Services.ServiceTaxonomy.Test.Integration
 
             // ASSERT
             result.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task When_FindOccupationsForSkills_Then_ShouldReturnOccupationsList()
+        {
+            // Arrange
+            string[] skillIds = new string[]
+            {
+                "http://data.europa.eu/esco/skill/ab2bb44a-3956-4028-8715-8b70b1960b99",  // "lift heavy weights
+                "http://data.europa.eu/esco/skill/28cb374e-6261-4133-8371-f9a5470145da",  // "operate forklift"
+            };
+            int minimumMatchingSkills = 1;
+
+            // Act
+            var result = await _subjectUnderTest.FindOccupationsForSkills(_settings.ApiUrl, _settings.ApiKey, skillIds, minimumMatchingSkills);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(33);
         }
 
     }

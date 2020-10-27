@@ -6,7 +6,7 @@
     {
         ButtonText = "Continue",
         LinkText = "TestLink",
-        Text = "Choose one of the options below",
+        Text = "Choose one of the options below.",
         FormAction = $"{Model.Id}",
         ParentModel = Model,
         HasError = Model.HasError,
@@ -14,14 +14,33 @@
         ErrorSummaryMessage = "Choose whether you have worked before",
         RadioButtons = new List<RadioButtonModel>
 {
-            {new RadioButtonModel {Text = "Yes", Order = 1, Name = "Choice", Value = "Yes"}},
-            {new RadioButtonModel {Text = "No", Order = 2, Name = "Choice", Value = "No"}}
+            {new RadioButtonModel
+            {
+                Text = "Yes", Order = 1,
+                Name = "Choice",
+                Value = "Yes",
+                Checked = Model.HasWorkedBefore.HasValue && Model.HasWorkedBefore.Value
+            }},
+            {new RadioButtonModel
+            {
+                Text = "No",
+                Order = 2,
+                Name = "Choice",
+                Value = "No",
+                Checked = Model.HasWorkedBefore.HasValue && !Model.HasWorkedBefore.Value
+            }}
 
         }
     };
 
 }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+    </div>
+</div>
 <div class="govuk-grid-column-two-thirds">
+
     <div class="govuk-grid-row">
         <partial name="~/ViewComponents/Choice/ChoiceComponent.cshtml" model="choiceModel" />
     </div>

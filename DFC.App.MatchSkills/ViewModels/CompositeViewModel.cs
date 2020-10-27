@@ -26,13 +26,23 @@ namespace DFC.App.MatchSkills.ViewModels
             public static PageId Home { get; } = new PageId("home");
             public static PageId Worked { get; } = new PageId("worked");
             public static PageId OccupationSearch { get; } = new PageId("occupationSearch");
+            public static PageId OccupationSearchDetails { get; } = new PageId("occupationSearchDetails");
             public static PageId SkillsBasket { get; } = new PageId("basket");
             public static PageId Route { get; } = new PageId("route");
             public static PageId Matches { get; } = new PageId("matches");
             public static PageId MoreSkills { get; } = new PageId("moreSkills");
             public static PageId MatchDetails { get; } = new PageId("matchDetails");
-            public static  PageId SelectSkills { get; } = new PageId("selectSkills");
-            public static  PageId MoreJobs { get; } = new PageId("moreJobs");
+            public static PageId SelectSkills { get; } = new PageId("selectSkills");
+            public static PageId MoreJobs { get; } = new PageId("moreJobs");
+            public static PageId EnterSkills { get; } = new PageId("enterSkills");
+            public static PageId RemoveSkills { get; } = new PageId("removeSkills");
+            public static PageId ConfirmRemove { get; } = new PageId("confirmRemove");
+            public static PageId Removed { get; } = new PageId("removed");
+            public static PageId RemoveSession { get; } = new PageId("removeSession");
+            public static PageId RelatedSkills { get; } = new PageId("relatedSkills");
+            public static PageId Reload { get; } = new PageId("Reload");
+            public static PageId Error { get; } = new PageId("error");
+            public static PageId DysacResults { get; } = new PageId("Dysac Results");
             
         }
 

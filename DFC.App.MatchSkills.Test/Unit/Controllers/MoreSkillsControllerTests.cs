@@ -1,7 +1,6 @@
-﻿using System;
-using DFC.App.MatchSkills.Application.Session.Interfaces;
+﻿using DFC.App.MatchSkills.Application.Session.Interfaces;
+using DFC.App.MatchSkills.Application.Session.Models;
 using DFC.App.MatchSkills.Controllers;
-using DFC.App.MatchSkills.Interfaces;
 using DFC.App.MatchSkills.Models;
 using DFC.App.MatchSkills.ViewModels;
 using FluentAssertions;
@@ -10,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
-using DFC.App.MatchSkills.Application.Session.Models;
 
 namespace DFC.App.MatchSkills.Test.Unit.Controllers
 {
@@ -19,23 +18,21 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
     {
         private IOptions<CompositeSettings> _compositeSettings;
         private ISessionService _sessionService;
-        private ICookieService _cookieService;
+         
 
         [SetUp]
         public void Init()
         {
             _sessionService = Substitute.For<ISessionService>();
             _compositeSettings = Options.Create(new CompositeSettings());
-            _cookieService = Substitute.For<ICookieService>();
-            _sessionService.GetUserSession(Arg.Any<string>()).ReturnsForAnyArgs(new UserSession());
-            _cookieService.TryGetPrimaryKey(Arg.Any<HttpRequest>(), Arg.Any<HttpResponse>())
-                .ReturnsForAnyArgs("This is My Value");
+             
+            _sessionService.GetUserSession().ReturnsForAnyArgs(new UserSession());
         }
 
         [Test]
         public async Task WhenBodyCalledWithJobs_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
@@ -50,46 +47,46 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
         [Test]
         public async Task WhenPostBodyCalledWithJobs_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body(MoreSkills.Job) as RedirectResult;
+            var result = controller.Body(MoreSkills.Job) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreJobs}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.MoreJobs}");
         }
 
         [Test]
         public async Task WhenPostBodyCalledWithJobsAndSkills_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body(MoreSkills.Skill) as RedirectResult;
+            var result = controller.Body(MoreSkills.Skill) as RedirectResult;
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectResult>();
-            result.Url.Should().Be($"/{CompositeViewModel.PageId.MoreSkills}");
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.EnterSkills}");
         }
 
         [Test]
         public async Task WhenPostBodyCalledWithUndefined_ReturnHtml()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            var result = await controller.Body(MoreSkills.Undefined) as ViewResult;
+            var result = controller.Body(MoreSkills.Undefined) as RedirectResult;
             result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-            result.ViewName.Should().BeNull();
+            result.Should().BeOfType<RedirectResult>();
+            result.Url.Should().Be($"~/{CompositeViewModel.PageId.MoreSkills}?errors=true");
         }
 
         [Test]
@@ -103,15 +100,15 @@ namespace DFC.App.MatchSkills.Test.Unit.Controllers
 
 
         [Test]
-        public async Task WhenRouteControllerReceivesPost_Then_SetCurrentPageToRoute()
+        public async Task WhenMoreSkillsVisited_Then_SetCurrentPageToMoreSkills()
         {
-            var controller = new MoreSkillsController(_compositeSettings, _sessionService, _cookieService);
+            var controller = new MoreSkillsController(_compositeSettings, _sessionService );
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            await controller.Body(MoreSkills.Undefined);
+            await controller.Body();
             await _sessionService.Received(1).UpdateUserSessionAsync(Arg.Is<UserSession>(x =>
                 string.Equals(x.CurrentPage, CompositeViewModel.PageId.MoreSkills.Value,
                     StringComparison.InvariantCultureIgnoreCase)));

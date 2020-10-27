@@ -1,9 +1,9 @@
 [
     {
-        "Path": "matchskills",
-        "TopNavigationText": "Match Skills",
-        "TopNavigationOrder": 400,
-        "Layout": "FullWidth",
+        "Path": "match-skills",
+        "TopNavigationText": null,
+        "TopNavigationOrder": 2010,
+        "Layout": 1,
         "OfflineHtml": "<H2>Match Skills Service Unavailable</H2>",
         "IsOnline": true,
         "Regions": [
@@ -28,6 +28,13 @@
           {
             "PageRegion": 4,
             "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/body/{0}",
+            "HealthCheckRequired": true,
+            "OfflineHtml": "<H3>Service Unavailable</H3>"
+          
+          },
+		  {
+            "PageRegion": 7,
+            "RegionEndpoint": "https://__AppServiceName__.__appServiceDomain__/bodyfooter/{0}",
             "HealthCheckRequired": true,
             "OfflineHtml": "<H3>Service Unavailable</H3>"
           

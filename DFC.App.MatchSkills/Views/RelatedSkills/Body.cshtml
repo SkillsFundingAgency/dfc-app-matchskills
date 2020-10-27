@@ -1,0 +1,76 @@
+﻿@using DFC.App.MatchSkills.ViewComponents.SkillsList
+@using DFC.App.MatchSkills.ViewModels
+@model DFC.App.MatchSkills.ViewModels.RelatedSkillsCompositeViewModel
+
+@{
+    var checkboxError = Model.GetElementId("govukCheckBox", "Error");
+    var form = Model.GetElementId("form", "Form");
+    var slm = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Checkbox)
+    {
+        BeginSkillsListHTML = "<div class=\"govuk-checkboxes skill-list-container govuk-checkboxes--small dual-checkbox-container\">",
+        EndSkillsListHTML = "</div>",
+        AllSkillsSelected = Model.AllSkillsSelected
+    };
+    slm.Skills.LoadFrom(Model.RelatedSkills);
+}
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+<govukErrorSummary hidden="@(!Model.HasError)">
+    <govukErrorSummaryItem href="#selectSkills" text="Choose skills to add to your skills list"></govukErrorSummaryItem>
+</govukErrorSummary>
+
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <form id="@form" action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RelatedSkills" method="post">
+                @Html.HiddenFor(x => x.SearchTerm)
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" id="selectSkills">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <govukHeadingH1 Text="@Model.PageHeading" />
+                        </legend>
+                        <div class="govuk-form-group @(Model.HasError ? "govuk-form-group--error" : "")">
+                            <govukHeadingH3 text="@Model.RelatedSkills.Count Result@(Model.RelatedSkills.Count > 1 || Model.RelatedSkills.Count == 0 ? "s" : "") for @Model.SearchTerm"></govukHeadingH3>
+                            <govukError id="@checkboxError" hidden="@(!Model.HasError)" text="Choose skills to add to your skills list"></govukError>
+
+                            @if (Model.RelatedSkills.Count == 0)
+                            {
+                                <govukBulletedList text="Your search for '@Model.SearchTerm' returned no results. Try:">
+                                    <govukListItem text="using a different term (for example, 'driving' instead of 'operating a vehicle')"></govukListItem>
+                                    <govukListItem text="entering a specific job title to see the skills associated with it"></govukListItem>
+                                </govukBulletedList>
+                            }
+                            else
+                            {
+                                <govukLink id="selectSkillsGovukLinkSkillSelectToggle" link-href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.RelatedSkills/SkillSelectToggle?toggle=@Model.AllSkillsSelected&searchterm=@Model.SearchTerm" link-text="@(Model.AllSkillsSelected ? "Clear all" : "Select all")"></govukLink>
+                                @await Component.InvokeAsync("SkillsList", slm)
+                            }
+
+                        </div>
+
+                    </fieldset>
+                </div>
+                @if (Model.RelatedSkills.Count >= 1)
+                {
+                    <govukButton id="@Model.GetElementId("govukButton", "Add")" text="Add to skills list" />
+                }
+                <govukButtonLink id="@Model.GetElementId("govukButtonLink", "Cancel")" LinkText="Cancel" AdditionalClass="govuk-button--secondary" LinkHref="@Model.CompositeSettings.Path/Basket/" />
+            </form>
+        </div>
+
+        @if (Model.Skills.Count > 0)
+        {
+            <div class="govuk-grid-column-one-third">
+                <govukHeadingH3 text="Skills you've recently added"></govukHeadingH3>
+                @{
+                    var slmAdded = new SkillsListViewModel(Model.Id.Value, SkillsListViewModel.ListItemType.Bullet);
+                    slmAdded.Skills.LoadFrom(Model.Skills);
+                    slmAdded.BeginSkillsListHTML = "<ul class='govuk-list govuk-list--bullet'>";
+                    slmAdded.EndSkillsListHTML = "</ul>";
+                }
+                @await Component.InvokeAsync("SkillsList", slmAdded)
+            </div>
+        }
+
+    </div>
+</div>

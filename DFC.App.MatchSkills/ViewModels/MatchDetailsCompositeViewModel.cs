@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using DFC.Personalisation.Domain.Models;
+using System.Linq;
+using DFC.App.MatchSkills.Application.LMI.Models;
 
 namespace DFC.App.MatchSkills.ViewModels
 {
@@ -11,7 +12,8 @@ namespace DFC.App.MatchSkills.ViewModels
 
         public string CareerTitle { get; set; }
         public string CareerDescription { get; set; }
-        public List<Skill> MatchingSkills { get; set; }
-        public List<Skill> MissingSkills { get; set; }
+        public IOrderedEnumerable<KeyValuePair<string, bool>> MatchingSkills { get; set; }
+        public IOrderedEnumerable<KeyValuePair<string, bool>> OptionalMatchingSkills { get; set; }
+        public JobGrowth JobGrowth { get; set; }
     }
 }

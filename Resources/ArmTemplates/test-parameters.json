@@ -2,11 +2,23 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appServiceDomain": {
-            "value": "azurewebsites.net"
+        "apimProxyAddress": {
+            "value": "https://foo.api.nationalcareersservice.org.uk"
+        },
+        "apimServiceName": {
+            "value": "dfc-foo-shared-apim"
+        },
+        "dfcSharedResourceGroup": {
+            "value": "dfc-test-template-rg"
         },
         "Environment": {
             "value": "FOO"
+        },
+        "lmiSettingsApiUrl": {
+            "value": "http://api.lmiforall.org.uk/api/v1/"
+        },
+        "lmiSettingsCacheLifeSpan": {
+            "value": "365"
         },
         "SharedAppServicePlanName": {
             "value": "dfc-dev-pers-shared-asp"
@@ -20,11 +32,35 @@
         "sharedCosmosDbDatabaseName": {
             "value": "a-shared-database"
         },
+        "cosmosCollectionName1": {
+            "value": "a"
+        },
+        "cosmosCollectionName2": {
+            "value": "b"
+        },
         "serviceTaxonomyApiUrl": {
             "value": "https://apimInstance/servicetaxonomy"
         },
         "serviceTaxonomyApiKey": {
             "value": "not-a-real-apim-key"
+        },
+        "performSearchOccupationInAltLabels": {
+            "value": "false"
+        },
+        "performSearchSkillInAltLabels": {
+            "value": "false"
+        },
+        "CompositeUiCdnUrl": {
+            "value": "https://cdn.composite.test.org/"
+        },
+        "apimDysacApiKey": {
+            "value": "not-a-real-apim-key"
+        },
+        "apimoldDysacApiKey": {
+            "value": "not-a-real-apim-key"
+        },
+        "apiSuffix": {
+            "value": "suffix"
         }
     }
 }

@@ -1,34 +1,51 @@
-﻿@model DFC.App.MatchSkills.ViewModels.MatchDetailsCompositeViewModel
+﻿@using DFC.App.MatchSkills.Application.LMI.Models
+@model DFC.App.MatchSkills.ViewModels.MatchDetailsCompositeViewModel
 
-<div class="govuk-grid-column-two-thirds">
-    <govukHeadingH1 text="@Model.CareerTitle" additional-class="margin-bottom-reset govuk-!-margin-top-6"></govukHeadingH1>
-    <p>@Model.CareerDescription</p>
-    <section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
-        <govukHeadingH3 text="Your matching skills: "></govukHeadingH3>
-        <div class="job-profile-subsection-content">
-            <div class="">
-                <p><strong></strong></p>
-                <govukBulletedList text="Skills for you to develop: ">
-                    @foreach (var skill in Model.MatchingSkills)
-                    {
-                        <govukListItem text="@skill.Name"></govukListItem>
-                    }
-                </govukBulletedList>
-            </div>
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
+<div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <govukHeadingH1 text="@Model.CareerTitle" additional-class="margin-bottom-reset govuk-!-margin-top-6"></govukHeadingH1>
+            <p>@Model.CareerDescription</p>
+            @if (Model.JobGrowth != JobGrowth.Undefined)
+            {
+                <div class=" govuk-clearfix govuk-body">
+                    <strong>Job sector growth:</strong>
+                    <i class="embedded-fa-icon fa-arrow-up"></i>@Model.JobGrowth<br>
+                    @*<a href="https://nationalcareers.service.gov.uk/job-profiles/Accounting-technician" class="govuk-link govuk-!-font-size-18">Learn more about this role</a>*@
+                </div>
+            }
+            <section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
+                <govukHeadingH3 text="Skills you'll need"></govukHeadingH3>
+                <div class="job-profile-subsection-content">
+                    <div class="">
+                        <p><strong></strong></p>
+                        @foreach (var skill in Model.MatchingSkills)
+                        {
+                            <div>
+                                <govukCheckbox id="@Model.GetElementId($"govukLink_{@skill.Key}","MatchDetails")" label="@skill.Key" AdditionalClass="checkbox-container-item" checked="@skill.Value"></govukCheckbox>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+            <section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
+                <govukHeadingH3 text="Skills you may need"></govukHeadingH3>
+                <div class="job-profile-subsection-content">
+                    <div class="">
+                        <p><strong></strong></p>
+                        @foreach (var skill in Model.OptionalMatchingSkills)
+                        {
+                    <div>
+                        <govukCheckbox id="@Model.GetElementId($"govukLink_{@skill.Key}","MatchDetails")" label="@skill.Key"  AdditionalClass="checkbox-container-item" checked="@skill.Value"></govukCheckbox>
+                    </div>
+
+                        }
+                    </div>
+                </div>
+            </section>
         </div>
-    </section>
-    <section class="job-profile-subsection govuk-!-padding-top-6 govuk-!-margin-bottom-6">
-        <govukHeadingH3 text="Skills for you to develop: "></govukHeadingH3>
-        <div class="job-profile-subsection-content">
-            <div class="">
-                <p><strong></strong></p>
-                <govukBulletedList>
-                    @foreach (var skill in Model.MissingSkills)
-                    {
-                        <govukListItem text="@skill.Name"></govukListItem>
-                    }
-                </govukBulletedList>
-            </div>
-        </div>
-    </section>
+    </div>
 </div>
+
+

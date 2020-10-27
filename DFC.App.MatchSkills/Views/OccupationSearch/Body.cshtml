@@ -9,38 +9,71 @@
     var formElementName = Model.GetElementId("form", Model.FormElementName);
     var autoCompleteError = Model.GetElementId("govukAutoCompleteError", "SearchError");
     var searchButton = Model.GetElementId("govukSecondaryButton", "Search");
-    
+    var formGroup = Model.GetElementId("formGroup", "AutoComplete");
+
 }
 
+<govukBackLink LinkHref="#" LinkTitle="BackLink" Id="BackLink" class="hideBackButton"></govukBackLink>
 <govukErrorSummary hidden="@(!Model.HasError)">
     <govukErrorSummaryItem href="#@autoCompleteElementName" text="Enter a job title"></govukErrorSummaryItem>
 </govukErrorSummary>
-
+@{
+    var textInputElementName = @Model.GetElementId("govUkTextInput", "code");
+}
 
 <div class="govuk-main-wrapper govuk-main-wrapper--auto-spacing">
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form id="@formElementName" action="@CompositeViewModel.PageId.SelectSkills" method="post" class="@(Model.HasError ? "govuk-form-group--error": "")">
-                <govukHeadingH1 Text="Enter your current or previous job title" />
+            <form id="@formElementName" action="@CompositeViewModel.PageId.OccupationSearchDetails" method="post">
+                <div id="@formGroup" class="govuk-form-group   @(Model.HasError ? "govuk-form-group--error" : "")">
+                    <govukHeadingH1 Text="Enter your current or previous job title" />
 
-                <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
+                    <p>This can be your current job or one that you’ve done before. You can match the skills you used in this job to other careers.</p>
 
-                <p>You can add skills from more than one job to your skills list.</p>
+                    <p>You can add skills from more than one job to your skills list.</p>
 
+                    <govukLabel for="@Model.GetElementId("govUkInput", "Search")" text="Enter your job title" additional-class="govuk-!-font-weight-bold"></govukLabel>
 
-                <govukAutoComplete Id="@autoCompleteElementName"
-                                   Element="occupations-autocomplete-container" Source="Suggest" FunctionName="AutoComplete"
-                                   autoselect="false" confirmOnBlur="true" cssNameSpace="autocomplete"
-                                   minLength="2" name="EnterJobInputAutocomplete">
-                    <govukAutoCompleteError id="@autoCompleteError" text="Enter a job title" hidden="@(!Model.HasError)"></govukAutoCompleteError>
-                    <govukAutocompleteLabel Text="Enter your job title" additional-class="govuk-!-font-size-19 govuk-!-font-weight-bold" For="@autoCompleteElementName"></govukAutocompleteLabel>
+                    <govukTextInput id="@Model.GetElementId("govUkInput", "Search")">
+                    </govukTextInput>
 
-
-                </govukAutoComplete>
+                </div>
                 <br />
                 <br />
                 <govukSecondaryButton id="@searchButton" text="Search"></govukSecondaryButton>
             </form>
+            <p>To search for a specific skill, please click the link bellow</p>
+            <p><a class="govuk-link" href="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.EnterSkills">Search via skills</a></p>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="app-sidebar app-resume-panel">
+                <govukHeadingH3 text="Return to an assessment"></govukHeadingH3>
+                @if (Model.HasErrors)
+                {
+                    <govukErrorSummary id="@Model.GetElementId("govukErrorSummary", "ErrorSummary")">
+                        <govukErrorSummaryItem href="#@textInputElementName" text="The reference could not be found."></govukErrorSummaryItem>
+                    </govukErrorSummary>
+                }
+                <form method="post" action="@Model.CompositeSettings.Path/@CompositeViewModel.PageId.Reload">
+                    <div class="app-resume-panel__input govuk-form-group @(Model.HasErrors ? "govuk-form-group--error" : "")">
+                        <govukLabel for="@textInputElementName" text="Enter your reference" additional-class="govuk-!-font-weight-bold"></govukLabel>
+
+                        <govukTextInput id="@textInputElementName" has-error="@Model.HasErrors">
+                            <govukTextInputError Id="@Model.GetElementId("govUkTextInputError", "code")"
+                                                 Text="The reference could not be found."
+                                                 hidden="@(!Model.HasErrors)"></govukTextInputError>
+                        </govukTextInput>
+                    </div>
+                    <govukButton additional-class="" text="Continue" id="@Model.GetElementId("govUkButton", "Reload")"></govukButton>
+                </form>
+            </div>
+
+            <div class="app-sidebar app-advisor-panel">
+                <h3 class="govuk-heading-m">Want to speak to an adviser?</h3>
+                <p class="govuk-body"><b>Call</b> 0800 100 900 or <a href="https://nationalcareers.service.gov.uk/webchat/chat/" class="govuk-link govuk-link--no-visited-state">use webchat</a></p>
+                <p class="govuk-caption-m app-advisor-hours">8am to 10pm, 7 days a week</p>
+            </div>
         </div>
     </div>
 </div>
@@ -49,9 +82,11 @@
     {
         SearchService = Model.SearchService,
         AutoCompleteElementName = autoCompleteElementName,
-        FormElementName = formElementName,
+        FormElementName = formGroup,
         AutoCompleteError = autoCompleteError,
         SearchButton = searchButton
     };
 }
 <partial name="~/ViewComponents/OccupationSearchScript/Default.cshtml" model="@scriptModel" />
+
+<script defer async src="@Model.CompositeSettings.CDN/nationalcareers_toolkit/js/matchskills.min.js"></script>

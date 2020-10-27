@@ -2,11 +2,24 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "appServiceDomain": {
+        "apimProxyAddress": {
+            "type": "string"
+        },
+        "apimServiceName": {
+            "type": "string"
+        },
+        "dfcSharedResourceGroup": {
             "type": "string"
         },
         "environment": {
             "type": "string"
+        },
+        "lmiSettingsApiUrl": {
+            "type": "string"
+        },
+        "lmiSettingsCacheLifeSpan": {
+            "type":"string",
+            "defaultValue":"365"
         },
         "sharedResourceGroup": {
             "type": "string",
@@ -26,19 +39,98 @@
         },
         "serviceTaxonomyApiKey": {
             "type": "securestring"
+        },
+        "performSearchOccupationInAltLabels": {
+            "type": "string"
+        },
+        "performSearchSkillInAltLabels": {
+            "type": "string"
+        },
+        "CompositeUiCdnUrl": {
+            "type": "string"
+        },
+        "apimDysacApiKey": {
+            "type": "securestring"
+        },
+        "apimoldDysacApiKey": {
+            "type": "securestring"
+        },
+        "cosmosCollectionName1": {
+            "type": "string"
+        },
+        "cosmosCollectionName2": {
+            "type": "string"
+        },
+        "apiSuffix": {
+            "type": "string"
         }
     },
     "variables": {
         "buildingBlocksDfcBaseUrl": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-pers-matchskills'))]",
+        "apimProductDisplayName": "Personalisation Match Skills",
+        "cosmosDbCollections": [
+            {
+                "collectionName": "[parameters('cosmosCollectionName1')]",
+                "partitionKey": "/partitionKey"
+            },
+            {
+                "collectionName": "[parameters('cosmosCollectionName2')]",
+                "partitionKey": "/socCode"
+            }
+        ],
         "webAppName": "[concat(variables('ResourcePrefix'), '-as')]",
-        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]",
-        "cosmosDbCollectionName": "UserSessions"
+        "webAppInsightsName": "[concat(variables('webAppName'), '-ai')]"
     },
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollectionName'))]",
+            "name": "MatchSkillsApiLogger",
+            "resourceGroup": "[parameters('dfcSharedResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-logger.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apimServiceName": {
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "productDisplayName": {
+                        "value": "[variables('apimProductDisplayName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "MatchSkillsApiProduct",
+            "resourceGroup": "[parameters('dfcSharedResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('buildingBlocksDfcBaseUrl'), 'APIM/apim-product.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apimServiceName": {
+                        "value": "[parameters('apimServiceName')]"
+                    },
+                    "productDisplayName": {
+                        "value": "[variables('apimProductDisplayName')]"
+                    },
+                    "allowAnonymousAccess": {
+                        "value": true
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('sharedCosmosDbAccountName'),'Collection', variables('cosmosDbCollections')[copyIndex()].collectionName)]",
             "resourceGroup": "[parameters('sharedResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -55,12 +147,16 @@
                         "value": "[parameters('sharedCosmosDbDatabaseName')]"
                     },
                     "collectionName": {
-                        "value": "[variables('cosmosDbCollectionName')]"
+                        "value": "[variables('cosmosDbCollections')[copyIndex()].collectionName]"
                     },
                     "partitionKey": {
-                        "value": "/partitionKey"
+                        "value": "[variables('cosmosDbCollections')[copyIndex()].partitionKey]"
                     }
                 }
+            },
+            "copy": {
+                "name": "cosmosCollectionsCopy",
+                "count": "[length(variables('cosmosDbCollections'))]"
             }
         },
         {
@@ -116,7 +212,19 @@
                                 "value": "1"
                             },
                             {
+                                "name": "WEBSITE_RUN_FROM_PACKAGE",
+                                "value": "1"
+                            },
+                            {
+                                "name": "FUNCTIONS_WORKER_RUNTIME",
+                                "value": "dotnet"
+                            },
+                            {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "ApplicationInsights__InstrumentationKey",
                                 "value": "[reference(variables('webAppInsightsName')).outputs.InstrumentationKey.value]"
                             },
                             {
@@ -129,11 +237,11 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchOccupationInAltLabels",
-                                "value": "true"
+                                "value": "[parameters('performSearchOccupationInAltLabels')]"
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchSkillInAltLabels",
-                                "value": "true"
+                                "value": "[parameters('performSearchSkillInAltLabels')]"
                             },
                             {
                                 "name": "ServiceTaxonomySettings__EscoUrl",
@@ -141,7 +249,7 @@
                             },
                             {
                                 "name": "ServiceTaxonomySettings__SearchService",
-                                "value": "[concat('https://', variables('webAppName'), '.', parameters('appServiceDomain'))]"
+                                "value": "[concat(parameters('apimProxyAddress'), '/matchskills/OccupationSearchAuto')]"
                             },
                             {
                                 "name": "CompositeSettings__Path",
@@ -161,11 +269,79 @@
                             },
                             {
                                 "name": "CosmosSettings__UserSessionsCollection",
-                                "value": "UserSessions"
+                                "value": "[parameters('cosmosCollectionName1')]"
                             },
                             {
-                                "name": "SessionSettings__Salt",
-                                "value": "ncs"
+                                "name": "CompositeSettings__CDN",
+                                "value": "[parameters('CompositeUiCdnUrl')]"
+                            },
+                            {
+                                "name": "LmiSettings__ApiUrl",
+                                "value": "[parameters('lmiSettingsApiUrl')]"
+                            },
+                            {
+                                "name": "SessionConfig__ApplicationName",
+                                "value": "session"
+                            },
+                            {
+                                "name": "DysacSettings__ApiUrl",
+                                "value": "[concat(parameters('apimProxyAddress'), '/discover-skills-and-careers/')]"
+                            },
+                            {
+                                "name": "DysacSettings__ApiKey",
+                                "value": "[parameters('apimDysacApiKey')]"
+                            },
+                            {
+                                "name": "OldDysacSettings__ApiKey",
+                                "value": "[parameters('apimoldDysacApiKey')]"
+                            },
+                            {
+                                "name": "OldDysacSettings__AssessmentApiUrl",
+                                "value": "[concat(parameters('apimProxyAddress'), '/assessments/api/assessment/')]"
+                            },
+                            {
+                                "name": "OldDysacSettings__DysacResultsUrl",
+                                "value": "[concat(parameters('apimProxyAddress'), '/results/api/result/')]"
+                            },
+                            {
+                                "name": "DysacSettings__ApiVersion",
+                                "value": "v1"
+                            },
+                            {
+                                "name": "DysacSettings__DysacUrl",
+                                "value": "/discover-your-skills-careers/assessment/short/1"
+                            },
+                            {
+                                "name": "DysacSettings__DysacSaveUrl",
+                                "value": "/discover-your-skills-careers/Assessment/save"
+                            },
+                            {
+                                "name": "DysacSettings__DysacReturnUrl",
+                                "value": "/discover-your-skills-careers/assessment/return"
+                            },
+                            {
+                                "name": "LmiSettings__CacheLifespan",
+                                "value": "[parameters('lmiSettingsCacheLifeSpan')]"
+                            },
+                            {
+                                "name": "CosmosSettings__LmiDataCollection",
+                                "value": "[parameters('cosmosCollectionName2')]"
+                            },
+                            {
+                                "name": "Logging__LogLevel__Default",
+                                "value": "Error"
+                            },
+                            {
+                                "name": "Logging__ApplicationInsights__LogLevel__Microsoft",
+                                "value": "Trace"
+                            },
+                            {
+                                "name": "Configuration__ApplicationName",
+                                "value": "DFC.App.MatchSkills"
+                            },
+                            {
+                                "name": "apiSuffix",
+                                "value": "[parameters('apiSuffix')]"
                             }
                         ]
                     }
@@ -176,5 +352,6 @@
             ]
         }
     ],
-        "outputs": {}
+    "outputs": {
     }
+}
